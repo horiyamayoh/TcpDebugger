@@ -70,6 +70,40 @@ function Show-MainForm {
     $colAutoResponse.FillWeight = 140
     $dgvInstances.Columns.Add($colAutoResponse) | Out-Null
 
+    $colQuickData = New-Object System.Windows.Forms.DataGridViewComboBoxColumn
+    $colQuickData.HeaderText = "Quick Data"
+    $colQuickData.Name = "QuickData"
+    $colQuickData.DisplayMember = "Display"
+    $colQuickData.ValueMember = "Key"
+    $colQuickData.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
+    $colQuickData.FillWeight = 170
+    $dgvInstances.Columns.Add($colQuickData) | Out-Null
+
+    $colQuickSend = New-Object System.Windows.Forms.DataGridViewButtonColumn
+    $colQuickSend.HeaderText = "Send"
+    $colQuickSend.Name = "QuickSend"
+    $colQuickSend.Text = "Send"
+    $colQuickSend.UseColumnTextForButtonValue = $true
+    $colQuickSend.FillWeight = 70
+    $dgvInstances.Columns.Add($colQuickSend) | Out-Null
+
+    $colQuickAction = New-Object System.Windows.Forms.DataGridViewComboBoxColumn
+    $colQuickAction.HeaderText = "Quick Action"
+    $colQuickAction.Name = "QuickAction"
+    $colQuickAction.DisplayMember = "Display"
+    $colQuickAction.ValueMember = "Key"
+    $colQuickAction.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
+    $colQuickAction.FillWeight = 170
+    $dgvInstances.Columns.Add($colQuickAction) | Out-Null
+
+    $colActionSend = New-Object System.Windows.Forms.DataGridViewButtonColumn
+    $colActionSend.HeaderText = "Run"
+    $colActionSend.Name = "ActionSend"
+    $colActionSend.Text = "Run"
+    $colActionSend.UseColumnTextForButtonValue = $true
+    $colActionSend.FillWeight = 70
+    $dgvInstances.Columns.Add($colActionSend) | Out-Null
+
     $colId = New-Object System.Windows.Forms.DataGridViewTextBoxColumn
     $colId.HeaderText = "Id"
     $colId.Name = "Id"
@@ -98,85 +132,16 @@ function Show-MainForm {
     $btnDisconnect.Text = "Disconnect"
     $form.Controls.Add($btnDisconnect)
 
-    # Quick sender controls
-    $grpQuick = New-Object System.Windows.Forms.GroupBox
-    $grpQuick.Text = "Quick Sender"
-    $grpQuick.Location = New-Object System.Drawing.Point(10, 290)
-    $grpQuick.Size = New-Object System.Drawing.Size(1165, 150)
-
-    $lblCategory = New-Object System.Windows.Forms.Label
-    $lblCategory.Location = New-Object System.Drawing.Point(10, 25)
-    $lblCategory.Size = New-Object System.Drawing.Size(70, 20)
-    $lblCategory.Text = "Category"
-    $grpQuick.Controls.Add($lblCategory)
-
-    $cmbCategory = New-Object System.Windows.Forms.ComboBox
-    $cmbCategory.Location = New-Object System.Drawing.Point(80, 22)
-    $cmbCategory.Size = New-Object System.Drawing.Size(180, 23)
-    $cmbCategory.DropDownStyle = "DropDownList"
-    $grpQuick.Controls.Add($cmbCategory)
-
-    $btnReloadData = New-Object System.Windows.Forms.Button
-    $btnReloadData.Location = New-Object System.Drawing.Point(270, 20)
-    $btnReloadData.Size = New-Object System.Drawing.Size(80, 25)
-    $btnReloadData.Text = "Reload"
-    $grpQuick.Controls.Add($btnReloadData)
-
-    $lstDataItems = New-Object System.Windows.Forms.ListBox
-    $lstDataItems.Location = New-Object System.Drawing.Point(10, 50)
-    $lstDataItems.Size = New-Object System.Drawing.Size(250, 60)
-    $lstDataItems.DisplayMember = "DataID"
-    $grpQuick.Controls.Add($lstDataItems)
-
-    $lblPreview = New-Object System.Windows.Forms.Label
-    $lblPreview.Location = New-Object System.Drawing.Point(270, 50)
-    $lblPreview.Size = New-Object System.Drawing.Size(150, 20)
-    $lblPreview.Text = "Preview"
-    $grpQuick.Controls.Add($lblPreview)
-
-    $txtPreview = New-Object System.Windows.Forms.TextBox
-    $txtPreview.Location = New-Object System.Drawing.Point(270, 70)
-    $txtPreview.Size = New-Object System.Drawing.Size(285, 45)
-    $txtPreview.Multiline = $true
-    $txtPreview.ReadOnly = $true
-    $grpQuick.Controls.Add($txtPreview)
-
-    $lblGroup = New-Object System.Windows.Forms.Label
-    $lblGroup.Location = New-Object System.Drawing.Point(10, 115)
-    $lblGroup.Size = New-Object System.Drawing.Size(45, 20)
-    $lblGroup.Text = "Group"
-    $grpQuick.Controls.Add($lblGroup)
-
-    $cmbGroup = New-Object System.Windows.Forms.ComboBox
-    $cmbGroup.Location = New-Object System.Drawing.Point(60, 112)
-    $cmbGroup.Size = New-Object System.Drawing.Size(200, 23)
-    $cmbGroup.DropDownStyle = "DropDownList"
-    $grpQuick.Controls.Add($cmbGroup)
-
-    $btnSendSingle = New-Object System.Windows.Forms.Button
-    $btnSendSingle.Location = New-Object System.Drawing.Point(270, 120)
-    $btnSendSingle.Size = New-Object System.Drawing.Size(130, 25)
-    $btnSendSingle.Text = "Send to Selected"
-    $grpQuick.Controls.Add($btnSendSingle)
-
-    $btnSendGroup = New-Object System.Windows.Forms.Button
-    $btnSendGroup.Location = New-Object System.Drawing.Point(410, 120)
-    $btnSendGroup.Size = New-Object System.Drawing.Size(145, 25)
-    $btnSendGroup.Text = "Send to Group"
-    $grpQuick.Controls.Add($btnSendGroup)
-
-    $form.Controls.Add($grpQuick)
-
     # Log area
     $lblLog = New-Object System.Windows.Forms.Label
-    $lblLog.Location = New-Object System.Drawing.Point(10, 450)
+    $lblLog.Location = New-Object System.Drawing.Point(10, 290)
     $lblLog.Size = New-Object System.Drawing.Size(200, 20)
     $lblLog.Text = "Connection Log:"
     $form.Controls.Add($lblLog)
 
     $txtLog = New-Object System.Windows.Forms.TextBox
-    $txtLog.Location = New-Object System.Drawing.Point(10, 475)
-    $txtLog.Size = New-Object System.Drawing.Size(1165, 170)
+    $txtLog.Location = New-Object System.Drawing.Point(10, 315)
+    $txtLog.Size = New-Object System.Drawing.Size(1165, 335)
     $txtLog.Multiline = $true
     $txtLog.ScrollBars = "Vertical"
     $txtLog.ReadOnly = $true
@@ -184,10 +149,7 @@ function Show-MainForm {
     $form.Controls.Add($txtLog)
 
     # State holders
-    $currentDataBank = @()
-    $suppressCategoryEvent = $false
     $suppressScenarioEvent = $false
-    $lastSelectedConnectionId = $null
 
     $getSelectedConnection = {
         if ($dgvInstances.SelectedRows.Count -eq 0) {
@@ -210,99 +172,9 @@ function Show-MainForm {
         return $null
     }
 
-    $refreshQuickSender = {
-        param($connection)
-
-        $suppressCategoryEvent = $true
-        $cmbCategory.Items.Clear()
-        $lstDataItems.Items.Clear()
-        $txtPreview.Clear()
-        $suppressCategoryEvent = $false
-
-        $currentDataBank = @()
-
-        if (-not $connection) {
-            return
-        }
-
-        if (-not $connection.Variables.ContainsKey('InstancePath')) {
-            return
-        }
-
-        $instancePath = $connection.Variables['InstancePath']
-        if (-not $instancePath) {
-            return
-        }
-
-        try {
-            $currentDataBank = Get-InstanceDataBank -InstancePath $instancePath
-        } catch {
-            [System.Windows.Forms.MessageBox]::Show("Failed to load data bank: $_", "Error") | Out-Null
-            return
-        }
-
-        if ($currentDataBank.Count -eq 0) {
-            return
-        }
-
-        $categories = Get-DataBankCategories -DataBank $currentDataBank
-
-        $suppressCategoryEvent = $true
-        foreach ($category in $categories) {
-            [void]$cmbCategory.Items.Add($category)
-        }
-
-        if ($cmbCategory.Items.Count -gt 0) {
-            $cmbCategory.SelectedIndex = 0
-        }
-
-        $suppressCategoryEvent = $false
-    }
-
-    $refreshGroupList = {
-        $selectedGroup = $cmbGroup.SelectedItem
-        $cmbGroup.Items.Clear()
-
-        try {
-            $groups = Get-GroupNames
-            foreach ($group in $groups) {
-                [void]$cmbGroup.Items.Add($group)
-            }
-        } catch {
-            # ignore failures
-        }
-
-        if ($selectedGroup -and $cmbGroup.Items.Contains($selectedGroup)) {
-            $cmbGroup.SelectedItem = $selectedGroup
-        } elseif ($cmbGroup.Items.Count -gt 0) {
-            $cmbGroup.SelectedIndex = 0
-        }
-    }
-
-    $updateDetails = {
-        param([bool]$ForceRefresh = $false)
-
-        $connection = & $getSelectedConnection
-        $connectionId = $null
-
-        if ($connection) {
-            $connectionId = $connection.Id
-        }
-
-        if (-not $ForceRefresh -and $connectionId -eq $lastSelectedConnectionId) {
-            return
-        }
-
-        $lastSelectedConnectionId = $connectionId
-
-        & $refreshQuickSender $connection
-    }
-
     # Events
     $btnRefresh.Add_Click({
         Update-InstanceList -DataGridView $dgvInstances
-        & $updateDetails $true
-        & $refreshGroupList
     })
 
     $btnConnect.Add_Click({
@@ -325,7 +197,6 @@ function Show-MainForm {
             }
 
             Update-InstanceList -DataGridView $dgvInstances
-            & $updateDetails $true
         }
     })
 
@@ -349,12 +220,7 @@ function Show-MainForm {
             }
 
             Update-InstanceList -DataGridView $dgvInstances
-            & $updateDetails $true
         }
-    })
-
-    $dgvInstances.Add_SelectionChanged({
-        & $updateDetails
     })
 
     $dgvInstances.Add_CurrentCellDirtyStateChanged({
@@ -461,81 +327,103 @@ function Show-MainForm {
         }
     })
 
-    $cmbCategory.Add_SelectedIndexChanged({
-        if ($suppressCategoryEvent) { return }
+    $dgvInstances.Add_CellContentClick({
+        param($sender, $args)
 
-        $lstDataItems.Items.Clear()
-        $txtPreview.Clear()
-
-        if (-not $cmbCategory.SelectedItem) {
+        if ($args.RowIndex -lt 0 -or $args.ColumnIndex -lt 0) {
             return
         }
 
-        $selectedCategory = $cmbCategory.SelectedItem
-        $items = Get-DataBankByCategory -DataBank $currentDataBank -Category $selectedCategory
-        foreach ($item in $items) {
-            [void]$lstDataItems.Items.Add($item)
-        }
-
-        if ($lstDataItems.Items.Count -gt 0) {
-            $lstDataItems.SelectedIndex = 0
-        }
-    })
-
-    $lstDataItems.Add_SelectedIndexChanged({
-        $item = $lstDataItems.SelectedItem
-        if ($item) {
-            $previewText = "Type: {0}`r`nDescription: {1}`r`nContent: {2}" -f $item.Type, $item.Description, $item.Content
-            $txtPreview.Text = $previewText
-        } else {
-            $txtPreview.Clear()
-        }
-    })
-
-    $btnReloadData.Add_Click({
-        $connection = & $getSelectedConnection
-        & $refreshQuickSender $connection
-    })
-
-    $btnSendSingle.Add_Click({
-        $connection = & $getSelectedConnection
-        if (-not $connection) {
-            [System.Windows.Forms.MessageBox]::Show("Please select a connection first.", "Warning") | Out-Null
+        $column = $sender.Columns[$args.ColumnIndex]
+        if (-not $column) {
             return
         }
 
-        $item = $lstDataItems.SelectedItem
-        if (-not $item) {
-            [System.Windows.Forms.MessageBox]::Show("Please choose a data item to send.", "Warning") | Out-Null
+        $row = $sender.Rows[$args.RowIndex]
+        if (-not $row.Cells.Contains("Id")) {
             return
         }
 
-        try {
-            Send-QuickData -ConnectionId $connection.Id -DataID $item.DataID -DataBank $currentDataBank
-            [System.Windows.Forms.MessageBox]::Show("Sent data item '$($item.DataID)' to $($connection.DisplayName).", "Success") | Out-Null
-        } catch {
-            [System.Windows.Forms.MessageBox]::Show("Failed to send data: $_", "Error") | Out-Null
-        }
-    })
-
-    $btnSendGroup.Add_Click({
-        $item = $lstDataItems.SelectedItem
-        if (-not $item) {
-            [System.Windows.Forms.MessageBox]::Show("Please choose a data item to send.", "Warning") | Out-Null
+        $connId = $row.Cells["Id"].Value
+        if (-not $connId) {
             return
         }
 
-        $groupName = $cmbGroup.SelectedItem
-        if (-not $groupName) {
-            [System.Windows.Forms.MessageBox]::Show("Please choose a group to send to.", "Warning") | Out-Null
-            return
+        $connection = $null
+        if ($Global:Connections.ContainsKey($connId)) {
+            $connection = $Global:Connections[$connId]
         }
 
-        try {
-            Send-QuickDataToGroup -GroupName $groupName -DataID $item.DataID -DataBank $currentDataBank
-            [System.Windows.Forms.MessageBox]::Show("Sent data item '$($item.DataID)' to group '$groupName'.", "Success") | Out-Null
-        } catch {
-            [System.Windows.Forms.MessageBox]::Show("Failed to send data to group: $_", "Error") | Out-Null
+        switch ($column.Name) {
+            "QuickSend" {
+                $comboCell = $row.Cells["QuickData"]
+                if (-not $comboCell) { return }
+
+                $selectedKey = if ($comboCell.Value) { [string]$comboCell.Value } else { "" }
+                if ([string]::IsNullOrWhiteSpace($selectedKey)) {
+                    [System.Windows.Forms.MessageBox]::Show("Please select a data item to send.", "Warning") | Out-Null
+                    return
+                }
+
+                $tagData = $comboCell.Tag
+                $dataBank = $null
+                if ($tagData -is [System.Collections.IDictionary] -and $tagData.ContainsKey("DataBank")) {
+                    $dataBank = $tagData["DataBank"]
+                }
+
+                if (-not $dataBank -or $dataBank.Count -eq 0) {
+                    [System.Windows.Forms.MessageBox]::Show("No data bank entries available for this connection.", "Warning") | Out-Null
+                    return
+                }
+
+                try {
+                    Send-QuickData -ConnectionId $connId -DataID $selectedKey -DataBank $dataBank
+                    $targetName = if ($connection) { $connection.DisplayName } else { $connId }
+                    [System.Windows.Forms.MessageBox]::Show("Sent data item '$selectedKey' to $targetName.", "Success") | Out-Null
+                } catch {
+                    [System.Windows.Forms.MessageBox]::Show("Failed to send data: $_", "Error") | Out-Null
+                }
+            }
+            "ActionSend" {
+                $actionCell = $row.Cells["QuickAction"]
+                if (-not $actionCell) { return }
+
+                $selectedKey = if ($actionCell.Value) { [string]$actionCell.Value } else { "" }
+                if ([string]::IsNullOrWhiteSpace($selectedKey)) {
+                    [System.Windows.Forms.MessageBox]::Show("Please select an action to run.", "Warning") | Out-Null
+                    return
+                }
+
+                $tagData = $actionCell.Tag
+                $actionMapping = $null
+                if ($tagData -is [System.Collections.IDictionary] -and $tagData.ContainsKey("Mapping")) {
+                    $actionMapping = $tagData["Mapping"]
+                }
+
+                if (-not $actionMapping -or -not $actionMapping.ContainsKey($selectedKey)) {
+                    [System.Windows.Forms.MessageBox]::Show("Selected action is not available.", "Warning") | Out-Null
+                    return
+                }
+
+                $actionEntry = $actionMapping[$selectedKey]
+                if ($actionEntry.Type -eq "Scenario") {
+                    $scenarioPath = $actionEntry.Path
+                    if (-not $scenarioPath -or -not (Test-Path -LiteralPath $scenarioPath)) {
+                        [System.Windows.Forms.MessageBox]::Show("Scenario file not found.", "Warning") | Out-Null
+                        return
+                    }
+
+                    try {
+                        Start-Scenario -ConnectionId $connId -ScenarioPath $scenarioPath
+                        $actionName = if ($actionEntry.Name) { $actionEntry.Name } else { $selectedKey }
+                        [System.Windows.Forms.MessageBox]::Show("Started scenario '$actionName'.", "Success") | Out-Null
+                    } catch {
+                        [System.Windows.Forms.MessageBox]::Show("Failed to start scenario: $_", "Error") | Out-Null
+                    }
+                } else {
+                    [System.Windows.Forms.MessageBox]::Show("Selected action is not supported.", "Warning") | Out-Null
+                }
+            }
         }
     })
 
@@ -545,7 +433,6 @@ function Show-MainForm {
     $timer.Add_Tick({
         Update-InstanceList -DataGridView $dgvInstances
         Update-LogDisplay -TextBox $txtLog
-        & $refreshGroupList
     })
     $timer.Start()
 
@@ -572,8 +459,6 @@ function Show-MainForm {
 
     # Initial load
     Update-InstanceList -DataGridView $dgvInstances
-    & $updateDetails $true
-    & $refreshGroupList
 
     # Show form
     $form.Add_Shown({ $form.Activate() })
@@ -618,6 +503,10 @@ function Update-InstanceList {
             $endpoint,
             $conn.Status,
             $null,
+            $null,
+            $null,
+            $null,
+            $null,
             $conn.Id
         )
 
@@ -628,6 +517,7 @@ function Update-InstanceList {
 
             $items = New-Object System.Collections.ArrayList
             $mapping = @{}
+            $availableScenarios = @()
 
             $noneEntry = [PSCustomObject]@{
                 Display = "(None)"
@@ -718,6 +608,7 @@ function Update-InstanceList {
                         }
                         [void]$items.Add($entry)
                         $mapping[$scenarioKey] = $entry
+                        $availableScenarios += $entry
                     }
                 }
             }
@@ -732,6 +623,88 @@ function Update-InstanceList {
                 ProfileKey = $currentKey
             }
             $row.Cells["Scenario"] = $scenarioCell
+
+            $dataBankEntries = @()
+            if ($instancePath) {
+                try {
+                    $dataBankEntries = Get-InstanceDataBank -InstancePath $instancePath
+                } catch {
+                    $dataBankEntries = @()
+                }
+            }
+
+            $quickDataCell = New-Object System.Windows.Forms.DataGridViewComboBoxCell
+            $quickDataCell.DisplayMember = "Display"
+            $quickDataCell.ValueMember = "Key"
+            $quickDataCell.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
+
+            $dataSource = New-Object System.Collections.ArrayList
+            $dataPlaceholder = [PSCustomObject]@{
+                Display = "(Select)"
+                Key     = ""
+            }
+            [void]$dataSource.Add($dataPlaceholder)
+
+            if ($dataBankEntries -and $dataBankEntries.Count -gt 0) {
+                foreach ($item in $dataBankEntries) {
+                    if (-not $item.DataID) { continue }
+
+                    $displayText = if ([string]::IsNullOrWhiteSpace($item.Description)) {
+                        $item.DataID
+                    } else {
+                        "{0} - {1}" -f $item.DataID, $item.Description
+                    }
+
+                    $entry = [PSCustomObject]@{
+                        Display = $displayText
+                        Key     = [string]$item.DataID
+                    }
+                    [void]$dataSource.Add($entry)
+                }
+            }
+
+            $quickDataCell.DataSource = $dataSource
+            $quickDataCell.Value = ""
+            $quickDataCell.Tag = @{
+                DataBank = $dataBankEntries
+            }
+            $row.Cells["QuickData"] = $quickDataCell
+
+            $quickActionCell = New-Object System.Windows.Forms.DataGridViewComboBoxCell
+            $quickActionCell.DisplayMember = "Display"
+            $quickActionCell.ValueMember = "Key"
+            $quickActionCell.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
+
+            $actionSource = New-Object System.Collections.ArrayList
+            $actionMapping = @{}
+            $actionPlaceholder = [PSCustomObject]@{
+                Display = "(Select)"
+                Key     = ""
+                Type    = ""
+                Path    = $null
+                Name    = $null
+            }
+            [void]$actionSource.Add($actionPlaceholder)
+            $actionMapping[$actionPlaceholder.Key] = $actionPlaceholder
+
+            foreach ($scenarioEntry in $availableScenarios) {
+                $actionEntry = [PSCustomObject]@{
+                    Display = $scenarioEntry.Display
+                    Key     = $scenarioEntry.Key
+                    Type    = $scenarioEntry.Type
+                    Path    = $scenarioEntry.Path
+                    Name    = $scenarioEntry.Name
+                }
+                [void]$actionSource.Add($actionEntry)
+                $actionMapping[$actionEntry.Key] = $actionEntry
+            }
+
+            $quickActionCell.DataSource = $actionSource
+            $quickActionCell.Value = ""
+            $quickActionCell.Tag = @{
+                Mapping = $actionMapping
+            }
+            $row.Cells["QuickAction"] = $quickActionCell
         } catch {
             $row.Cells["Scenario"].Value = ""
         } finally {
