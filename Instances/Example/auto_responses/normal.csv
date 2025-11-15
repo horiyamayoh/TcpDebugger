@@ -1,0 +1,4 @@
+TriggerPattern,ResponseTemplate,Encoding,Delay,MatchType,Description
+PING,PONG,UTF-8,0,Exact,Respond to ping immediately
+HELLO,Hello client!,UTF-8,0,Contains,Send greeting for hello messages
+,ACK,UTF-8,0,Contains,Default acknowledgement for any payload

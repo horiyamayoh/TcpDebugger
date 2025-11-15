@@ -60,6 +60,13 @@ function Show-MainForm {
     $colStatus.FillWeight = 100
     $dgvInstances.Columns.Add($colStatus) | Out-Null
 
+    $colAutoResponse = New-Object System.Windows.Forms.DataGridViewTextBoxColumn
+    $colAutoResponse.HeaderText = "Auto Response"
+    $colAutoResponse.Name = "AutoResponse"
+    $colAutoResponse.ReadOnly = $true
+    $colAutoResponse.FillWeight = 120
+    $dgvInstances.Columns.Add($colAutoResponse) | Out-Null
+
     $colId = New-Object System.Windows.Forms.DataGridViewTextBoxColumn
     $colId.HeaderText = "Id"
     $colId.Name = "Id"
@@ -92,7 +99,7 @@ function Show-MainForm {
     $grpScenario = New-Object System.Windows.Forms.GroupBox
     $grpScenario.Text = "Scenario Control"
     $grpScenario.Location = New-Object System.Drawing.Point(10, 290)
-    $grpScenario.Size = New-Object System.Drawing.Size(570, 150)
+    $grpScenario.Size = New-Object System.Drawing.Size(570, 210)
 
     $lblScenarioList = New-Object System.Windows.Forms.Label
     $lblScenarioList.Location = New-Object System.Drawing.Point(10, 25)
@@ -100,44 +107,75 @@ function Show-MainForm {
     $lblScenarioList.Text = "Available Scenarios"
     $grpScenario.Controls.Add($lblScenarioList)
 
-    $lstScenarios = New-Object System.Windows.Forms.ListBox
-    $lstScenarios.Location = New-Object System.Drawing.Point(10, 50)
-    $lstScenarios.Size = New-Object System.Drawing.Size(250, 60)
-    $grpScenario.Controls.Add($lstScenarios)
-
-    $txtScenarioPath = New-Object System.Windows.Forms.TextBox
-    $txtScenarioPath.Location = New-Object System.Drawing.Point(270, 50)
-    $txtScenarioPath.Size = New-Object System.Drawing.Size(285, 23)
-    $txtScenarioPath.ReadOnly = $true
-    $grpScenario.Controls.Add($txtScenarioPath)
-
     $btnScenarioRefresh = New-Object System.Windows.Forms.Button
-    $btnScenarioRefresh.Location = New-Object System.Drawing.Point(10, 115)
+    $btnScenarioRefresh.Location = New-Object System.Drawing.Point(200, 22)
     $btnScenarioRefresh.Size = New-Object System.Drawing.Size(80, 25)
     $btnScenarioRefresh.Text = "Refresh"
     $grpScenario.Controls.Add($btnScenarioRefresh)
 
+    $lstScenarios = New-Object System.Windows.Forms.ListBox
+    $lstScenarios.Location = New-Object System.Drawing.Point(10, 50)
+    $lstScenarios.Size = New-Object System.Drawing.Size(260, 60)
+    $grpScenario.Controls.Add($lstScenarios)
+
+    $txtScenarioPath = New-Object System.Windows.Forms.TextBox
+    $txtScenarioPath.Location = New-Object System.Drawing.Point(10, 115)
+    $txtScenarioPath.Size = New-Object System.Drawing.Size(260, 23)
+    $txtScenarioPath.ReadOnly = $true
+    $grpScenario.Controls.Add($txtScenarioPath)
+
     $btnScenarioBrowse = New-Object System.Windows.Forms.Button
-    $btnScenarioBrowse.Location = New-Object System.Drawing.Point(100, 115)
+    $btnScenarioBrowse.Location = New-Object System.Drawing.Point(10, 145)
     $btnScenarioBrowse.Size = New-Object System.Drawing.Size(80, 25)
     $btnScenarioBrowse.Text = "Browse..."
     $grpScenario.Controls.Add($btnScenarioBrowse)
 
     $btnScenarioRun = New-Object System.Windows.Forms.Button
-    $btnScenarioRun.Location = New-Object System.Drawing.Point(270, 115)
-    $btnScenarioRun.Size = New-Object System.Drawing.Size(140, 25)
+    $btnScenarioRun.Location = New-Object System.Drawing.Point(100, 145)
+    $btnScenarioRun.Size = New-Object System.Drawing.Size(120, 25)
     $btnScenarioRun.Text = "Run Scenario"
     $grpScenario.Controls.Add($btnScenarioRun)
 
     $btnScenarioOpenFolder = New-Object System.Windows.Forms.Button
-    $btnScenarioOpenFolder.Location = New-Object System.Drawing.Point(420, 115)
-    $btnScenarioOpenFolder.Size = New-Object System.Drawing.Size(135, 25)
+    $btnScenarioOpenFolder.Location = New-Object System.Drawing.Point(10, 175)
+    $btnScenarioOpenFolder.Size = New-Object System.Drawing.Size(120, 25)
     $btnScenarioOpenFolder.Text = "Open Folder"
     $grpScenario.Controls.Add($btnScenarioOpenFolder)
 
+    $lblAutoResponses = New-Object System.Windows.Forms.Label
+    $lblAutoResponses.Location = New-Object System.Drawing.Point(300, 25)
+    $lblAutoResponses.Size = New-Object System.Drawing.Size(240, 20)
+    $lblAutoResponses.Text = "Auto Response Profiles"
+    $grpScenario.Controls.Add($lblAutoResponses)
+
+    $lstAutoResponses = New-Object System.Windows.Forms.ListBox
+    $lstAutoResponses.Location = New-Object System.Drawing.Point(300, 50)
+    $lstAutoResponses.Size = New-Object System.Drawing.Size(260, 80)
+    $lstAutoResponses.DisplayMember = "DisplayName"
+    $grpScenario.Controls.Add($lstAutoResponses)
+
+    $btnApplyAutoResponse = New-Object System.Windows.Forms.Button
+    $btnApplyAutoResponse.Location = New-Object System.Drawing.Point(300, 135)
+    $btnApplyAutoResponse.Size = New-Object System.Drawing.Size(130, 25)
+    $btnApplyAutoResponse.Text = "Apply Profile"
+    $grpScenario.Controls.Add($btnApplyAutoResponse)
+
+    $btnClearAutoResponse = New-Object System.Windows.Forms.Button
+    $btnClearAutoResponse.Location = New-Object System.Drawing.Point(440, 135)
+    $btnClearAutoResponse.Size = New-Object System.Drawing.Size(120, 25)
+    $btnClearAutoResponse.Text = "Clear Profile"
+    $grpScenario.Controls.Add($btnClearAutoResponse)
+
+    $lblActiveAutoResponse = New-Object System.Windows.Forms.Label
+    $lblActiveAutoResponse.Location = New-Object System.Drawing.Point(300, 170)
+    $lblActiveAutoResponse.Size = New-Object System.Drawing.Size(260, 20)
+    $lblActiveAutoResponse.Text = "Active: (none)"
+    $grpScenario.Controls.Add($lblActiveAutoResponse)
+
     $form.Controls.Add($grpScenario)
 
-    # Quick sender controls
+
+# Quick sender controls
     $grpQuick = New-Object System.Windows.Forms.GroupBox
     $grpQuick.Text = "Quick Sender"
     $grpQuick.Location = New-Object System.Drawing.Point(605, 290)
@@ -208,14 +246,14 @@ function Show-MainForm {
 
     # Log area
     $lblLog = New-Object System.Windows.Forms.Label
-    $lblLog.Location = New-Object System.Drawing.Point(10, 450)
+    $lblLog.Location = New-Object System.Drawing.Point(10, 510)
     $lblLog.Size = New-Object System.Drawing.Size(200, 20)
     $lblLog.Text = "Connection Log:"
     $form.Controls.Add($lblLog)
 
     $txtLog = New-Object System.Windows.Forms.TextBox
-    $txtLog.Location = New-Object System.Drawing.Point(10, 475)
-    $txtLog.Size = New-Object System.Drawing.Size(1165, 170)
+    $txtLog.Location = New-Object System.Drawing.Point(10, 535)
+    $txtLog.Size = New-Object System.Drawing.Size(1165, 150)
     $txtLog.Multiline = $true
     $txtLog.ScrollBars = "Vertical"
     $txtLog.ReadOnly = $true
@@ -273,6 +311,63 @@ function Show-MainForm {
             }
         } catch {
             [System.Windows.Forms.MessageBox]::Show("Failed to load scenarios: $_", "Error") | Out-Null
+        }
+    }
+
+    $refreshAutoResponses = {
+        param($connection)
+
+        $lstAutoResponses.Items.Clear()
+        $lstAutoResponses.ClearSelected()
+        $lblActiveAutoResponse.Text = "Active: (none)"
+
+        if (-not $connection) {
+            return
+        }
+
+        if (-not $connection.Variables.ContainsKey('InstancePath')) {
+            return
+        }
+
+        $instancePath = $connection.Variables['InstancePath']
+        if (-not $instancePath) {
+            return
+        }
+
+        try {
+            $profiles = Get-InstanceAutoResponseProfiles -InstancePath $instancePath
+        } catch {
+            [System.Windows.Forms.MessageBox]::Show("Failed to load auto-response profiles: $_", "Error") | Out-Null
+            return
+        }
+
+        foreach ($profile in $profiles) {
+            [void]$lstAutoResponses.Items.Add($profile)
+        }
+
+        $activeFile = $null
+        $activeDisplay = "(none)"
+
+        if ($connection.Variables.ContainsKey('ActiveAutoResponseProfile')) {
+            $activeFile = $connection.Variables['ActiveAutoResponseProfile']
+        }
+
+        if ($connection.Variables.ContainsKey('ActiveAutoResponseProfileName') -and $connection.Variables['ActiveAutoResponseProfileName']) {
+            $activeDisplay = $connection.Variables['ActiveAutoResponseProfileName']
+        } elseif ($activeFile) {
+            $activeDisplay = [System.IO.Path]::GetFileNameWithoutExtension($activeFile)
+        }
+
+        $lblActiveAutoResponse.Text = "Active: $activeDisplay"
+
+        if ($activeFile) {
+            for ($i = 0; $i -lt $lstAutoResponses.Items.Count; $i++) {
+                $item = $lstAutoResponses.Items[$i]
+                if ($item.FileName -eq $activeFile) {
+                    $lstAutoResponses.SelectedIndex = $i
+                    break
+                }
+            }
         }
     }
 
@@ -348,6 +443,7 @@ function Show-MainForm {
     $updateDetails = {
         $connection = & $getSelectedConnection
         & $refreshScenarioList $connection
+        & $refreshAutoResponses $connection
         & $refreshQuickSender $connection
     }
 
@@ -480,6 +576,58 @@ function Show-MainForm {
         } catch {
             [System.Windows.Forms.MessageBox]::Show("Failed to start scenario: $_", "Error") | Out-Null
         }
+    })
+
+    $lstAutoResponses.Add_DoubleClick({
+        if ($lstAutoResponses.SelectedItem) {
+            $btnApplyAutoResponse.PerformClick()
+        }
+    })
+
+    $btnApplyAutoResponse.Add_Click({
+        $connection = & $getSelectedConnection
+        if (-not $connection) {
+            [System.Windows.Forms.MessageBox]::Show("Please select a connection first.", "Warning") | Out-Null
+            return
+        }
+
+        $profile = $lstAutoResponses.SelectedItem
+        if (-not $profile) {
+            [System.Windows.Forms.MessageBox]::Show("Please choose a profile to apply.", "Warning") | Out-Null
+            return
+        }
+
+        try {
+            Set-ConnectionAutoResponseProfile -ConnectionId $connection.Id -ProfileFile $profile.FileName
+            [System.Windows.Forms.MessageBox]::Show("Applied auto-response profile '$($profile.DisplayName)'", "Success") | Out-Null
+        } catch {
+            [System.Windows.Forms.MessageBox]::Show("Failed to apply auto-response profile: $_", "Error") | Out-Null
+            return
+        }
+
+        Update-InstanceList -DataGridView $dgvInstances
+        $connection = & $getSelectedConnection
+        & $refreshAutoResponses $connection
+    })
+
+    $btnClearAutoResponse.Add_Click({
+        $connection = & $getSelectedConnection
+        if (-not $connection) {
+            [System.Windows.Forms.MessageBox]::Show("Please select a connection first.", "Warning") | Out-Null
+            return
+        }
+
+        try {
+            Clear-ConnectionAutoResponseProfile -ConnectionId $connection.Id
+            [System.Windows.Forms.MessageBox]::Show("Cleared auto-response profile for $($connection.DisplayName).", "Success") | Out-Null
+        } catch {
+            [System.Windows.Forms.MessageBox]::Show("Failed to clear auto-response profile: $_", "Error") | Out-Null
+            return
+        }
+
+        Update-InstanceList -DataGridView $dgvInstances
+        $connection = & $getSelectedConnection
+        & $refreshAutoResponses $connection
     })
 
     $cmbCategory.Add_SelectedIndexChanged({
@@ -621,11 +769,23 @@ function Update-InstanceList {
             $endpoint = "$($conn.LocalIP):$($conn.LocalPort)"
         }
 
+        $activeScenario = ""
+        if ($conn.Variables.ContainsKey('ActiveAutoResponseProfileName')) {
+            $activeScenario = $conn.Variables['ActiveAutoResponseProfileName']
+        } elseif ($conn.Variables.ContainsKey('ActiveAutoResponseProfile')) {
+            $activeScenario = [System.IO.Path]::GetFileNameWithoutExtension($conn.Variables['ActiveAutoResponseProfile'])
+        }
+
+        if (-not $activeScenario) {
+            $activeScenario = "(none)"
+        }
+
         $rowIndex = $DataGridView.Rows.Add(
             $conn.DisplayName,
             "$($conn.Protocol) $($conn.Mode)",
             $endpoint,
             $conn.Status,
+            $activeScenario,
             $conn.Id
         )
 

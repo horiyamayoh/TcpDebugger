@@ -1,0 +1,2 @@
+TriggerPattern,ResponseTemplate,Encoding,Delay,MatchType,Description
+,ERROR: Simulated failure,UTF-8,0,Contains,Always respond with an error message

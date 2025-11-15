@@ -1,0 +1,3 @@
+TriggerPattern,ResponseTemplate,Encoding,Delay,MatchType,Description
+PING,PONG,UTF-8,3000,Exact,Delay the ping response by 3 seconds
+,REQUEST_TIMEOUT,UTF-8,0,Contains,Return timeout indicator for other messages

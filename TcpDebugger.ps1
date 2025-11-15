@@ -1,24 +1,25 @@
 # TcpDebugger.ps1
-# TCP/IP Œ±‘•’u ƒƒCƒ“ƒXƒNƒŠƒvƒg
+# TCP/IP è©¦é¨“è£…ç½® ãƒ¡ã‚¤ãƒ³ã‚¹ã‚¯ãƒªãƒ—ãƒˆ
 
 <#
 .SYNOPSIS
-TCP/IP’ÊM‚ÌƒeƒXƒgEƒfƒoƒbƒO‚ğs‚¤‚½‚ß‚ÌŒ±‘•’u
+TCP/IPé€šä¿¡ã®ãƒ†ã‚¹ãƒˆãƒ»ãƒ‡ãƒãƒƒã‚°ã‚’è¡Œã†ãŸã‚ã®è©¦é¨“è£…ç½®
 
 .DESCRIPTION
-İ’èƒtƒ@ƒCƒ‹ƒx[ƒX‚ÅƒVƒiƒŠƒIÀs‚ª‰Â”\‚ÅA‹Šo“I‚ÉÚ‘±ó‘Ô‚ğŠm”F‚Å‚«‚éGUI‚ğ”õ‚¦‚½
-TCP/UDP’ÊMŒ±ƒc[ƒ‹
+è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«ãƒ™ãƒ¼ã‚¹ã§ã‚·ãƒŠãƒªã‚ªå®Ÿè¡ŒãŒå¯èƒ½ã§ã€è¦–è¦šçš„ã«æ¥ç¶šçŠ¶æ…‹ã‚’ç¢ºèªã§ãã‚‹GUIã‚’å‚™ãˆãŸ
+TCP/UDPé€šä¿¡è©¦é¨“ãƒ„ãƒ¼ãƒ«
 
 .NOTES
 Version: 1.0.0
 Author: TcpDebugger Project
-Requires: PowerShell 5.1+, .NET Framework (Windows•W€)
+    "AutoResponseManager.ps1",
+Requires: PowerShell 5.1+, .NET Framework (Windowsæ¨™æº–)
 #>
 
-# ƒXƒNƒŠƒvƒg‚Ìƒ‹[ƒgƒpƒX‚ğæ“¾
+# ã‚¹ã‚¯ãƒªãƒ—ãƒˆã®ãƒ«ãƒ¼ãƒˆãƒ‘ã‚¹ã‚’å–å¾—
 $script:RootPath = $PSScriptRoot
 
-# ƒ‚ƒWƒ…[ƒ‹‚ÌƒCƒ“ƒ|[ƒg
+# ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã®ã‚¤ãƒ³ãƒãƒ¼ãƒˆ
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host "  TCP Test Controller v1.0" -ForegroundColor Cyan
 Write-Host "========================================" -ForegroundColor Cyan
@@ -26,7 +27,7 @@ Write-Host ""
 
 Write-Host "[Init] Loading modules..." -ForegroundColor Cyan
 
-# ‘Sƒ‚ƒWƒ…[ƒ‹‚ğƒCƒ“ƒ|[ƒg
+# å…¨ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã‚’ã‚¤ãƒ³ãƒãƒ¼ãƒˆ
 $modulePath = Join-Path $script:RootPath "Modules"
 $modules = @(
     "ConnectionManager.ps1",
@@ -51,7 +52,7 @@ foreach ($module in $modules) {
     }
 }
 
-# UIƒ‚ƒWƒ…[ƒ‹‚ğƒCƒ“ƒ|[ƒg
+# UIãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã‚’ã‚¤ãƒ³ãƒãƒ¼ãƒˆ
 $uiPath = Join-Path $script:RootPath "UI"
 $uiFile = Join-Path $uiPath "MainForm.ps1"
 if (Test-Path $uiFile) {
@@ -64,10 +65,10 @@ if (Test-Path $uiFile) {
 
 Write-Host ""
 
-# Ú‘±ƒ}ƒl[ƒWƒƒ[‰Šú‰»
+# æ¥ç¶šãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼åˆæœŸåŒ–
 New-ConnectionManager
 
-# ƒCƒ“ƒXƒ^ƒ“ƒXƒtƒHƒ‹ƒ_‚ğƒXƒLƒƒƒ“
+# ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ãƒ•ã‚©ãƒ«ãƒ€ã‚’ã‚¹ã‚­ãƒ£ãƒ³
 $instancesPath = Join-Path $script:RootPath "Instances"
 Write-Host "[Init] Scanning instance folders..." -ForegroundColor Cyan
 
@@ -77,10 +78,10 @@ if ($instances.Count -eq 0) {
     Write-Warning "No instances found in $instancesPath"
     Write-Host "Please create instance folders with instance.psd1 configuration files." -ForegroundColor Yellow
 } else {
-    # ƒCƒ“ƒXƒ^ƒ“ƒX‚©‚çÚ‘±‚ğ‰Šú‰»
+    # ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‹ã‚‰æ¥ç¶šã‚’åˆæœŸåŒ–
     Initialize-InstanceConnections -Instances $instances
     
-    # AutoStartÚ‘±‚ğŠJn
+    # AutoStartæ¥ç¶šã‚’é–‹å§‹
     Start-AutoStartConnections -Instances $instances
 }
 
@@ -88,11 +89,11 @@ Write-Host ""
 Write-Host "[Init] Initialization completed!" -ForegroundColor Green
 Write-Host ""
 
-# GUI‚ğ•\¦
+# GUIã‚’è¡¨ç¤º
 Write-Host "[GUI] Starting GUI..." -ForegroundColor Cyan
 Show-MainForm
 
-# I—¹‚ÌƒNƒŠ[ƒ“ƒAƒbƒv
+# çµ‚äº†æ™‚ã®ã‚¯ãƒªãƒ¼ãƒ³ã‚¢ãƒƒãƒ—
 Write-Host ""
 Write-Host "[Cleanup] Shutting down..." -ForegroundColor Yellow
 
@@ -100,7 +101,7 @@ foreach ($connId in $Global:Connections.Keys) {
     try {
         Stop-Connection -ConnectionId $connId -Force
     } catch {
-        # ƒGƒ‰[‚Í–³‹
+        # ã‚¨ãƒ©ãƒ¼ã¯ç„¡è¦–
     }
 }
 

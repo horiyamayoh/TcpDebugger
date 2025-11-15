@@ -82,6 +82,15 @@ function Start-TcpServerConnection {
                                 
                                 Write-Host "[TcpServer] Received $bytesRead bytes" -ForegroundColor Magenta
                                 $conn.LastActivity = Get-Date
+
+                                $rules = Get-ActiveAutoResponseRules -Connection $conn
+                                if ($rules -and $rules.Count -gt 0) {
+                                    try {
+                                        Invoke-AutoResponse -ConnectionId $connId -ReceivedData $receivedData -Rules $rules
+                                    } catch {
+                                        Write-Warning "[TcpServer] Auto-response failed: $_"
+                                    }
+                                }
                             }
                         }
                     }

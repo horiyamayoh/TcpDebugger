@@ -1,10 +1,10 @@
 # AutoResponse.ps1
-# ©“®‰“šˆ—ƒ‚ƒWƒ…[ƒ‹
+# è‡ªå‹•å¿œç­”å‡¦ç†ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«
 
 function Read-AutoResponseRules {
     <#
     .SYNOPSIS
-    ©“®‰“šƒ‹[ƒ‹‚ğ“Ç‚İ‚İ
+    è‡ªå‹•å¿œç­”ãƒ«ãƒ¼ãƒ«ã‚’èª­ã¿è¾¼ã¿
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -16,7 +16,7 @@ function Read-AutoResponseRules {
         return @()
     }
     
-    # CSV“Ç‚İ‚İ
+    # CSVèª­ã¿è¾¼ã¿
     $rules = Import-Csv -Path $FilePath -Encoding UTF8
     
     Write-Host "[AutoResponse] Loaded $($rules.Count) rules from $FilePath" -ForegroundColor Green
@@ -27,7 +27,7 @@ function Read-AutoResponseRules {
 function Test-AutoResponseMatch {
     <#
     .SYNOPSIS
-    óMƒf[ƒ^‚ª©“®‰“šƒ‹[ƒ‹‚Éƒ}ƒbƒ`‚·‚é‚©ƒ`ƒFƒbƒN
+    å—ä¿¡ãƒ‡ãƒ¼ã‚¿ãŒè‡ªå‹•å¿œç­”ãƒ«ãƒ¼ãƒ«ã«ãƒãƒƒãƒã™ã‚‹ã‹ãƒã‚§ãƒƒã‚¯
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -40,10 +40,35 @@ function Test-AutoResponseMatch {
         [string]$Encoding = "UTF-8"
     )
     
-    # ƒoƒCƒg”z—ñ‚ğ•¶š—ñ‚É•ÏŠ·
+function Get-ActiveAutoResponseRules {
+    <#
+    .SYNOPSIS
+    İ‚ÌÚ‘Éİ’è‚³ê‚½[æ“¾
+    #>
+    param(
+        [Parameter(Mandatory=$true)]
+        [object]$Connection
+    )
+
+    if (-not $Connection) {
+        return @()
+    }
+
+    if ($Connection.Variables -and $Connection.Variables.ContainsKey('ActiveAutoResponseRules')) {
+        $rules = $Connection.Variables['ActiveAutoResponseRules']
+        if ($rules) {
+            return $rules
+        }
+    }
+
+    return @()
+}
+
+        $matchEncoding = if ($rule.Encoding) { $rule.Encoding } elseif ($conn.Variables.ContainsKey('DefaultEncoding')) { $conn.Variables['DefaultEncoding'] } else { "UTF-8" }
+        if (Test-AutoResponseMatch -ReceivedData $ReceivedData -Rule $rule -Encoding $matchEncoding) {
     $receivedText = ConvertFrom-ByteArray -Data $ReceivedData -Encoding $Encoding
     
-    # ƒ}ƒbƒ`ƒ^ƒCƒv‚É‚æ‚é”»’è
+    # ãƒãƒƒãƒã‚¿ã‚¤ãƒ—ã«ã‚ˆã‚‹åˆ¤å®š
     switch ($Rule.MatchType) {
         "Regex" {
             return $receivedText -match $Rule.TriggerPattern
@@ -55,7 +80,7 @@ function Test-AutoResponseMatch {
             return $receivedText -like "*$($Rule.TriggerPattern)*"
         }
         default {
-            # ƒfƒtƒHƒ‹ƒg‚ÍContains
+            # ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã¯Contains
             return $receivedText -like "*$($Rule.TriggerPattern)*"
         }
     }
@@ -64,7 +89,7 @@ function Test-AutoResponseMatch {
 function Invoke-AutoResponse {
     <#
     .SYNOPSIS
-    óMƒf[ƒ^‚É‘Î‚µ‚Ä©“®‰“š‚ğÀs
+    å—ä¿¡ãƒ‡ãƒ¼ã‚¿ã«å¯¾ã—ã¦è‡ªå‹•å¿œç­”ã‚’å®Ÿè¡Œ
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -84,28 +109,28 @@ function Invoke-AutoResponse {
     $conn = $Global:Connections[$ConnectionId]
     
     foreach ($rule in $Rules) {
-        # ƒ}ƒbƒ`ƒ“ƒO”»’è
+        # ãƒãƒƒãƒãƒ³ã‚°åˆ¤å®š
         if (Test-AutoResponseMatch -ReceivedData $ReceivedData -Rule $rule) {
             Write-Host "[AutoResponse] Rule matched: $($rule.TriggerPattern)" -ForegroundColor Cyan
             
-            # ƒfƒBƒŒƒC
+            # ãƒ‡ã‚£ãƒ¬ã‚¤
             if ($rule.Delay -and [int]$rule.Delay -gt 0) {
                 Start-Sleep -Milliseconds ([int]$rule.Delay)
             }
             
-            # ‰“šƒƒbƒZ[ƒW¶¬
+            # å¿œç­”ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ç”Ÿæˆ
             $response = Expand-MessageVariables -Template $rule.ResponseTemplate -Variables $conn.Variables
             
-            # ƒGƒ“ƒR[ƒfƒBƒ“ƒO
+            # ã‚¨ãƒ³ã‚³ãƒ¼ãƒ‡ã‚£ãƒ³ã‚°
             $encoding = if ($rule.Encoding) { $rule.Encoding } else { "UTF-8" }
             $responseBytes = ConvertTo-ByteArray -Data $response -Encoding $encoding
             
-            # ‘—M
+            # é€ä¿¡
             Send-Data -ConnectionId $ConnectionId -Data $responseBytes
             
             Write-Host "[AutoResponse] Auto-responded: $response" -ForegroundColor Blue
             
-            # Å‰‚Éƒ}ƒbƒ`‚µ‚½ƒ‹[ƒ‹‚Ì‚İÀs
+            # æœ€åˆã«ãƒãƒƒãƒã—ãŸãƒ«ãƒ¼ãƒ«ã®ã¿å®Ÿè¡Œ
             break
         }
     }

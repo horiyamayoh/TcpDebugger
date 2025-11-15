@@ -1,27 +1,27 @@
 # TcpClient.ps1
-# TCPƒNƒ‰ƒCƒAƒ“ƒgÚ‘±ˆ—
+# TCPã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆæ¥ç¶šå‡¦ç†
 
 function Start-TcpClientConnection {
     <#
     .SYNOPSIS
-    TCPƒNƒ‰ƒCƒAƒ“ƒgÚ‘±‚ğŠJn
+    TCPã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆæ¥ç¶šã‚’é–‹å§‹
     #>
     param(
         [Parameter(Mandatory=$true)]
         [object]$Connection
     )
     
-    # ƒXƒŒƒbƒh‚Å”ñ“¯ŠúÀs
+    # ã‚¹ãƒ¬ãƒƒãƒ‰ã§éåŒæœŸå®Ÿè¡Œ
     $scriptBlock = {
         param($connId, $remoteIP, $remotePort)
         
         try {
             Write-Host "[TcpClient] Connecting to ${remoteIP}:${remotePort}..." -ForegroundColor Cyan
             
-            # Ú‘±ƒIƒuƒWƒFƒNƒg‚ğæ“¾
+            # æ¥ç¶šã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’å–å¾—
             $conn = $Global:Connections[$connId]
             
-            # TCPƒNƒ‰ƒCƒAƒ“ƒgì¬
+            # TCPã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆä½œæˆ
             $tcpClient = New-Object System.Net.Sockets.TcpClient
             $tcpClient.Connect($remoteIP, $remotePort)
             
@@ -31,14 +31,14 @@ function Start-TcpClientConnection {
                 
                 Write-Host "[TcpClient] Connected to ${remoteIP}:${remotePort}" -ForegroundColor Green
                 
-                # ƒXƒgƒŠ[ƒ€æ“¾
+                # ã‚¹ãƒˆãƒªãƒ¼ãƒ å–å¾—
                 $stream = $tcpClient.GetStream()
                 $buffer = New-Object byte[] 8192
                 
-                # ‘—óMƒ‹[ƒv
+                # é€å—ä¿¡ãƒ«ãƒ¼ãƒ—
                 while ($tcpClient.Connected -and -not $conn.CancellationSource.Token.IsCancellationRequested) {
                     try {
-                        # ‘—Mˆ—
+                        # é€ä¿¡å‡¦ç†
                         while ($conn.SendQueue.Count -gt 0) {
                             $data = $conn.SendQueue[0]
                             $conn.SendQueue.RemoveAt(0)
@@ -50,14 +50,23 @@ function Start-TcpClientConnection {
                             $conn.LastActivity = Get-Date
                         }
                         
-                        # óMˆ—i”ñƒuƒƒbƒLƒ“ƒOj
+
+                                $rules = Get-ActiveAutoResponseRules -Connection $conn
+                                if ($rules -and $rules.Count -gt 0) {
+                                    try {
+                                        Invoke-AutoResponse -ConnectionId $connId -ReceivedData $receivedData -Rules $rules
+                                    } catch {
+                                        Write-Warning "[TcpClient] Auto-response failed: $_"
+                                    }
+                                }
+                        # å—ä¿¡å‡¦ç†ï¼ˆéãƒ–ãƒ­ãƒƒã‚­ãƒ³ã‚°ï¼‰
                         if ($stream.DataAvailable) {
                             $bytesRead = $stream.Read($buffer, 0, $buffer.Length)
                             
                             if ($bytesRead -gt 0) {
                                 $receivedData = $buffer[0..($bytesRead-1)]
                                 
-                                # óMƒoƒbƒtƒ@‚É’Ç‰Á
+                                # å—ä¿¡ãƒãƒƒãƒ•ã‚¡ã«è¿½åŠ 
                                 [void]$conn.RecvBuffer.Add([PSCustomObject]@{
                                     Timestamp = Get-Date
                                     Data = $receivedData
@@ -69,7 +78,7 @@ function Start-TcpClientConnection {
                             }
                         }
                         
-                        # CPU•‰‰×ŒyŒ¸
+                        # CPUè² è·è»½æ¸›
                         Start-Sleep -Milliseconds 10
                         
                     } catch {
@@ -91,7 +100,7 @@ function Start-TcpClientConnection {
             Write-Error "[TcpClient] Connection error: $_"
             
         } finally {
-            # ƒNƒŠ[ƒ“ƒAƒbƒv
+            # ã‚¯ãƒªãƒ¼ãƒ³ã‚¢ãƒƒãƒ—
             if ($tcpClient) {
                 $tcpClient.Close()
                 $tcpClient.Dispose()
@@ -107,7 +116,7 @@ function Start-TcpClientConnection {
         }
     }
     
-    # ƒXƒŒƒbƒhŠJn
+    # ã‚¹ãƒ¬ãƒƒãƒ‰é–‹å§‹
     $thread = New-Object System.Threading.Thread([System.Threading.ThreadStart]{
         & $scriptBlock -connId $Connection.Id -remoteIP $Connection.RemoteIP -remotePort $Connection.RemotePort
     })
