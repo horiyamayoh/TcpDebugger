@@ -43,7 +43,7 @@ function Test-AutoResponseMatch {
 function Get-ActiveAutoResponseRules {
     <#
     .SYNOPSIS
-    ݂̐ڑɐݒ肳ꂽ[擾
+    現在の接続に設定された自動応答ルールを取得
     #>
     param(
         [Parameter(Mandatory=$true)]
