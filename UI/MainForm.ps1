@@ -769,15 +769,15 @@ function Update-InstanceList {
             $endpoint = "$($conn.LocalIP):$($conn.LocalPort)"
         }
 
-        $activeScenario = ""
+        $activeProfile = ""
         if ($conn.Variables.ContainsKey('ActiveAutoResponseProfileName')) {
-            $activeScenario = $conn.Variables['ActiveAutoResponseProfileName']
+            $activeProfile = $conn.Variables['ActiveAutoResponseProfileName']
         } elseif ($conn.Variables.ContainsKey('ActiveAutoResponseProfile')) {
-            $activeScenario = [System.IO.Path]::GetFileNameWithoutExtension($conn.Variables['ActiveAutoResponseProfile'])
+            $activeProfile = [System.IO.Path]::GetFileNameWithoutExtension($conn.Variables['ActiveAutoResponseProfile'])
         }
 
-        if (-not $activeScenario) {
-            $activeScenario = "(none)"
+        if (-not $activeProfile) {
+            $activeProfile = "(none)"
         }
 
         $rowIndex = $DataGridView.Rows.Add(
@@ -785,7 +785,7 @@ function Update-InstanceList {
             "$($conn.Protocol) $($conn.Mode)",
             $endpoint,
             $conn.Status,
-            $activeScenario,
+            $activeProfile,
             $conn.Id
         )
 
