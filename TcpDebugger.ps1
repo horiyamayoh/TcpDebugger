@@ -12,7 +12,6 @@ TCP/UDP通信試験ツール
 .NOTES
 Version: 1.0.0
 Author: TcpDebugger Project
-    "AutoResponseManager.ps1",
 Requires: PowerShell 5.1+, .NET Framework (Windows標準)
 #>
 
@@ -37,6 +36,7 @@ $modules = @(
     "MessageHandler.ps1",
     "ScenarioEngine.ps1",
     "AutoResponse.ps1",
+    "AutoResponseManager.ps1",
     "QuickSender.ps1",
     "InstanceManager.ps1",
     "NetworkAnalyzer.ps1"
