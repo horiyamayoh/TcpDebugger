@@ -1,8 +1,6 @@
 # MessageHandler.ps1
 
-# é«®ï½»è­ï¿½èœƒï½¦é€…ï¿½ç¹ï½¢ç¹§ï½¸ç¹ï½¥ç¹ï½¼ç¹ï½« - ç¹§ï½¨ç¹ï½³ç¹§ï½³ç¹ï½¼ç¹ï¿½/ç¹ï¿½ç¹§ï½³ç¹ï½¼ç¹ï¿½/èŸç”»ç„šè»æš®å¹•
-
-
+# ƒƒbƒZ[ƒWƒeƒ“ƒvƒŒ[ƒg - ƒGƒ“ƒR[ƒh/ƒfƒR[ƒh/•Ï”ˆ—
 
 if (-not $script:MessageTemplateCache) {
     $script:MessageTemplateCache = @{}
@@ -15,7 +13,7 @@ if (-not $script:CustomVariableHandlers) {
 function Register-CustomVariableHandler {
     <#
     .SYNOPSIS
-    ï¿½ï½¿ï½½Jï¿½ï½¿ï½½Xï¿½ï½¿ï½½^ï¿½ï½¿ï½½ï¿½ï½¿ï½½ï¿½ï½¿ï½½ï¾æ’°ï½¿ï½½ï¿½ï½¿ï½½nï¿½ï½¿ï½½ï¿½ï½¿ï½½ï¿½ï½¿ï½½hï¿½ï½¿ï½½ï¿½ï½¿ï½½ï¿½ï½¿ï½½[ï¿½ï½¿ï½½ï¿½ï½¿ï½½oï¿½ï½¿ï½½^
+    ƒJƒXƒ^ƒ€•Ï”ƒnƒ“ƒhƒ‰[‚ğ“o˜^
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -32,7 +30,7 @@ function Register-CustomVariableHandler {
 function Unregister-CustomVariableHandler {
     <#
     .SYNOPSIS
-    ï¿½ï½¿ï½½Jï¿½ï½¿ï½½Xï¿½ï½¿ï½½^ï¿½ï½¿ï½½ï¿½ï½¿ï½½ï¿½ï½¿ï½½ï¾æ’°ï½¿ï½½ï¿½ï½¿ï½½nï¿½ï½¿ï½½ï¿½ï½¿ï½½ï¿½ï½¿ï½½hï¿½ï½¿ï½½ï¿½ï½¿ï½½ï¿½ï½¿ï½½[ï¿½ï½¿ï½½ï¿½ï½¿ï½½ï¿½ï½¿ï½½å°ï¿½
+    ƒJƒXƒ^ƒ€•Ï”ƒnƒ“ƒhƒ‰[‚ğíœ
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -48,7 +46,7 @@ function Unregister-CustomVariableHandler {
 function Clear-CustomVariableHandlers {
     <#
     .SYNOPSIS
-    ï¿½ï½¿ï½½Sï¿½ï½¿ï½½ï¾„ã®ã‚«ï¿½ï½¿ï½½Xï¿½ï½¿ï½½^ï¿½ï½¿ï½½ï¿½ï½¿ï½½ï¿½ï½¿ï½½nï¿½ï½¿ï½½ï¿½ï½¿ï½½ï¿½ï½¿ï½½hï¿½ï½¿ï½½ï¿½ï½¿ï½½ï¿½ï½¿ï½½[ï¿½ï½¿ï½½ï¿½ï½¿ï½½ï¿½ï½¿ï½½ï¿½ï½¿ï½½Nï¿½ï½¿ï½½ï¿½ï½¿ï½½ï¿½ï½¿ï½½A
+    ‘S‚Ä‚ÌƒJƒXƒ^ƒ€ƒnƒ“ƒhƒ‰[‚ğƒNƒŠƒA
     #>
     $script:CustomVariableHandlers.Clear()
 }
@@ -56,7 +54,7 @@ function Clear-CustomVariableHandlers {
 function Invoke-CustomVariableHandler {
     <#
     .SYNOPSIS
-    ï¿½ï½¿ï½½Jï¿½ï½¿ï½½Xï¿½ï½¿ï½½^ï¿½ï½¿ï½½ï¿½ï½¿ï½½ï¿½ï½¿ï½½ï¾æ’°ï½¿ï½½ï¿½ï½¿ï½½nï¿½ï½¿ï½½ï¿½ï½¿ï½½ï¿½ï½¿ï½½hï¿½ï½¿ï½½ï¿½ï½¿ï½½ï¿½ï½¿ï½½[ï¿½ï½¿ï½½ï¿½ï½¿ï½½s
+    ƒJƒXƒ^ƒ€•Ï”ƒnƒ“ƒhƒ‰[‚ğÀs
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -101,7 +99,7 @@ function Invoke-CustomVariableHandler {
 function Get-MessageTemplateCache {
     <#
     .SYNOPSIS
-    ï¿½ï½¿ï½½eï¿½ï½¿ï½½ï¿½ï½¿ï½½ï¿½ï½¿ï½½vï¿½ï½¿ï½½ï¿½ï½¿ï½½ï¿½ï½¿ï½½[ï¿½ï½¿ï½½gï¿½ï½¿ï½½tï¿½ï½¿ï½½@ï¿½ï½¿ï½½Cï¿½ï½¿ï½½ï¿½ï½¿ï½½ï¿½ï½¿ï½½ï¾Œã‚¨ï¿½ï½¿ï½½ï¿½ï½¿ï½½ï¿½ï½¿ï½½^ï¿½ï½¿ï½½ï¿½ï½¿ï½½ï¿½ï½¿ï½½bï¿½ï½¿ï½½tï¿½ï½¿ï½½ï¿½ï½¿ï½½ï¿½ï½¿ï½½[ï¿½ï½¿ï½½ï¾Œèª­ã¿æ¾ï½¿ï½½ï¿½ï½¿ï½½ï¾ã‚…â†’ï¿½ï½¿ï½½Nï¿½ï½¿ï½½ï¿½ï½¿ï½½ï¿½ï½¿ï½½A
+    ƒeƒ“ƒvƒŒ[ƒgƒtƒ@ƒCƒ‹‚ÌƒLƒƒƒbƒVƒ…ƒf[ƒ^‚ğ“Ç‚İ‚İiƒLƒƒƒbƒVƒ…•t‚«j
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -150,7 +148,7 @@ function Get-MessageTemplateCache {
 function Get-InstanceMessageTemplates {
     <#
     .SYNOPSIS
-    ï¿½ï½¿ï½½Cï¿½ï½¿ï½½ï¿½ï½¿ï½½ï¿½ï½¿ï½½Xï¿½ï½¿ï½½^ï¿½ï½¿ï½½ï¿½ï½¿ï½½ï¿½ï½¿ï½½Xï¿½ï½¿ï½½ï¾Œå…ï¿½ï½¿ï½½ï¿½ï½¿ï½½ï¿½ï½¿ï½½vï¿½ï½¿ï½½ï¿½ï½¿ï½½ï¿½ï½¿ï½½[ï¿½ï½¿ï½½gï¿½ï½¿ï½½ï¿½ï½¿ï½½ï¿½ï½¿ï½½è¬«ï½¾ï¿½ï½¿ï½½iï¿½ï½¿ï½½Xå¥ï¿½ï¿½ï½¿ï½½ï¿½ï½¿ï½½Cacheï¿½ï½¿ï½½j
+    ƒCƒ“ƒXƒ^ƒ“ƒX‚Ìƒeƒ“ƒvƒŒ[ƒg‚ğæ“¾iƒCƒ“ƒXƒ^ƒ“ƒXCache•t‚«j
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -186,7 +184,7 @@ function Get-InstanceMessageTemplates {
 function ConvertTo-ByteArray {
     <#
     .SYNOPSIS
-    è­ï¿½èŸ„æ€œï¿½åŠ±ï½’ç¹èˆŒã†ç¹ç£¯ï¿½æ¦Šï¿½åŠ±â†“èŸç”»é‹¤
+    •¶š—ñƒf[ƒ^‚ğƒoƒCƒg”z—ñ‚É•ÏŠ·
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -255,7 +253,7 @@ function ConvertTo-ByteArray {
 function ConvertFrom-ByteArray {
     <#
     .SYNOPSIS
-    ç¹èˆŒã†ç¹ç£¯ï¿½æ¦Šï¿½åŠ±ï½’è­ï¿½èŸ„æ€œï¿½åŠ±â†“èŸç”»é‹¤
+    ƒoƒCƒg”z—ñ‚ğ•¶š—ñƒf[ƒ^‚É•ÏŠ·
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -314,7 +312,7 @@ function ConvertFrom-ByteArray {
 function Expand-MessageVariables {
     <#
     .SYNOPSIS
-    ï¿½ï½¿ï½½ï¿½ï½¿ï½½ï¿½ï½¿ï½½bï¿½ï½¿ï½½Zï¿½ï½¿ï½½[ï¿½ï½¿ï½½Wï¿½ï½¿ï½½ï¿½ï½¿ï½½ï¿½ï½¿ï½½ï¾Œå¤‰æ’°ï½¿ï½½ï¿½ï½¿ï½½ï¿½ï½¿ï½½Wï¿½ï½¿ï½½J
+    ƒƒbƒZ[ƒW“à‚Ì•Ï”‚ğ“WŠJ
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -491,83 +489,46 @@ function Resolve-VariablePlaceholder {
 
 
 function Get-MessageSummary {
-
     <#
-
     .SYNOPSIS
-
-    ç¹ï½¡ç¹ï¿½ç¹§ï½»ç¹ï½¼ç¹§ï½¸ç¸ºï½®ç¹§ï½µç¹æ§­Îœç¹§è²å™è •æš¦ï½¼éƒï½¡ï½¨é‰ï½ºé€•ï½¨ï¿½ï½¼ï¿½
-
+    ƒƒbƒZ[ƒW‚ÌŠT—v‚ğ¶¬i•\¦—pj
     #>
-
     param(
-
         [Parameter(Mandatory=$true)]
-
         [byte[]]$Data,
-
         
-
         [Parameter(Mandatory=$false)]
-
         [int]$MaxLength = 50
-
     )
-
     
-
     try {
-
-        # ç¸ºï½¾ç¸ºå•…TF-8ç¸ºï½§ç¹ï¿½ç¹§ï½³ç¹ï½¼ç¹å³¨ï½’éš§ï½¦ç¸ºï½¿ç¹§ï¿½
-
+        # ‚Ü‚¸UTF-8‚ÅƒfƒR[ƒh‚ğ‚İ‚é
         $text = [System.Text.Encoding]::UTF8.GetString($Data)
-
         
-
-        # è›»ï½¶è •ï½¡è­ï¿½èŸ„åŠ±ï½’é«¯ï½¤èœ´ï½»
-
+        # §Œä•¶š‚ğ’uŠ·
         $text = $text -replace '[\x00-\x1F\x7F]', '.'
-
         
-
-        # é«Ÿï½·ç¸ºå‹Ÿå®›é«¯ï¿½
-
+        # ’·‚³‚ğ§ŒÀ
         if ($text.Length -gt $MaxLength) {
-
             $text = $text.Substring(0, $MaxLength) + "..."
-
         }
-
         
-
         return $text
-
         
-
     } catch {
-
-        # ç¹ï¿½ç¹§ï½³ç¹ï½¼ç¹ç‰™ï½¤ï½±è¬¨ç²å‡¾ç¸ºï½¯HEXé™¦ï½¨é‰ï½º
-
+        # ƒfƒR[ƒh‚É¸”s‚µ‚½‚çHEX•\¦
         $hexString = ($Data[0..[Math]::Min($Data.Length-1, 16)] | ForEach-Object { $_.ToString("X2") }) -join ' '
-
         if ($Data.Length -gt 16) {
-
             $hexString += "..."
-
         }
-
         return $hexString
-
     }
-
 }
-
-
 
 function Read-TemplateFile {
     <#
     .SYNOPSIS
-    ï¿½ï½¿ï½½eï¿½ï½¿ï½½ï¿½ï½¿ï½½ï¿½ï½¿ï½½vï¿½ï½¿ï½½ï¿½ï½¿ï½½ï¿½ï½¿ï½½[ï¿½ï½¿ï½½gï¿½ï½¿ï½½tï¿½ï½¿ï½½@ï¿½ï½¿ï½½Cï¿½ï½¿ï½½ï¿½ï½¿ï½½ï¿½ï½¿ï½½ï¿½ï½¿ï½½ï¾‡ã¿æ¾ï½¿ï½½ï¿½ï½¿ï½½ï¿½ï½¿ï½½
+    ƒeƒ“ƒvƒŒ[ƒgƒtƒ@ƒCƒ‹‚ğ“Ç‚İ‚İ
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -579,83 +540,43 @@ function Read-TemplateFile {
 
 
 function Format-MessageForDisplay {
-
     <#
-
     .SYNOPSIS
-
-    é¨¾âˆå¥³è«ï½¡ç¹ï½­ç¹§ï½°é™¦ï½¨é‰ï½ºé€•ï½¨ç¸ºï½«ç¹ï½¡ç¹ï¿½ç¹§ï½»ç¹ï½¼ç¹§ï½¸ç¹§å‘ˆç´›è –ï½¢
-
+    •\¦—p‚ÉƒƒbƒZ[ƒW‚ğƒtƒH[ƒ}ƒbƒg
     #>
-
     param(
-
         [Parameter(Mandatory=$true)]
-
         [byte[]]$Data,
-
         
-
         [Parameter(Mandatory=$false)]
-
         [string]$Direction = "SEND",  # SEND/RECV
-
         
-
         [Parameter(Mandatory=$false)]
-
         [datetime]$Timestamp
-
     )
-
     
-
     if (-not $Timestamp) {
-
         $Timestamp = Get-Date
-
     }
-
     
-
     $timeStr = $Timestamp.ToString("HH:mm:ss")
-
-    $dirSymbol = if ($Direction -eq "SEND") { "ç¬†ï½²" } else { "ç¬†ï½¼" }
-
+    $dirSymbol = if ($Direction -eq "SEND") { "¨" } else { "©" }
     $summary = Get-MessageSummary -Data $Data -MaxLength 50
-
     
-
     return [PSCustomObject]@{
-
         Time = $timeStr
-
         Direction = $dirSymbol
-
         Summary = $summary
-
         Size = $Data.Length
-
         RawData = $Data
-
     }
-
 }
 
-
-
 # Export-ModuleMember -Function @(
-
 #     'ConvertTo-ByteArray',
-
 #     'ConvertFrom-ByteArray',
-
 #     'Expand-MessageVariables',
-
 #     'Get-MessageSummary',
-
 #     'Read-TemplateFile',
-
 #     'Format-MessageForDisplay'
-
 # )
