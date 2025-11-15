@@ -547,6 +547,7 @@ function Invoke-SetVarAction {
     $varName = $Step.Parameter1
     $varValue = $Step.Parameter2
     
+}
 
 function Invoke-GotoAction {
     param(
