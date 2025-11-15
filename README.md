@@ -164,7 +164,7 @@ Start-Scenario -ConnectionId $connectionId -ScenarioPath $scenarioPath
 - **IF**: s܂B`Parameter1` ɍӁA`Parameter2` ɔrZqi`==`, `!=`, `-like`, `-match`, `-gt` ȂǁjA`Parameter3` ɉEӂw肵ACSV  `OnTrue`  `OnFalse` ǉĐ^ȖJڐLq܂BfBNeBu `STEP:<ID>` / `GOTO:<ID>`iw肵XebvփWvjA`SCENARIO:<path>`iTuViIsjA`INDEX:<ԍ>`iXebvԍŃWvjA`END`/`STOP`iViIIjA`NEXT`ĩXebvɐiށjT|[gA`;` ؂ŕwł܂B
   ```csv
   Step,Action,Parameter1,Parameter2,Parameter3,OnTrue,OnFalse,Description
-  CHECK_MODE,IF,${MODE},==,AUTO,STEP:TRUE_BLOCK,STEP:FALSE_BLOCK,[h
+  CHECK_MODE,IF,${MODE},==,AUTO,STEP:TRUE_BLOCK,STEP:FALSE_BLOCK,モード判定（AUTOの場合はTRUEブロックへ、その他はFALSEブロックへ）
   ```
 
 - **GOTO**: `Parameter1` Ɏw肵XebvIDփWv܂BIFubNŋʏɍ邽߂ɗpł܂B
