@@ -1,10 +1,6 @@
 # ScenarioEngine.ps1
 # シナリオ実行エンジン - CSV形式シナリオの読み込みと実行
 
-function Read-ScenarioFile {
-    <#
-    .SYNOPSIS
-
 function Resolve-ScenarioPath {
     param(
         [string]$BasePath,
@@ -173,16 +169,6 @@ function Resolve-IfBranchAction {
 
 
 
-
-
-
-        param($connId, $scenarioSteps, $scenarioPath)
-
-
-
-            Invoke-ScenarioSteps -Connection $conn -ScenarioSteps $scenarioSteps -ScenarioPath $scenarioPath -ConnectionId $connId
-
-        & $scriptBlock -connId $ConnectionId -scenarioSteps $steps -scenarioPath $ScenarioPath
 
 
 function Invoke-ScenarioSteps {
@@ -357,64 +343,6 @@ function Invoke-ScenarioSteps {
     }
 }
 
-
-
-                    }
-                    "WAIT_RECV" {
-                        Invoke-WaitRecvAction -Connection $conn -Step $step
-                    }
-                    "SAVE_RECV" {
-                        Invoke-SaveRecvAction -Connection $conn -Step $step
-                    }
-                    "SLEEP" {
-                        Invoke-SleepAction -Connection $conn -Step $step
-                    }
-                    "SET_VAR" {
-                        Invoke-SetVarAction -Connection $conn -Step $step
-                    }
-                    "IF" {
-                        Invoke-IfAction -Connection $conn -Step $step
-                    }
-                    "LOOP" {
-                        # TODO: ループ処理実装
-                        Write-Warning "LOOP action not yet implemented"
-                    }
-                    "CALL_SCRIPT" {
-                        Invoke-CallScriptAction -Connection $conn -Step $step
-                    }
-                    "DISCONNECT" {
-                        Stop-Connection -ConnectionId $connId
-                        break
-                    }
-                    "RECONNECT" {
-                        Stop-Connection -ConnectionId $connId
-                        Start-Sleep -Seconds 1
-                        Start-Connection -ConnectionId $connId
-                    }
-                    default {
-                        Write-Warning "Unknown action: $($step.Action)"
-                    }
-                }
-            }
-            
-            Write-Host "[ScenarioEngine] Scenario completed successfully" -ForegroundColor Green
-            
-        } catch {
-            Write-Error "[ScenarioEngine] Scenario execution error: $_"
-        }
-    }
-    
-    # スレッド開始
-    $thread = New-Object System.Threading.Thread([System.Threading.ThreadStart]{
-        & $scriptBlock -connId $ConnectionId -scenarioSteps $steps
-    })
-    
-    $thread.IsBackground = $true
-    $thread.Start()
-    
-    Write-Host "[ScenarioEngine] Scenario thread started" -ForegroundColor Green
-}
-
 # アクション実装
 
 function Invoke-SendAction {
@@ -547,6 +475,10 @@ function Invoke-SetVarAction {
     $varName = $Step.Parameter1
     $varValue = $Step.Parameter2
     
+    $expandedValue = Expand-MessageVariables -Template $varValue -Variables $Connection.Variables
+    $Connection.Variables[$varName] = $expandedValue
+    
+    Write-Host "[ScenarioEngine] Set variable '$varName' = '$expandedValue'" -ForegroundColor Green
 }
 
 function Invoke-GotoAction {
@@ -572,7 +504,7 @@ function Invoke-GotoAction {
     }
 }
 
-
+function Invoke-IfAction {
     param(
         $Connection,
         $Step,
@@ -622,17 +554,6 @@ function Invoke-GotoAction {
         -ScenarioPath $ScenarioPath `
         -ConnectionId $ConnectionId `
         -CurrentIndex $CurrentIndex
-
-    $Connection.Variables[$varName] = $expandedValue
-    
-    Write-Host "[ScenarioEngine] Set variable '$varName' = '$expandedValue'" -ForegroundColor Green
-}
-
-function Invoke-IfAction {
-    param($Connection, $Step)
-    
-    # 簡易的な条件判定（将来拡張）
-    Write-Warning "[ScenarioEngine] IF action not fully implemented"
 }
 
 function Invoke-CallScriptAction {
