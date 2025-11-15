@@ -176,15 +176,6 @@ function Resolve-IfBranchAction {
 
 
 
-        param($connId, $scenarioSteps, $scenarioPath)
-
-
-
-            Invoke-ScenarioSteps -Connection $conn -ScenarioSteps $scenarioSteps -ScenarioPath $scenarioPath -ConnectionId $connId
-
-        & $scriptBlock -connId $ConnectionId -scenarioSteps $steps -scenarioPath $ScenarioPath
-
-
 function Invoke-ScenarioSteps {
     param(
         [Parameter(Mandatory=$true)]
