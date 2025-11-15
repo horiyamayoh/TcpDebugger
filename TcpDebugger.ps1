@@ -17,6 +17,8 @@ Requires: PowerShell 5.1+, .NET Framework (Windows標準)
 
 # スクリプトのルートパスを取得
 $script:RootPath = $PSScriptRoot
+$script:CurrentMainForm = $null
+$script:ConsoleCancelHandler = $null
 
 # モジュールのインポート
 Write-Host "========================================" -ForegroundColor Cyan
@@ -88,9 +90,49 @@ Write-Host ""
 Write-Host "[Init] Initialization completed!" -ForegroundColor Green
 Write-Host ""
 
+# Ctrl+C (ConsoleCancel) handler to ensure the GUI can be closed from the console
+try {
+    $script:ConsoleCancelHandler = [System.ConsoleCancelEventHandler]{
+        param($sender, $eventArgs)
+
+        $eventArgs.Cancel = $true
+
+        Write-Host ""
+        Write-Host "[Ctrl+C] Shutdown requested. Attempting graceful shutdown..." -ForegroundColor Yellow
+
+        $form = $script:CurrentMainForm
+        if ($form -and -not $form.IsDisposed) {
+            try {
+                $null = $form.BeginInvoke([System.Action]{
+                    if ($script:CurrentMainForm -and -not $script:CurrentMainForm.IsDisposed) {
+                        $script:CurrentMainForm.Close()
+                    }
+                })
+                return
+            } catch {
+                # Fall through to forced exit
+            }
+        }
+
+        Write-Warning "GUI not available. Forcing process exit."
+        [System.Environment]::Exit(0)
+    }
+
+    [Console]::add_CancelKeyPress($script:ConsoleCancelHandler)
+} catch {
+    Write-Warning "Failed to register Ctrl+C handler: $_"
+}
+
 # GUIを表示
 Write-Host "[GUI] Starting GUI..." -ForegroundColor Cyan
-Show-MainForm
+try {
+    Show-MainForm
+} finally {
+    if ($script:ConsoleCancelHandler) {
+        [Console]::remove_CancelKeyPress($script:ConsoleCancelHandler)
+        $script:ConsoleCancelHandler = $null
+    }
+}
 
 # 終了時のクリーンアップ
 Write-Host ""

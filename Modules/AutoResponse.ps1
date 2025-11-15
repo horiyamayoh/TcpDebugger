@@ -1,10 +1,10 @@
 # AutoResponse.ps1
-# è‡ªå‹•å¿œç­”å‡¦ç†ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«
+# ©“®‰“šˆ—ƒ‚ƒWƒ…[ƒ‹
 
 function Read-AutoResponseRules {
     <#
     .SYNOPSIS
-    è‡ªå‹•å¿œç­”ãƒ«ãƒ¼ãƒ«ã‚’èª­ã¿è¾¼ã¿
+    ©“®‰“šƒ‹[ƒ‹‚ğ“Ç‚İ‚İ
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -16,7 +16,7 @@ function Read-AutoResponseRules {
         return @()
     }
 
-    # CSVèª­ã¿è¾¼ã¿
+    # CSV“Ç‚İ‚İ
     $rules = Import-Csv -Path $FilePath -Encoding UTF8
 
     Write-Host "[AutoResponse] Loaded $($rules.Count) rules from $FilePath" -ForegroundColor Green
@@ -27,7 +27,7 @@ function Read-AutoResponseRules {
 function Test-AutoResponseMatch {
     <#
     .SYNOPSIS
-    å—ä¿¡ãƒ‡ãƒ¼ã‚¿ãŒè‡ªå‹•å¿œç­”ãƒ«ãƒ¼ãƒ«ã«ãƒãƒƒãƒã™ã‚‹ã‹ãƒã‚§ãƒƒã‚¯
+    óMƒf[ƒ^‚ª©“®‰“šƒ‹[ƒ‹‚Éƒ}ƒbƒ`‚·‚é‚©ƒ`ƒFƒbƒN
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -213,7 +213,7 @@ function Invoke-ConnectionAutoResponse {
 function Invoke-AutoResponse {
     <#
     .SYNOPSIS
-    å—ä¿¡ãƒ‡ãƒ¼ã‚¿ã«å¯¾ã—ã¦è‡ªå‹•å¿œç­”ã‚’å®Ÿè¡Œ
+    óMƒf[ƒ^‚É‘Î‚µ‚Ä©“®‰“š‚ğÀs
     #>
     param(
         [Parameter(Mandatory=$true)]

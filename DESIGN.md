@@ -1,324 +1,324 @@
-# TCP/IP è©¦é¨“è£…ç½® è¨­è¨ˆæ›¸
+# TCP/IP ŽŽŒ±‘•’u ÝŒv‘
 
-## 1. æ¦‚è¦
+## 1. ŠT—v
 
-### 1.1 ç›®çš„
-TCP/UDPé€šä¿¡ã®ãƒ†ã‚¹ãƒˆãƒ»ãƒ‡ãƒãƒƒã‚°ã‚’è¡Œã†ãŸã‚ã®è©¦é¨“è£…ç½®ã‚’æä¾›ã™ã‚‹ã€‚
-è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«ãƒ™ãƒ¼ã‚¹ã§ã‚·ãƒŠãƒªã‚ªå®Ÿè¡ŒãŒå¯èƒ½ã§ã€è¦–è¦šçš„ã«æŽ¥ç¶šçŠ¶æ…‹ã‚’ç¢ºèªã§ãã‚‹GUIã‚’å‚™ãˆã‚‹ã€‚
+### 1.1 –Ú“I
+TCP/UDP’ÊM‚ÌƒeƒXƒgEƒfƒoƒbƒO‚ðs‚¤‚½‚ß‚ÌŽŽŒ±‘•’u‚ð’ñ‹Ÿ‚·‚éB
+Ý’èƒtƒ@ƒCƒ‹ƒx[ƒX‚ÅƒVƒiƒŠƒIŽÀs‚ª‰Â”\‚ÅAŽ‹Šo“I‚ÉÚ‘±ó‘Ô‚ðŠm”F‚Å‚«‚éGUI‚ð”õ‚¦‚éB
 
-### 1.2 å®Ÿè¡Œç’°å¢ƒ
+### 1.2 ŽÀsŠÂ‹«
 - **OS**: Windows 10/11
-- **å®Ÿè¡Œç’°å¢ƒ**: PowerShell 5.1ä»¥é™ï¼ˆè¿½åŠ ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ä¸è¦ï¼‰
-- **GUI**: Windows Forms (WinForms)ã€‚WPFã¯PoCãƒ¬ãƒ™ãƒ«ã®ã‚ªãƒ—ã‚·ãƒ§ãƒ³ã¨ã—ã€å®‰å®šç‰ˆã¯WinFormsã§æä¾›ã€‚
-- **å‰ææ¡ä»¶**: .NET Frameworkï¼ˆWindowsæ¨™æº–æ­è¼‰ï¼‰
+- **ŽÀsŠÂ‹«**: PowerShell 5.1ˆÈ~i’Ç‰ÁƒCƒ“ƒXƒg[ƒ‹•s—vj
+- **GUI**: Windows Forms (WinForms)BWPF‚ÍPoCƒŒƒxƒ‹‚ÌƒIƒvƒVƒ‡ƒ“‚Æ‚µAˆÀ’è”Å‚ÍWinForms‚Å’ñ‹ŸB
+- **‘O’ñðŒ**: .NET FrameworkiWindows•W€“‹Új
 
-### 1.3 è¨­è¨ˆæ–¹é‡
-- **é€ä¿¡ç¬¬ä¸€ä¸»ç¾© (Send-First Architecture)**: æœ¬ãƒ„ãƒ¼ãƒ«ã¯é€ä¿¡å‹•ä½œã‚’æœ€é‡è¦è¦–ã—ã€ãƒ¯ãƒ³ã‚·ãƒ§ãƒƒãƒˆé€ä¿¡ã‚„ãƒ‡ãƒ¼ã‚¿åˆ‡æ›¿ã‚’æœ€å°ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã§è¡Œãˆã‚‹UIï¼APIã‚’æä¾›ã™ã‚‹ã€‚å—ä¿¡ãƒ‡ãƒ¼ã‚¿ã¯ç¢ºèªç”¨ã®æœ€å°é™è¡¨ç¤ºã«ç•™ã‚ã‚‹ã€‚
-- **è©¦é¨“æŒ‡å‘ (Test-Oriented)**: å†ç¾æ€§ã®é«˜ã„è©¦é¨“ã‚·ãƒŠãƒªã‚ªã¨ãƒ‡ãƒ¼ã‚¿ãƒãƒ³ã‚¯æ–¹å¼ã§ã®é›»æ–‡ç®¡ç†ã‚’å®Ÿç¾ã—ã€ç¾å ´ä½œæ¥­è€…ãŒå³åº§ã«è©¦é¨“ãƒ‘ã‚¿ãƒ¼ãƒ³ã‚’åˆ‡ã‚Šæ›¿ãˆã‚‰ã‚Œã‚‹ã“ã¨ã‚’é‡è¦–ã™ã‚‹ã€‚
-- **ã‚¹ã‚±ãƒ¼ãƒ©ãƒ–ãƒ«ç®¡ç† (Scalable Instance Management)**: 10?20ä»¥ä¸Šã®é€šä¿¡ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’è«–ç†ã‚°ãƒ«ãƒ¼ãƒ—ãƒ»ã‚¿ã‚°ã§æ•´ç†ã—ã€ä¸€è²«ã—ãŸå‘½åã¨ä¸€æ‹¬åˆ¶å¾¡ã‚’æä¾›ã™ã‚‹ã€‚
-- **1ãƒ•ã‚©ãƒ«ãƒ€=1ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹åŽŸå‰‡**: ã™ã¹ã¦ã®é€šä¿¡ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã¯ãƒ•ã‚©ãƒ«ãƒ€å˜ä½ã§ç®¡ç†ã—ã€è¨­å®šãƒ»ã‚·ãƒŠãƒªã‚ªãƒ»ãƒ­ã‚°ã‚’å®Œå…¨ã«ç‹¬ç«‹ã•ã›ã‚‹ã€‚
-- **è¨ºæ–­æ”¯æ´ (Diagnostic Support)**: ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯ç–Žé€šç¢ºèªã€ãƒãƒ¼ãƒˆé–‹æ”¾ãƒã‚§ãƒƒã‚¯ã€ãƒ«ãƒ¼ãƒ†ã‚£ãƒ³ã‚°ç¢ºèªã‚’æä¾›ã—ã€è©¦é¨“ç«‹ã¡ä¸Šã’æ™‚ã®æˆ¸æƒ‘ã„ã‚’æ¸›ã‚‰ã™ã€‚
+### 1.3 ÝŒv•ûj
+- **‘—M‘æˆêŽå‹` (Send-First Architecture)**: –{ƒc[ƒ‹‚Í‘—M“®ì‚ðÅd—vŽ‹‚µAƒƒ“ƒVƒ‡ƒbƒg‘—M‚âƒf[ƒ^Ø‘Ö‚ðÅ¬ƒAƒNƒVƒ‡ƒ“‚Ås‚¦‚éUI^API‚ð’ñ‹Ÿ‚·‚éBŽóMƒf[ƒ^‚ÍŠm”F—p‚ÌÅ¬ŒÀ•\Ž¦‚É—¯‚ß‚éB
+- **ŽŽŒ±ŽwŒü (Test-Oriented)**: ÄŒ»«‚Ì‚‚¢ŽŽŒ±ƒVƒiƒŠƒI‚Æƒf[ƒ^ƒoƒ“ƒN•ûŽ®‚Å‚Ì“d•¶ŠÇ—‚ðŽÀŒ»‚µAŒ»êì‹ÆŽÒ‚ª‘¦À‚ÉŽŽŒ±ƒpƒ^[ƒ“‚ðØ‚è‘Ö‚¦‚ç‚ê‚é‚±‚Æ‚ðdŽ‹‚·‚éB
+- **ƒXƒP[ƒ‰ƒuƒ‹ŠÇ— (Scalable Instance Management)**: 10?20ˆÈã‚Ì’ÊMƒCƒ“ƒXƒ^ƒ“ƒX‚ð˜_—ƒOƒ‹[ƒvEƒ^ƒO‚Å®—‚µAˆêŠÑ‚µ‚½–½–¼‚ÆˆêŠ‡§Œä‚ð’ñ‹Ÿ‚·‚éB
+- **1ƒtƒHƒ‹ƒ_=1ƒCƒ“ƒXƒ^ƒ“ƒXŒ´‘¥**: ‚·‚×‚Ä‚Ì’ÊMƒCƒ“ƒXƒ^ƒ“ƒX‚ÍƒtƒHƒ‹ƒ_’PˆÊ‚ÅŠÇ—‚µAÝ’èEƒVƒiƒŠƒIEƒƒO‚ðŠ®‘S‚É“Æ—§‚³‚¹‚éB
+- **f’fŽx‰‡ (Diagnostic Support)**: ƒlƒbƒgƒ[ƒN‘a’ÊŠm”FAƒ|[ƒgŠJ•úƒ`ƒFƒbƒNAƒ‹[ƒeƒBƒ“ƒOŠm”F‚ð’ñ‹Ÿ‚µAŽŽŒ±—§‚¿ã‚°Žž‚ÌŒË˜f‚¢‚ðŒ¸‚ç‚·B
 
-### 1.4 ç«¶åˆãƒ™ãƒ³ãƒãƒžãƒ¼ã‚¯ï¼ˆUdome Socket Debuggerï¼‰
-> å…¬é–‹æƒ…å ±ãŠã‚ˆã³ç¾å ´åˆ©ç”¨å®Ÿæ…‹ã«åŸºã¥ãä¸€èˆ¬çš„ãªæ©Ÿèƒ½æ¯”è¼ƒã€‚è©³ç´°ä»•æ§˜ãŒä¸æ˜Žãªç®‡æ‰€ã¯æŽ¨å®šã‚’å«ã‚€ã€‚
+### 1.4 ‹£‡ƒxƒ“ƒ`ƒ}[ƒNiUdome Socket Debuggerj
+> ŒöŠJî•ñ‚¨‚æ‚ÑŒ»ê—˜—pŽÀ‘Ô‚ÉŠî‚Ã‚­ˆê”Ê“I‚È‹@”\”äŠrBÚ×Žd—l‚ª•s–¾‚È‰ÓŠ‚Í„’è‚ðŠÜ‚ÞB
 
-| è¦³ç‚¹ | Udome Socket Debugger (æŽ¨å®š) | æœ¬è¨­è¨ˆã®å„ªä½æ€§ |
+| ŠÏ“_ | Udome Socket Debugger („’è) | –{ÝŒv‚Ì—DˆÊ« |
 | --- | --- | --- |
-| æŽ¥ç¶šæ•° | å˜ä¸€ or å°‘æ•°ã‚½ã‚±ãƒƒãƒˆã®æ‰‹å‹•åˆ‡æ›¿ | 10?20ä»¥ä¸Šã‚’è«–ç†ã‚°ãƒ«ãƒ¼ãƒ—ã§åŒæ™‚é‹ç”¨ã€ãƒãƒ«ã‚¯æ“ä½œå¯èƒ½ |
-| é€ä¿¡æ“ä½œ | ãƒ†ã‚­ã‚¹ãƒˆ/HEXå…¥åŠ›â†’ãƒœã‚¿ãƒ³é€ä¿¡ | ãƒ‡ãƒ¼ã‚¿ãƒãƒ³ã‚¯æ–¹å¼ã§ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆå³å·®ã—æ›¿ãˆã€ãƒ¯ãƒ³ã‚¯ãƒªãƒƒã‚¯é€ä¿¡ |
-| ã‚·ãƒŠãƒªã‚ª | ã‚¹ã‚¯ãƒªãƒ—ãƒˆ/ãƒžã‚¯ãƒ­é™å®š | CSVã‚·ãƒŠãƒªã‚ªï¼‹PowerShellæ‹¡å¼µã€ä¸¦åˆ—ãƒ»æ¡ä»¶ãƒ»ãƒ«ãƒ¼ãƒ—ã‚’ç°¡æ½”è¨˜è¿° |
-| å—ä¿¡è¡¨ç¤º | è©³ç´°ãƒ­ã‚°ï¼ãƒã‚¤ãƒŠãƒªè¡¨ç¤º | ã‚·ãƒ³ãƒ—ãƒ«ãªç¢ºèªè¡¨ç¤ºã€Send-Firstã«æœ€é©åŒ– |
-| è¨ºæ–­æ”¯æ´ | ãªã— | Ping/Port/Routeãƒã‚§ãƒƒã‚¯ã€æŽ¨å¥¨ã‚¢ã‚¯ã‚·ãƒ§ãƒ³æç¤º |
-| UI/UX | æ±Žç”¨ãƒ‡ãƒãƒƒã‚¬UI | ã‚¯ã‚¤ãƒƒã‚¯é€ä¿¡ã€è«–ç†ãƒ“ãƒ¥ãƒ¼ã€ã‚·ãƒ³ã‚°ãƒ«ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã§è©¦é¨“æŒ‡å‘ |
+| Ú‘±” | ’Pˆê or ­”ƒ\ƒPƒbƒg‚ÌŽè“®Ø‘Ö | 10?20ˆÈã‚ð˜_—ƒOƒ‹[ƒv‚Å“¯Žž‰^—pAƒoƒ‹ƒN‘€ì‰Â”\ |
+| ‘—M‘€ì | ƒeƒLƒXƒg/HEX“ü—Í¨ƒ{ƒ^ƒ“‘—M | ƒf[ƒ^ƒoƒ“ƒN•ûŽ®‚Åƒeƒ“ƒvƒŒ[ƒg‘¦·‚µ‘Ö‚¦Aƒƒ“ƒNƒŠƒbƒN‘—M |
+| ƒVƒiƒŠƒI | ƒXƒNƒŠƒvƒg/ƒ}ƒNƒŒÀ’è | CSVƒVƒiƒŠƒI{PowerShellŠg’£A•À—ñEðŒEƒ‹[ƒv‚ðŠÈŒ‰‹Lq |
+| ŽóM•\Ž¦ | Ú×ƒƒO^ƒoƒCƒiƒŠ•\Ž¦ | ƒVƒ“ƒvƒ‹‚ÈŠm”F•\Ž¦ASend-First‚ÉÅ“K‰» |
+| f’fŽx‰‡ | ‚È‚µ | Ping/Port/Routeƒ`ƒFƒbƒNA„§ƒAƒNƒVƒ‡ƒ“’ñŽ¦ |
+| UI/UX | ”Ä—pƒfƒoƒbƒKUI | ƒNƒCƒbƒN‘—MA˜_—ƒrƒ…[AƒVƒ“ƒOƒ‹ƒAƒNƒVƒ‡ƒ“‚ÅŽŽŒ±ŽwŒü |
 
-æœ¬è¨­è¨ˆã¯æ—¢è£½å“ãŒå¾—æ„ã¨ã™ã‚‹æ‰‹å‹•ãƒ‡ãƒãƒƒã‚°è¦ç´ ã‚’ã‚«ãƒãƒ¼ã—ã¤ã¤ã€è©¦é¨“æ²»å…·ã¨ã—ã¦é‡è¦ãªã€Œå¤§é‡ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ç®¡ç†ã€ã€Œé€ä¿¡ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆã®å³æ™‚åˆ‡æ›¿ã€ã€Œæ€§èƒ½/è¨ºæ–­ã‚µãƒãƒ¼ãƒˆã€ã‚’è¿½åŠ ã™ã‚‹ã“ã¨ã§ã€ãƒ¦ãƒ¼ã‚¶ãƒ“ãƒªãƒ†ã‚£ã¨æ©Ÿèƒ½æ€§ã®åŒæ–¹ã§ä¸Šå›žã‚‹ã“ã¨ã‚’ç›®æ¨™ã¨ã™ã‚‹ã€‚
+–{ÝŒv‚ÍŠù»•i‚ª“¾ˆÓ‚Æ‚·‚éŽè“®ƒfƒoƒbƒO—v‘f‚ðƒJƒo[‚µ‚Â‚ÂAŽŽŒ±Ž¡‹ï‚Æ‚µ‚Äd—v‚Èu‘å—ÊƒCƒ“ƒXƒ^ƒ“ƒXŠÇ—vu‘—Mƒeƒ“ƒvƒŒ[ƒg‚Ì‘¦ŽžØ‘Övu«”\/f’fƒTƒ|[ƒgv‚ð’Ç‰Á‚·‚é‚±‚Æ‚ÅAƒ†[ƒUƒrƒŠƒeƒB‚Æ‹@”\«‚Ì‘o•û‚Åã‰ñ‚é‚±‚Æ‚ð–Ú•W‚Æ‚·‚éB
 
-### 1.5 ä¸Šä½äº’æ›ã¨ãªã‚‹å…·ä½“çš„æ©Ÿèƒ½
-1. **ãƒ‡ãƒ¼ã‚¿ãƒãƒ³ã‚¯ï¼‹ãƒ¯ãƒ³ã‚¯ãƒªãƒƒã‚¯é€ä¿¡**: ã‚ˆãä½¿ã†é›»æ–‡ã‚’ã‚«ãƒ†ã‚´ãƒªåˆ¥ã«ç™»éŒ²ã—ã€ãƒ‰ãƒ­ãƒƒãƒ—ãƒ€ã‚¦ãƒ³é¸æŠžã¾ãŸã¯ãƒœã‚¿ãƒ³1ã‚¯ãƒªãƒƒã‚¯ã§ãƒ¯ãƒ³ã‚·ãƒ§ãƒƒãƒˆé€ä¿¡ã€‚
-2. **è«–ç†ãƒ“ãƒ¥ãƒ¼ç®¡ç†**: ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ã€Œç”¨é€”Ã—ã‚¿ã‚°ã€ã§æ•´ç†ã—ã€20æŽ¥ç¶šè¦æ¨¡ã§ã‚‚è¿·ã‚ãšåˆ¶å¾¡ã€‚ã‚°ãƒ«ãƒ¼ãƒ—ä¸€æ‹¬é€ä¿¡ã‚„å†æŽ¥ç¶šã‚‚ãƒ¯ãƒ³ã‚¯ãƒªãƒƒã‚¯ã€‚
-3. **ã‚·ãƒŠãƒªã‚ªæ‹¡å¼µæ€§**: CSVå½¢å¼ã®ã‚·ãƒŠãƒªã‚ªè¨˜è¿°ã€PowerShellã‚¹ã‚¯ãƒªãƒ—ãƒˆé€£æºã€ä¸¦åˆ—ãƒ»æ¡ä»¶ãƒ»ãƒ«ãƒ¼ãƒ—ã‚’ç°¡æ½”ã«è¨˜è¿°ã§ãã‚‹ä»•çµ„ã¿ã€‚
-4. **ã‚»ãƒƒãƒˆã‚¢ãƒƒãƒ—è¨ºæ–­**: Ping/Port/Routeè‡ªå‹•ç‚¹æ¤œã—ã€æŽ¨å¥¨å¯¾å‡¦ã‚’æ—¥æœ¬èªžã§æç¤ºã€‚åˆå›žæŽ¥ç¶šæ™‚ã®è¿·ã„ã‚’è§£æ¶ˆã€‚
-5. **å—ä¿¡ãƒ‡ãƒ¼ã‚¿æ´»ç”¨**: ã‚·ãƒŠãƒªã‚ªå†…ã§å—ä¿¡ãƒ‡ãƒ¼ã‚¿ã‚’å¤‰æ•°ã¨ã—ã¦ä¿æŒã—ã€æ¬¡å›žé€ä¿¡æ™‚ã«åŸ‹ã‚è¾¼ã¿å¯èƒ½ã€‚å‹•çš„ãªé›»æ–‡ç”Ÿæˆã‚’å®Ÿç¾ã€‚
-6. **1ãƒ•ã‚©ãƒ«ãƒ€=1ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹**: ã™ã¹ã¦ã®è¨­å®šãƒ»ã‚·ãƒŠãƒªã‚ªãƒ»ãƒ­ã‚°ãŒãƒ•ã‚©ãƒ«ãƒ€å˜ä½ã§å®Œå…¨ç‹¬ç«‹ã€‚ã‚³ãƒ”ãƒ¼ã ã‘ã§ç’°å¢ƒè¤‡è£½å¯èƒ½ã€‚
-
----
-
-## 2. æ©Ÿèƒ½è¦ä»¶
-
-### 2.1 é€šä¿¡æ©Ÿèƒ½
-- **TCPé€šä¿¡**: ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆ/ã‚µãƒ¼ãƒãƒ¼ä¸¡ãƒ¢ãƒ¼ãƒ‰å¯¾å¿œ
-- **UDPé€šä¿¡**: é€ä¿¡/å—ä¿¡å¯¾å¿œ
-- **è¤‡æ•°æŽ¥ç¶š**: ç•°ãªã‚‹IP:Portã®çµ„ã¿åˆã‚ã›ã§è¤‡æ•°ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’åŒæ™‚èµ·å‹•
-- **æŽ¥ç¶šç®¡ç†**: æŽ¥ç¶š/åˆ‡æ–­ã®åˆ¶å¾¡ã€å†æŽ¥ç¶šæ©Ÿèƒ½
-
-### 2.2 é›»æ–‡é€å—ä¿¡æ©Ÿèƒ½ï¼ˆã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹å˜ä½ã§ç‹¬ç«‹åˆ¶å¾¡ï¼‰
-å„é€šä¿¡ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã¯ç‹¬è‡ªã®ãƒ‡ãƒ¼ã‚¿ãƒãƒ³ã‚¯ãƒ»é€ä¿¡è¨­å®šãƒ»å—ä¿¡å‡¦ç†ã‚’ä¿æŒã—ã€ä»–ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã¨ã¯å®Œå…¨ã«åˆ†é›¢ã•ã‚ŒãŸçŠ¶æ…‹ã§å‹•ä½œã™ã‚‹ã€‚
-- **ãƒ‡ãƒ¼ã‚¿ãƒãƒ³ã‚¯ç®¡ç†**: ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ãƒ•ã‚©ãƒ«ãƒ€å†…ã®CSVã§å®šç¾©ã—ãŸåå‰ä»˜ãé›»æ–‡ã‚»ãƒƒãƒˆã‚’èª­ã¿è¾¼ã¿ã€ã‚«ãƒ†ã‚´ãƒªã‚„ã‚¿ã‚°ã§æ•´ç†ã€‚
-- **ãƒ¯ãƒ³ã‚¯ãƒªãƒƒã‚¯é€ä¿¡**: ãƒ‰ãƒ­ãƒƒãƒ—ãƒ€ã‚¦ãƒ³é¸æŠžã¾ãŸã¯ãƒœã‚¿ãƒ³1å›žã§ã€**é¸æŠžä¸­ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹**ã¸å³æ™‚é€ä¿¡ã§ãã‚‹Send-First UIã€‚
-- **å¤šå½©ãªé€ä¿¡æ–¹å¼**: ãƒ†ã‚­ã‚¹ãƒˆã€HEXã€ãƒ•ã‚¡ã‚¤ãƒ«é€ä¿¡ã€ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆå±•é–‹ã€å¤‰æ•°åŸ‹ã‚è¾¼ã¿ã€‚ã™ã¹ã¦ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã”ã¨ã«ç‹¬ç«‹ã—ãŸå¤‰æ•°ã‚¹ã‚³ãƒ¼ãƒ—ã§å‡¦ç†ã€‚
-- **è‡ªå‹•é€ä¿¡**: ã‚·ãƒŠãƒªã‚ªã¾ãŸã¯ãƒãƒƒãƒæ“ä½œã§ã®é€£ç¶šé€ä¿¡ã€‚è¤‡æ•°ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã¸ã®ä¸€æ‹¬é€ä¿¡ã‚‚å¯èƒ½ã ãŒã€å„ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã¯ç‹¬ç«‹ã—ãŸã‚¿ã‚¤ãƒŸãƒ³ã‚°ãƒ»çŠ¶æ…‹ã§å®Ÿè¡Œã€‚
-- **å—ä¿¡è¡¨ç¤ºï¼ˆæœ€å°é™ï¼‰**: å—ä¿¡çµæžœã¯ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã”ã¨ã«ã‚µãƒžãƒªã¨ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã®ã¿ã‚’è¡¨ç¤ºã€‚
-- **å—ä¿¡ãƒ‡ãƒ¼ã‚¿æ´»ç”¨**: å—ä¿¡ãƒ‡ãƒ¼ã‚¿ã‚’å¤‰æ•°ã¨ã—ã¦ä¿æŒã—ã€æ¬¡å›žé€ä¿¡ãƒ‡ãƒ¼ã‚¿ã«åŸ‹ã‚è¾¼ã¿å¯èƒ½ã€‚å‹•çš„ãªé›»æ–‡ç”Ÿæˆã‚’å®Ÿç¾ã€‚
-- **ã‚¨ãƒ³ã‚³ãƒ¼ãƒ‡ã‚£ãƒ³ã‚°**: ASCII, UTF-8, Shift-JIS, ãƒã‚¤ãƒŠãƒª(HEXæ–‡å­—åˆ—)å¯¾å¿œã€‚ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã”ã¨ã«è¨­å®šå¯èƒ½ã€‚
-
-### 2.3 ã‚·ãƒŠãƒªã‚ªæ©Ÿèƒ½ï¼ˆã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹å˜ä½ã§ç‹¬ç«‹å®Ÿè¡Œï¼‰
-å„ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã¯ç‹¬è‡ªã®ã‚·ãƒŠãƒªã‚ªãƒ•ã‚¡ã‚¤ãƒ«ã‚’æŒã¡ã€ä»–ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®ã‚·ãƒŠãƒªã‚ªå®Ÿè¡ŒçŠ¶æ…‹ã«å½±éŸ¿ã•ã‚Œã‚‹ã“ã¨ãªãå‹•ä½œã™ã‚‹ã€‚
-- **ã‚·ãƒŠãƒªã‚ªãƒ•ã‚¡ã‚¤ãƒ«**: ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ãƒ•ã‚©ãƒ«ãƒ€å†…ã®CSVå½¢å¼ã§ã‚·ãƒŠãƒªã‚ªå®šç¾©
-- **å¾…æ©Ÿåˆ¶å¾¡**: æ™‚é–“å¾…æ©Ÿã€å—ä¿¡å¾…æ©Ÿã€‚å¾…æ©ŸçŠ¶æ…‹ã¯å„ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã§ç‹¬ç«‹ç®¡ç†ã€‚
-- **æ¡ä»¶åˆ†å²**: å—ä¿¡ãƒ‡ãƒ¼ã‚¿ã«åŸºã¥ãå‡¦ç†åˆ†å²ã€‚åˆ¤å®šæ¡ä»¶ãƒ»å¤‰æ•°ã¯ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚¹ã‚³ãƒ¼ãƒ—å†…ã§è©•ä¾¡ã€‚
-- **ãƒ«ãƒ¼ãƒ—å‡¦ç†**: ç¹°ã‚Šè¿”ã—å®Ÿè¡Œã€‚ãƒ«ãƒ¼ãƒ—ã‚«ã‚¦ãƒ³ã‚¿ã¯ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã”ã¨ã«ç‹¬ç«‹ã€‚
-- **å¤‰æ•°æ©Ÿèƒ½**: å—ä¿¡ãƒ‡ãƒ¼ã‚¿ã‚’å¤‰æ•°ã¨ã—ã¦ä¿æŒã—ã€æ¬¡å›žé€ä¿¡æ™‚ã«å‹•çš„ã«åŸ‹ã‚è¾¼ã¿ã€‚å¤‰æ•°ã‚¹ã‚³ãƒ¼ãƒ—ã¯ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹å†…ã«é–‰ã˜ã€ä»–ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã¨å…±æœ‰ã—ãªã„ã€‚
-- **ã‚¹ã‚¯ãƒªãƒ—ãƒˆé€£æº**: ã‚«ã‚¹ã‚¿ãƒ PowerShellãƒ­ã‚¸ãƒƒã‚¯ã‚’å‘¼ã³å‡ºã—ã€è¤‡é›‘ãªæŒ¯ã‚‹èˆžã„ã‚‚ç°¡æ½”ã«è¨˜è¿°ã€‚ã‚¹ã‚¯ãƒªãƒ—ãƒˆã«ã¯ç¾åœ¨ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆãŒæ¸¡ã•ã‚Œã‚‹ã€‚
-- **ã‚°ãƒ«ãƒ¼ãƒ—é€ä¿¡**: è¤‡æ•°ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã¸ä¸€æ‹¬é€ä¿¡æŒ‡ç¤ºãŒå¯èƒ½ã ãŒã€å®Ÿéš›ã®é€ä¿¡ã¯å„ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ãŒç‹¬ç«‹ã—ã¦å®Ÿè¡Œã€‚
-
-### 2.4 æ‹¡å¼µæ©Ÿèƒ½ï¼ˆã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹å˜ä½ã§ç‹¬ç«‹è¨­å®šï¼‰
-- **è‡ªå‹•å¿œç­”**: ç‰¹å®šãƒ‘ã‚¿ãƒ¼ãƒ³å—ä¿¡æ™‚ã®è‡ªå‹•è¿”ä¿¡ã€‚å¿œç­”ãƒ«ãƒ¼ãƒ«ã¯ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã”ã¨ã«å®šç¾©ã—ã€ç‹¬ç«‹å‹•ä½œã€‚
-- **å‹•çš„æ›´æ–°**: ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆãƒ™ãƒ¼ã‚¹ã®é›»æ–‡ç”Ÿæˆï¼ˆå¤‰æ•°ç½®æ›ï¼‰ã€‚å¤‰æ•°ãƒ»ã‚·ãƒ¼ã‚±ãƒ³ã‚¹ç•ªå·ã¯ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚¹ã‚³ãƒ¼ãƒ—ã§ç®¡ç†ã€‚
-- **ã‚«ã‚¹ã‚¿ãƒ ã‚¹ã‚¯ãƒªãƒ—ãƒˆ**: PowerShellã‚¹ã‚¯ãƒªãƒ—ãƒˆã«ã‚ˆã‚‹æ‹¡å¼µå‡¦ç†ã€‚ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆã‚’å¼•æ•°ã¨ã—ã¦å—ã‘å–ã‚‹ã€‚
-- **ãƒ—ãƒ©ã‚°ã‚¤ãƒ³æ©Ÿèƒ½**: å¤–éƒ¨PSã‚¹ã‚¯ãƒªãƒ—ãƒˆã®èª­ã¿è¾¼ã¿ã€‚ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã”ã¨ã«ç•°ãªã‚‹ãƒ—ãƒ©ã‚°ã‚¤ãƒ³ã‚»ãƒƒãƒˆã‚’é©ç”¨å¯èƒ½ã€‚
-
-### 2.5 GUIæ©Ÿèƒ½
-- **æŽ¥ç¶šä¸€è¦§**: ã‚¢ã‚¯ãƒ†ã‚£ãƒ–ãªæŽ¥ç¶šã®ä¸€è¦§è¡¨ç¤ºã€‚å„ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®çŠ¶æ…‹ã‚’å€‹åˆ¥ã«è¡¨ç¤ºã€‚
-- **ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹è¡¨ç¤ºï¼ˆè‰²åˆ†ã‘ï¼‰**: å„æŽ¥ç¶šã®çŠ¶æ…‹ã‚’ãƒªã‚¢ãƒ«ã‚¿ã‚¤ãƒ ã«è‰²åˆ†ã‘è¡¨ç¤ºï¼ˆç·‘=æŽ¥ç¶šä¸­ã€èµ¤=åˆ‡æ–­ã€é»„=ã‚¨ãƒ©ãƒ¼ã€ã‚°ãƒ¬ãƒ¼=æœªæŽ¥ç¶šï¼‰ã€‚WinFormsã®`DataGridView`ã¾ãŸã¯`ListView`ã§å„è¡Œãƒ»ã‚«ãƒ¼ãƒ‰ã®èƒŒæ™¯è‰²ã‚’å‹•çš„ã«å¤‰æ›´ã—ã€è¦–è¦šçš„ã«çŠ¶æ…‹ã‚’æŠŠæ¡å¯èƒ½ã€‚ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹å˜ä½ã§ç‹¬ç«‹ã€‚
-- **ãƒ­ã‚°ãƒ“ãƒ¥ãƒ¼ã‚¢**: é€å—ä¿¡å±¥æ­´ã®è¡¨ç¤ºã€‚é¸æŠžã—ãŸã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®ãƒ­ã‚°ã‚’ãƒ•ã‚£ãƒ«ã‚¿è¡¨ç¤ºå¯èƒ½ã€‚
-- **è¨­å®šãƒ‘ãƒãƒ«**: æŽ¥ç¶šè¨­å®šã€ã‚·ãƒŠãƒªã‚ªé¸æŠžã€‚é¸æŠžä¸­ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã«å¯¾ã—ã¦æ“ä½œã€‚
-- **ã‚¹ã‚±ãƒ¼ãƒ©ãƒ–ãƒ«è¨­è¨ˆ**: å¤šæ•°ã®æŽ¥ç¶šã«ã‚‚å¯¾å¿œå¯èƒ½ãªUIã€‚
-- **ã‚¯ã‚¤ãƒƒã‚¯ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ãƒãƒ¼**: é€ä¿¡ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆã‚’ãƒ‰ãƒ­ãƒƒãƒ—ãƒ€ã‚¦ãƒ³ã¾ãŸã¯ãƒœã‚¿ãƒ³ã§å³å®Ÿè¡Œã€‚å¯¾è±¡ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’é¸æŠžã—ã¦é€ä¿¡ã€‚
-- **è«–ç†ãƒ“ãƒ¥ãƒ¼ï¼ç‰©ç†ãƒ“ãƒ¥ãƒ¼åˆ‡æ›¿**: ã‚°ãƒ«ãƒ¼ãƒ—ã€ã‚¿ã‚°ã€ãƒ—ãƒ­ãƒˆã‚³ãƒ«åˆ¥ã®æ•´ç†ã•ã‚ŒãŸä¸€è¦§ã§å¤šæ•°ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ç®¡ç†ã€‚
-- **è¨ºæ–­ãƒ‘ãƒãƒ«**: æŽ¥ç¶šãƒ†ã‚¹ãƒˆã€æŽ¨å¥¨è¨­å®šã‚’æç¤ºã€‚
-
-### 2.6 è¨ºæ–­æ”¯æ´æ©Ÿèƒ½ï¼ˆã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹å˜ä½ã§ç‹¬ç«‹è¨ºæ–­ï¼‰
-- **ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯ç–Žé€šç¢ºèª**: IPåˆ°é”æ€§ã€ãƒãƒ¼ãƒˆé–‹æ”¾çŠ¶æ³ã€ãƒ«ãƒ¼ãƒ†ã‚£ãƒ³ã‚°æƒ…å ±ã‚’å¯è¦–åŒ–ã€‚é¸æŠžã—ãŸã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®æŽ¥ç¶šå…ˆã‚’è¨ºæ–­ã€‚
-- **ç’°å¢ƒãƒã‚§ãƒƒã‚¯ãƒªã‚¹ãƒˆ**: ã‚ˆãã‚ã‚‹æ§‹æˆãƒŸã‚¹ã‚’è‡ªå‹•æ¤œå‡ºã—ã€æ˜¯æ­£æ¡ˆã‚’æç¤ºã€‚ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã”ã¨ã®è¨­å®šã‚’æ¤œè¨¼ã€‚
-- **æŽ¥ç¶šãƒ‰ãƒªãƒ«ãƒ€ã‚¦ãƒ³**: å„ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®çŠ¶æ…‹é·ç§»ã€æœ€çµ‚ã‚¨ãƒ©ãƒ¼åŽŸå› ã‚’æ™‚ç³»åˆ—ã§ç¢ºèªã€‚
-- **ã‚»ãƒƒãƒˆã‚¢ãƒƒãƒ—ã‚¬ã‚¤ãƒ‰**: åˆå›žèµ·å‹•æ™‚ã«é †ã‚’è¿½ã£ãŸã‚¦ã‚£ã‚¶ãƒ¼ãƒ‰ã§è©¦é¨“ç’°å¢ƒã‚’æ•´å‚™ã€‚
-- **ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯ã‚¢ãƒŠãƒ©ã‚¤ã‚¶**: IPåˆ°é”æ€§ã€ãƒãƒ¼ãƒˆé–‹æ”¾çŠ¶æ³ã€ãƒ«ãƒ¼ãƒ†ã‚£ãƒ³ã‚°æƒ…å ±ã‚’å¯è¦–åŒ–ã€‚é¸æŠžã—ãŸã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®æŽ¥ç¶šå…ˆã‚’è¨ºæ–­ã€‚
-- **ç’°å¢ƒãƒã‚§ãƒƒã‚¯ãƒªã‚¹ãƒˆ**: ã‚ˆãã‚ã‚‹æ§‹æˆãƒŸã‚¹ã‚’è‡ªå‹•æ¤œå‡ºã—ã€æ˜¯æ­£æ¡ˆã‚’æç¤ºã€‚ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã”ã¨ã®è¨­å®šã‚’æ¤œè¨¼ã€‚
-- **æŽ¥ç¶šãƒ‰ãƒªãƒ«ãƒ€ã‚¦ãƒ³**: å„ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®çŠ¶æ…‹é·ç§»ã€æœ€çµ‚ã‚¨ãƒ©ãƒ¼åŽŸå› ã‚’æ™‚ç³»åˆ—ã§ç¢ºèªã€‚
-- **ã‚»ãƒƒãƒˆã‚¢ãƒƒãƒ—ã‚¬ã‚¤ãƒ‰**: åˆå›žèµ·å‹•æ™‚ã«é †ã‚’è¿½ã£ãŸã‚¦ã‚£ã‚¶ãƒ¼ãƒ‰ã§è©¦é¨“ç’°å¢ƒã‚’æ•´å‚™ã€‚
+### 1.5 ãˆÊŒÝŠ·‚Æ‚È‚é‹ï‘Ì“I‹@”\
+1. **ƒf[ƒ^ƒoƒ“ƒN{ƒƒ“ƒNƒŠƒbƒN‘—M**: ‚æ‚­Žg‚¤“d•¶‚ðƒJƒeƒSƒŠ•Ê‚É“o˜^‚µAƒhƒƒbƒvƒ_ƒEƒ“‘I‘ð‚Ü‚½‚Íƒ{ƒ^ƒ“1ƒNƒŠƒbƒN‚Åƒƒ“ƒVƒ‡ƒbƒg‘—MB
+2. **˜_—ƒrƒ…[ŠÇ—**: ƒCƒ“ƒXƒ^ƒ“ƒX‚ðu—p“r~ƒ^ƒOv‚Å®—‚µA20Ú‘±‹K–Í‚Å‚à–À‚í‚¸§ŒäBƒOƒ‹[ƒvˆêŠ‡‘—M‚âÄÚ‘±‚àƒƒ“ƒNƒŠƒbƒNB
+3. **ƒVƒiƒŠƒIŠg’£«**: CSVŒ`Ž®‚ÌƒVƒiƒŠƒI‹LqAPowerShellƒXƒNƒŠƒvƒg˜AŒgA•À—ñEðŒEƒ‹[ƒv‚ðŠÈŒ‰‚É‹Lq‚Å‚«‚éŽd‘g‚ÝB
+4. **ƒZƒbƒgƒAƒbƒvf’f**: Ping/Port/RouteŽ©“®“_ŒŸ‚µA„§‘Îˆ‚ð“ú–{Œê‚Å’ñŽ¦B‰‰ñÚ‘±Žž‚Ì–À‚¢‚ð‰ðÁB
+5. **ŽóMƒf[ƒ^Šˆ—p**: ƒVƒiƒŠƒI“à‚ÅŽóMƒf[ƒ^‚ð•Ï”‚Æ‚µ‚Ä•ÛŽ‚µAŽŸ‰ñ‘—MŽž‚É–„‚ßž‚Ý‰Â”\B“®“I‚È“d•¶¶¬‚ðŽÀŒ»B
+6. **1ƒtƒHƒ‹ƒ_=1ƒCƒ“ƒXƒ^ƒ“ƒX**: ‚·‚×‚Ä‚ÌÝ’èEƒVƒiƒŠƒIEƒƒO‚ªƒtƒHƒ‹ƒ_’PˆÊ‚ÅŠ®‘S“Æ—§BƒRƒs[‚¾‚¯‚ÅŠÂ‹«•¡»‰Â”\B
 
 ---
 
-## 3. ã‚·ã‚¹ãƒ†ãƒ æ§‹æˆ
+## 2. ‹@”\—vŒ
 
-### 3.1 ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªæ§‹æˆ
+### 2.1 ’ÊM‹@”\
+- **TCP’ÊM**: ƒNƒ‰ƒCƒAƒ“ƒg/ƒT[ƒo[—¼ƒ‚[ƒh‘Î‰ž
+- **UDP’ÊM**: ‘—M/ŽóM‘Î‰ž
+- **•¡”Ú‘±**: ˆÙ‚È‚éIP:Port‚Ì‘g‚Ý‡‚í‚¹‚Å•¡”ƒCƒ“ƒXƒ^ƒ“ƒX‚ð“¯Žž‹N“®
+- **Ú‘±ŠÇ—**: Ú‘±/Ø’f‚Ì§ŒäAÄÚ‘±‹@”\
 
-#### 3.1.1 é€šä¿¡ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®æ¦‚å¿µ
-æœ¬ã‚¢ãƒ—ãƒªã«ãŠã„ã¦ã€**1ãƒ•ã‚©ãƒ«ãƒ€ = 1é€šä¿¡ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ = 1ã‚½ã‚±ãƒƒãƒˆæŽ¥ç¶š(IP:Port) = 1å¤–éƒ¨è£…ç½®ãƒ»ã‚¢ãƒ—ãƒªæ¨¡æ“¬**ã¨ã„ã†å¯¾å¿œé–¢ä¿‚ã‚’åŸºæœ¬è¨­è¨ˆã¨ã™ã‚‹ã€‚å„ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã¯ä»¥ä¸‹ã®è¦ç´ ã‚’ç‹¬ç«‹ã—ã¦ä¿æŒã—ã€ä»–ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã¨å®Œå…¨ã«åˆ†é›¢ã•ã‚ŒãŸçŠ¶æ…‹ã§å‹•ä½œã™ã‚‹:
+### 2.2 “d•¶‘—ŽóM‹@”\iƒCƒ“ƒXƒ^ƒ“ƒX’PˆÊ‚Å“Æ—§§Œäj
+Še’ÊMƒCƒ“ƒXƒ^ƒ“ƒX‚Í“ÆŽ©‚Ìƒf[ƒ^ƒoƒ“ƒNE‘—MÝ’èEŽóMˆ—‚ð•ÛŽ‚µA‘¼ƒCƒ“ƒXƒ^ƒ“ƒX‚Æ‚ÍŠ®‘S‚É•ª—£‚³‚ê‚½ó‘Ô‚Å“®ì‚·‚éB
+- **ƒf[ƒ^ƒoƒ“ƒNŠÇ—**: ƒCƒ“ƒXƒ^ƒ“ƒXƒtƒHƒ‹ƒ_“à‚ÌCSV‚Å’è‹`‚µ‚½–¼‘O•t‚«“d•¶ƒZƒbƒg‚ð“Ç‚Ýž‚ÝAƒJƒeƒSƒŠ‚âƒ^ƒO‚Å®—B
+- **ƒƒ“ƒNƒŠƒbƒN‘—M**: ƒhƒƒbƒvƒ_ƒEƒ“‘I‘ð‚Ü‚½‚Íƒ{ƒ^ƒ“1‰ñ‚ÅA**‘I‘ð’†‚ÌƒCƒ“ƒXƒ^ƒ“ƒX**‚Ö‘¦Žž‘—M‚Å‚«‚éSend-First UIB
+- **‘½Ê‚È‘—M•ûŽ®**: ƒeƒLƒXƒgAHEXAƒtƒ@ƒCƒ‹‘—MAƒeƒ“ƒvƒŒ[ƒg“WŠJA•Ï”–„‚ßž‚ÝB‚·‚×‚ÄƒCƒ“ƒXƒ^ƒ“ƒX‚²‚Æ‚É“Æ—§‚µ‚½•Ï”ƒXƒR[ƒv‚Åˆ—B
+- **Ž©“®‘—M**: ƒVƒiƒŠƒI‚Ü‚½‚Íƒoƒbƒ`‘€ì‚Å‚Ì˜A‘±‘—MB•¡”ƒCƒ“ƒXƒ^ƒ“ƒX‚Ö‚ÌˆêŠ‡‘—M‚à‰Â”\‚¾‚ªAŠeƒCƒ“ƒXƒ^ƒ“ƒX‚Í“Æ—§‚µ‚½ƒ^ƒCƒ~ƒ“ƒOEó‘Ô‚ÅŽÀsB
+- **ŽóM•\Ž¦iÅ¬ŒÀj**: ŽóMŒ‹‰Ê‚ÍƒCƒ“ƒXƒ^ƒ“ƒX‚²‚Æ‚ÉƒTƒ}ƒŠ‚ÆƒXƒe[ƒ^ƒX‚Ì‚Ý‚ð•\Ž¦B
+- **ŽóMƒf[ƒ^Šˆ—p**: ŽóMƒf[ƒ^‚ð•Ï”‚Æ‚µ‚Ä•ÛŽ‚µAŽŸ‰ñ‘—Mƒf[ƒ^‚É–„‚ßž‚Ý‰Â”\B“®“I‚È“d•¶¶¬‚ðŽÀŒ»B
+- **ƒGƒ“ƒR[ƒfƒBƒ“ƒO**: ASCII, UTF-8, Shift-JIS, ƒoƒCƒiƒŠ(HEX•¶Žš—ñ)‘Î‰žBƒCƒ“ƒXƒ^ƒ“ƒX‚²‚Æ‚ÉÝ’è‰Â”\B
 
-- **æŽ¥ç¶šè¨­å®š**: TCP/UDPã€ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆ/ã‚µãƒ¼ãƒãƒ¼ãƒ¢ãƒ¼ãƒ‰ã€ãƒã‚¤ãƒ³ãƒ‰IP:Portã€æŽ¥ç¶šå…ˆIP:Port
-- **ã‚·ãƒŠãƒªã‚ªå®Ÿè¡Œ**: é€å—ä¿¡ã‚·ãƒ¼ã‚±ãƒ³ã‚¹ã€å¾…æ©Ÿãƒ»åˆ†å²ãƒ»ãƒ«ãƒ¼ãƒ—åˆ¶å¾¡ã€å¤‰æ•°ã‚¹ã‚³ãƒ¼ãƒ—
-- **é›»æ–‡ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆ**: ãƒ‡ãƒ¼ã‚¿ãƒãƒ³ã‚¯ã€è‡ªå‹•å¿œç­”ãƒ«ãƒ¼ãƒ«ã€QuickSendã‚¹ãƒ­ãƒƒãƒˆå‰²å½“
-- **æ€§èƒ½è¨ˆæ¸¬**: ã‚¹ãƒ«ãƒ¼ãƒ—ãƒƒãƒˆ/ãƒ¬ã‚¤ãƒ†ãƒ³ã‚·æ¸¬å®šã€ãƒãƒ¼ã‚¹ãƒˆé€ä¿¡è¨­å®š
-- **å®Ÿè¡Œå±¥æ­´**: é€å—ä¿¡ãƒ­ã‚°ã€è¨ºæ–­çµæžœã€è¨ˆæ¸¬ãƒ¬ãƒãƒ¼ãƒˆ
+### 2.3 ƒVƒiƒŠƒI‹@”\iƒCƒ“ƒXƒ^ƒ“ƒX’PˆÊ‚Å“Æ—§ŽÀsj
+ŠeƒCƒ“ƒXƒ^ƒ“ƒX‚Í“ÆŽ©‚ÌƒVƒiƒŠƒIƒtƒ@ƒCƒ‹‚ðŽ‚¿A‘¼ƒCƒ“ƒXƒ^ƒ“ƒX‚ÌƒVƒiƒŠƒIŽÀsó‘Ô‚É‰e‹¿‚³‚ê‚é‚±‚Æ‚È‚­“®ì‚·‚éB
+- **ƒVƒiƒŠƒIƒtƒ@ƒCƒ‹**: ƒCƒ“ƒXƒ^ƒ“ƒXƒtƒHƒ‹ƒ_“à‚ÌCSVŒ`Ž®‚ÅƒVƒiƒŠƒI’è‹`
+- **‘Ò‹@§Œä**: ŽžŠÔ‘Ò‹@AŽóM‘Ò‹@B‘Ò‹@ó‘Ô‚ÍŠeƒCƒ“ƒXƒ^ƒ“ƒX‚Å“Æ—§ŠÇ—B
+- **ðŒ•ªŠò**: ŽóMƒf[ƒ^‚ÉŠî‚Ã‚­ˆ—•ªŠòB”»’èðŒE•Ï”‚ÍƒCƒ“ƒXƒ^ƒ“ƒXƒXƒR[ƒv“à‚Å•]‰¿B
+- **ƒ‹[ƒvˆ—**: ŒJ‚è•Ô‚µŽÀsBƒ‹[ƒvƒJƒEƒ“ƒ^‚ÍƒCƒ“ƒXƒ^ƒ“ƒX‚²‚Æ‚É“Æ—§B
+- **•Ï”‹@”\**: ŽóMƒf[ƒ^‚ð•Ï”‚Æ‚µ‚Ä•ÛŽ‚µAŽŸ‰ñ‘—MŽž‚É“®“I‚É–„‚ßž‚ÝB•Ï”ƒXƒR[ƒv‚ÍƒCƒ“ƒXƒ^ƒ“ƒX“à‚É•Â‚¶A‘¼ƒCƒ“ƒXƒ^ƒ“ƒX‚Æ‹¤—L‚µ‚È‚¢B
+- **ƒXƒNƒŠƒvƒg˜AŒg**: ƒJƒXƒ^ƒ€PowerShellƒƒWƒbƒN‚ðŒÄ‚Ño‚µA•¡ŽG‚ÈU‚é•‘‚¢‚àŠÈŒ‰‚É‹LqBƒXƒNƒŠƒvƒg‚É‚ÍŒ»Ý‚ÌƒCƒ“ƒXƒ^ƒ“ƒXƒRƒ“ƒeƒLƒXƒg‚ª“n‚³‚ê‚éB
+- **ƒOƒ‹[ƒv‘—M**: •¡”ƒCƒ“ƒXƒ^ƒ“ƒX‚ÖˆêŠ‡‘—MŽwŽ¦‚ª‰Â”\‚¾‚ªAŽÀÛ‚Ì‘—M‚ÍŠeƒCƒ“ƒXƒ^ƒ“ƒX‚ª“Æ—§‚µ‚ÄŽÀsB
 
-ã“ã®è¨­è¨ˆã«ã‚ˆã‚Šã€1å°ã®PCä¸Šã§è¤‡æ•°ã®å¤–éƒ¨è£…ç½®ã‚’åŒæ™‚ã«æ¨¡æ“¬ã§ãã€è£…ç½®Aã¯å®šæœŸçš„ãªã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹é€ä¿¡ã€è£…ç½®Bã¯è¦æ±‚å¿œç­”åž‹ã€è£…ç½®Cã¯é«˜è² è·ã‚¹ãƒˆãƒªãƒ¼ãƒ ã¨ã„ã£ãŸç•°ãªã‚‹æŒ¯ã‚‹èˆžã„ã‚’ä¸¦è¡Œå®Ÿè¡Œã§ãã‚‹ã€‚
+### 2.4 Šg’£‹@”\iƒCƒ“ƒXƒ^ƒ“ƒX’PˆÊ‚Å“Æ—§Ý’èj
+- **Ž©“®‰ž“š**: “Á’èƒpƒ^[ƒ“ŽóMŽž‚ÌŽ©“®•ÔMB‰ž“šƒ‹[ƒ‹‚ÍƒCƒ“ƒXƒ^ƒ“ƒX‚²‚Æ‚É’è‹`‚µA“Æ—§“®ìB
+- **“®“IXV**: ƒeƒ“ƒvƒŒ[ƒgƒx[ƒX‚Ì“d•¶¶¬i•Ï”’uŠ·jB•Ï”EƒV[ƒPƒ“ƒX”Ô†‚ÍƒCƒ“ƒXƒ^ƒ“ƒXƒXƒR[ƒv‚ÅŠÇ—B
+- **ƒJƒXƒ^ƒ€ƒXƒNƒŠƒvƒg**: PowerShellƒXƒNƒŠƒvƒg‚É‚æ‚éŠg’£ˆ—BƒCƒ“ƒXƒ^ƒ“ƒXƒRƒ“ƒeƒLƒXƒg‚ðˆø”‚Æ‚µ‚ÄŽó‚¯Žæ‚éB
+- **ƒvƒ‰ƒOƒCƒ“‹@”\**: ŠO•”PSƒXƒNƒŠƒvƒg‚Ì“Ç‚Ýž‚ÝBƒCƒ“ƒXƒ^ƒ“ƒX‚²‚Æ‚ÉˆÙ‚È‚éƒvƒ‰ƒOƒCƒ“ƒZƒbƒg‚ð“K—p‰Â”\B
 
-#### 3.1.2 ãƒ•ã‚©ãƒ«ãƒ€æ§‹æˆ
-`Instances/` é…ä¸‹ã«ä»»æ„ã®ãƒ•ã‚©ãƒ«ãƒ€åã§é€šä¿¡ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’é…ç½®ã™ã‚‹ã€‚ãƒ•ã‚©ãƒ«ãƒ€åã¯è­˜åˆ¥ã—ã‚„ã™ã„åç§°ï¼ˆè£…ç½®åãƒ»ç”¨é€”ãªã©ï¼‰ã‚’è‡ªç”±ã«è¨­å®šã§ãã€ã‚¢ãƒ—ãƒªã¯ãƒ•ã‚©ãƒ«ãƒ€ã®å­˜åœ¨ã‚’æ¤œçŸ¥ã—ã¦è‡ªå‹•èªè­˜ã™ã‚‹ã€‚ãƒ•ã‚©ãƒ«ãƒ€ã‚’è¿½åŠ ã™ã‚Œã°æ–°ãŸãªã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ãŒè¿½åŠ ã•ã‚Œã€å‰Šé™¤ã™ã‚Œã°å³åº§ã«ä¸€è¦§ã‹ã‚‰é™¤å¤–ã•ã‚Œã‚‹ï¼ˆFileSystemWatcherã§ç›£è¦–ï¼‰ã€‚
+### 2.5 GUI‹@”\
+- **Ú‘±ˆê——**: ƒAƒNƒeƒBƒu‚ÈÚ‘±‚Ìˆê——•\Ž¦BŠeƒCƒ“ƒXƒ^ƒ“ƒX‚Ìó‘Ô‚ðŒÂ•Ê‚É•\Ž¦B
+- **ƒXƒe[ƒ^ƒX•\Ž¦iF•ª‚¯j**: ŠeÚ‘±‚Ìó‘Ô‚ðƒŠƒAƒ‹ƒ^ƒCƒ€‚ÉF•ª‚¯•\Ž¦i—Î=Ú‘±’†AÔ=Ø’fA‰©=ƒGƒ‰[AƒOƒŒ[=–¢Ú‘±jBWinForms‚Ì`DataGridView`‚Ü‚½‚Í`ListView`‚ÅŠesEƒJ[ƒh‚Ì”wŒiF‚ð“®“I‚É•ÏX‚µAŽ‹Šo“I‚Éó‘Ô‚ð”cˆ¬‰Â”\BƒCƒ“ƒXƒ^ƒ“ƒX’PˆÊ‚Å“Æ—§B
+- **ƒƒOƒrƒ…[ƒA**: ‘—ŽóM—š—ð‚Ì•\Ž¦B‘I‘ð‚µ‚½ƒCƒ“ƒXƒ^ƒ“ƒX‚ÌƒƒO‚ðƒtƒBƒ‹ƒ^•\Ž¦‰Â”\B
+- **Ý’èƒpƒlƒ‹**: Ú‘±Ý’èAƒVƒiƒŠƒI‘I‘ðB‘I‘ð’†‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚É‘Î‚µ‚Ä‘€ìB
+- **ƒXƒP[ƒ‰ƒuƒ‹ÝŒv**: ‘½”‚ÌÚ‘±‚É‚à‘Î‰ž‰Â”\‚ÈUIB
+- **ƒNƒCƒbƒNƒAƒNƒVƒ‡ƒ“ƒo[**: ‘—Mƒeƒ“ƒvƒŒ[ƒg‚ðƒhƒƒbƒvƒ_ƒEƒ“‚Ü‚½‚Íƒ{ƒ^ƒ“‚Å‘¦ŽÀsB‘ÎÛƒCƒ“ƒXƒ^ƒ“ƒX‚ð‘I‘ð‚µ‚Ä‘—MB
+- **˜_—ƒrƒ…[^•¨—ƒrƒ…[Ø‘Ö**: ƒOƒ‹[ƒvAƒ^ƒOAƒvƒƒgƒRƒ‹•Ê‚Ì®—‚³‚ê‚½ˆê——‚Å‘½”ƒCƒ“ƒXƒ^ƒ“ƒX‚ðŠÇ—B
+- **f’fƒpƒlƒ‹**: Ú‘±ƒeƒXƒgA„§Ý’è‚ð’ñŽ¦B
+
+### 2.6 f’fŽx‰‡‹@”\iƒCƒ“ƒXƒ^ƒ“ƒX’PˆÊ‚Å“Æ—§f’fj
+- **ƒlƒbƒgƒ[ƒN‘a’ÊŠm”F**: IP“ž’B«Aƒ|[ƒgŠJ•úó‹µAƒ‹[ƒeƒBƒ“ƒOî•ñ‚ð‰ÂŽ‹‰»B‘I‘ð‚µ‚½ƒCƒ“ƒXƒ^ƒ“ƒX‚ÌÚ‘±æ‚ðf’fB
+- **ŠÂ‹«ƒ`ƒFƒbƒNƒŠƒXƒg**: ‚æ‚­‚ ‚é\¬ƒ~ƒX‚ðŽ©“®ŒŸo‚µA¥³ˆÄ‚ð’ñŽ¦BƒCƒ“ƒXƒ^ƒ“ƒX‚²‚Æ‚ÌÝ’è‚ðŒŸØB
+- **Ú‘±ƒhƒŠƒ‹ƒ_ƒEƒ“**: ŠeƒCƒ“ƒXƒ^ƒ“ƒX‚Ìó‘Ô‘JˆÚAÅIƒGƒ‰[Œ´ˆö‚ðŽžŒn—ñ‚ÅŠm”FB
+- **ƒZƒbƒgƒAƒbƒvƒKƒCƒh**: ‰‰ñ‹N“®Žž‚É‡‚ð’Ç‚Á‚½ƒEƒBƒU[ƒh‚ÅŽŽŒ±ŠÂ‹«‚ð®”õB
+- **ƒlƒbƒgƒ[ƒNƒAƒiƒ‰ƒCƒU**: IP“ž’B«Aƒ|[ƒgŠJ•úó‹µAƒ‹[ƒeƒBƒ“ƒOî•ñ‚ð‰ÂŽ‹‰»B‘I‘ð‚µ‚½ƒCƒ“ƒXƒ^ƒ“ƒX‚ÌÚ‘±æ‚ðf’fB
+- **ŠÂ‹«ƒ`ƒFƒbƒNƒŠƒXƒg**: ‚æ‚­‚ ‚é\¬ƒ~ƒX‚ðŽ©“®ŒŸo‚µA¥³ˆÄ‚ð’ñŽ¦BƒCƒ“ƒXƒ^ƒ“ƒX‚²‚Æ‚ÌÝ’è‚ðŒŸØB
+- **Ú‘±ƒhƒŠƒ‹ƒ_ƒEƒ“**: ŠeƒCƒ“ƒXƒ^ƒ“ƒX‚Ìó‘Ô‘JˆÚAÅIƒGƒ‰[Œ´ˆö‚ðŽžŒn—ñ‚ÅŠm”FB
+- **ƒZƒbƒgƒAƒbƒvƒKƒCƒh**: ‰‰ñ‹N“®Žž‚É‡‚ð’Ç‚Á‚½ƒEƒBƒU[ƒh‚ÅŽŽŒ±ŠÂ‹«‚ð®”õB
+
+---
+
+## 3. ƒVƒXƒeƒ€\¬
+
+### 3.1 ƒfƒBƒŒƒNƒgƒŠ\¬
+
+#### 3.1.1 ’ÊMƒCƒ“ƒXƒ^ƒ“ƒX‚ÌŠT”O
+–{ƒAƒvƒŠ‚É‚¨‚¢‚ÄA**1ƒtƒHƒ‹ƒ_ = 1’ÊMƒCƒ“ƒXƒ^ƒ“ƒX = 1ƒ\ƒPƒbƒgÚ‘±(IP:Port) = 1ŠO•”‘•’uEƒAƒvƒŠ–Í‹[**‚Æ‚¢‚¤‘Î‰žŠÖŒW‚ðŠî–{ÝŒv‚Æ‚·‚éBŠeƒCƒ“ƒXƒ^ƒ“ƒX‚ÍˆÈ‰º‚Ì—v‘f‚ð“Æ—§‚µ‚Ä•ÛŽ‚µA‘¼‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ÆŠ®‘S‚É•ª—£‚³‚ê‚½ó‘Ô‚Å“®ì‚·‚é:
+
+- **Ú‘±Ý’è**: TCP/UDPAƒNƒ‰ƒCƒAƒ“ƒg/ƒT[ƒo[ƒ‚[ƒhAƒoƒCƒ“ƒhIP:PortAÚ‘±æIP:Port
+- **ƒVƒiƒŠƒIŽÀs**: ‘—ŽóMƒV[ƒPƒ“ƒXA‘Ò‹@E•ªŠòEƒ‹[ƒv§ŒäA•Ï”ƒXƒR[ƒv
+- **“d•¶ƒeƒ“ƒvƒŒ[ƒg**: ƒf[ƒ^ƒoƒ“ƒNAŽ©“®‰ž“šƒ‹[ƒ‹AQuickSendƒXƒƒbƒgŠ„“–
+- **«”\Œv‘ª**: ƒXƒ‹[ƒvƒbƒg/ƒŒƒCƒeƒ“ƒV‘ª’èAƒo[ƒXƒg‘—MÝ’è
+- **ŽÀs—š—ð**: ‘—ŽóMƒƒOAf’fŒ‹‰ÊAŒv‘ªƒŒƒ|[ƒg
+
+‚±‚ÌÝŒv‚É‚æ‚èA1‘ä‚ÌPCã‚Å•¡”‚ÌŠO•”‘•’u‚ð“¯Žž‚É–Í‹[‚Å‚«A‘•’uA‚Í’èŠú“I‚ÈƒXƒe[ƒ^ƒX‘—MA‘•’uB‚Í—v‹‰ž“šŒ^A‘•’uC‚Í‚•‰‰×ƒXƒgƒŠ[ƒ€‚Æ‚¢‚Á‚½ˆÙ‚È‚éU‚é•‘‚¢‚ð•ÀsŽÀs‚Å‚«‚éB
+
+#### 3.1.2 ƒtƒHƒ‹ƒ_\¬
+`Instances/` ”z‰º‚É”CˆÓ‚ÌƒtƒHƒ‹ƒ_–¼‚Å’ÊMƒCƒ“ƒXƒ^ƒ“ƒX‚ð”z’u‚·‚éBƒtƒHƒ‹ƒ_–¼‚ÍŽ¯•Ê‚µ‚â‚·‚¢–¼Ìi‘•’u–¼E—p“r‚È‚Çj‚ðŽ©—R‚ÉÝ’è‚Å‚«AƒAƒvƒŠ‚ÍƒtƒHƒ‹ƒ_‚Ì‘¶Ý‚ðŒŸ’m‚µ‚ÄŽ©“®”FŽ¯‚·‚éBƒtƒHƒ‹ƒ_‚ð’Ç‰Á‚·‚ê‚ÎV‚½‚ÈƒCƒ“ƒXƒ^ƒ“ƒX‚ª’Ç‰Á‚³‚êAíœ‚·‚ê‚Î‘¦À‚Éˆê——‚©‚çœŠO‚³‚ê‚éiFileSystemWatcher‚ÅŠÄŽ‹jB
 ```
 TcpDebugger/
-â”œâ”€â”€ TcpDebugger.ps1              # ãƒ¡ã‚¤ãƒ³ã‚¹ã‚¯ãƒªãƒ—ãƒˆï¼ˆGUIã‚¨ãƒ³ãƒˆãƒªãƒ¼ãƒã‚¤ãƒ³ãƒˆï¼‰
-â”œâ”€â”€ DESIGN.md                    # æœ¬è¨­è¨ˆæ›¸
-â”œâ”€â”€ README.md                    # ä½¿ç”¨æ–¹æ³•
-â”œâ”€â”€ Modules/                     # ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ç¾¤
-â”‚   â”œâ”€â”€ ConnectionManager.ps1        # æŽ¥ç¶šç®¡ç†
-â”‚   â”œâ”€â”€ TcpClient.ps1               # TCPã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆå‡¦ç†
-â”‚   â”œâ”€â”€ TcpServer.ps1               # TCPã‚µãƒ¼ãƒãƒ¼å‡¦ç†
-â”‚   â”œâ”€â”€ UdpCommunication.ps1        # UDPé€šä¿¡å‡¦ç†
-â”‚   â”œâ”€â”€ ScenarioEngine.ps1          # ã‚·ãƒŠãƒªã‚ªå®Ÿè¡Œã‚¨ãƒ³ã‚¸ãƒ³
-â”‚   â”œâ”€â”€ MessageHandler.ps1          # é›»æ–‡å‡¦ç†
-â”‚   â”œâ”€â”€ AutoResponse.ps1            # è‡ªå‹•å¿œç­”å‡¦ç†
-â”‚   â”œâ”€â”€ QuickSender.ps1             # ãƒ‡ãƒ¼ã‚¿ãƒãƒ³ã‚¯ & ãƒ¯ãƒ³ã‚¯ãƒªãƒƒã‚¯é€ä¿¡
-â”‚   â”œâ”€â”€ InstanceManager.ps1         # è«–ç†ã‚°ãƒ«ãƒ¼ãƒ—ç®¡ç†
-â”‚   â””â”€â”€ NetworkAnalyzer.ps1         # ç’°å¢ƒè¨ºæ–­
-â”œâ”€â”€ Config/                      # å…±é€šè¨­å®šãƒ»ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆ
-â”‚   â””â”€â”€ defaults.psd1                # æ—¢å®šå€¤ã‚¹ãƒŠãƒƒãƒ—ã‚·ãƒ§ãƒƒãƒˆ
-â”œâ”€â”€ Instances/                   # é€šä¿¡ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ãƒ•ã‚©ãƒ«ãƒ€ç¾¤ï¼ˆå¢—æ¸›ã§å‹•çš„èªè­˜ï¼‰
-â”‚   â”œâ”€â”€ WebServer-Sim/               # ä»»æ„ã®ãƒ•ã‚©ãƒ«ãƒ€åï¼ˆè£…ç½®è­˜åˆ¥åï¼‰
-â”‚   â”‚   â”œâ”€â”€ instance.psd1            # ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹è¨­å®šï¼ˆIDã€è¡¨ç¤ºåã€æŽ¥ç¶šãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ï¼‰
-â”‚   â”‚   â”œâ”€â”€ scenarios/               # ã“ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹å°‚ç”¨ã‚·ãƒŠãƒªã‚ª
-â”‚   â”‚   â”‚   â”œâ”€â”€ startup.csv
-â”‚   â”‚   â”‚   â””â”€â”€ auto_response.csv
-â”‚   â”‚   â”œâ”€â”€ templates/               # ã“ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹å°‚ç”¨é›»æ–‡ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆ
-â”‚   â”‚   â”‚   â””â”€â”€ messages.csv
-â”‚   â”‚   â”œâ”€â”€ logs/                    # é€å—ä¿¡ãƒ­ã‚°ï¼ˆè‡ªå‹•ç”Ÿæˆï¼‰
-â”‚   â”‚   â””â”€â”€ reports/                 # æ€§èƒ½è¨ˆæ¸¬ãƒ¬ãƒãƒ¼ãƒˆï¼ˆè‡ªå‹•ç”Ÿæˆï¼‰
-â”‚   â”œâ”€â”€ PLC-Controller/              # åˆ¥ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ä¾‹
-â”‚   â”‚   â”œâ”€â”€ instance.psd1
-â”‚   â”‚   â”œâ”€â”€ scenarios/
-â”‚   â”‚   â”‚   â””â”€â”€ periodic_poll.csv
-â”‚   â”‚   â””â”€â”€ templates/
-â”‚   â”‚       â””â”€â”€ plc_commands.csv
-â”‚   â””â”€â”€ LoadTest-Client01/           # è² è·è©¦é¨“ç”¨ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ä¾‹
-â”‚       â”œâ”€â”€ instance.psd1
-â”‚       â””â”€â”€ scenarios/
-â”‚           â””â”€â”€ burst_send.csv
-â”œâ”€â”€ Scripts/                     # ã‚«ã‚¹ã‚¿ãƒ ã‚¹ã‚¯ãƒªãƒ—ãƒˆ
-â”‚   â””â”€â”€ custom_handlers.ps1
-â””â”€â”€ UI/                          # UIå®šç¾©
-    â””â”€â”€ MainForm.ps1                # WinFormsãƒ•ã‚©ãƒ¼ãƒ å®šç¾©ï¼ˆå¿…è¦ã«å¿œã˜ã¦C#ã‚³ãƒ¼ãƒ‰ã‚’Add-Typeã§åŸ‹ã‚è¾¼ã¿ï¼‰
+„¥„Ÿ„Ÿ TcpDebugger.ps1              # ƒƒCƒ“ƒXƒNƒŠƒvƒgiGUIƒGƒ“ƒgƒŠ[ƒ|ƒCƒ“ƒgj
+„¥„Ÿ„Ÿ DESIGN.md                    # –{ÝŒv‘
+„¥„Ÿ„Ÿ README.md                    # Žg—p•û–@
+„¥„Ÿ„Ÿ Modules/                     # ƒ‚ƒWƒ…[ƒ‹ŒQ
+„    „¥„Ÿ„Ÿ ConnectionManager.ps1        # Ú‘±ŠÇ—
+„    „¥„Ÿ„Ÿ TcpClient.ps1               # TCPƒNƒ‰ƒCƒAƒ“ƒgˆ—
+„    „¥„Ÿ„Ÿ TcpServer.ps1               # TCPƒT[ƒo[ˆ—
+„    „¥„Ÿ„Ÿ UdpCommunication.ps1        # UDP’ÊMˆ—
+„    „¥„Ÿ„Ÿ ScenarioEngine.ps1          # ƒVƒiƒŠƒIŽÀsƒGƒ“ƒWƒ“
+„    „¥„Ÿ„Ÿ MessageHandler.ps1          # “d•¶ˆ—
+„    „¥„Ÿ„Ÿ AutoResponse.ps1            # Ž©“®‰ž“šˆ—
+„    „¥„Ÿ„Ÿ QuickSender.ps1             # ƒf[ƒ^ƒoƒ“ƒN & ƒƒ“ƒNƒŠƒbƒN‘—M
+„    „¥„Ÿ„Ÿ InstanceManager.ps1         # ˜_—ƒOƒ‹[ƒvŠÇ—
+„    „¤„Ÿ„Ÿ NetworkAnalyzer.ps1         # ŠÂ‹«f’f
+„¥„Ÿ„Ÿ Config/                      # ‹¤’ÊÝ’èEƒfƒtƒHƒ‹ƒgƒeƒ“ƒvƒŒ[ƒg
+„    „¤„Ÿ„Ÿ defaults.psd1                # Šù’è’lƒXƒiƒbƒvƒVƒ‡ƒbƒg
+„¥„Ÿ„Ÿ Instances/                   # ’ÊMƒCƒ“ƒXƒ^ƒ“ƒXƒtƒHƒ‹ƒ_ŒQi‘Œ¸‚Å“®“I”FŽ¯j
+„    „¥„Ÿ„Ÿ WebServer-Sim/               # ”CˆÓ‚ÌƒtƒHƒ‹ƒ_–¼i‘•’uŽ¯•Ê–¼j
+„    „    „¥„Ÿ„Ÿ instance.psd1            # ƒCƒ“ƒXƒ^ƒ“ƒXÝ’èiIDA•\Ž¦–¼AÚ‘±ƒpƒ‰ƒ[ƒ^j
+„    „    „¥„Ÿ„Ÿ scenarios/               # ‚±‚ÌƒCƒ“ƒXƒ^ƒ“ƒXê—pƒVƒiƒŠƒI
+„    „    „    „¥„Ÿ„Ÿ startup.csv
+„    „    „    „¤„Ÿ„Ÿ auto_response.csv
+„    „    „¥„Ÿ„Ÿ templates/               # ‚±‚ÌƒCƒ“ƒXƒ^ƒ“ƒXê—p“d•¶ƒeƒ“ƒvƒŒ[ƒg
+„    „    „    „¤„Ÿ„Ÿ messages.csv
+„    „    „¥„Ÿ„Ÿ logs/                    # ‘—ŽóMƒƒOiŽ©“®¶¬j
+„    „    „¤„Ÿ„Ÿ reports/                 # «”\Œv‘ªƒŒƒ|[ƒgiŽ©“®¶¬j
+„    „¥„Ÿ„Ÿ PLC-Controller/              # •Ê‚ÌƒCƒ“ƒXƒ^ƒ“ƒX—á
+„    „    „¥„Ÿ„Ÿ instance.psd1
+„    „    „¥„Ÿ„Ÿ scenarios/
+„    „    „    „¤„Ÿ„Ÿ periodic_poll.csv
+„    „    „¤„Ÿ„Ÿ templates/
+„    „        „¤„Ÿ„Ÿ plc_commands.csv
+„    „¤„Ÿ„Ÿ LoadTest-Client01/           # •‰‰×ŽŽŒ±—pƒCƒ“ƒXƒ^ƒ“ƒX—á
+„        „¥„Ÿ„Ÿ instance.psd1
+„        „¤„Ÿ„Ÿ scenarios/
+„            „¤„Ÿ„Ÿ burst_send.csv
+„¥„Ÿ„Ÿ Scripts/                     # ƒJƒXƒ^ƒ€ƒXƒNƒŠƒvƒg
+„    „¤„Ÿ„Ÿ custom_handlers.ps1
+„¤„Ÿ„Ÿ UI/                          # UI’è‹`
+    „¤„Ÿ„Ÿ MainForm.ps1                # WinFormsƒtƒH[ƒ€’è‹`i•K—v‚É‰ž‚¶‚ÄC#ƒR[ƒh‚ðAdd-Type‚Å–„‚ßž‚Ýj
 ```
 
-#### 3.1.3 ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹æ¤œå‡ºãƒ»ç®¡ç†ãƒ«ãƒ¼ãƒ«
-- **æœ€å°æ§‹æˆ**: `Instances/<ä»»æ„ãƒ•ã‚©ãƒ«ãƒ€å>/instance.psd1` ãŒå­˜åœ¨ã™ã‚Œã°ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã¨ã—ã¦èªè­˜ã€‚
-- **ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ID**: `instance.psd1` å†…ã® `Id` ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£ã§ä¸€æ„è­˜åˆ¥ï¼ˆæœªæŒ‡å®šæ™‚ã¯ãƒ•ã‚©ãƒ«ãƒ€åã‹ã‚‰è‡ªå‹•ç”Ÿæˆï¼‰ã€‚
-- **è¡¨ç¤ºå**: `DisplayName` ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£ã§UIè¡¨ç¤ºç”¨ã®åç§°ã‚’è¨­å®šå¯èƒ½ï¼ˆæœªæŒ‡å®šæ™‚ã¯ãƒ•ã‚©ãƒ«ãƒ€åã‚’ä½¿ç”¨ï¼‰ã€‚
-- **ãƒ•ã‚©ãƒ«ãƒ€ç›£è¦–**: FileSystemWatcherã§ `Instances/` é…ä¸‹ã®è¿½åŠ ãƒ»å‰Šé™¤ãƒ»ãƒªãƒãƒ¼ãƒ ã‚’æ¤œçŸ¥ã—ã€UIã¸ãƒªã‚¢ãƒ«ã‚¿ã‚¤ãƒ åæ˜ ã€‚
-- **è¨­å®šã®å„ªå…ˆé †ä½**: 
-  1. ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ãƒ•ã‚©ãƒ«ãƒ€å†…ã®è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«ï¼ˆ`scenarios/`, `templates/`ï¼‰
-  2. `Config/defaults.psd1` ã®ã‚·ã‚¹ãƒ†ãƒ ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆ
-- **ç‹¬ç«‹æ€§ä¿è¨¼**: å„ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã¯ç‹¬è‡ªã®ã‚¹ãƒ¬ãƒƒãƒ‰ãƒ»å¤‰æ•°ã‚¹ã‚³ãƒ¼ãƒ—ãƒ»çŠ¶æ…‹ç®¡ç†ã‚’æŒã¡ã€ä»–ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®å‹•ä½œã«å½±éŸ¿ã‚’ä¸Žãˆãªã„ã€‚
-- **ãƒ­ã‚°ãƒ»ãƒ¬ãƒãƒ¼ãƒˆ**: å„ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ãƒ•ã‚©ãƒ«ãƒ€å†…ã«è‡ªå‹•ä¿å­˜ã•ã‚Œã€ãƒ•ã‚©ãƒ«ãƒ€ã”ã¨ã‚³ãƒ”ãƒ¼ã™ã‚‹ã“ã¨ã§ç’°å¢ƒç§»è¡Œãƒ»ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—ãŒå¯èƒ½ã€‚
+#### 3.1.3 ƒCƒ“ƒXƒ^ƒ“ƒXŒŸoEŠÇ—ƒ‹[ƒ‹
+- **Å¬\¬**: `Instances/<”CˆÓƒtƒHƒ‹ƒ_–¼>/instance.psd1` ‚ª‘¶Ý‚·‚ê‚ÎƒCƒ“ƒXƒ^ƒ“ƒX‚Æ‚µ‚Ä”FŽ¯B
+- **ƒCƒ“ƒXƒ^ƒ“ƒXID**: `instance.psd1` “à‚Ì `Id` ƒvƒƒpƒeƒB‚ÅˆêˆÓŽ¯•Êi–¢Žw’èŽž‚ÍƒtƒHƒ‹ƒ_–¼‚©‚çŽ©“®¶¬jB
+- **•\Ž¦–¼**: `DisplayName` ƒvƒƒpƒeƒB‚ÅUI•\Ž¦—p‚Ì–¼Ì‚ðÝ’è‰Â”\i–¢Žw’èŽž‚ÍƒtƒHƒ‹ƒ_–¼‚ðŽg—pjB
+- **ƒtƒHƒ‹ƒ_ŠÄŽ‹**: FileSystemWatcher‚Å `Instances/` ”z‰º‚Ì’Ç‰ÁEíœEƒŠƒl[ƒ€‚ðŒŸ’m‚µAUI‚ÖƒŠƒAƒ‹ƒ^ƒCƒ€”½‰fB
+- **Ý’è‚Ì—Dæ‡ˆÊ**: 
+  1. ƒCƒ“ƒXƒ^ƒ“ƒXƒtƒHƒ‹ƒ_“à‚ÌÝ’èƒtƒ@ƒCƒ‹i`scenarios/`, `templates/`j
+  2. `Config/defaults.psd1` ‚ÌƒVƒXƒeƒ€ƒfƒtƒHƒ‹ƒg
+- **“Æ—§«•ÛØ**: ŠeƒCƒ“ƒXƒ^ƒ“ƒX‚Í“ÆŽ©‚ÌƒXƒŒƒbƒhE•Ï”ƒXƒR[ƒvEó‘ÔŠÇ—‚ðŽ‚¿A‘¼ƒCƒ“ƒXƒ^ƒ“ƒX‚Ì“®ì‚É‰e‹¿‚ð—^‚¦‚È‚¢B
+- **ƒƒOEƒŒƒ|[ƒg**: ŠeƒCƒ“ƒXƒ^ƒ“ƒXƒtƒHƒ‹ƒ_“à‚ÉŽ©“®•Û‘¶‚³‚êAƒtƒHƒ‹ƒ_‚²‚ÆƒRƒs[‚·‚é‚±‚Æ‚ÅŠÂ‹«ˆÚsEƒoƒbƒNƒAƒbƒv‚ª‰Â”\B
 
-### 3.2 ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«æ§‹æˆ
+### 3.2 ƒ‚ƒWƒ…[ƒ‹\¬
 
-#### 3.2.1 ConnectionManagerï¼ˆæŽ¥ç¶šç®¡ç†ï¼‰
-- è¤‡æ•°æŽ¥ç¶šã®ä¸€å…ƒç®¡ç†
-- æŽ¥ç¶šã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®ç”Ÿæˆãƒ»ç ´æ£„
-- ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ç›£è¦–
+#### 3.2.1 ConnectionManageriÚ‘±ŠÇ—j
+- •¡”Ú‘±‚ÌˆêŒ³ŠÇ—
+- Ú‘±ƒCƒ“ƒXƒ^ƒ“ƒX‚Ì¶¬E”jŠü
+- ƒXƒe[ƒ^ƒXŠÄŽ‹
 
 #### 3.2.2 TcpClient/TcpServer
-- TCPæŽ¥ç¶šã®ç¢ºç«‹ãƒ»åˆ‡æ–­
-- éžåŒæœŸé€å—ä¿¡å‡¦ç†
-- ã‚¤ãƒ™ãƒ³ãƒˆé€šçŸ¥ï¼ˆæŽ¥ç¶š/åˆ‡æ–­/å—ä¿¡ï¼‰
+- TCPÚ‘±‚ÌŠm—§EØ’f
+- ”ñ“¯Šú‘—ŽóMˆ—
+- ƒCƒxƒ“ƒg’Ê’miÚ‘±/Ø’f/ŽóMj
 
 #### 3.2.3 UdpCommunication
-- UDPã‚½ã‚±ãƒƒãƒˆã®ç®¡ç†
-- é€å—ä¿¡å‡¦ç†
+- UDPƒ\ƒPƒbƒg‚ÌŠÇ—
+- ‘—ŽóMˆ—
 
 #### 3.2.4 ScenarioEngine
-- CSVã‚·ãƒŠãƒªã‚ªã®èª­ã¿è¾¼ã¿ãƒ»è§£æž
-- ã‚·ãƒŠãƒªã‚ªå®Ÿè¡Œåˆ¶å¾¡
-- å¤‰æ•°ç®¡ç†ãƒ»ç½®æ›å‡¦ç†
+- CSVƒVƒiƒŠƒI‚Ì“Ç‚Ýž‚ÝE‰ðÍ
+- ƒVƒiƒŠƒIŽÀs§Œä
+- •Ï”ŠÇ—E’uŠ·ˆ—
 
 #### 3.2.5 MessageHandler
-- é›»æ–‡ã®ã‚¨ãƒ³ã‚³ãƒ¼ãƒ‰/ãƒ‡ã‚³ãƒ¼ãƒ‰
-- ãƒ•ã‚©ãƒ¼ãƒžãƒƒãƒˆå¤‰æ›ï¼ˆHEX, ASCII, etc.ï¼‰
-- ãƒãƒªãƒ‡ãƒ¼ã‚·ãƒ§ãƒ³
+- “d•¶‚ÌƒGƒ“ƒR[ƒh/ƒfƒR[ƒh
+- ƒtƒH[ƒ}ƒbƒg•ÏŠ·iHEX, ASCII, etc.j
+- ƒoƒŠƒf[ƒVƒ‡ƒ“
 
 #### 3.2.6 AutoResponse
-- å—ä¿¡ãƒ‘ã‚¿ãƒ¼ãƒ³ãƒžãƒƒãƒãƒ³ã‚°
-- è‡ªå‹•å¿œç­”ãƒ«ãƒ¼ãƒ«ç®¡ç†
-- ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆé©ç”¨
+- ŽóMƒpƒ^[ƒ“ƒ}ƒbƒ`ƒ“ƒO
+- Ž©“®‰ž“šƒ‹[ƒ‹ŠÇ—
+- ƒeƒ“ƒvƒŒ[ƒg“K—p
 
 #### 3.2.7 QuickSender
-- ãƒ‡ãƒ¼ã‚¿ãƒãƒ³ã‚¯ï¼ˆãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆï¼ãƒ•ã‚¡ã‚¤ãƒ«ï¼ç”Ÿæˆãƒ‡ãƒ¼ã‚¿ï¼‰ã‚’ãƒ­ãƒ¼ãƒ‰ã—ã€QuickPadã‚­ãƒ¼æž ï¼ˆã‚¹ãƒ­ãƒƒãƒˆç•ªå·ï¼‰ã¸ãƒã‚¤ãƒ³ãƒ‰
-- ãƒ¯ãƒ³ã‚¯ãƒªãƒƒã‚¯é€ä¿¡ã€æœ€å¾Œã®é€ä¿¡å†å®Ÿè¡Œã€ã‚°ãƒ«ãƒ¼ãƒ—é€ä¿¡
-- é€ä¿¡å±¥æ­´ã®ä¿æŒã¨å†é€
+- ƒf[ƒ^ƒoƒ“ƒNiƒeƒ“ƒvƒŒ[ƒg^ƒtƒ@ƒCƒ‹^¶¬ƒf[ƒ^j‚ðƒ[ƒh‚µAQuickPadƒL[˜giƒXƒƒbƒg”Ô†j‚ÖƒoƒCƒ“ƒh
+- ƒƒ“ƒNƒŠƒbƒN‘—MAÅŒã‚Ì‘—MÄŽÀsAƒOƒ‹[ƒv‘—M
+- ‘—M—š—ð‚Ì•ÛŽ‚ÆÄ‘—
 
 #### 3.2.8 InstanceManager
-- æŽ¥ç¶šã‚’è«–ç†ã‚°ãƒ«ãƒ¼ãƒ—ãƒ»ã‚¿ã‚°ã§åˆ†é¡ž
-- ä¸€æ‹¬æ“ä½œï¼ˆæŽ¥ç¶šé–‹å§‹/åœæ­¢ã€é€ä¿¡ã€ã‚·ãƒŠãƒªã‚ªèµ°è¡Œï¼‰
-- è«–ç†ãƒ“ãƒ¥ãƒ¼ç”¨ãƒ‡ãƒ¼ã‚¿ãƒ¢ãƒ‡ãƒ«ã®æä¾›
+- Ú‘±‚ð˜_—ƒOƒ‹[ƒvEƒ^ƒO‚Å•ª—Þ
+- ˆêŠ‡‘€ìiÚ‘±ŠJŽn/’âŽ~A‘—MAƒVƒiƒŠƒI‘–sj
+- ˜_—ƒrƒ…[—pƒf[ƒ^ƒ‚ƒfƒ‹‚Ì’ñ‹Ÿ
 
 #### 3.2.9 NetworkAnalyzer
-- æŽ¥ç¶šå‰è¨ºæ–­ï¼ˆPingã€ãƒãƒ¼ãƒˆç–Žé€šã€ãƒ«ãƒ¼ãƒ†ã‚£ãƒ³ã‚°ç¢ºèªï¼‰
-- è¨­å®šãƒã‚§ãƒƒã‚¯ãƒªã‚¹ãƒˆç”Ÿæˆ
-- ã‚¨ãƒ©ãƒ¼åŽŸå› ã®ãƒªã‚³ãƒ¡ãƒ³ãƒ‰
+- Ú‘±‘Of’fiPingAƒ|[ƒg‘a’ÊAƒ‹[ƒeƒBƒ“ƒOŠm”Fj
+- Ý’èƒ`ƒFƒbƒNƒŠƒXƒg¶¬
+- ƒGƒ‰[Œ´ˆö‚ÌƒŠƒRƒƒ“ƒh
 
-### 3.3 ãƒ­ã‚¸ã‚«ãƒ«ã‚¢ãƒ¼ã‚­ãƒ†ã‚¯ãƒãƒ£
+### 3.3 ƒƒWƒJƒ‹ƒA[ƒLƒeƒNƒ`ƒƒ
 ```
-â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-â”‚ Presentation Layer                          â”‚
-â”‚  - WinForms MainForm (Quick Send, Logical View) â”‚
-â”‚  - UserControls / Shared Styles (Panel/Controlãƒ©ã‚¤ãƒ–ãƒ©ãƒª) â”‚
-â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
-          â”‚ (Data binding / Commands)
-â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-â”‚ Orchestration Layer                         â”‚
-â”‚  - ConnectionManager                        â”‚
-â”‚  - ScenarioEngine                           â”‚
-â”‚  - InstanceManager                          â”‚
-â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
-          â”‚ (Events / Pipelines)
-â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-â”‚ Service Layer                               â”‚
-â”‚  - TcpClient / TcpServer / UdpCommunication â”‚
-â”‚  - QuickSender / AutoResponse               â”‚
-â”‚  - NetworkAnalyzer                          â”‚
-â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
-          â”‚ (I/O, OS API, Files)
-â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-â”‚ Infrastructure Layer                        â”‚
-â”‚  - Config & DataBank Loader                 â”‚
-â”‚  - Logging                                  â”‚
-â”‚  - Resource Monitors                        â”‚
-â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+„¡„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„¢
+„  Presentation Layer                          „ 
+„   - WinForms MainForm (Quick Send, Logical View) „ 
+„   - UserControls / Shared Styles (Panel/Controlƒ‰ƒCƒuƒ‰ƒŠ) „ 
+„¤„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„£
+          „  (Data binding / Commands)
+„¡„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„¢
+„  Orchestration Layer                         „ 
+„   - ConnectionManager                        „ 
+„   - ScenarioEngine                           „ 
+„   - InstanceManager                          „ 
+„¤„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„£
+          „  (Events / Pipelines)
+„¡„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„¢
+„  Service Layer                               „ 
+„   - TcpClient / TcpServer / UdpCommunication „ 
+„   - QuickSender / AutoResponse               „ 
+„   - NetworkAnalyzer                          „ 
+„¤„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„£
+          „  (I/O, OS API, Files)
+„¡„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„¢
+„  Infrastructure Layer                        „ 
+„   - Config & DataBank Loader                 „ 
+„   - Logging                                  „ 
+„   - Resource Monitors                        „ 
+„¤„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„£
 ```
 
-- **è²¬å‹™åˆ†é›¢**: UIã¯ãƒ‡ãƒ¼ã‚¿ãƒã‚¤ãƒ³ãƒ‡ã‚£ãƒ³ã‚°ã®ã¿ã‚’æ‹…ã„ã€å®Ÿè¡Œåˆ¶å¾¡ã¯Orchestrationå±¤ã¸å§”è­²ã€‚é€šä¿¡ï¼è¨ºæ–­ã¨ã„ã£ãŸå°‚é–€å‡¦ç†ã¯Serviceå±¤ãŒæ‹…å½“ã—ã€ãƒ•ã‚¡ã‚¤ãƒ«èª­ã¿æ›¸ãã‚„æ°¸ç¶šåŒ–ã¯Infrastructureå±¤ã§å…±é€šåŒ–ã™ã‚‹ã€‚
-- **ã‚¤ãƒ™ãƒ³ãƒˆé§†å‹•**: Orchestrationå±¤ã¯PowerShellã‚¤ãƒ™ãƒ³ãƒˆã§UIã¸çŠ¶æ…‹ã‚’é€šçŸ¥ã€‚Serviceå±¤ã¯ã‚¤ãƒ™ãƒ³ãƒˆç™ºç«ã®ã¿ã‚’è¡Œã„ã€UIã‚¹ãƒ¬ãƒƒãƒ‰ã«ç›´æŽ¥è§¦ã‚Œãªã„ã€‚
-- **æ‹¡å¼µæ€§**: æ–°ã—ã„ãƒ—ãƒ­ãƒˆã‚³ãƒ«ã‚„è§£æžæ©Ÿèƒ½ã¯Serviceå±¤ã®ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«è¿½åŠ ã§å®Ÿç¾ã—ã€UI/Orchestrationã¯æœ€å°æ”¹ä¿®ã§æ¸ˆã‚€ã€‚
+- **Ó–±•ª—£**: UI‚Íƒf[ƒ^ƒoƒCƒ“ƒfƒBƒ“ƒO‚Ì‚Ý‚ð’S‚¢AŽÀs§Œä‚ÍOrchestration‘w‚ÖˆÏ÷B’ÊM^f’f‚Æ‚¢‚Á‚½ê–åˆ—‚ÍService‘w‚ª’S“–‚µAƒtƒ@ƒCƒ‹“Ç‚Ý‘‚«‚â‰i‘±‰»‚ÍInfrastructure‘w‚Å‹¤’Ê‰»‚·‚éB
+- **ƒCƒxƒ“ƒg‹ì“®**: Orchestration‘w‚ÍPowerShellƒCƒxƒ“ƒg‚ÅUI‚Öó‘Ô‚ð’Ê’mBService‘w‚ÍƒCƒxƒ“ƒg”­‰Î‚Ì‚Ý‚ðs‚¢AUIƒXƒŒƒbƒh‚É’¼ÚG‚ê‚È‚¢B
+- **Šg’£«**: V‚µ‚¢ƒvƒƒgƒRƒ‹‚â‰ðÍ‹@”\‚ÍService‘w‚Ìƒ‚ƒWƒ…[ƒ‹’Ç‰Á‚ÅŽÀŒ»‚µAUI/Orchestration‚ÍÅ¬‰üC‚ÅÏ‚ÞB
 
-### 3.4 ã‚¹ãƒ¬ãƒƒãƒ‰æ§‹æˆï¼ˆThread Topologyï¼‰
-- **UI Thread**: WinFormsã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãƒ«ãƒ¼ãƒ—ï¼ˆ`System.Windows.Forms.Application.Run`ï¼‰ã€‚ãƒ¦ãƒ¼ã‚¶ãƒ¼æ“ä½œã¨è¡¨ç¤ºæ›´æ–°ã‚’æ‹…å½“ã€‚
-- **Connection Threads**: æŽ¥ç¶šã”ã¨ã«1ã‚¹ãƒ¬ãƒƒãƒ‰ã‚’ç¢ºä¿ã—ã€éžåŒæœŸå—ä¿¡ã¨é€ä¿¡å‡¦ç†ã‚’å®Ÿè¡Œã€‚å„ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã¯ç‹¬ç«‹ã—ãŸãƒªã‚½ãƒ¼ã‚¹ã®ã¿æ“ä½œã™ã‚‹ãŸã‚ã€ãƒ­ãƒƒã‚¯ä¸è¦ã€‚
-- **Scenario Threads**: ã‚·ãƒŠãƒªã‚ªå˜ä½ã§ã‚¹ãƒ¬ãƒƒãƒ‰ã‚’èµ·ã“ã—ã€ã‚¹ãƒ†ãƒƒãƒ—å®Ÿè¡Œã‚„å¾…æ©Ÿã‚’åˆ¶å¾¡ã€‚ã‚­ãƒ£ãƒ³ã‚»ãƒ«ã¯ãƒ•ãƒ©ã‚°ã§ç®¡ç†ã€‚
-- **Diagnostics Thread**: NetworkAnalyzerå°‚ç”¨ã€‚Ping/Portãƒã‚§ãƒƒã‚¯ã‚’éžåŒæœŸã§å®Ÿè¡Œã—ã€çµæžœã‚’Orchestrationå±¤ã¸é€šçŸ¥ã€‚
-- **Shared Data Structures**: `Hashtable`ï¼ˆsynchronizedï¼‰ã§æŽ¥ç¶šçŠ¶æ…‹ã‚’å…±æœ‰ã€‚UIæ›´æ–°ã¯`Control.Invoke`ã‚’ä»‹ã—ãŸãƒ‡ã‚£ã‚¹ãƒ‘ãƒƒãƒã§ä¸€è²«æ€§ã‚’ç¢ºä¿ã€‚
+### 3.4 ƒXƒŒƒbƒh\¬iThread Topologyj
+- **UI Thread**: WinForms‚ÌƒƒbƒZ[ƒWƒ‹[ƒvi`System.Windows.Forms.Application.Run`jBƒ†[ƒU[‘€ì‚Æ•\Ž¦XV‚ð’S“–B
+- **Connection Threads**: Ú‘±‚²‚Æ‚É1ƒXƒŒƒbƒh‚ðŠm•Û‚µA”ñ“¯ŠúŽóM‚Æ‘—Mˆ—‚ðŽÀsBŠeƒCƒ“ƒXƒ^ƒ“ƒX‚Í“Æ—§‚µ‚½ƒŠƒ\[ƒX‚Ì‚Ý‘€ì‚·‚é‚½‚ßAƒƒbƒN•s—vB
+- **Scenario Threads**: ƒVƒiƒŠƒI’PˆÊ‚ÅƒXƒŒƒbƒh‚ð‹N‚±‚µAƒXƒeƒbƒvŽÀs‚â‘Ò‹@‚ð§ŒäBƒLƒƒƒ“ƒZƒ‹‚Íƒtƒ‰ƒO‚ÅŠÇ—B
+- **Diagnostics Thread**: NetworkAnalyzerê—pBPing/Portƒ`ƒFƒbƒN‚ð”ñ“¯Šú‚ÅŽÀs‚µAŒ‹‰Ê‚ðOrchestration‘w‚Ö’Ê’mB
+- **Shared Data Structures**: `Hashtable`isynchronizedj‚ÅÚ‘±ó‘Ô‚ð‹¤—LBUIXV‚Í`Control.Invoke`‚ð‰î‚µ‚½ƒfƒBƒXƒpƒbƒ`‚ÅˆêŠÑ«‚ðŠm•ÛB
 
-**ã‚¹ãƒ¬ãƒƒãƒ‰åˆ†é›¢åŽŸå‰‡**: å„é€šä¿¡ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã¯å°‚ç”¨ã‚¹ãƒ¬ãƒƒãƒ‰ã§å‹•ä½œã—ã€ç‹¬è‡ªã®ãƒãƒƒãƒ•ã‚¡ãƒ»å¤‰æ•°ãƒ»çŠ¶æ…‹ã®ã¿ã‚’æ“ä½œã€‚ä»–ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®ãƒªã‚½ãƒ¼ã‚¹ã«ã¯ä¸€åˆ‡è§¦ã‚Œãªã„ãŸã‚ã€ãƒ­ãƒƒã‚¯ã‚„ãƒŸãƒ¥ãƒ¼ãƒ†ãƒƒã‚¯ã‚¹ã¯ä¸è¦ã€‚
+**ƒXƒŒƒbƒh•ª—£Œ´‘¥**: Še’ÊMƒCƒ“ƒXƒ^ƒ“ƒX‚Íê—pƒXƒŒƒbƒh‚Å“®ì‚µA“ÆŽ©‚Ìƒoƒbƒtƒ@E•Ï”Eó‘Ô‚Ì‚Ý‚ð‘€ìB‘¼ƒCƒ“ƒXƒ^ƒ“ƒX‚ÌƒŠƒ\[ƒX‚É‚ÍˆêØG‚ê‚È‚¢‚½‚ßAƒƒbƒN‚âƒ~ƒ…[ƒeƒbƒNƒX‚Í•s—vB
 
-### 3.5 ã‚¤ãƒ™ãƒ³ãƒˆï¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãƒ•ãƒ­ãƒ¼
-| ã‚¤ãƒ™ãƒ³ãƒˆç¨®åˆ¥ | ç™ºç«å…ƒ | å—ä¿¡å…ˆ | å†…å®¹ |
+### 3.5 ƒCƒxƒ“ƒg^ƒƒbƒZ[ƒWƒtƒ[
+| ƒCƒxƒ“ƒgŽí•Ê | ”­‰ÎŒ³ | ŽóMæ | “à—e |
 | --- | --- | --- | --- |
-| `Connection.StatusChanged` | Connection Thread | InstanceManager, UI | æŽ¥ç¶šçŠ¶æ…‹ãƒ»ã‚¨ãƒ©ãƒ¼ã‚³ãƒ¼ãƒ‰ |
-| `Scenario.StepProgress` | ScenarioEngine | UI, Logging | ç¾åœ¨ã‚¹ãƒ†ãƒƒãƒ—ã€é€²æ—çŽ‡ã€å¤‰æ•°ã‚¹ãƒŠãƒƒãƒ—ã‚·ãƒ§ãƒƒãƒˆ |
-| `QuickSend.Requested` | UIãƒœã‚¿ãƒ³ | QuickSender | DataID, å¯¾è±¡æŽ¥ç¶š/ã‚°ãƒ«ãƒ¼ãƒ— |
-| `Diagnostics.Result` | NetworkAnalyzer | UI | åˆ¤å®šçµæžœã€æŽ¨å¥¨ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ |
+| `Connection.StatusChanged` | Connection Thread | InstanceManager, UI | Ú‘±ó‘ÔEƒGƒ‰[ƒR[ƒh |
+| `Scenario.StepProgress` | ScenarioEngine | UI, Logging | Œ»ÝƒXƒeƒbƒvAi’»—¦A•Ï”ƒXƒiƒbƒvƒVƒ‡ƒbƒg |
+| `QuickSend.Requested` | UIƒ{ƒ^ƒ“ | QuickSender | DataID, ‘ÎÛÚ‘±/ƒOƒ‹[ƒv |
+| `Diagnostics.Result` | NetworkAnalyzer | UI | ”»’èŒ‹‰ÊA„§ƒAƒNƒVƒ‡ƒ“ |
 
-- **ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãƒã‚¹å®Ÿè£…**: PowerShellã®`Register-EngineEvent`ï¼‹ã‚«ã‚¹ã‚¿ãƒ ã‚¤ãƒ™ãƒ³ãƒˆã‚’åˆ©ç”¨ã—ã€ã‚¹ãƒ¬ãƒƒãƒ‰é–“ã§ç–Žçµåˆã«é€šä¿¡ã€‚
+- **ƒƒbƒZ[ƒWƒoƒXŽÀ‘•**: PowerShell‚Ì`Register-EngineEvent`{ƒJƒXƒ^ƒ€ƒCƒxƒ“ƒg‚ð—˜—p‚µAƒXƒŒƒbƒhŠÔ‚Å‘aŒ‹‡‚É’ÊMB
 
-### 3.6 çŠ¶æ…‹ãƒ»è¨­å®šç®¡ç†
-- **Immutable Config**: èµ·å‹•æ™‚ã«`instance.psd1`ç­‰ã‚’èª­ã¿è¾¼ã¿ã€`ConfigSnapshot`ã¨ã—ã¦ä¿æŒã€‚å¤‰æ›´ã¯ã€Œå†èª­ã¿è¾¼ã¿ã€æ“ä½œã§ãƒãƒ¼ã‚¸ãƒ§ãƒ³ã‚¢ãƒƒãƒ—ã—ã€ã‚¤ãƒ™ãƒ³ãƒˆã§å„ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã¸ä¼æ’­ã€‚
-- **Runtime State Store**: æŽ¥ç¶šçŠ¶æ…‹ã€ã‚·ãƒŠãƒªã‚ªå®Ÿè¡ŒçŠ¶æ³ã‚’`StateStore`ï¼ˆsynchronized Hashtableï¼‰ã«é›†ç´„ã€‚UIã¯Storeã«ãƒã‚¤ãƒ³ãƒ‰ã—ã€ãƒ­ã‚°ã‚„å¤–éƒ¨APIã‚‚åŒã˜ã‚½ãƒ¼ã‚¹ã‚’å‚ç…§ã™ã‚‹ã€‚
-- **Data Persistence**: DataBankã‚„Diagnosticsã¯å„ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ãƒ•ã‚©ãƒ«ãƒ€å†…ã«ä¿å­˜ã€‚
-- **ãƒ­ã‚°ä¿å­˜**: ãƒ¦ãƒ¼ã‚¶ãƒ¼ãŒæ˜Žç¤ºçš„ã«ã€Œãƒ­ã‚°ä¿å­˜ã€ã‚’å®Ÿè¡Œã—ãŸå ´åˆã®ã¿ãƒ•ã‚¡ã‚¤ãƒ«å‡ºåŠ›ï¼ˆãƒ•ã‚¡ã‚¤ãƒ«åã¯ãƒ¦ãƒ¼ã‚¶ãƒ¼æŒ‡å®šï¼‰
+### 3.6 ó‘ÔEÝ’èŠÇ—
+- **Immutable Config**: ‹N“®Žž‚É`instance.psd1`“™‚ð“Ç‚Ýž‚ÝA`ConfigSnapshot`‚Æ‚µ‚Ä•ÛŽB•ÏX‚ÍuÄ“Ç‚Ýž‚Ýv‘€ì‚Åƒo[ƒWƒ‡ƒ“ƒAƒbƒv‚µAƒCƒxƒ“ƒg‚ÅŠeƒ‚ƒWƒ…[ƒ‹‚Ö“`”dB
+- **Runtime State Store**: Ú‘±ó‘ÔAƒVƒiƒŠƒIŽÀsó‹µ‚ð`StateStore`isynchronized Hashtablej‚ÉW–ñBUI‚ÍStore‚ÉƒoƒCƒ“ƒh‚µAƒƒO‚âŠO•”API‚à“¯‚¶ƒ\[ƒX‚ðŽQÆ‚·‚éB
+- **Data Persistence**: DataBank‚âDiagnostics‚ÍŠeƒCƒ“ƒXƒ^ƒ“ƒXƒtƒHƒ‹ƒ_“à‚É•Û‘¶B
+- **ƒƒO•Û‘¶**: ƒ†[ƒU[‚ª–¾Ž¦“I‚ÉuƒƒO•Û‘¶v‚ðŽÀs‚µ‚½ê‡‚Ì‚Ýƒtƒ@ƒCƒ‹o—Íiƒtƒ@ƒCƒ‹–¼‚Íƒ†[ƒU[Žw’èj
 
-### 3.7 æ‹¡å¼µãƒã‚¤ãƒ³ãƒˆ
-- **Plug-in Loader**: `Scripts/`é…ä¸‹ã®PS1ã‚’è‡ªå‹•ãƒ­ãƒ¼ãƒ‰ã—ã€`ExportedFunctions.psd1`ã«æº–æ‹ ã—ãŸé–¢æ•°ã‚’ScenarioEngineã‚„QuickSenderã‹ã‚‰å‘¼ã³å‡ºã—å¯èƒ½ã€‚
-- **Protocol Adapter**: æ–°ã—ã„é€šä¿¡æ‰‹æ®µã¯`Modules/Adapters/<Protocol>.ps1`ã‚’è¿½åŠ ã—ã€ConnectionManagerã®ãƒ•ã‚¡ã‚¯ãƒˆãƒªã«ç™»éŒ²ã™ã‚‹ã ã‘ã§åˆ©ç”¨å¯èƒ½ã€‚
-- **Data Transformer**: MessageHandlerã«`IMessageTransformer`ç›¸å½“ã®ã‚¤ãƒ³ã‚¿ãƒ¼ãƒ•ã‚§ãƒ¼ã‚¹ã‚’å®šç¾©ã—ã€Base64ã€åœ§ç¸®ãªã©ã‚’ãƒã‚§ãƒ¼ãƒ³å¯èƒ½ã€‚
-- **UI Custom Pane**: MainFormå†…ã®`Panel`ãƒ—ãƒ¬ãƒ¼ã‚¹ãƒ›ãƒ«ãƒ€ã‚’ç”¨æ„ã—ã€UserControlã‚„è¿½åŠ ãƒ•ã‚©ãƒ¼ãƒ ã‚’å·®ã—æ›¿ãˆã‚‰ã‚Œã‚‹æ§‹é€ ã«ã™ã‚‹ã€‚
+### 3.7 Šg’£ƒ|ƒCƒ“ƒg
+- **Plug-in Loader**: `Scripts/`”z‰º‚ÌPS1‚ðŽ©“®ƒ[ƒh‚µA`ExportedFunctions.psd1`‚É€‹’‚µ‚½ŠÖ”‚ðScenarioEngine‚âQuickSender‚©‚çŒÄ‚Ño‚µ‰Â”\B
+- **Protocol Adapter**: V‚µ‚¢’ÊMŽè’i‚Í`Modules/Adapters/<Protocol>.ps1`‚ð’Ç‰Á‚µAConnectionManager‚Ìƒtƒ@ƒNƒgƒŠ‚É“o˜^‚·‚é‚¾‚¯‚Å—˜—p‰Â”\B
+- **Data Transformer**: MessageHandler‚É`IMessageTransformer`‘Š“–‚ÌƒCƒ“ƒ^[ƒtƒF[ƒX‚ð’è‹`‚µABase64Aˆ³k‚È‚Ç‚ðƒ`ƒF[ƒ“‰Â”\B
+- **UI Custom Pane**: MainForm“à‚Ì`Panel`ƒvƒŒ[ƒXƒzƒ‹ƒ_‚ð—pˆÓ‚µAUserControl‚â’Ç‰ÁƒtƒH[ƒ€‚ð·‚µ‘Ö‚¦‚ç‚ê‚é\‘¢‚É‚·‚éB
 
-### 3.8 ãƒ‡ãƒ—ãƒ­ã‚¤ï¼é‹ç”¨ãƒ¢ãƒ‡ãƒ«
-- **å˜ä¸€é…å¸ƒç‰©**: `TcpDebugger.ps1`ã¨`Modules/`é…ä¸‹ã‚’åŒãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã«é…ç½®ã™ã‚‹ã ã‘ã§å‹•ä½œã€‚PowerShell 5.1ä»¥ä¸ŠãŒã‚ã‚Œã°è¿½åŠ ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ä¸è¦ã€‚
-- **ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ç®¡ç†**: `Instances/`é…ä¸‹ã«ãƒ•ã‚©ãƒ«ãƒ€ã‚’è¿½åŠ ã™ã‚‹ã ã‘ã§æ–°è¦ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ä½œæˆã€‚
-- **æ¨©é™**: é€šå¸¸ã¯ãƒ¦ãƒ¼ã‚¶æ¨©é™ã§å®Ÿè¡Œã€‚ãƒãƒ¼ãƒˆé–‹æ”¾ã‚„ãƒ•ã‚¡ã‚¤ã‚¢ã‚¦ã‚©ãƒ¼ãƒ«è¨­å®šã®ã¿æ˜‡æ ¼ã—ãŸPowerShellã‚’åˆ¥é€”èµ·å‹•ã€‚
-- **ãƒ­ã‚°å‡ºåŠ›**: ãƒ¦ãƒ¼ã‚¶ãƒ¼ãŒå¿…è¦æ™‚ã«ã€Œãƒ­ã‚°ã‚¨ã‚¯ã‚¹ãƒãƒ¼ãƒˆã€ãƒœã‚¿ãƒ³ã§æ˜Žç¤ºçš„ã«ä¿å­˜ï¼ˆè‡ªå‹•ä¿å­˜ãªã—ï¼‰
+### 3.8 ƒfƒvƒƒC^‰^—pƒ‚ƒfƒ‹
+- **’Pˆê”z•z•¨**: `TcpDebugger.ps1`‚Æ`Modules/`”z‰º‚ð“¯ƒfƒBƒŒƒNƒgƒŠ‚É”z’u‚·‚é‚¾‚¯‚Å“®ìBPowerShell 5.1ˆÈã‚ª‚ ‚ê‚Î’Ç‰ÁƒCƒ“ƒXƒg[ƒ‹•s—vB
+- **ƒCƒ“ƒXƒ^ƒ“ƒXŠÇ—**: `Instances/`”z‰º‚ÉƒtƒHƒ‹ƒ_‚ð’Ç‰Á‚·‚é‚¾‚¯‚ÅV‹KƒCƒ“ƒXƒ^ƒ“ƒXì¬B
+- **Œ ŒÀ**: ’Êí‚Íƒ†[ƒUŒ ŒÀ‚ÅŽÀsBƒ|[ƒgŠJ•ú‚âƒtƒ@ƒCƒAƒEƒH[ƒ‹Ý’è‚Ì‚Ý¸Ši‚µ‚½PowerShell‚ð•Ê“r‹N“®B
+- **ƒƒOo—Í**: ƒ†[ƒU[‚ª•K—vŽž‚ÉuƒƒOƒGƒNƒXƒ|[ƒgvƒ{ƒ^ƒ“‚Å–¾Ž¦“I‚É•Û‘¶iŽ©“®•Û‘¶‚È‚µj
 
-### 3.9 å‹•çš„ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ç®¡ç†
+### 3.9 “®“IƒCƒ“ƒXƒ^ƒ“ƒXŠÇ—
 
-#### 3.9.1 ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ãƒ©ã‚¤ãƒ•ã‚µã‚¤ã‚¯ãƒ«
+#### 3.9.1 ƒCƒ“ƒXƒ^ƒ“ƒXƒ‰ƒCƒtƒTƒCƒNƒ‹
 ```
-ä½œæˆ â†’ åˆæœŸåŒ– â†’ æŽ¥ç¶š â†’ ã‚¢ã‚¯ãƒ†ã‚£ãƒ– â†’ åˆ‡æ–­ â†’ ç ´æ£„
-  â†‘                    â†“         â†‘
-  â””â”€â”€â”€â”€ å†åˆ©ç”¨ãƒ—ãƒ¼ãƒ« â”€â”€â”€â”€â”˜         â””â”€ å†æŽ¥ç¶š
+ì¬ ¨ ‰Šú‰» ¨ Ú‘± ¨ ƒAƒNƒeƒBƒu ¨ Ø’f ¨ ”jŠü
+  ª                    «         ª
+  „¤„Ÿ„Ÿ„Ÿ„Ÿ Ä—˜—pƒv[ƒ‹ „Ÿ„Ÿ„Ÿ„Ÿ„£         „¤„Ÿ ÄÚ‘±
 ```
 
-#### 3.9.2 ãƒªã‚½ãƒ¼ã‚¹ç®¡ç†æˆ¦ç•¥
-- **Runspaceãƒ—ãƒ¼ãƒ«**: æœ€å¤§50 Runspaceã‚’ãƒ—ãƒ¼ãƒ«åŒ–ã—ã€ä½œæˆ/ç ´æ£„ã®ã‚ªãƒ¼ãƒãƒ¼ãƒ˜ãƒƒãƒ‰ã‚’å‰Šæ¸›
-- **ConcurrentDictionary**: ã‚¹ãƒ¬ãƒƒãƒ‰ã‚»ãƒ¼ãƒ•ãªæŽ¥ç¶šç®¡ç†ã§ç«¶åˆçŠ¶æ…‹ã‚’å›žé¿
-- **æ˜Žç¤ºçš„å‰Šé™¤**: ãƒ¦ãƒ¼ã‚¶ãƒ¼ãŒUIã¾ãŸã¯APIã‹ã‚‰å‰Šé™¤æ“ä½œã‚’è¡Œã†ã¾ã§ä¿æŒï¼ˆè‡ªå‹•å‰Šé™¤ãªã—ï¼‰
+#### 3.9.2 ƒŠƒ\[ƒXŠÇ—í—ª
+- **Runspaceƒv[ƒ‹**: Å‘å50 Runspace‚ðƒv[ƒ‹‰»‚µAì¬/”jŠü‚ÌƒI[ƒo[ƒwƒbƒh‚ðíŒ¸
+- **ConcurrentDictionary**: ƒXƒŒƒbƒhƒZ[ƒt‚ÈÚ‘±ŠÇ—‚Å‹£‡ó‘Ô‚ð‰ñ”ð
+- **–¾Ž¦“Iíœ**: ƒ†[ƒU[‚ªUI‚Ü‚½‚ÍAPI‚©‚çíœ‘€ì‚ðs‚¤‚Ü‚Å•ÛŽiŽ©“®íœ‚È‚µj
 
-#### 3.9.3 ãƒãƒƒãƒæ“ä½œ
-| æ“ä½œ | èª¬æ˜Ž | å®Ÿè£…æ–¹é‡ |
+#### 3.9.3 ƒoƒbƒ`‘€ì
+| ‘€ì | à–¾ | ŽÀ‘••ûj |
 |------|------|-------------------|
-| ä¸€æ‹¬è¿½åŠ  | CSVã‚¤ãƒ³ãƒãƒ¼ãƒˆã€ãƒ•ã‚©ãƒ«ãƒ€ã‚³ãƒ”ãƒ¼ | ãƒ•ã‚©ãƒ«ãƒ€è¿½åŠ ã§è‡ªå‹•èªè­˜ |
-| ä¸€æ‹¬æŽ¥ç¶š | é¸æŠžã—ãŸæŽ¥ç¶šã‚’åŒæ™‚é–‹å§‹ | å„ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®ã‚¹ãƒ¬ãƒƒãƒ‰ã‚’é †æ¬¡èµ·å‹• |
-| ä¸€æ‹¬å‰Šé™¤ | ã‚°ãƒ«ãƒ¼ãƒ—/ã‚¿ã‚°å˜ä½ã§ã®å‰Šé™¤ | ãƒ•ã‚©ãƒ«ãƒ€å‰Šé™¤ã§å³åº§ã«åæ˜  |
-| ä¸€æ‹¬é€ä¿¡ | è¤‡æ•°æŽ¥ç¶šã¸ã®åŒä¸€ãƒ‡ãƒ¼ã‚¿é€ä¿¡ | å„ã‚¹ãƒ¬ãƒƒãƒ‰ã¸é€ä¿¡ã‚¤ãƒ™ãƒ³ãƒˆã‚’ç™ºç« |
+| ˆêŠ‡’Ç‰Á | CSVƒCƒ“ƒ|[ƒgAƒtƒHƒ‹ƒ_ƒRƒs[ | ƒtƒHƒ‹ƒ_’Ç‰Á‚ÅŽ©“®”FŽ¯ |
+| ˆêŠ‡Ú‘± | ‘I‘ð‚µ‚½Ú‘±‚ð“¯ŽžŠJŽn | ŠeƒCƒ“ƒXƒ^ƒ“ƒX‚ÌƒXƒŒƒbƒh‚ð‡ŽŸ‹N“® |
+| ˆêŠ‡íœ | ƒOƒ‹[ƒv/ƒ^ƒO’PˆÊ‚Å‚Ìíœ | ƒtƒHƒ‹ƒ_íœ‚Å‘¦À‚É”½‰f |
+| ˆêŠ‡‘—M | •¡”Ú‘±‚Ö‚Ì“¯ˆêƒf[ƒ^‘—M | ŠeƒXƒŒƒbƒh‚Ö‘—MƒCƒxƒ“ƒg‚ð”­‰Î |
 
-#### 3.9.4 UIå¿œç­”æ€§
-- **ä»®æƒ³åŒ–ãƒªã‚¹ãƒˆ**: DataGridä»®æƒ³åŒ–ã«ã‚ˆã‚Šå¤šæ•°ã®æŽ¥ç¶šã§ã‚‚ã‚¹ãƒ ãƒ¼ã‚ºã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«
-- **ãƒ‡ãƒ¼ã‚¿ãƒã‚¤ãƒ³ãƒ‡ã‚£ãƒ³ã‚°**: `BindingList`ï¼‹`BindingSource`ã‚’ä½¿ã£ãŸWinFormsæ¨™æº–ãƒã‚¤ãƒ³ãƒ‡ã‚£ãƒ³ã‚°
-- **ãƒ—ãƒ­ã‚°ãƒ¬ã‚¹è¡¨ç¤º**: è¤‡æ•°æŽ¥ç¶šã®æ“ä½œæ™‚ã¯é€²æ—ãƒãƒ¼ã‚’è¡¨ç¤º
-- **ãƒãƒƒã‚¯ã‚°ãƒ©ã‚¦ãƒ³ãƒ‰å‡¦ç†**: æŽ¥ç¶šæ“ä½œã¯åˆ¥ã‚¹ãƒ¬ãƒƒãƒ‰ã§å®Ÿè¡Œã—ã€UIã‚’ãƒ–ãƒ­ãƒƒã‚¯ã—ãªã„
+#### 3.9.4 UI‰ž“š«
+- **‰¼‘z‰»ƒŠƒXƒg**: DataGrid‰¼‘z‰»‚É‚æ‚è‘½”‚ÌÚ‘±‚Å‚àƒXƒ€[ƒYƒXƒNƒ[ƒ‹
+- **ƒf[ƒ^ƒoƒCƒ“ƒfƒBƒ“ƒO**: `BindingList`{`BindingSource`‚ðŽg‚Á‚½WinForms•W€ƒoƒCƒ“ƒfƒBƒ“ƒO
+- **ƒvƒƒOƒŒƒX•\Ž¦**: •¡”Ú‘±‚Ì‘€ìŽž‚Íi’»ƒo[‚ð•\Ž¦
+- **ƒoƒbƒNƒOƒ‰ƒEƒ“ƒhˆ—**: Ú‘±‘€ì‚Í•ÊƒXƒŒƒbƒh‚ÅŽÀs‚µAUI‚ðƒuƒƒbƒN‚µ‚È‚¢
 
-#### 3.9.5 å‹•çš„æŽ¥ç¶šè¿½åŠ API
+#### 3.9.5 “®“IÚ‘±’Ç‰ÁAPI
 ```powershell
-# å˜ä¸€æŽ¥ç¶šè¿½åŠ 
+# ’PˆêÚ‘±’Ç‰Á
 $conn = $Global:ConnectionManager.AddConnection(@{
     Name = "web-server-01"
     Protocol = "TCP"
@@ -327,7 +327,7 @@ $conn = $Global:ConnectionManager.AddConnection(@{
     Group = "WebServers"
 })
 
-# ãƒãƒƒãƒè¿½åŠ ï¼ˆãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆã‹ã‚‰20å€‹ç”Ÿæˆï¼‰
+# ƒoƒbƒ`’Ç‰Áiƒeƒ“ƒvƒŒ[ƒg‚©‚ç20ŒÂ¶¬j
 $template = @{
     BaseName = "load-test"
     Protocol = "TCP"
@@ -336,9 +336,9 @@ $template = @{
     Group = "LoadTest"
 }
 $connections = $Global:ConnectionManager.AddConnectionBatch($template, 20)
-# â†’ load-test_1 ~ load-test_20 ãŒç”Ÿæˆã•ã‚Œã‚‹
+# ¨ load-test_1 ~ load-test_20 ‚ª¶¬‚³‚ê‚é
 
-# CSVã‹ã‚‰ã‚¤ãƒ³ãƒãƒ¼ãƒˆ
+# CSV‚©‚çƒCƒ“ƒ|[ƒg
 Import-Csv "new_connections.csv" | ForEach-Object {
     $Global:ConnectionManager.AddConnection(@{
         Name = $_.Name
@@ -349,55 +349,55 @@ Import-Csv "new_connections.csv" | ForEach-Object {
     })
 }
 
-# æŽ¥ç¶šã®å‰Šé™¤
+# Ú‘±‚Ìíœ
 $Global:ConnectionManager.RemoveConnection("web-server-01")
 
-# ã‚°ãƒ«ãƒ¼ãƒ—å˜ä½ã§å‰Šé™¤
+# ƒOƒ‹[ƒv’PˆÊ‚Åíœ
 $removed = $Global:ConnectionManager.RemoveConnectionsByGroup("LoadTest")
 Write-Host "$removed connections removed"
 ```
 
 ---
 
-## 4. ãƒ‡ãƒ¼ã‚¿ãƒ•ã‚©ãƒ¼ãƒžãƒƒãƒˆ
+## 4. ƒf[ƒ^ƒtƒH[ƒ}ƒbƒg
 
-### 4.1 ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«ï¼ˆinstance.psd1ï¼‰
-å„ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ãƒ•ã‚©ãƒ«ãƒ€å†…ã«é…ç½®ã™ã‚‹è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«ã€‚ã“ã®ãƒ•ã‚¡ã‚¤ãƒ«ã®å­˜åœ¨ã«ã‚ˆã‚Šã‚¢ãƒ—ãƒªãŒã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã¨ã—ã¦èªè­˜ã™ã‚‹ã€‚
+### 4.1 ƒCƒ“ƒXƒ^ƒ“ƒXÝ’èƒtƒ@ƒCƒ‹iinstance.psd1j
+ŠeƒCƒ“ƒXƒ^ƒ“ƒXƒtƒHƒ‹ƒ_“à‚É”z’u‚·‚éÝ’èƒtƒ@ƒCƒ‹B‚±‚Ìƒtƒ@ƒCƒ‹‚Ì‘¶Ý‚É‚æ‚èƒAƒvƒŠ‚ªƒCƒ“ƒXƒ^ƒ“ƒX‚Æ‚µ‚Ä”FŽ¯‚·‚éB
 
-**ä¾‹: Instances/WebServer-Sim/instance.psd1**
+**—á: Instances/WebServer-Sim/instance.psd1**
 ```powershell
 @{
-    # ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹è­˜åˆ¥å­ï¼ˆçœç•¥æ™‚ã¯ãƒ•ã‚©ãƒ«ãƒ€åã‹ã‚‰è‡ªå‹•ç”Ÿæˆï¼‰
+    # ƒCƒ“ƒXƒ^ƒ“ƒXŽ¯•ÊŽqiÈ—ªŽž‚ÍƒtƒHƒ‹ƒ_–¼‚©‚çŽ©“®¶¬j
     Id = "web-srv-01"
     
-    # UIè¡¨ç¤ºåï¼ˆçœç•¥æ™‚ã¯ãƒ•ã‚©ãƒ«ãƒ€åã‚’ä½¿ç”¨ï¼‰
-    DisplayName = "Webã‚µãƒ¼ãƒãƒ¼æ¨¡æ“¬è£…ç½®"
+    # UI•\Ž¦–¼iÈ—ªŽž‚ÍƒtƒHƒ‹ƒ_–¼‚ðŽg—pj
+    DisplayName = "WebƒT[ƒo[–Í‹[‘•’u"
     
-    # èª¬æ˜Žãƒ»ç”¨é€”
-    Description = "HTTPé€šä¿¡è©¦é¨“ç”¨ã®ã‚µãƒ¼ãƒãƒ¼å´æ¨¡æ“¬"
+    # à–¾E—p“r
+    Description = "HTTP’ÊMŽŽŒ±—p‚ÌƒT[ƒo[‘¤–Í‹["
     
-    # æŽ¥ç¶šè¨­å®š
+    # Ú‘±Ý’è
     Connection = @{
         Protocol = "TCP"           # TCP/UDP
         Mode = "Server"           # Client/Server/Sender/Receiver
         LocalIP = "0.0.0.0"
         LocalPort = 8080
-        RemoteIP = ""             # Serverãƒ¢ãƒ¼ãƒ‰ã§ã¯ä¸è¦
+        RemoteIP = ""             # Serverƒ‚[ƒh‚Å‚Í•s—v
         RemotePort = 0
     }
     
-    # èµ·å‹•è¨­å®š
-    AutoStart = $true            # ã‚¢ãƒ—ãƒªèµ·å‹•æ™‚ã«è‡ªå‹•æŽ¥ç¶š
-    AutoScenario = "startup.csv" # æŽ¥ç¶šå¾Œã«è‡ªå‹•å®Ÿè¡Œã™ã‚‹ã‚·ãƒŠãƒªã‚ª
+    # ‹N“®Ý’è
+    AutoStart = $true            # ƒAƒvƒŠ‹N“®Žž‚ÉŽ©“®Ú‘±
+    AutoScenario = "startup.csv" # Ú‘±Œã‚ÉŽ©“®ŽÀs‚·‚éƒVƒiƒŠƒI
     
-    # ã‚¿ã‚°ãƒ»ã‚°ãƒ«ãƒ¼ãƒ—ï¼ˆè«–ç†ãƒ“ãƒ¥ãƒ¼ã§ã®åˆ†é¡žï¼‰
+    # ƒ^ƒOEƒOƒ‹[ƒvi˜_—ƒrƒ…[‚Å‚Ì•ª—Þj
     Tags = @("WebServer", "HTTP", "Test")
     Group = "WebServers"
     
-    # ã‚¨ãƒ³ã‚³ãƒ¼ãƒ‡ã‚£ãƒ³ã‚°è¨­å®š
+    # ƒGƒ“ƒR[ƒfƒBƒ“ƒOÝ’è
     DefaultEncoding = "UTF-8"
     
-    # æ€§èƒ½æ¸¬å®šè¨­å®š
+    # «”\‘ª’èÝ’è
     Performance = @{
         EnableMetrics = $true
         SampleInterval = 1000    # ms
@@ -405,12 +405,12 @@ Write-Host "$removed connections removed"
 }
 ```
 
-**ä¾‹: Instances/PLC-Controller/instance.psd1**
+**—á: Instances/PLC-Controller/instance.psd1**
 ```powershell
 @{
     Id = "plc-ctrl-01"
-    DisplayName = "PLCåˆ¶å¾¡è£…ç½®"
-    Description = "FAåˆ¶å¾¡ã‚·ã‚¹ãƒ†ãƒ å‘ã‘PLCæ¨¡æ“¬"
+    DisplayName = "PLC§Œä‘•’u"
+    Description = "FA§ŒäƒVƒXƒeƒ€Œü‚¯PLC–Í‹["
     
     Connection = @{
         Protocol = "TCP"
@@ -431,55 +431,55 @@ Write-Host "$removed connections removed"
 }
 ```
 
-1,LOOP,BEGIN,COUNT=3,LABEL=main,${MSG_HELLO}ã¨å¿œç­”å‡¦ç†ã‚’3å›žç¹°ã‚Šè¿”ã™
+1,LOOP,BEGIN,COUNT=3,LABEL=main,${MSG_HELLO}‚Æ‰ž“šˆ—‚ð3‰ñŒJ‚è•Ô‚·
 2,SEND,${MSG_HELLO},,,HelloM
-3,WAIT_RECV,TIMEOUT=5000,PATTERN=OK,,Ò‹@
-4,SAVE_RECV,VAR_NAME=response,,,Mf[^ÏÉ•Û‘
-5,SLEEP,1000,,,1bÒ‹@
+3,WAIT_RECV,TIMEOUT=5000,PATTERN=OK,,?@
+4,SAVE_RECV,VAR_NAME=response,,,Mf[^???
+5,SLEEP,1000,,,1b?@
 6,SEND_HEX,48656C6C6F,,,HEXf[^M
-7,SEND,${response},,,Mf[^ð‘—‚Ô‚
+7,SEND,${response},,,Mf[^??
 8,CALL_SCRIPT,custom_check.ps1,,,JX^s
-9,LOOP,END,LABEL=main,,ãƒ«ãƒ¼ãƒ—çµ‚ç«¯
+9,LOOP,END,LABEL=main,,ƒ‹[ƒvI’[
 
-- `LOOP`: LOOPãƒ–ãƒ­ãƒƒã‚¯åˆ¶å¾¡ (BEGIN/END, COUNT, LABEL å¯¾å¿œ)
-- `Name`: æŽ¥ç¶šè­˜åˆ¥å
+- `LOOP`: LOOPƒuƒƒbƒN§Œä (BEGIN/END, COUNT, LABEL ‘Î‰ž)
+- `Name`: Ú‘±Ž¯•Ê–¼
 - `Protocol`: TCP/UDP
 - `Mode`: Client/Server/Sender/Receiver
-- `LocalIP`, `LocalPort`: ãƒ­ãƒ¼ã‚«ãƒ«ãƒã‚¤ãƒ³ãƒ‰è¨­å®š
-- `RemoteIP`, `RemotePort`: ãƒªãƒ¢ãƒ¼ãƒˆæŽ¥ç¶šå…ˆ
-- `AutoStart`: èµ·å‹•æ™‚è‡ªå‹•æŽ¥ç¶šãƒ•ãƒ©ã‚°
-- `ScenarioFile`: é–¢é€£ä»˜ã‘ã‚‹ã‚·ãƒŠãƒªã‚ªãƒ•ã‚¡ã‚¤ãƒ«
+- `LocalIP`, `LocalPort`: ƒ[ƒJƒ‹ƒoƒCƒ“ƒhÝ’è
+- `RemoteIP`, `RemotePort`: ƒŠƒ‚[ƒgÚ‘±æ
+- `AutoStart`: ‹N“®ŽžŽ©“®Ú‘±ƒtƒ‰ƒO
+- `ScenarioFile`: ŠÖ˜A•t‚¯‚éƒVƒiƒŠƒIƒtƒ@ƒCƒ‹
 
-### 4.2 ã‚·ãƒŠãƒªã‚ªãƒ•ã‚¡ã‚¤ãƒ«ï¼ˆscenarios/*.csvï¼‰
-ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ãƒ•ã‚©ãƒ«ãƒ€å†…ã«é…ç½®ã€‚å„ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹å°‚ç”¨ã®ã‚·ãƒŠãƒªã‚ªã‚’å®šç¾©ã€‚
+### 4.2 ƒVƒiƒŠƒIƒtƒ@ƒCƒ‹iscenarios/*.csvj
+ƒCƒ“ƒXƒ^ƒ“ƒXƒtƒHƒ‹ƒ_“à‚É”z’uBŠeƒCƒ“ƒXƒ^ƒ“ƒXê—p‚ÌƒVƒiƒŠƒI‚ð’è‹`B
 ```csv
 Step,Action,Parameter1,Parameter2,Parameter3,Description
-1,SEND,${MSG_HELLO},,,Helloé€ä¿¡
-2,WAIT_RECV,TIMEOUT=5000,PATTERN=OK,,å¿œç­”å¾…æ©Ÿ
-3,SAVE_RECV,VAR_NAME=response,,,å—ä¿¡ãƒ‡ãƒ¼ã‚¿ã‚’å¤‰æ•°ã«ä¿å­˜
-4,SLEEP,1000,,,1ç§’å¾…æ©Ÿ
-5,SEND_HEX,48656C6C6F,,,HEXãƒ‡ãƒ¼ã‚¿é€ä¿¡
-6,SEND,${response},,,å—ä¿¡ã—ãŸãƒ‡ãƒ¼ã‚¿ã‚’é€ã‚Šè¿”ã™
-7,CALL_SCRIPT,custom_check.ps1,,,ã‚«ã‚¹ã‚¿ãƒ å‡¦ç†å®Ÿè¡Œ
-8,LOOP,1,7,,,ã‚¹ãƒ†ãƒƒãƒ—1-7ã‚’ãƒ«ãƒ¼ãƒ—
+1,SEND,${MSG_HELLO},,,Hello‘—M
+2,WAIT_RECV,TIMEOUT=5000,PATTERN=OK,,‰ž“š‘Ò‹@
+3,SAVE_RECV,VAR_NAME=response,,,ŽóMƒf[ƒ^‚ð•Ï”‚É•Û‘¶
+4,SLEEP,1000,,,1•b‘Ò‹@
+5,SEND_HEX,48656C6C6F,,,HEXƒf[ƒ^‘—M
+6,SEND,${response},,,ŽóM‚µ‚½ƒf[ƒ^‚ð‘—‚è•Ô‚·
+7,CALL_SCRIPT,custom_check.ps1,,,ƒJƒXƒ^ƒ€ˆ—ŽÀs
+8,LOOP,1,7,,,ƒXƒeƒbƒv1-7‚ðƒ‹[ƒv
 ```
 
-**ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ç¨®é¡ž:**
-- `SEND`: ãƒ†ã‚­ã‚¹ãƒˆé€ä¿¡ï¼ˆå¤‰æ•°å±•é–‹å¯ï¼‰
-- `SEND_HEX`: HEXæ–‡å­—åˆ—é€ä¿¡
-- `SEND_FILE`: ãƒ•ã‚¡ã‚¤ãƒ«å†…å®¹é€ä¿¡
-- `WAIT_RECV`: å—ä¿¡å¾…æ©Ÿï¼ˆã‚¿ã‚¤ãƒ ã‚¢ã‚¦ãƒˆã€ãƒ‘ã‚¿ãƒ¼ãƒ³ãƒžãƒƒãƒï¼‰
-- `SAVE_RECV`: å—ä¿¡ãƒ‡ãƒ¼ã‚¿ã‚’å¤‰æ•°ã«ä¿å­˜ï¼ˆæ¬¡å›žé€ä¿¡ã§åˆ©ç”¨å¯èƒ½ï¼‰
-- `SLEEP`: æ™‚é–“å¾…æ©Ÿ
-- `CALL_SCRIPT`: å¤–éƒ¨ã‚¹ã‚¯ãƒªãƒ—ãƒˆå®Ÿè¡Œ
-- `SET_VAR`: å¤‰æ•°è¨­å®š
-- `IF`: æ¡ä»¶åˆ†å²
-- `LOOP`: ãƒ«ãƒ¼ãƒ—å‡¦ç†
-- `DISCONNECT`: åˆ‡æ–­
-- `RECONNECT`: å†æŽ¥ç¶š
+**ƒAƒNƒVƒ‡ƒ“Ží—Þ:**
+- `SEND`: ƒeƒLƒXƒg‘—Mi•Ï”“WŠJ‰Âj
+- `SEND_HEX`: HEX•¶Žš—ñ‘—M
+- `SEND_FILE`: ƒtƒ@ƒCƒ‹“à—e‘—M
+- `WAIT_RECV`: ŽóM‘Ò‹@iƒ^ƒCƒ€ƒAƒEƒgAƒpƒ^[ƒ“ƒ}ƒbƒ`j
+- `SAVE_RECV`: ŽóMƒf[ƒ^‚ð•Ï”‚É•Û‘¶iŽŸ‰ñ‘—M‚Å—˜—p‰Â”\j
+- `SLEEP`: ŽžŠÔ‘Ò‹@
+- `CALL_SCRIPT`: ŠO•”ƒXƒNƒŠƒvƒgŽÀs
+- `SET_VAR`: •Ï”Ý’è
+- `IF`: ðŒ•ªŠò
+- `LOOP`: ƒ‹[ƒvˆ—
+- `DISCONNECT`: Ø’f
+- `RECONNECT`: ÄÚ‘±
 
-### 4.3 é›»æ–‡ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆï¼ˆtemplates/message_templates.csvï¼‰
-ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ãƒ•ã‚©ãƒ«ãƒ€å†…ã«é…ç½®ã€‚å„ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹å°‚ç”¨ã®é›»æ–‡ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆã‚’å®šç¾©ã€‚
+### 4.3 “d•¶ƒeƒ“ƒvƒŒ[ƒgitemplates/message_templates.csvj
+ƒCƒ“ƒXƒ^ƒ“ƒXƒtƒHƒ‹ƒ_“à‚É”z’uBŠeƒCƒ“ƒXƒ^ƒ“ƒXê—p‚Ì“d•¶ƒeƒ“ƒvƒŒ[ƒg‚ð’è‹`B
 ```csv
 TemplateName,MessageFormat,Encoding
 MSG_HELLO,Hello from ${HOSTNAME} at ${TIMESTAMP},ASCII
@@ -488,16 +488,16 @@ MSG_BINARY,${HEX:AABBCCDD}${VAR:sequence},HEX
 MSG_ECHO,${response},UTF-8
 ```
 
-**å¤‰æ•°ã‚¿ã‚¤ãƒ—:**
-- `${å¤‰æ•°å}`: é€šå¸¸å¤‰æ•°ï¼ˆSAVE_RECVã§ä¿å­˜ã—ãŸå—ä¿¡ãƒ‡ãƒ¼ã‚¿ç­‰ï¼‰
-- `${TIMESTAMP}`: ã‚¿ã‚¤ãƒ ã‚¹ã‚¿ãƒ³ãƒ—ï¼ˆyyyyMMddHHmmssï¼‰
-- `${DATETIME:format}`: æ›¸å¼æŒ‡å®šæ—¥æ™‚
-- `${RANDOM:min-max}`: ãƒ©ãƒ³ãƒ€ãƒ å€¤
-- `${SEQ:name}`: ã‚·ãƒ¼ã‚±ãƒ³ã‚¹ç•ªå·ï¼ˆè‡ªå‹•ã‚¤ãƒ³ã‚¯ãƒªãƒ¡ãƒ³ãƒˆï¼‰
-- `${HEX:value}`: HEXå¤‰æ›
-- `${CALC:expression}`: è¨ˆç®—å¼
+**•Ï”ƒ^ƒCƒv:**
+- `${•Ï”–¼}`: ’Êí•Ï”iSAVE_RECV‚Å•Û‘¶‚µ‚½ŽóMƒf[ƒ^“™j
+- `${TIMESTAMP}`: ƒ^ƒCƒ€ƒXƒ^ƒ“ƒviyyyyMMddHHmmssj
+- `${DATETIME:format}`: ‘Ž®Žw’è“úŽž
+- `${RANDOM:min-max}`: ƒ‰ƒ“ƒ_ƒ€’l
+- `${SEQ:name}`: ƒV[ƒPƒ“ƒX”Ô†iŽ©“®ƒCƒ“ƒNƒŠƒƒ“ƒgj
+- `${HEX:value}`: HEX•ÏŠ·
+- `${CALC:expression}`: ŒvŽZŽ®
 
-### 4.4 è‡ªå‹•å¿œç­”ãƒ«ãƒ¼ãƒ«ï¼ˆscenarios/auto_response.csvï¼‰
+### 4.4 Ž©“®‰ž“šƒ‹[ƒ‹iscenarios/auto_response.csvj
 ```csv
 TriggerPattern,ResponseTemplate,Encoding,Delay,MatchType
 ^PING,PONG,ASCII,0,Regex
@@ -505,32 +505,32 @@ STATUS,OK ${TIMESTAMP},UTF-8,100,Exact
 0x01020304,${MSG_ACK},HEX,0,Exact
 ```
 
-**ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰èª¬æ˜Ž:**
-- `TriggerPattern`: å—ä¿¡ãƒ‡ãƒ¼ã‚¿ã®ãƒžãƒƒãƒãƒ‘ã‚¿ãƒ¼ãƒ³
-- `ResponseTemplate`: å¿œç­”ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆï¼ˆå¤‰æ•°ä½¿ç”¨å¯ï¼‰
-- `Encoding`: ã‚¨ãƒ³ã‚³ãƒ¼ãƒ‡ã‚£ãƒ³ã‚°
-- `Delay`: å¿œç­”é…å»¶ï¼ˆãƒŸãƒªç§’ï¼‰
+**ƒtƒB[ƒ‹ƒhà–¾:**
+- `TriggerPattern`: ŽóMƒf[ƒ^‚Ìƒ}ƒbƒ`ƒpƒ^[ƒ“
+- `ResponseTemplate`: ‰ž“šƒeƒ“ƒvƒŒ[ƒgi•Ï”Žg—p‰Âj
+- `Encoding`: ƒGƒ“ƒR[ƒfƒBƒ“ƒO
+- `Delay`: ‰ž“š’x‰„iƒ~ƒŠ•bj
 - `MatchType`: Regex/Exact/Contains
-### 4.5 é€ä¿¡ãƒ‡ãƒ¼ã‚¿ãƒãƒ³ã‚¯ï¼ˆdatabank.csvï¼‰
-ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ãƒ•ã‚©ãƒ«ãƒ€å†…ã«é…ç½®ã€‚ã‚¯ã‚¤ãƒƒã‚¯é€ä¿¡ç”¨ã®é›»æ–‡ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆä¸€è¦§ã‚’å®šç¾©ã€‚
+### 4.5 ‘—Mƒf[ƒ^ƒoƒ“ƒNidatabank.csvj
+ƒCƒ“ƒXƒ^ƒ“ƒXƒtƒHƒ‹ƒ_“à‚É”z’uBƒNƒCƒbƒN‘—M—p‚Ì“d•¶ƒeƒ“ƒvƒŒ[ƒgˆê——‚ð’è‹`B
 ```csv
 DataID,Category,Description,Type,Content
-STATUS,Basic,ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ç¢ºèª,TEXT,"STATUS\n"
-QUERY,Basic,ãƒ‡ãƒ¼ã‚¿è¦æ±‚,TEXT,"QUERY\n"
-PING,Health,ç–Žé€šç¢ºèª,HEX,50494E470D0A
-SEQ_STATUS,Sequence,ã‚·ãƒ¼ã‚±ãƒ³ã‚¹ä»˜ä¸Ž,TEMPLATE,SEQ=${SEQ:main}|TIME=${TIMESTAMP}
-ECHO_BACK,Dynamic,å—ä¿¡ãƒ‡ãƒ¼ã‚¿è¿”é€,TEXT,${response}
+STATUS,Basic,ƒXƒe[ƒ^ƒXŠm”F,TEXT,"STATUS\n"
+QUERY,Basic,ƒf[ƒ^—v‹,TEXT,"QUERY\n"
+PING,Health,‘a’ÊŠm”F,HEX,50494E470D0A
+SEQ_STATUS,Sequence,ƒV[ƒPƒ“ƒX•t—^,TEMPLATE,SEQ=${SEQ:main}|TIME=${TIMESTAMP}
+ECHO_BACK,Dynamic,ŽóMƒf[ƒ^•Ô‘—,TEXT,${response}
 ```
 
-**ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰èª¬æ˜Ž:**
-- `DataID`: ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆè­˜åˆ¥å­ï¼ˆUIãƒœã‚¿ãƒ³åã€ãƒ‰ãƒ­ãƒƒãƒ—ãƒ€ã‚¦ãƒ³è¡¨ç¤ºåï¼‰
-- `Category`: ç”¨é€”ï¼ˆBasic/Health/Dynamicãªã©ï¼‰
-- `Description`: ã‚ªãƒšãƒ¬ãƒ¼ã‚¿å‘ã‘èª¬æ˜Ž
-- `Type`: TEXT/HEX/FILE/TEMPLATE ãªã©
-- `Content`: å®Ÿãƒ‡ãƒ¼ã‚¿ã¾ãŸã¯ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆï¼ˆå¤‰æ•°ä½¿ç”¨å¯ï¼‰
+**ƒtƒB[ƒ‹ƒhà–¾:**
+- `DataID`: ƒeƒ“ƒvƒŒ[ƒgŽ¯•ÊŽqiUIƒ{ƒ^ƒ“–¼Aƒhƒƒbƒvƒ_ƒEƒ“•\Ž¦–¼j
+- `Category`: —p“riBasic/Health/Dynamic‚È‚Çj
+- `Description`: ƒIƒyƒŒ[ƒ^Œü‚¯à–¾
+- `Type`: TEXT/HEX/FILE/TEMPLATE ‚È‚Ç
+- `Content`: ŽÀƒf[ƒ^‚Ü‚½‚Íƒeƒ“ƒvƒŒ[ƒgi•Ï”Žg—p‰Âj
 
-### 4.6 è¨ºæ–­ãƒ«ãƒ¼ãƒ«è¨­å®šï¼ˆdiagnostics.psd1ï¼‰
-ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ãƒ•ã‚©ãƒ«ãƒ€å†…ã«é…ç½®ã€‚ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹å›ºæœ‰ã®è¨ºæ–­ãƒ«ãƒ¼ãƒ«ã‚’å®šç¾©å¯èƒ½ã€‚
+### 4.6 f’fƒ‹[ƒ‹Ý’èidiagnostics.psd1j
+ƒCƒ“ƒXƒ^ƒ“ƒXƒtƒHƒ‹ƒ_“à‚É”z’uBƒCƒ“ƒXƒ^ƒ“ƒXŒÅ—L‚Ìf’fƒ‹[ƒ‹‚ð’è‹`‰Â”\B
 ```powershell
 @{
    checks = @(
@@ -539,554 +539,554 @@ ECHO_BACK,Dynamic,å—ä¿¡ãƒ‡ãƒ¼ã‚¿è¿”é€,TEXT,${response}
       @{type = "route"; destination = '${REMOTE_IP}'}
    )
    recommendations = @(
-      @{code = "PING_FAIL"; message = "å¯¾è±¡è£…ç½®ã®é›»æº/ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯çŠ¶æ…‹ã‚’ç¢ºèªã—ã¦ãã ã•ã„"}
-      @{code = "PORT_CLOSED"; message = "ãƒãƒ¼ãƒˆ8080ãŒé–‰ã˜ã¦ã„ã¾ã™ã€‚å¯¾è±¡è£…ç½®ã®ã‚µãƒ¼ãƒ“ã‚¹èµ·å‹•ã‚’ç¢ºèªã—ã¦ãã ã•ã„"}
+      @{code = "PING_FAIL"; message = "‘ÎÛ‘•’u‚Ì“dŒ¹/ƒlƒbƒgƒ[ƒNó‘Ô‚ðŠm”F‚µ‚Ä‚­‚¾‚³‚¢"}
+      @{code = "PORT_CLOSED"; message = "ƒ|[ƒg8080‚ª•Â‚¶‚Ä‚¢‚Ü‚·B‘ÎÛ‘•’u‚ÌƒT[ƒrƒX‹N“®‚ðŠm”F‚µ‚Ä‚­‚¾‚³‚¢"}
    )
 }
 ```
 
-**ã‚­ãƒ¼èª¬æ˜Ž:**
-- `checks`: å®Ÿè¡Œã™ã‚‹è¨ºæ–­ã‚¹ãƒ†ãƒƒãƒ—ï¼ˆPing/Port/Routeç­‰ï¼‰
-- `recommendations`: åˆ¤å®šã‚³ãƒ¼ãƒ‰ã«ç´ã¥ãã‚¢ãƒ‰ãƒã‚¤ã‚¹ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆ
-- å¤‰æ•° `${REMOTE_IP}` ãªã©ã¯æŽ¥ç¶šè¨­å®šã‹ã‚‰è‡ªå‹•å±•é–‹
+**ƒL[à–¾:**
+- `checks`: ŽÀs‚·‚éf’fƒXƒeƒbƒviPing/Port/Route“™j
+- `recommendations`: ”»’èƒR[ƒh‚É•R‚Ã‚­ƒAƒhƒoƒCƒXƒeƒ“ƒvƒŒ[ƒg
+- •Ï” `${REMOTE_IP}` ‚È‚Ç‚ÍÚ‘±Ý’è‚©‚çŽ©“®“WŠJ
 
 ---
 
-## 5. GUIè¨­è¨ˆ
+## 5. GUIÝŒv
 
-### 5.1 ãƒ‡ã‚¶ã‚¤ãƒ³ã‚³ãƒ³ã‚»ãƒ—ãƒˆ
-- **å®Ÿç”¨æ€§é‡è¦–**: WinFormsã®æ¨™æº–ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ã‚’æ´»ç”¨ã—ãŸã‚·ãƒ³ãƒ—ãƒ«ã§å …ç‰¢ãªUI
-- **è¦–èªæ€§é‡è¦–**: æ˜Žã‚‹ã„èƒŒæ™¯ã«é©åº¦ãªã‚³ãƒ³ãƒˆãƒ©ã‚¹ãƒˆã€é‡è¦æƒ…å ±ã¯è‰²ãƒ»ã‚µã‚¤ã‚ºã§å¼·èª¿
-- **åŠ¹çŽ‡çš„ãªæ“ä½œ**: ãƒ‰ãƒ­ãƒƒãƒ—ãƒ€ã‚¦ãƒ³é¸æŠžï¼‹é€ä¿¡ãƒœã‚¿ãƒ³ã®ã‚·ãƒ³ãƒ—ãƒ«ãªãƒ¯ãƒ³ã‚¢ã‚¯ã‚·ãƒ§ãƒ³é€ä¿¡
-- **ã‚¹ã‚±ãƒ¼ãƒ©ãƒ–ãƒ«**: å¤šæ•°ã®æŽ¥ç¶šã‚’éšŽå±¤çš„ã«ç®¡ç†ã€ãƒ‘ãƒãƒ«ã‚µã‚¤ã‚ºèª¿æ•´å¯èƒ½
-- **ä¸‰åˆ†å‰²ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ**: å·¦ï¼ˆã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ä¸€è¦§ï¼‰ãƒ»ä¸­å¤®ï¼ˆæ“ä½œãƒ‘ãƒãƒ«ï¼‰ãƒ»å³ï¼ˆãƒ­ã‚°/è¨ºæ–­ï¼‰ã®æ§‹æˆ
+### 5.1 ƒfƒUƒCƒ“ƒRƒ“ƒZƒvƒg
+- **ŽÀ—p«dŽ‹**: WinForms‚Ì•W€ƒRƒ“ƒgƒ[ƒ‹‚ðŠˆ—p‚µ‚½ƒVƒ“ƒvƒ‹‚ÅŒ˜˜S‚ÈUI
+- **Ž‹”F«dŽ‹**: –¾‚é‚¢”wŒi‚É“K“x‚ÈƒRƒ“ƒgƒ‰ƒXƒgAd—vî•ñ‚ÍFEƒTƒCƒY‚Å‹­’²
+- **Œø—¦“I‚È‘€ì**: ƒhƒƒbƒvƒ_ƒEƒ“‘I‘ð{‘—Mƒ{ƒ^ƒ“‚ÌƒVƒ“ƒvƒ‹‚Èƒƒ“ƒAƒNƒVƒ‡ƒ“‘—M
+- **ƒXƒP[ƒ‰ƒuƒ‹**: ‘½”‚ÌÚ‘±‚ðŠK‘w“I‚ÉŠÇ—Aƒpƒlƒ‹ƒTƒCƒY’²®‰Â”\
+- **ŽO•ªŠ„ƒŒƒCƒAƒEƒg**: ¶iƒCƒ“ƒXƒ^ƒ“ƒXˆê——jE’†‰›i‘€ìƒpƒlƒ‹jE‰EiƒƒO/f’fj‚Ì\¬
 
-### 5.2 ãƒ¡ã‚¤ãƒ³ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦æ§‹æˆ
+### 5.2 ƒƒCƒ“ƒEƒBƒ“ƒhƒE\¬
 
-#### ãƒ‘ã‚¿ãƒ¼ãƒ³A: ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ä¸€è¦§ãƒ™ãƒ¼ã‚¹ï¼ˆæŽ¨å¥¨ï¼‰
+#### ƒpƒ^[ƒ“A: ƒCƒ“ƒXƒ^ƒ“ƒXˆê——ƒx[ƒXi„§j
 ```
-â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-â”‚ TCP Test Controller                  [Refresh][Connect All]  [â”€][â–¡][Ã—] â”‚
-â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
-â”‚ Instance List                                                           â”‚
-â”‚â”Œâ”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â” â”‚
-â”‚â”‚ â— â”‚ Name         â”‚Protocolâ”‚ Endpoint â”‚ Scenario     â”‚Statusâ”‚ Action â”‚â”‚ â”‚
-â”‚â”œâ”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”¤ â”‚
-â”‚â”‚ â— â”‚WebServer-Sim â”‚TCP Svr â”‚:8080     â”‚[startup.csvâ–¼]â”‚ RUN  â”‚[Stop]  â”‚â”‚ â”‚
-â”‚â”‚ â— â”‚PLC-Ctrl-01   â”‚TCP Cli â”‚192....:502â”‚[poll.csv  â–¼]â”‚ IDLE â”‚[Start] â”‚â”‚ â”‚
-â”‚â”‚ â—‹ â”‚LoadTest-01   â”‚TCP Cli â”‚192....:9000â”‚[burst.csv â–¼]â”‚ ---- â”‚[Conn]  â”‚â”‚ â”‚
-â”‚â”‚ â— â”‚WebServer-02  â”‚TCP Svr â”‚:8081     â”‚[None      â–¼]â”‚ IDLE â”‚[Start] â”‚â”‚ â”‚
-â”‚â””â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”˜ â”‚
-â”‚                                                                         â”‚
-â”‚ Selected: WebServer-Sim                                    [Detailsâ–¼]  â”‚
-â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
-â”‚ â—‹ Manual Send  â— Scenario Control  â—‹ Diagnostics                      â”‚
-â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
-â”‚ Scenario: startup.csv     â”‚ Instance Log: WebServer-Sim                â”‚
-â”‚ ? Step 3/12              â”‚â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”â”‚
-â”‚ Sending STATUS_OK         â”‚â”‚14:30:25 â–² SEND STATUS_OK                â”‚â”‚
-â”‚ ???????????? 67%         â”‚â”‚14:30:26 â–¼ RECV ACK (64 bytes)           â”‚â”‚
-â”‚                           â”‚â”‚14:30:27 â–² SEND QUERY                    â”‚â”‚
-â”‚ [? Run] [? Pause]        â”‚â”‚                                          â”‚â”‚
-â”‚ [? Stop] [? Next Step]   â”‚â”‚                                          â”‚â”‚
-â”‚                           â”‚â”‚                                          â”‚â”‚
-â”‚ Variables:                â”‚â”‚                                          â”‚â”‚
-â”‚  response = "ACK"         â”‚â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜â”‚
-â”‚  seq = 3                  â”‚                                            â”‚
-â”‚                           â”‚ [Clear Log] [Export Log]                   â”‚
-â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
-â”‚ Ready | 3/4 connected | Selected: WebServer-Sim           v1.0.0      â”‚
-â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
-```
-
-**ç‰¹å¾´:**
-- **ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ä¸€è¦§ãƒ†ãƒ¼ãƒ–ãƒ«**: ã™ã¹ã¦ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’1ç”»é¢ã§æŠŠæ¡ã€‚çŠ¶æ…‹ï¼ˆâ—=æŽ¥ç¶šä¸­ã€â—‹=åˆ‡æ–­ï¼‰ã€ã‚·ãƒŠãƒªã‚ªã€å®Ÿè¡ŒçŠ¶æ…‹ã‚’ä¸€è¦§è¡¨ç¤ºã€‚
-- **ã‚¤ãƒ³ãƒ©ã‚¤ãƒ³ã‚·ãƒŠãƒªã‚ªé¸æŠž**: å„è¡Œã«ãƒ‰ãƒ­ãƒƒãƒ—ãƒ€ã‚¦ãƒ³ã‚’é…ç½®ã—ã€ã‚·ãƒŠãƒªã‚ªã‚’å³åº§ã«åˆ‡ã‚Šæ›¿ãˆå¯èƒ½ã€‚
-- **è¡Œé¸æŠžã§è©³ç´°æ“ä½œ**: ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’é¸æŠžã™ã‚‹ã¨ã€ä¸‹éƒ¨ã«è©³ç´°æ“ä½œãƒ‘ãƒãƒ«ï¼ˆManual/Scenario/Diagnosticsï¼‰ãŒè¡¨ç¤ºã•ã‚Œã‚‹ã€‚
-- **ã‚·ãƒŠãƒªã‚ªå®Ÿè¡ŒçŠ¶æ…‹ã®å¯è¦–æ€§**: Statusåˆ—ã§IDLE/RUN/ERRORã‚’è¡¨ç¤ºã—ã€è¤‡æ•°ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®åŒæ™‚å®Ÿè¡ŒçŠ¶æ³ã‚’æŠŠæ¡ã—ã‚„ã™ã„ã€‚
-
-#### ãƒ‘ã‚¿ãƒ¼ãƒ³B: ã‚¿ãƒ–åˆ‡ã‚Šæ›¿ãˆæ–¹å¼ï¼ˆä»£æ›¿æ¡ˆï¼‰
-```
-â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-â”‚ TCP Test Controller                                        [â”€][â–¡][Ã—]   â”‚
-â”‚â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”           â”‚
-â”‚â”‚WebServer-Sim â”‚ PLC-Ctrl-01  â”‚ LoadTest-01  â”‚ WebServer-02 â”‚ [+]       â”‚
-â”‚â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜           â”‚
-â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
-â”‚ Instance: WebServer-Sim (â—Connected)                      [Disconnect]  â”‚
-â”‚ Protocol: TCP Server | Endpoint: 0.0.0.0:8080                          â”‚
-â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
-â”‚ â—‹ Manual  â— Scenario  â—‹ Diagâ”‚ Instance Log                            â”‚
-â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”â”‚
-â”‚ Scenario: [startup.csv â–¼] â”‚â”‚14:30:25 â–² SEND STATUS_OK                â”‚â”‚
-â”‚                           â”‚â”‚14:30:26 â–¼ RECV ACK (64 bytes)           â”‚â”‚
-â”‚ ? Step 3/12              â”‚â”‚14:30:27 â–² SEND QUERY                    â”‚â”‚
-â”‚ Sending STATUS_OK         â”‚â”‚                                          â”‚â”‚
-â”‚ ???????????? 67%         â”‚â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜â”‚
-â”‚                           â”‚                                            â”‚
-â”‚ [? Run] [? Pause]        â”‚ Global Log (All Instances)                 â”‚
-â”‚ [? Stop] [? Next Step]   â”‚â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”â”‚
-â”‚                           â”‚â”‚14:30:25 [WebServer-Sim] â–² SEND STATUS   â”‚â”‚
-â”‚ Variables:                â”‚â”‚14:30:26 [PLC-Ctrl-01] â–¼ RECV 0x0102     â”‚â”‚
-â”‚  response = "ACK"         â”‚â”‚14:30:27 [WebServer-Sim] â–¼ RECV ACK      â”‚â”‚
-â”‚  seq = 3                  â”‚â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜â”‚
-â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
-â”‚ 3/4 connected | Active: 2 scenarios running                v1.0.0      â”‚
-â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+„¡„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„¢
+„  TCP Test Controller                  [Refresh][Connect All]  [„Ÿ][ ][~] „ 
+„¥„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„§
+„  Instance List                                                           „ 
+„ „¡„Ÿ„Ÿ„Ÿ„¦„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„¦„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„¦„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„¦„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„¦„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„¦„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„¢ „ 
+„ „  œ „  Name         „ Protocol„  Endpoint „  Scenario     „ Status„  Action „ „  „ 
+„ „¥„Ÿ„Ÿ„Ÿ„©„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„©„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„©„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„©„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„©„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„©„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„§ „ 
+„ „  œ „ WebServer-Sim „ TCP Svr „ :8080     „ [startup.csv¥]„  RUN  „ [Stop]  „ „  „ 
+„ „  œ „ PLC-Ctrl-01   „ TCP Cli „ 192....:502„ [poll.csv  ¥]„  IDLE „ [Start] „ „  „ 
+„ „  › „ LoadTest-01   „ TCP Cli „ 192....:9000„ [burst.csv ¥]„  ---- „ [Conn]  „ „  „ 
+„ „  œ „ WebServer-02  „ TCP Svr „ :8081     „ [None      ¥]„  IDLE „ [Start] „ „  „ 
+„ „¤„Ÿ„Ÿ„Ÿ„¨„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„¨„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„¨„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„¨„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„¨„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„¨„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„£ „ 
+„                                                                          „ 
+„  Selected: WebServer-Sim                                    [Details¥]  „ 
+„¥„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„§
+„  › Manual Send  œ Scenario Control  › Diagnostics                      „ 
+„¥„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„¦„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„§
+„  Scenario: startup.csv     „  Instance Log: WebServer-Sim                „ 
+„  ? Step 3/12              „ „¡„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„¢„ 
+„  Sending STATUS_OK         „ „ 14:30:25 £ SEND STATUS_OK                „ „ 
+„  ???????????? 67%         „ „ 14:30:26 ¥ RECV ACK (64 bytes)           „ „ 
+„                            „ „ 14:30:27 £ SEND QUERY                    „ „ 
+„  [? Run] [? Pause]        „ „                                           „ „ 
+„  [? Stop] [? Next Step]   „ „                                           „ „ 
+„                            „ „                                           „ „ 
+„  Variables:                „ „                                           „ „ 
+„   response = "ACK"         „ „¤„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„£„ 
+„   seq = 3                  „                                             „ 
+„                            „  [Clear Log] [Export Log]                   „ 
+„¤„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„¨„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„£
+„  Ready | 3/4 connected | Selected: WebServer-Sim           v1.0.0      „ 
+„¤„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„£
 ```
 
-**ç‰¹å¾´:**
-- **ã‚¿ãƒ–åˆ‡ã‚Šæ›¿ãˆ**: å„ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’å€‹åˆ¥ã‚¿ãƒ–ã§è¡¨ç¤ºã€‚é›†ä¸­ã—ã¦1ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’æ“ä½œã§ãã‚‹ã€‚
-- **ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã”ã¨ã®ãƒ­ã‚°**: é¸æŠžä¸­ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®ãƒ­ã‚°ã‚’å€‹åˆ¥è¡¨ç¤ºã€‚
-- **ã‚°ãƒ­ãƒ¼ãƒãƒ«ãƒ­ã‚°**: å…¨ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®ãƒ­ã‚°ã‚’æ™‚ç³»åˆ—ã§è¡¨ç¤ºã—ã€å…¨ä½“ã®å‹•ãã‚’æŠŠæ¡ã€‚
+**“Á’¥:**
+- **ƒCƒ“ƒXƒ^ƒ“ƒXˆê——ƒe[ƒuƒ‹**: ‚·‚×‚Ä‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ð1‰æ–Ê‚Å”cˆ¬Bó‘Ôiœ=Ú‘±’†A›=Ø’fjAƒVƒiƒŠƒIAŽÀsó‘Ô‚ðˆê——•\Ž¦B
+- **ƒCƒ“ƒ‰ƒCƒ“ƒVƒiƒŠƒI‘I‘ð**: Šes‚Éƒhƒƒbƒvƒ_ƒEƒ“‚ð”z’u‚µAƒVƒiƒŠƒI‚ð‘¦À‚ÉØ‚è‘Ö‚¦‰Â”\B
+- **s‘I‘ð‚ÅÚ×‘€ì**: ƒCƒ“ƒXƒ^ƒ“ƒX‚ð‘I‘ð‚·‚é‚ÆA‰º•”‚ÉÚ×‘€ìƒpƒlƒ‹iManual/Scenario/Diagnosticsj‚ª•\Ž¦‚³‚ê‚éB
+- **ƒVƒiƒŠƒIŽÀsó‘Ô‚Ì‰ÂŽ‹«**: Status—ñ‚ÅIDLE/RUN/ERROR‚ð•\Ž¦‚µA•¡”ƒCƒ“ƒXƒ^ƒ“ƒX‚Ì“¯ŽžŽÀsó‹µ‚ð”cˆ¬‚µ‚â‚·‚¢B
+
+#### ƒpƒ^[ƒ“B: ƒ^ƒuØ‚è‘Ö‚¦•ûŽ®i‘ã‘ÖˆÄj
+```
+„¡„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„¢
+„  TCP Test Controller                                        [„Ÿ][ ][~]   „ 
+„ „¡„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„¦„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„¦„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„¦„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„¢           „ 
+„ „ WebServer-Sim „  PLC-Ctrl-01  „  LoadTest-01  „  WebServer-02 „  [+]       „ 
+„ „¤„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„¨„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„¨„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„¨„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„£           „ 
+„¥„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„§
+„  Instance: WebServer-Sim (œConnected)                      [Disconnect]  „ 
+„  Protocol: TCP Server | Endpoint: 0.0.0.0:8080                          „ 
+„¥„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„¦„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„§
+„  › Manual  œ Scenario  › Diag„  Instance Log                            „ 
+„¥„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„§„¡„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„¢„ 
+„  Scenario: [startup.csv ¥] „ „ 14:30:25 £ SEND STATUS_OK                „ „ 
+„                            „ „ 14:30:26 ¥ RECV ACK (64 bytes)           „ „ 
+„  ? Step 3/12              „ „ 14:30:27 £ SEND QUERY                    „ „ 
+„  Sending STATUS_OK         „ „                                           „ „ 
+„  ???????????? 67%         „ „¤„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„£„ 
+„                            „                                             „ 
+„  [? Run] [? Pause]        „  Global Log (All Instances)                 „ 
+„  [? Stop] [? Next Step]   „ „¡„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„¢„ 
+„                            „ „ 14:30:25 [WebServer-Sim] £ SEND STATUS   „ „ 
+„  Variables:                „ „ 14:30:26 [PLC-Ctrl-01] ¥ RECV 0x0102     „ „ 
+„   response = "ACK"         „ „ 14:30:27 [WebServer-Sim] ¥ RECV ACK      „ „ 
+„   seq = 3                  „ „¤„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„£„ 
+„¤„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„¨„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„£
+„  3/4 connected | Active: 2 scenarios running                v1.0.0      „ 
+„¤„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„£
+```
+
+**“Á’¥:**
+- **ƒ^ƒuØ‚è‘Ö‚¦**: ŠeƒCƒ“ƒXƒ^ƒ“ƒX‚ðŒÂ•Êƒ^ƒu‚Å•\Ž¦BW’†‚µ‚Ä1ƒCƒ“ƒXƒ^ƒ“ƒX‚ð‘€ì‚Å‚«‚éB
+- **ƒCƒ“ƒXƒ^ƒ“ƒX‚²‚Æ‚ÌƒƒO**: ‘I‘ð’†ƒCƒ“ƒXƒ^ƒ“ƒX‚ÌƒƒO‚ðŒÂ•Ê•\Ž¦B
+- **ƒOƒ[ƒoƒ‹ƒƒO**: ‘SƒCƒ“ƒXƒ^ƒ“ƒX‚ÌƒƒO‚ðŽžŒn—ñ‚Å•\Ž¦‚µA‘S‘Ì‚Ì“®‚«‚ð”cˆ¬B
 
 ---
 
-### 5.3 æŽ¨å¥¨ãƒ‡ã‚¶ã‚¤ãƒ³: ãƒ‘ã‚¿ãƒ¼ãƒ³Aï¼ˆã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ä¸€è¦§ãƒ™ãƒ¼ã‚¹ï¼‰
+### 5.3 „§ƒfƒUƒCƒ“: ƒpƒ^[ƒ“AiƒCƒ“ƒXƒ^ƒ“ƒXˆê——ƒx[ƒXj
 
-**æŽ¡ç”¨ç†ç”±:**
-1. **çŠ¶æ³æŠŠæ¡ãŒå®¹æ˜“**: è¤‡æ•°ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®çŠ¶æ…‹ãƒ»ã‚·ãƒŠãƒªã‚ªå®Ÿè¡ŒçŠ¶æ³ã‚’1ç”»é¢ã§æŠŠæ¡
-2. **ã‚·ãƒŠãƒªã‚ªåˆ‡ã‚Šæ›¿ãˆãŒè¿…é€Ÿ**: å„è¡Œã®ãƒ‰ãƒ­ãƒƒãƒ—ãƒ€ã‚¦ãƒ³ã§å³åº§ã«åˆ‡ã‚Šæ›¿ãˆã€Start/Stopãƒœã‚¿ãƒ³ã§åˆ¶å¾¡
-3. **æ¯”è¼ƒãŒç°¡å˜**: åŒæ™‚å®Ÿè¡Œä¸­ã®è¤‡æ•°ã‚·ãƒŠãƒªã‚ªã‚’ä¸¦ã¹ã¦ç¢ºèªå¯èƒ½
-4. **ã‚¹ã‚±ãƒ¼ãƒ©ãƒ–ãƒ«**: 10?20ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã§ã‚‚ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«ã§å¯¾å¿œå¯èƒ½
+**Ì—p——R:**
+1. **ó‹µ”cˆ¬‚ª—eˆÕ**: •¡”ƒCƒ“ƒXƒ^ƒ“ƒX‚Ìó‘ÔEƒVƒiƒŠƒIŽÀsó‹µ‚ð1‰æ–Ê‚Å”cˆ¬
+2. **ƒVƒiƒŠƒIØ‚è‘Ö‚¦‚ªv‘¬**: Šes‚Ìƒhƒƒbƒvƒ_ƒEƒ“‚Å‘¦À‚ÉØ‚è‘Ö‚¦AStart/Stopƒ{ƒ^ƒ“‚Å§Œä
+3. **”äŠr‚ªŠÈ’P**: “¯ŽžŽÀs’†‚Ì•¡”ƒVƒiƒŠƒI‚ð•À‚×‚ÄŠm”F‰Â”\
+4. **ƒXƒP[ƒ‰ƒuƒ‹**: 10?20ƒCƒ“ƒXƒ^ƒ“ƒX‚Å‚àƒXƒNƒ[ƒ‹‚Å‘Î‰ž‰Â”\
 
-**å®Ÿè£…è©³ç´°:**
-- **DataGridView**: WinFormsã®DataGridViewã‚’ä½¿ç”¨ã—ã€å„åˆ—ã‚’å®šç¾©
-  - åˆ—1: çŠ¶æ…‹ã‚¢ã‚¤ã‚³ãƒ³ï¼ˆâ—/â—‹ã€CellPaintingã‚¤ãƒ™ãƒ³ãƒˆã§æç”»ï¼‰
-  - åˆ—2: Nameï¼ˆTextBoxColumnï¼‰
-  - åˆ—3: Protocolï¼ˆTextBoxColumnï¼‰
-  - åˆ—4: Endpointï¼ˆTextBoxColumnï¼‰
-  - åˆ—5: Scenarioï¼ˆComboBoxColumnã€é¸æŠžã‚¤ãƒ™ãƒ³ãƒˆã§ã‚·ãƒŠãƒªã‚ªåˆ‡ã‚Šæ›¿ãˆï¼‰
-  - åˆ—6: Statusï¼ˆTextBoxColumnã€è‰²åˆ†ã‘è¡¨ç¤ºï¼‰
-  - åˆ—7: Actionï¼ˆButtonColumnã€Start/Stop/Connï¼‰
-- **è¡Œé¸æŠžã‚¤ãƒ™ãƒ³ãƒˆ**: SelectionChangedã‚¤ãƒ™ãƒ³ãƒˆã§ä¸‹éƒ¨ã®è©³ç´°ãƒ‘ãƒãƒ«ã‚’æ›´æ–°
-- **ã‚¤ãƒ³ãƒ©ã‚¤ãƒ³ã‚¢ã‚¯ã‚·ãƒ§ãƒ³**: ButtonColumnã®Clickã‚¤ãƒ™ãƒ³ãƒˆã§æŽ¥ç¶š/åˆ‡æ–­/ã‚·ãƒŠãƒªã‚ªé–‹å§‹/åœæ­¢ã‚’åˆ¶å¾¡
+**ŽÀ‘•Ú×:**
+- **DataGridView**: WinForms‚ÌDataGridView‚ðŽg—p‚µAŠe—ñ‚ð’è‹`
+  - —ñ1: ó‘ÔƒAƒCƒRƒ“iœ/›ACellPaintingƒCƒxƒ“ƒg‚Å•`‰æj
+  - —ñ2: NameiTextBoxColumnj
+  - —ñ3: ProtocoliTextBoxColumnj
+  - —ñ4: EndpointiTextBoxColumnj
+  - —ñ5: ScenarioiComboBoxColumnA‘I‘ðƒCƒxƒ“ƒg‚ÅƒVƒiƒŠƒIØ‚è‘Ö‚¦j
+  - —ñ6: StatusiTextBoxColumnAF•ª‚¯•\Ž¦j
+  - —ñ7: ActioniButtonColumnAStart/Stop/Connj
+- **s‘I‘ðƒCƒxƒ“ƒg**: SelectionChangedƒCƒxƒ“ƒg‚Å‰º•”‚ÌÚ×ƒpƒlƒ‹‚ðXV
+- **ƒCƒ“ƒ‰ƒCƒ“ƒAƒNƒVƒ‡ƒ“**: ButtonColumn‚ÌClickƒCƒxƒ“ƒg‚ÅÚ‘±/Ø’f/ƒVƒiƒŠƒIŠJŽn/’âŽ~‚ð§Œä
 
-### 5.3 UIè¦ç´ è©³ç´°
+### 5.3 UI—v‘fÚ×
 
-#### ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ä¸€è¦§ãƒ†ãƒ¼ãƒ–ãƒ«ï¼ˆDataGridViewï¼‰
-- **çŠ¶æ…‹åˆ—ï¼ˆâ—/â—‹ï¼‰**: CellPaintingã‚¤ãƒ™ãƒ³ãƒˆã§è‰²ä»˜ãå††ã‚’æç”»
-  - ç·‘â—: æŽ¥ç¶šä¸­ã‹ã¤ã‚·ãƒŠãƒªã‚ªå®Ÿè¡Œä¸­
-  - é’â—: æŽ¥ç¶šä¸­ã§ã‚¢ã‚¤ãƒ‰ãƒ«
-  - ã‚°ãƒ¬ãƒ¼â—‹: åˆ‡æ–­ä¸­
-  - èµ¤â—: ã‚¨ãƒ©ãƒ¼çŠ¶æ…‹
-- **Nameåˆ—**: ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹è¡¨ç¤ºåï¼ˆinstance.psd1ã®DisplayNameï¼‰
-- **Protocolåˆ—**: TCP/UDPã€Client/Server/Sender/Receiverã‚’è¡¨ç¤º
-- **Endpointåˆ—**: ãƒªãƒ¢ãƒ¼ãƒˆIPã¾ãŸã¯ãƒ­ãƒ¼ã‚«ãƒ«ãƒã‚¤ãƒ³ãƒ‰ãƒãƒ¼ãƒˆã‚’è¡¨ç¤º
-- **Scenarioåˆ—ï¼ˆComboBoxColumnï¼‰**: 
-  - ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ãƒ•ã‚©ãƒ«ãƒ€å†…ã®scenarios/*.csvã‚’è‡ªå‹•åˆ—æŒ™
-  - [None]ã€[startup.csv]ã€[poll.csv]ç­‰ã‚’ãƒ‰ãƒ­ãƒƒãƒ—ãƒ€ã‚¦ãƒ³è¡¨ç¤º
-  - é¸æŠžå¤‰æ›´æ™‚ã«ScenarioEngineã¸ãƒ­ãƒ¼ãƒ‰æŒ‡ç¤ºï¼ˆå³åº§ã«åæ˜ ã€è‡ªå‹•é–‹å§‹ã¯ã—ãªã„ï¼‰
-- **Statusåˆ—**: IDLE / RUN / PAUSE / ERROR / ----ï¼ˆæœªæŽ¥ç¶šï¼‰
-  - èƒŒæ™¯è‰²ã§è¦–è¦šçš„ã«åŒºåˆ¥ï¼ˆRUN=è–„ç·‘ã€ERROR=è–„èµ¤ï¼‰
-- **Actionåˆ—ï¼ˆButtonColumnï¼‰**: 
-  - æœªæŽ¥ç¶šæ™‚: [Connect]
-  - æŽ¥ç¶šä¸­ã§ã‚·ãƒŠãƒªã‚ªæœªå®Ÿè¡Œ: [Start]ï¼ˆã‚·ãƒŠãƒªã‚ªé–‹å§‹ï¼‰
-  - ã‚·ãƒŠãƒªã‚ªå®Ÿè¡Œä¸­: [Stop]
-  - ã‚¨ãƒ©ãƒ¼æ™‚: [Retry]
+#### ƒCƒ“ƒXƒ^ƒ“ƒXˆê——ƒe[ƒuƒ‹iDataGridViewj
+- **ó‘Ô—ñiœ/›j**: CellPaintingƒCƒxƒ“ƒg‚ÅF•t‚«‰~‚ð•`‰æ
+  - —Îœ: Ú‘±’†‚©‚ÂƒVƒiƒŠƒIŽÀs’†
+  - Âœ: Ú‘±’†‚ÅƒAƒCƒhƒ‹
+  - ƒOƒŒ[›: Ø’f’†
+  - Ôœ: ƒGƒ‰[ó‘Ô
+- **Name—ñ**: ƒCƒ“ƒXƒ^ƒ“ƒX•\Ž¦–¼iinstance.psd1‚ÌDisplayNamej
+- **Protocol—ñ**: TCP/UDPAClient/Server/Sender/Receiver‚ð•\Ž¦
+- **Endpoint—ñ**: ƒŠƒ‚[ƒgIP‚Ü‚½‚Íƒ[ƒJƒ‹ƒoƒCƒ“ƒhƒ|[ƒg‚ð•\Ž¦
+- **Scenario—ñiComboBoxColumnj**: 
+  - ƒCƒ“ƒXƒ^ƒ“ƒXƒtƒHƒ‹ƒ_“à‚Ìscenarios/*.csv‚ðŽ©“®—ñ‹“
+  - [None]A[startup.csv]A[poll.csv]“™‚ðƒhƒƒbƒvƒ_ƒEƒ“•\Ž¦
+  - ‘I‘ð•ÏXŽž‚ÉScenarioEngine‚Öƒ[ƒhŽwŽ¦i‘¦À‚É”½‰fAŽ©“®ŠJŽn‚Í‚µ‚È‚¢j
+- **Status—ñ**: IDLE / RUN / PAUSE / ERROR / ----i–¢Ú‘±j
+  - ”wŒiF‚ÅŽ‹Šo“I‚É‹æ•ÊiRUN=”–—ÎAERROR=”–Ôj
+- **Action—ñiButtonColumnj**: 
+  - –¢Ú‘±Žž: [Connect]
+  - Ú‘±’†‚ÅƒVƒiƒŠƒI–¢ŽÀs: [Start]iƒVƒiƒŠƒIŠJŽnj
+  - ƒVƒiƒŠƒIŽÀs’†: [Stop]
+  - ƒGƒ‰[Žž: [Retry]
 
-#### è©³ç´°æ“ä½œãƒ‘ãƒãƒ«ï¼ˆä¸‹éƒ¨ã‚¿ãƒ–ï¼‰
+#### Ú×‘€ìƒpƒlƒ‹i‰º•”ƒ^ƒuj
 
-**Manualã‚¿ãƒ–ï¼ˆæ‰‹å‹•é€ä¿¡ï¼‰:**
-- **Templateé¸æŠž**: ComboBoxã§DataBankä¸€è¦§ã‚’è¡¨ç¤ºã€ã‚«ãƒ†ã‚´ãƒªåˆ¥ã«ã‚°ãƒ«ãƒ¼ãƒ—åŒ–
-- **Preview**: å¤‰æ•°å±•é–‹æ¸ˆã¿ã®é€ä¿¡ãƒ‡ãƒ¼ã‚¿ã‚’TextBoxã§è¡¨ç¤ºãƒ»ç·¨é›†å¯èƒ½
-- **Encodingé¸æŠž**: ASCII/UTF-8/Shift-JIS/HEXã‚’ComboBoxã§é¸æŠž
-- **é€ä¿¡ãƒœã‚¿ãƒ³**: 
-  - [Send]: é¸æŠžä¸­ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã¸é€ä¿¡
-  - [Burst 10x]: 10å›žé€£ç¶šé€ä¿¡
-  - [Send to Group]: åŒã˜Groupã«å±žã™ã‚‹å…¨ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã¸é€ä¿¡
+**Manualƒ^ƒuiŽè“®‘—Mj:**
+- **Template‘I‘ð**: ComboBox‚ÅDataBankˆê——‚ð•\Ž¦AƒJƒeƒSƒŠ•Ê‚ÉƒOƒ‹[ƒv‰»
+- **Preview**: •Ï”“WŠJÏ‚Ý‚Ì‘—Mƒf[ƒ^‚ðTextBox‚Å•\Ž¦E•ÒW‰Â”\
+- **Encoding‘I‘ð**: ASCII/UTF-8/Shift-JIS/HEX‚ðComboBox‚Å‘I‘ð
+- **‘—Mƒ{ƒ^ƒ“**: 
+  - [Send]: ‘I‘ð’†ƒCƒ“ƒXƒ^ƒ“ƒX‚Ö‘—M
+  - [Burst 10x]: 10‰ñ˜A‘±‘—M
+  - [Send to Group]: “¯‚¶Group‚É‘®‚·‚é‘SƒCƒ“ƒXƒ^ƒ“ƒX‚Ö‘—M
 
-**Scenarioã‚¿ãƒ–ï¼ˆã‚·ãƒŠãƒªã‚ªå®Ÿè¡Œï¼‰:**
-- **å®Ÿè¡ŒçŠ¶æ…‹è¡¨ç¤º**: 
-  - ç¾åœ¨ã®ã‚¹ãƒ†ãƒƒãƒ—ç•ªå·/ç·ã‚¹ãƒ†ãƒƒãƒ—æ•°
-  - é€²æ—çŽ‡ï¼ˆProgressBarï¼‰
-  - çµŒéŽæ™‚é–“
-  - å®Ÿè¡Œä¸­ã®ã‚¢ã‚¯ã‚·ãƒ§ãƒ³å†…å®¹ï¼ˆTextBoxï¼‰
-- **åˆ¶å¾¡ãƒœã‚¿ãƒ³**: 
-  - [? Run]: ã‚·ãƒŠãƒªã‚ªé–‹å§‹
-  - [? Pause]: ä¸€æ™‚åœæ­¢
-  - [? Stop]: åœæ­¢
-  - [? Next Step]: 1ã‚¹ãƒ†ãƒƒãƒ—å®Ÿè¡Œ
-- **Variablesè¡¨ç¤º**: ç¾åœ¨ã®å¤‰æ•°ã‚¹ã‚³ãƒ¼ãƒ—ã‚’ListViewã§è¡¨ç¤ºï¼ˆèª­ã¿å–ã‚Šå°‚ç”¨ï¼‰
+**Scenarioƒ^ƒuiƒVƒiƒŠƒIŽÀsj:**
+- **ŽÀsó‘Ô•\Ž¦**: 
+  - Œ»Ý‚ÌƒXƒeƒbƒv”Ô†/‘ƒXƒeƒbƒv”
+  - i’»—¦iProgressBarj
+  - Œo‰ßŽžŠÔ
+  - ŽÀs’†‚ÌƒAƒNƒVƒ‡ƒ““à—eiTextBoxj
+- **§Œäƒ{ƒ^ƒ“**: 
+  - [? Run]: ƒVƒiƒŠƒIŠJŽn
+  - [? Pause]: ˆêŽž’âŽ~
+  - [? Stop]: ’âŽ~
+  - [? Next Step]: 1ƒXƒeƒbƒvŽÀs
+- **Variables•\Ž¦**: Œ»Ý‚Ì•Ï”ƒXƒR[ƒv‚ðListView‚Å•\Ž¦i“Ç‚ÝŽæ‚èê—pj
 
-**Diagnosticsã‚¿ãƒ–ï¼ˆè¨ºæ–­ï¼‰:**
-- **è¨ºæ–­å®Ÿè¡Œ**: [Run Check]ãƒœã‚¿ãƒ³ã§è¨ºæ–­é–‹å§‹
-- **çµæžœè¡¨ç¤º**: ListViewã§ãƒã‚§ãƒƒã‚¯é …ç›®ã¨ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ï¼ˆ?OK/?NGï¼‰ã‚’è¡¨ç¤º
-- **æŽ¨å¥¨ã‚¢ã‚¯ã‚·ãƒ§ãƒ³**: TextBoxã§æ˜¯æ­£æ¡ˆã‚’è¡¨ç¤º
+**Diagnosticsƒ^ƒuif’fj:**
+- **f’fŽÀs**: [Run Check]ƒ{ƒ^ƒ“‚Åf’fŠJŽn
+- **Œ‹‰Ê•\Ž¦**: ListView‚Åƒ`ƒFƒbƒN€–Ú‚ÆƒXƒe[ƒ^ƒXi?OK/?NGj‚ð•\Ž¦
+- **„§ƒAƒNƒVƒ‡ƒ“**: TextBox‚Å¥³ˆÄ‚ð•\Ž¦
 
-#### ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ãƒ­ã‚°ãƒ‘ãƒãƒ«ï¼ˆå³å´ï¼‰
-- **ListViewè¡¨ç¤º**: é¸æŠžä¸­ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®é€å—ä¿¡å±¥æ­´
-  - åˆ—1: æ™‚åˆ»
-  - åˆ—2: æ–¹å‘ï¼ˆâ–²é€ä¿¡/â–¼å—ä¿¡ï¼‰
-  - åˆ—3: ãƒ‡ãƒ¼ã‚¿ã‚µãƒžãƒªï¼ˆæœ€åˆã®50æ–‡å­—ï¼‰
-  - åˆ—4: ã‚µã‚¤ã‚ºï¼ˆbytesï¼‰
-- **èƒŒæ™¯è‰²**: é€ä¿¡è¡Œ=è–„é’ã€å—ä¿¡è¡Œ=è–„ç·‘ã€ã‚¨ãƒ©ãƒ¼è¡Œ=è–„èµ¤
-- **æœ€å¤§100ä»¶**: å¤ã„ã‚‚ã®ã‹ã‚‰è‡ªå‹•å‰Šé™¤
-- **æ“ä½œãƒœã‚¿ãƒ³**: 
-  - [Clear Log]: ç¾åœ¨ã®ãƒ­ã‚°ã‚’ã‚¯ãƒªã‚¢
-  - [Export Log]: ãƒ•ã‚¡ã‚¤ãƒ«ã«ä¿å­˜ï¼ˆSaveFileDialogã§ä¿å­˜å…ˆæŒ‡å®šï¼‰
+#### ƒCƒ“ƒXƒ^ƒ“ƒXƒƒOƒpƒlƒ‹i‰E‘¤j
+- **ListView•\Ž¦**: ‘I‘ð’†ƒCƒ“ƒXƒ^ƒ“ƒX‚Ì‘—ŽóM—š—ð
+  - —ñ1: Žž
+  - —ñ2: •ûŒüi£‘—M/¥ŽóMj
+  - —ñ3: ƒf[ƒ^ƒTƒ}ƒŠiÅ‰‚Ì50•¶Žšj
+  - —ñ4: ƒTƒCƒYibytesj
+- **”wŒiF**: ‘—Ms=”–ÂAŽóMs=”–—ÎAƒGƒ‰[s=”–Ô
+- **Å‘å100Œ**: ŒÃ‚¢‚à‚Ì‚©‚çŽ©“®íœ
+- **‘€ìƒ{ƒ^ƒ“**: 
+  - [Clear Log]: Œ»Ý‚ÌƒƒO‚ðƒNƒŠƒA
+  - [Export Log]: ƒtƒ@ƒCƒ‹‚É•Û‘¶iSaveFileDialog‚Å•Û‘¶æŽw’èj
 
-#### ã‚°ãƒ«ãƒ¼ãƒ—æ“ä½œï¼ˆãƒ„ãƒ¼ãƒ«ãƒãƒ¼ï¼‰
-- **Group Filter**: ComboBoxã§è¡¨ç¤ºã™ã‚‹ã‚°ãƒ«ãƒ¼ãƒ—ã‚’é¸æŠžï¼ˆAll/WebServers/LoadTestç­‰ï¼‰
-- **ä¸€æ‹¬æ“ä½œãƒœã‚¿ãƒ³**: 
-  - [Refresh]: ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ä¸€è¦§ã‚’å†èª­ã¿è¾¼ã¿
-  - [Connect All]: ãƒ•ã‚£ãƒ«ã‚¿ä¸­ã®å…¨ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’æŽ¥ç¶š
-  - [Disconnect All]: ãƒ•ã‚£ãƒ«ã‚¿ä¸­ã®å…¨ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’åˆ‡æ–­
-  - [Start All Scenarios]: ãƒ•ã‚£ãƒ«ã‚¿ä¸­ã®å…¨ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®ã‚·ãƒŠãƒªã‚ªã‚’é–‹å§‹
+#### ƒOƒ‹[ƒv‘€ìiƒc[ƒ‹ƒo[j
+- **Group Filter**: ComboBox‚Å•\Ž¦‚·‚éƒOƒ‹[ƒv‚ð‘I‘ðiAll/WebServers/LoadTest“™j
+- **ˆêŠ‡‘€ìƒ{ƒ^ƒ“**: 
+  - [Refresh]: ƒCƒ“ƒXƒ^ƒ“ƒXˆê——‚ðÄ“Ç‚Ýž‚Ý
+  - [Connect All]: ƒtƒBƒ‹ƒ^’†‚Ì‘SƒCƒ“ƒXƒ^ƒ“ƒX‚ðÚ‘±
+  - [Disconnect All]: ƒtƒBƒ‹ƒ^’†‚Ì‘SƒCƒ“ƒXƒ^ƒ“ƒX‚ðØ’f
+  - [Start All Scenarios]: ƒtƒBƒ‹ƒ^’†‚Ì‘SƒCƒ“ƒXƒ^ƒ“ƒX‚ÌƒVƒiƒŠƒI‚ðŠJŽn
 
-### 5.4 WinFormså®Ÿè£…æ–¹é‡
-- **ãƒ•ã‚©ãƒ¼ãƒ ç”Ÿæˆ**: `UI/MainForm.ps1`ã§`System.Windows.Forms`ã‚’ç”¨ã„ã€`SplitContainer`ã§ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆã€‚
-- **ãƒ‡ãƒ¼ã‚¿ãƒã‚¤ãƒ³ãƒ‡ã‚£ãƒ³ã‚°**: `BindingSource`ï¼‹`BindingList`ã‚’æŽ¡ç”¨ã—ã€ãƒãƒƒã‚¯ã‚¨ãƒ³ãƒ‰`StateStore`ã¨UIã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ã‚’åŒæœŸã€‚
-- **éžåŒæœŸå‡¦ç†**: ã‚¹ãƒ¬ãƒƒãƒ‰ã‹ã‚‰ã®é€šçŸ¥ã¯`Control.Invoke/BeginInvoke`ã§UIã‚¹ãƒ¬ãƒƒãƒ‰ã¸ãƒžãƒ¼ã‚·ãƒ£ãƒªãƒ³ã‚°ã€‚
-- **ã‚¤ãƒ™ãƒ³ãƒˆé§†å‹•**: WinFormsã‚¤ãƒ™ãƒ³ãƒˆã§å„ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ã®æ“ä½œã‚’å‡¦ç†ã€‚
-- **æ¨™æº–ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«**: TreeView, ComboBox, TextBox, Button, ListView, ProgressBarç­‰ã®æ¨™æº–ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ã‚’æ´»ç”¨ã€‚
-- **ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ**: `SplitContainer`ã‚„`TableLayoutPanel`ã§3åˆ†å‰²ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆã‚’å®Ÿç¾ã€‚`Dock`ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£ã§å¯å¤‰ã‚µã‚¤ã‚ºå¯¾å¿œã€‚
+### 5.4 WinFormsŽÀ‘••ûj
+- **ƒtƒH[ƒ€¶¬**: `UI/MainForm.ps1`‚Å`System.Windows.Forms`‚ð—p‚¢A`SplitContainer`‚ÅƒŒƒCƒAƒEƒgB
+- **ƒf[ƒ^ƒoƒCƒ“ƒfƒBƒ“ƒO**: `BindingSource`{`BindingList`‚ðÌ—p‚µAƒoƒbƒNƒGƒ“ƒh`StateStore`‚ÆUIƒRƒ“ƒgƒ[ƒ‹‚ð“¯ŠúB
+- **”ñ“¯Šúˆ—**: ƒXƒŒƒbƒh‚©‚ç‚Ì’Ê’m‚Í`Control.Invoke/BeginInvoke`‚ÅUIƒXƒŒƒbƒh‚Öƒ}[ƒVƒƒƒŠƒ“ƒOB
+- **ƒCƒxƒ“ƒg‹ì“®**: WinFormsƒCƒxƒ“ƒg‚ÅŠeƒRƒ“ƒgƒ[ƒ‹‚Ì‘€ì‚ðˆ—B
+- **•W€ƒRƒ“ƒgƒ[ƒ‹**: TreeView, ComboBox, TextBox, Button, ListView, ProgressBar“™‚Ì•W€ƒRƒ“ƒgƒ[ƒ‹‚ðŠˆ—pB
+- **ƒŒƒCƒAƒEƒg**: `SplitContainer`‚â`TableLayoutPanel`‚Å3•ªŠ„ƒŒƒCƒAƒEƒg‚ðŽÀŒ»B`Dock`ƒvƒƒpƒeƒB‚Å‰Â•ÏƒTƒCƒY‘Î‰žB
 
-### 5.5 ãƒ‡ã‚¶ã‚¤ãƒ³ã‚·ã‚¹ãƒ†ãƒ 
+### 5.5 ƒfƒUƒCƒ“ƒVƒXƒeƒ€
 
-#### ã‚«ãƒ©ãƒ¼ãƒ‘ãƒ¬ãƒƒãƒˆ
+#### ƒJƒ‰[ƒpƒŒƒbƒg
 ```
-ãƒ—ãƒ©ã‚¤ãƒžãƒª:     #0078D4 (Microsoft Blue)
-æˆåŠŸ:           #107C10 (Success Green)
-è­¦å‘Š:           #FFB900 (Warning Yellow)
-ã‚¨ãƒ©ãƒ¼:         #E81123 (Error Red)
-èƒŒæ™¯:           #FFFFFF (White)
-ãƒ‘ãƒãƒ«èƒŒæ™¯:     #F3F3F3 (Light Gray)
-ãƒœãƒ¼ãƒ€ãƒ¼:       #E1E1E1 (Border Gray)
-ãƒ†ã‚­ã‚¹ãƒˆ:       #323130 (Dark Gray)
-```
-
-#### ã‚¿ã‚¤ãƒã‚°ãƒ©ãƒ•ã‚£
-```
-è¦‹å‡ºã—:         Segoe UI Semibold 14pt
-ãƒœã‚¿ãƒ³:         Segoe UI 10pt
-æœ¬æ–‡:           Segoe UI 9pt
-ã‚³ãƒ¼ãƒ‰:         Consolas 9pt
+ƒvƒ‰ƒCƒ}ƒŠ:     #0078D4 (Microsoft Blue)
+¬Œ÷:           #107C10 (Success Green)
+Œx:           #FFB900 (Warning Yellow)
+ƒGƒ‰[:         #E81123 (Error Red)
+”wŒi:           #FFFFFF (White)
+ƒpƒlƒ‹”wŒi:     #F3F3F3 (Light Gray)
+ƒ{[ƒ_[:       #E1E1E1 (Border Gray)
+ƒeƒLƒXƒg:       #323130 (Dark Gray)
 ```
 
-#### é–“éš”ãƒ»ã‚µã‚¤ã‚º
+#### ƒ^ƒCƒ|ƒOƒ‰ƒtƒB
 ```
-åŸºæœ¬å˜ä½:       8px ã‚°ãƒªãƒƒãƒ‰
-ãƒ‘ãƒ‡ã‚£ãƒ³ã‚°:     8px / 16px
-ãƒœã‚¿ãƒ³é«˜ã•:     28px
-ã‚¢ã‚¤ã‚³ãƒ³ã‚µã‚¤ã‚º: 16Ã—16px
+Œ©o‚µ:         Segoe UI Semibold 14pt
+ƒ{ƒ^ƒ“:         Segoe UI 10pt
+–{•¶:           Segoe UI 9pt
+ƒR[ƒh:         Consolas 9pt
 ```
 
-### 5.6 ã‚¢ã‚¯ã‚»ã‚·ãƒ“ãƒªãƒ†ã‚£
-- **ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ãƒŠãƒ“ã‚²ãƒ¼ã‚·ãƒ§ãƒ³**: Tabé †åºã‚’è«–ç†çš„ã«è¨­å®šã—ã€Enter/Spaceã§æ“ä½œå¯èƒ½ã€‚
-- **ã‚·ãƒ§ãƒ¼ãƒˆã‚«ãƒƒãƒˆ**: Ctrl+Sï¼ˆä¿å­˜ï¼‰ã€Ctrl+Oï¼ˆé–‹ãï¼‰ã€F5ï¼ˆãƒªãƒ•ãƒ¬ãƒƒã‚·ãƒ¥ï¼‰ç­‰ã®ä¸€èˆ¬ã‚·ãƒ§ãƒ¼ãƒˆã‚«ãƒƒãƒˆã‚’ã‚µãƒãƒ¼ãƒˆã€‚
-- **ãƒ•ã‚©ãƒ¼ã‚«ã‚¹è¡¨ç¤º**: ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ãƒ•ã‚©ãƒ¼ã‚«ã‚¹æ™‚ã«æž ã§æ˜Žç¤º
+#### ŠÔŠuEƒTƒCƒY
+```
+Šî–{’PˆÊ:       8px ƒOƒŠƒbƒh
+ƒpƒfƒBƒ“ƒO:     8px / 16px
+ƒ{ƒ^ƒ“‚‚³:     28px
+ƒAƒCƒRƒ“ƒTƒCƒY: 16~16px
+```
+
+### 5.6 ƒAƒNƒZƒVƒrƒŠƒeƒB
+- **ƒL[ƒ{[ƒhƒiƒrƒQ[ƒVƒ‡ƒ“**: Tab‡˜‚ð˜_—“I‚ÉÝ’è‚µAEnter/Space‚Å‘€ì‰Â”\B
+- **ƒVƒ‡[ƒgƒJƒbƒg**: Ctrl+Si•Û‘¶jACtrl+OiŠJ‚­jAF5iƒŠƒtƒŒƒbƒVƒ…j“™‚Ìˆê”ÊƒVƒ‡[ƒgƒJƒbƒg‚ðƒTƒ|[ƒgB
+- **ƒtƒH[ƒJƒX•\Ž¦**: ƒL[ƒ{[ƒhƒtƒH[ƒJƒXŽž‚É˜g‚Å–¾Ž¦
 
 ---
 
-## 6. å‡¦ç†ãƒ•ãƒ­ãƒ¼
+## 6. ˆ—ƒtƒ[
 
-### 6.1 èµ·å‹•ãƒ•ãƒ­ãƒ¼
+### 6.1 ‹N“®ƒtƒ[
 ```
-1. TcpDebugger.ps1 å®Ÿè¡Œ
-2. ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«èª­ã¿è¾¼ã¿
-3. WinFormsãƒ•ã‚©ãƒ¼ãƒ åˆæœŸåŒ–ï¼ˆ`System.Windows.Forms.Application.Run`ï¼‰
-4. Instances/ ãƒ•ã‚©ãƒ«ãƒ€ã‚’ã‚¹ã‚­ãƒ£ãƒ³ã—ã€instance.psd1 èª­ã¿è¾¼ã¿
-5. AutoStart=trueã®æŽ¥ç¶šã‚’è‡ªå‹•é–‹å§‹
-6. ãƒ¡ã‚¤ãƒ³ã‚¤ãƒ™ãƒ³ãƒˆãƒ«ãƒ¼ãƒ—é–‹å§‹
-```
-
-### 6.2 æŽ¥ç¶šç¢ºç«‹ãƒ•ãƒ­ãƒ¼ï¼ˆTCP Clientï¼‰
-```
-1. ConnectionManagerãŒæŽ¥ç¶šè¨­å®šã‚’å–å¾—ã—ã€ConnectionContextã‚’ç”Ÿæˆ
-2. TcpClient ã‚¹ãƒ¬ãƒƒãƒ‰ã‚’èµ·å‹•ã—ã€ãƒªãƒ¢ãƒ¼ãƒˆãƒ›ã‚¹ãƒˆã¸æŽ¥ç¶šè©¦è¡Œ
-3. æŽ¥ç¶šæˆåŠŸ
-   â†’ çŠ¶æ…‹æ›´æ–°ã‚¤ãƒ™ãƒ³ãƒˆã‚’UIã¸ç™ºç«
-   â†’ å—ä¿¡ãƒ«ãƒ¼ãƒ—é–‹å§‹ã€å—ä¿¡ãƒ‡ãƒ¼ã‚¿ã¯MessageHandlerã¸å§”è­²
-   â†’ AutoStartã‚·ãƒŠãƒªã‚ªãŒã‚ã‚Œã°ScenarioEngineã‚’èµ·å‹•
-4. æŽ¥ç¶šå¤±æ•—
-   â†’ ã‚¨ãƒ©ãƒ¼æƒ…å ±ã‚’InstanceManagerã¸é€šçŸ¥
-   â†’ å†æŽ¥ç¶šãƒãƒªã‚·ã«å¾“ã„ãƒªãƒˆãƒ©ã‚¤ or ãƒ¦ãƒ¼ã‚¶ãƒ¼ã¸ã‚¨ãƒ©ãƒ¼æç¤º
+1. TcpDebugger.ps1 ŽÀs
+2. ƒ‚ƒWƒ…[ƒ‹“Ç‚Ýž‚Ý
+3. WinFormsƒtƒH[ƒ€‰Šú‰»i`System.Windows.Forms.Application.Run`j
+4. Instances/ ƒtƒHƒ‹ƒ_‚ðƒXƒLƒƒƒ“‚µAinstance.psd1 “Ç‚Ýž‚Ý
+5. AutoStart=true‚ÌÚ‘±‚ðŽ©“®ŠJŽn
+6. ƒƒCƒ“ƒCƒxƒ“ƒgƒ‹[ƒvŠJŽn
 ```
 
-### 6.3 ã‚·ãƒŠãƒªã‚ªå®Ÿè¡Œãƒ•ãƒ­ãƒ¼
+### 6.2 Ú‘±Šm—§ƒtƒ[iTCP Clientj
 ```
-1. ScenarioEngineãŒCSVã‚’èª­ã¿è¾¼ã¿ã€Actionãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³ã‚’æ§‹ç¯‰
-2. å®Ÿè¡Œé–‹å§‹ã™ã‚‹ã¨ã€å„ã‚¹ãƒ†ãƒƒãƒ—ã‚’ã‚¹ãƒ¬ãƒƒãƒ‰å†…ã§é †æ¬¡å‡¦ç†
-3. SEND/SEND_HEXç­‰ã¯QuickSender APIã‚’çµŒç”±ã—ã¦å¯¾è±¡æŽ¥ç¶šã¸é€ä¿¡
-4. WAIT_RECVã‚„IFã¯å—ä¿¡ãƒãƒƒãƒ•ã‚¡ï¼å¤‰æ•°ã‚¹ãƒˆã‚¢ã‚’å‚ç…§ã—ã¦åˆ¤å®š
-5. SAVE_RECVã§å—ä¿¡ãƒ‡ãƒ¼ã‚¿ã‚’å¤‰æ•°ã«ä¿å­˜ã—ã€æ¬¡å›žé€ä¿¡ã§åˆ©ç”¨å¯èƒ½
-6. CALL_SCRIPTã‚„SET_VARã§å¤–éƒ¨ãƒ­ã‚¸ãƒƒã‚¯ã‚„çŠ¶æ…‹æ›´æ–°ã‚’å®Ÿæ–½
-7. é€²æ—ã¯StepProgressã‚¤ãƒ™ãƒ³ãƒˆã¨ã—ã¦UIã¨ãƒ­ã‚°ã¸é€šçŸ¥
-8. å®Œäº†ãƒ»ä¸­æ–­ãƒ»ã‚¨ãƒ©ãƒ¼ã‚’ScenarioResultã¨ã—ã¦InstanceManagerã«è¿”å´
-```
-
-### 6.4 è‡ªå‹•å¿œç­”ãƒ•ãƒ­ãƒ¼
-```
-1. Connection ã‚¹ãƒ¬ãƒƒãƒ‰ãŒå—ä¿¡ãƒ‡ãƒ¼ã‚¿ã‚’MessageHandlerã¸æ¸¡ã™
-2. AutoResponseãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ãŒãƒ«ãƒ¼ãƒ«ãƒ†ãƒ¼ãƒ–ãƒ«ã‚’èµ°æŸ»
-3. ãƒžãƒƒãƒã—ãŸå ´åˆã¯ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆå±•é–‹â†’Delayâ†’é€ä¿¡
-4. å¿œç­”çµæžœã‚’å±¥æ­´ã¸è¨˜éŒ²ã—ã€å¿…è¦ã«å¿œã˜ã¦ScenarioEngineã¸ãƒˆãƒªã‚¬ãƒ¼è¿”é€
-5. ãƒžãƒƒãƒã—ãªã‹ã£ãŸå ´åˆã¯ã‚·ãƒŠãƒªã‚ªå¾…æ©Ÿã¸å§”è­²
+1. ConnectionManager‚ªÚ‘±Ý’è‚ðŽæ“¾‚µAConnectionContext‚ð¶¬
+2. TcpClient ƒXƒŒƒbƒh‚ð‹N“®‚µAƒŠƒ‚[ƒgƒzƒXƒg‚ÖÚ‘±ŽŽs
+3. Ú‘±¬Œ÷
+   ¨ ó‘ÔXVƒCƒxƒ“ƒg‚ðUI‚Ö”­‰Î
+   ¨ ŽóMƒ‹[ƒvŠJŽnAŽóMƒf[ƒ^‚ÍMessageHandler‚ÖˆÏ÷
+   ¨ AutoStartƒVƒiƒŠƒI‚ª‚ ‚ê‚ÎScenarioEngine‚ð‹N“®
+4. Ú‘±Ž¸”s
+   ¨ ƒGƒ‰[î•ñ‚ðInstanceManager‚Ö’Ê’m
+   ¨ ÄÚ‘±ƒ|ƒŠƒV‚É]‚¢ƒŠƒgƒ‰ƒC or ƒ†[ƒU[‚ÖƒGƒ‰[’ñŽ¦
 ```
 
-### 6.5 ãƒ¯ãƒ³ã‚¯ãƒªãƒƒã‚¯é€ä¿¡ãƒ•ãƒ­ãƒ¼ï¼ˆSend-Firstï¼‰
+### 6.3 ƒVƒiƒŠƒIŽÀsƒtƒ[
 ```
-1. ãƒ¦ãƒ¼ã‚¶ãƒ¼ãŒãƒ‰ãƒ­ãƒƒãƒ—ãƒ€ã‚¦ãƒ³ã§ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆé¸æŠžã—ã€é€ä¿¡ãƒœã‚¿ãƒ³ã‚’ã‚¯ãƒªãƒƒã‚¯
-2. QuickSenderãŒDataBankã‹ã‚‰ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆã¨é€ä¿¡è¨­å®šã‚’å–å¾—
-3. MessageHandlerã§å¤‰æ•°å±•é–‹ãƒ»ã‚¨ãƒ³ã‚³ãƒ¼ãƒ‰ãƒ»æ•´å½¢
-4. å¯¾è±¡æŽ¥ç¶šã¾ãŸã¯è«–ç†ã‚°ãƒ«ãƒ¼ãƒ—ã®é€ä¿¡ã‚­ãƒ¥ãƒ¼ã¸æŠ•å…¥
-5. Connection ã‚¹ãƒ¬ãƒƒãƒ‰ãŒé€ä¿¡å®Œäº†ã‚’ç¢ºèªã—ã€å±¥æ­´ã‚¹ãƒˆã‚¢ã¸è¨˜éŒ²
-```
-
-### 6.6 ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ä¸€æ‹¬åˆ¶å¾¡ãƒ•ãƒ­ãƒ¼
-```
-1. ãƒ¦ãƒ¼ã‚¶ãƒ¼ãŒè«–ç†ãƒ“ãƒ¥ãƒ¼ã§ã‚°ãƒ«ãƒ¼ãƒ—/ã‚¿ã‚°ã‚’é¸æŠž
-2. InstanceManagerãŒå¯¾è±¡æŽ¥ç¶šä¸€è¦§ã‚’æŠ½å‡º
-3. è¦æ±‚ï¼ˆæŽ¥ç¶š/åˆ‡æ–­/é€ä¿¡/ã‚·ãƒŠãƒªã‚ªé–‹å§‹ï¼‰ã‚’å„æŽ¥ç¶šã®ã‚¹ãƒ¬ãƒƒãƒ‰ã¸ãƒ‡ã‚£ã‚¹ãƒ‘ãƒƒãƒ
-4. å„æŽ¥ç¶šã‹ã‚‰ã®çµæžœã‚¤ãƒ™ãƒ³ãƒˆã‚’é›†ç´„ã—ã€UIã«é›†ç´„çŠ¶æ…‹ï¼ˆæˆåŠŸ/å¤±æ•—æ•°ï¼‰ã‚’è¡¨ç¤º
+1. ScenarioEngine‚ªCSV‚ð“Ç‚Ýž‚ÝAActionƒpƒCƒvƒ‰ƒCƒ“‚ð\’z
+2. ŽÀsŠJŽn‚·‚é‚ÆAŠeƒXƒeƒbƒv‚ðƒXƒŒƒbƒh“à‚Å‡ŽŸˆ—
+3. SEND/SEND_HEX“™‚ÍQuickSender API‚ðŒo—R‚µ‚Ä‘ÎÛÚ‘±‚Ö‘—M
+4. WAIT_RECV‚âIF‚ÍŽóMƒoƒbƒtƒ@^•Ï”ƒXƒgƒA‚ðŽQÆ‚µ‚Ä”»’è
+5. SAVE_RECV‚ÅŽóMƒf[ƒ^‚ð•Ï”‚É•Û‘¶‚µAŽŸ‰ñ‘—M‚Å—˜—p‰Â”\
+6. CALL_SCRIPT‚âSET_VAR‚ÅŠO•”ƒƒWƒbƒN‚âó‘ÔXV‚ðŽÀŽ{
+7. i’»‚ÍStepProgressƒCƒxƒ“ƒg‚Æ‚µ‚ÄUI‚ÆƒƒO‚Ö’Ê’m
+8. Š®—¹E’†’fEƒGƒ‰[‚ðScenarioResult‚Æ‚µ‚ÄInstanceManager‚É•Ô‹p
 ```
 
-### 6.7 ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯è¨ºæ–­ãƒ•ãƒ­ãƒ¼
+### 6.4 Ž©“®‰ž“šƒtƒ[
 ```
-1. è¨ºæ–­ãƒ‘ãƒãƒ«ã§ã€ŒRun Checkã€ãƒœã‚¿ãƒ³ã‚’ã‚¯ãƒªãƒƒã‚¯
-2. NetworkAnalyzer ã‚¹ãƒ¬ãƒƒãƒ‰ãŒPing/Port/Routeãƒã‚§ãƒƒã‚¯ã‚’ä¸¦åˆ—å®Ÿè¡Œ
-3. çµæžœã‚’ã‚¹ã‚³ã‚¢ãƒªãƒ³ã‚°ã—ã€diagnostics.psd1ã®æŽ¨å¥¨ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã‚’é©ç”¨
-4. UIã¸çµæžœè¡¨ç¤ºã—ã€å¿…è¦ã«å¿œã˜ã¦å¯¾å‡¦æ‰‹é †ã‚’æç¤º
-5. å¯¾å‡¦å¾Œã¯ã€Œå†è¨ºæ–­ã€ã§åŒã˜ãƒã‚§ãƒƒã‚¯ã‚’å†å®Ÿè¡Œ
+1. Connection ƒXƒŒƒbƒh‚ªŽóMƒf[ƒ^‚ðMessageHandler‚Ö“n‚·
+2. AutoResponseƒ‚ƒWƒ…[ƒ‹‚ªƒ‹[ƒ‹ƒe[ƒuƒ‹‚ð‘–¸
+3. ƒ}ƒbƒ`‚µ‚½ê‡‚Íƒeƒ“ƒvƒŒ[ƒg“WŠJ¨Delay¨‘—M
+4. ‰ž“šŒ‹‰Ê‚ð—š—ð‚Ö‹L˜^‚µA•K—v‚É‰ž‚¶‚ÄScenarioEngine‚ÖƒgƒŠƒK[•Ô‘—
+5. ƒ}ƒbƒ`‚µ‚È‚©‚Á‚½ê‡‚ÍƒVƒiƒŠƒI‘Ò‹@‚ÖˆÏ÷
+```
+
+### 6.5 ƒƒ“ƒNƒŠƒbƒN‘—Mƒtƒ[iSend-Firstj
+```
+1. ƒ†[ƒU[‚ªƒhƒƒbƒvƒ_ƒEƒ“‚Åƒeƒ“ƒvƒŒ[ƒg‘I‘ð‚µA‘—Mƒ{ƒ^ƒ“‚ðƒNƒŠƒbƒN
+2. QuickSender‚ªDataBank‚©‚çƒeƒ“ƒvƒŒ[ƒg‚Æ‘—MÝ’è‚ðŽæ“¾
+3. MessageHandler‚Å•Ï”“WŠJEƒGƒ“ƒR[ƒhE®Œ`
+4. ‘ÎÛÚ‘±‚Ü‚½‚Í˜_—ƒOƒ‹[ƒv‚Ì‘—MƒLƒ…[‚Ö“Š“ü
+5. Connection ƒXƒŒƒbƒh‚ª‘—MŠ®—¹‚ðŠm”F‚µA—š—ðƒXƒgƒA‚Ö‹L˜^
+```
+
+### 6.6 ƒCƒ“ƒXƒ^ƒ“ƒXˆêŠ‡§Œäƒtƒ[
+```
+1. ƒ†[ƒU[‚ª˜_—ƒrƒ…[‚ÅƒOƒ‹[ƒv/ƒ^ƒO‚ð‘I‘ð
+2. InstanceManager‚ª‘ÎÛÚ‘±ˆê——‚ð’Šo
+3. —v‹iÚ‘±/Ø’f/‘—M/ƒVƒiƒŠƒIŠJŽnj‚ðŠeÚ‘±‚ÌƒXƒŒƒbƒh‚ÖƒfƒBƒXƒpƒbƒ`
+4. ŠeÚ‘±‚©‚ç‚ÌŒ‹‰ÊƒCƒxƒ“ƒg‚ðW–ñ‚µAUI‚ÉW–ñó‘Ôi¬Œ÷/Ž¸”s”j‚ð•\Ž¦
+```
+
+### 6.7 ƒlƒbƒgƒ[ƒNf’fƒtƒ[
+```
+1. f’fƒpƒlƒ‹‚ÅuRun Checkvƒ{ƒ^ƒ“‚ðƒNƒŠƒbƒN
+2. NetworkAnalyzer ƒXƒŒƒbƒh‚ªPing/Port/Routeƒ`ƒFƒbƒN‚ð•À—ñŽÀs
+3. Œ‹‰Ê‚ðƒXƒRƒAƒŠƒ“ƒO‚µAdiagnostics.psd1‚Ì„§ƒAƒNƒVƒ‡ƒ“‚ð“K—p
+4. UI‚ÖŒ‹‰Ê•\Ž¦‚µA•K—v‚É‰ž‚¶‚Ä‘ÎˆŽè‡‚ð’ñŽ¦
+5. ‘ÎˆŒã‚ÍuÄf’fv‚Å“¯‚¶ƒ`ƒFƒbƒN‚ðÄŽÀs
 ```
 
 ---
 
-## 7. æŠ€è¡“ä»•æ§˜
+## 7. ‹ZpŽd—l
 
-### 7.1 é€šä¿¡å®Ÿè£…
+### 7.1 ’ÊMŽÀ‘•
 - **TCP**: `System.Net.Sockets.TcpClient`, `TcpListener`
 - **UDP**: `System.Net.Sockets.UdpClient`
-- **éžåŒæœŸ**: `BeginReceive`/`EndReceive` ã¾ãŸã¯ `ReceiveAsync`
-- **ãƒãƒƒãƒ•ã‚¡ã‚µã‚¤ã‚º**: 8192ãƒã‚¤ãƒˆï¼ˆå¯å¤‰è¨­å®šå¯ï¼‰
+- **”ñ“¯Šú**: `BeginReceive`/`EndReceive` ‚Ü‚½‚Í `ReceiveAsync`
+- **ƒoƒbƒtƒ@ƒTƒCƒY**: 8192ƒoƒCƒgi‰Â•ÏÝ’è‰Âj
 
-### 7.2 ã‚¹ãƒ¬ãƒƒãƒ‰ç®¡ç†
-- **ãƒ¡ã‚¤ãƒ³ã‚¹ãƒ¬ãƒƒãƒ‰**: WinForms UIã‚¹ãƒ¬ãƒƒãƒ‰ï¼ˆApplication.Runï¼‰
-- **æŽ¥ç¶šã‚¹ãƒ¬ãƒƒãƒ‰**: å„æŽ¥ç¶šã”ã¨ã«ã‚¹ãƒ¬ãƒƒãƒ‰ç”Ÿæˆï¼ˆSystem.Threading.Threadï¼‰
-- **ã‚·ãƒŠãƒªã‚ªã‚¹ãƒ¬ãƒƒãƒ‰**: ã‚·ãƒŠãƒªã‚ªå®Ÿè¡Œç”¨ã‚¹ãƒ¬ãƒƒãƒ‰
-- **åŒæœŸ**: `Hashtable.Synchronized()`ã§ãƒ‡ãƒ¼ã‚¿å…±æœ‰
-- **è¨ºæ–­ã‚¹ãƒ¬ãƒƒãƒ‰**: NetworkAnalyzerãŒãƒãƒƒã‚¯ã‚°ãƒ©ã‚¦ãƒ³ãƒ‰ã§Ping/Portãƒã‚§ãƒƒã‚¯ã‚’å®Ÿè¡Œ
+### 7.2 ƒXƒŒƒbƒhŠÇ—
+- **ƒƒCƒ“ƒXƒŒƒbƒh**: WinForms UIƒXƒŒƒbƒhiApplication.Runj
+- **Ú‘±ƒXƒŒƒbƒh**: ŠeÚ‘±‚²‚Æ‚ÉƒXƒŒƒbƒh¶¬iSystem.Threading.Threadj
+- **ƒVƒiƒŠƒIƒXƒŒƒbƒh**: ƒVƒiƒŠƒIŽÀs—pƒXƒŒƒbƒh
+- **“¯Šú**: `Hashtable.Synchronized()`‚Åƒf[ƒ^‹¤—L
+- **f’fƒXƒŒƒbƒh**: NetworkAnalyzer‚ªƒoƒbƒNƒOƒ‰ƒEƒ“ƒh‚ÅPing/Portƒ`ƒFƒbƒN‚ðŽÀs
 
-**é‡è¦**: å„ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã¯ç‹¬ç«‹ã—ãŸãƒªã‚½ãƒ¼ã‚¹ã®ã¿æ“ä½œã™ã‚‹ãŸã‚ã€ãƒ­ãƒƒã‚¯æ©Ÿæ§‹ã¯ä¸è¦ã€‚
+**d—v**: ŠeƒCƒ“ƒXƒ^ƒ“ƒX‚Í“Æ—§‚µ‚½ƒŠƒ\[ƒX‚Ì‚Ý‘€ì‚·‚é‚½‚ßAƒƒbƒN‹@\‚Í•s—vB
 
-### 7.3 ã‚¨ãƒ©ãƒ¼ãƒãƒ³ãƒ‰ãƒªãƒ³ã‚°
-- ã™ã¹ã¦ã®é€šä¿¡å‡¦ç†ã«try-catchãƒ–ãƒ­ãƒƒã‚¯
-- ã‚¨ãƒ©ãƒ¼ãƒ­ã‚°ã‚’GUIã«è¡¨ç¤º
-- å†æŽ¥ç¶šãƒ­ã‚¸ãƒƒã‚¯ï¼ˆãƒªãƒˆãƒ©ã‚¤å›žæ•°ã€é–“éš”è¨­å®šå¯ï¼‰
+### 7.3 ƒGƒ‰[ƒnƒ“ƒhƒŠƒ“ƒO
+- ‚·‚×‚Ä‚Ì’ÊMˆ—‚Étry-catchƒuƒƒbƒN
+- ƒGƒ‰[ƒƒO‚ðGUI‚É•\Ž¦
+- ÄÚ‘±ƒƒWƒbƒNiƒŠƒgƒ‰ƒC‰ñ”AŠÔŠuÝ’è‰Âj
 
-### 7.4 ãƒ‡ãƒ¼ã‚¿æ°¸ç¶šåŒ–
-- è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«: PSD1å½¢å¼ï¼ˆPowerShellãƒãƒƒã‚·ãƒ¥ãƒ†ãƒ¼ãƒ–ãƒ«ï¼‰
-- ãƒ­ã‚°: ãƒ¦ãƒ¼ã‚¶ãƒ¼ãŒæ˜Žç¤ºçš„ã«ã€Œãƒ­ã‚°ä¿å­˜ã€ãƒœã‚¿ãƒ³ã§å‡ºåŠ›
-- DataBank: å„ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ãƒ•ã‚©ãƒ«ãƒ€å†…ã®CSVãƒ•ã‚¡ã‚¤ãƒ«ã¨ã—ã¦ç®¡ç†
+### 7.4 ƒf[ƒ^‰i‘±‰»
+- Ý’èƒtƒ@ƒCƒ‹: PSD1Œ`Ž®iPowerShellƒnƒbƒVƒ…ƒe[ƒuƒ‹j
+- ƒƒO: ƒ†[ƒU[‚ª–¾Ž¦“I‚ÉuƒƒO•Û‘¶vƒ{ƒ^ƒ“‚Åo—Í
+- DataBank: ŠeƒCƒ“ƒXƒ^ƒ“ƒXƒtƒHƒ‹ƒ_“à‚ÌCSVƒtƒ@ƒCƒ‹‚Æ‚µ‚ÄŠÇ—
 
 ### 7.5 QuickSender
-- DataBankãƒ•ã‚¡ã‚¤ãƒ«ã‚’ãƒ­ãƒ¼ãƒ‰ã—ã€`BindingList`ã§UIã«ãƒã‚¤ãƒ³ãƒ‰
-- ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆIDã¨é€ä¿¡ãƒ‡ãƒ¼ã‚¿ã®ãƒžãƒƒãƒ”ãƒ³ã‚°ã‚’ç®¡ç†
+- DataBankƒtƒ@ƒCƒ‹‚ðƒ[ƒh‚µA`BindingList`‚ÅUI‚ÉƒoƒCƒ“ƒh
+- ƒeƒ“ƒvƒŒ[ƒgID‚Æ‘—Mƒf[ƒ^‚Ìƒ}ƒbƒsƒ“ƒO‚ðŠÇ—
 
 ### 7.6 InstanceManager
-- å„æŽ¥ç¶šã‚’PSCustomObjectã§ãƒ©ãƒƒãƒ—ã—ã€Group/Tagå±žæ€§ã‚’è¿½åŠ 
-- ã‚°ãƒ«ãƒ¼ãƒ—æŠ½å‡ºã€ä¸€æ‹¬æ“ä½œAPIã‚’æä¾›
-- GUIã¸`BindingSource`ã§çŠ¶æ…‹é…ä¿¡
+- ŠeÚ‘±‚ðPSCustomObject‚Åƒ‰ƒbƒv‚µAGroup/Tag‘®«‚ð’Ç‰Á
+- ƒOƒ‹[ƒv’ŠoAˆêŠ‡‘€ìAPI‚ð’ñ‹Ÿ
+- GUI‚Ö`BindingSource`‚Åó‘Ô”zM
 
 ### 7.7 NetworkAnalyzer
-- `Test-Connection`, `Test-NetConnection`, `Find-NetRoute`ã‚’çµ„ã¿åˆã‚ã›ãŸè¨ºæ–­
-- è¨ºæ–­ãƒ«ãƒ¼ãƒ«ã‚’PSD1ã§è¨˜è¿°ã—ã€æŽ¨å¥¨ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã‚’ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆç”Ÿæˆ
+- `Test-Connection`, `Test-NetConnection`, `Find-NetRoute`‚ð‘g‚Ý‡‚í‚¹‚½f’f
+- f’fƒ‹[ƒ‹‚ðPSD1‚Å‹Lq‚µA„§ƒAƒNƒVƒ‡ƒ“‚ðƒeƒ“ƒvƒŒ[ƒg¶¬
 
-### 7.8 ãƒ­ã‚°ç®¡ç†
-- **ãƒ­ã‚°ãƒ¬ãƒ™ãƒ«**: INFO/WARN/ERRORã‚’ç”¨æ„
-- **ãƒ­ã‚°å‡ºåŠ›**: ãƒ¦ãƒ¼ã‚¶ãƒ¼ãŒã€Œãƒ­ã‚°ã‚¨ã‚¯ã‚¹ãƒãƒ¼ãƒˆã€ãƒœã‚¿ãƒ³ã§æ˜Žç¤ºçš„ã«ä¿å­˜ï¼ˆãƒ•ã‚¡ã‚¤ãƒ«åãƒ»ä¿å­˜å…ˆã‚’ãƒ¦ãƒ¼ã‚¶ãƒ¼æŒ‡å®šï¼‰
-- **è‡ªå‹•ä¿å­˜ãªã—**: è©³ç´°ãƒˆãƒ¬ãƒ¼ã‚¹ãŒå¿…è¦ãªå ´åˆã¯å¤–éƒ¨ãƒ„ãƒ¼ãƒ«ã‚’ä½¿ç”¨
+### 7.8 ƒƒOŠÇ—
+- **ƒƒOƒŒƒxƒ‹**: INFO/WARN/ERROR‚ð—pˆÓ
+- **ƒƒOo—Í**: ƒ†[ƒU[‚ªuƒƒOƒGƒNƒXƒ|[ƒgvƒ{ƒ^ƒ“‚Å–¾Ž¦“I‚É•Û‘¶iƒtƒ@ƒCƒ‹–¼E•Û‘¶æ‚ðƒ†[ƒU[Žw’èj
+- **Ž©“®•Û‘¶‚È‚µ**: Ú×ƒgƒŒ[ƒX‚ª•K—v‚Èê‡‚ÍŠO•”ƒc[ƒ‹‚ðŽg—p
 
 ---
 
-## 8. æ‹¡å¼µæ€§
+## 8. Šg’£«
 
-### 8.1 ã‚«ã‚¹ã‚¿ãƒ ã‚¹ã‚¯ãƒªãƒ—ãƒˆ
+### 8.1 ƒJƒXƒ^ƒ€ƒXƒNƒŠƒvƒg
 ```powershell
 # Scripts/custom_handlers.ps1
 function CustomValidation {
     param($ReceivedData, $Connection)
-    # ã‚«ã‚¹ã‚¿ãƒ æ¤œè¨¼ãƒ­ã‚¸ãƒƒã‚¯
+    # ƒJƒXƒ^ƒ€ŒŸØƒƒWƒbƒN
     if ($ReceivedData -match "ERROR") {
-        # ã‚¨ãƒ©ãƒ¼å‡¦ç†
+        # ƒGƒ‰[ˆ—
         return $false
     }
     return $true
 }
 ```
 
-ã‚·ãƒŠãƒªã‚ªã‹ã‚‰å‘¼ã³å‡ºã—:
+ƒVƒiƒŠƒI‚©‚çŒÄ‚Ño‚µ:
 ```csv
 Step,Action,Parameter1,Parameter2,Parameter3
 10,CALL_SCRIPT,CustomValidation,$RECV_DATA,$CONN_NAME
 ```
 
-### 8.2 ãƒ—ãƒ©ã‚°ã‚¤ãƒ³æ©Ÿèƒ½
-- `Scripts/`é…ä¸‹ã®PS1ãƒ•ã‚¡ã‚¤ãƒ«ã‚’è‡ªå‹•èª­ã¿è¾¼ã¿
-- å®šç¾©æ¸ˆã¿é–¢æ•°ã‚’ã‚·ãƒŠãƒªã‚ªã‹ã‚‰å‘¼ã³å‡ºã—å¯èƒ½
-- ãƒ—ãƒ©ã‚°ã‚¤ãƒ³APIè¦ç´„ã«å¾“ã£ãŸå®Ÿè£…
+### 8.2 ƒvƒ‰ƒOƒCƒ“‹@”\
+- `Scripts/`”z‰º‚ÌPS1ƒtƒ@ƒCƒ‹‚ðŽ©“®“Ç‚Ýž‚Ý
+- ’è‹`Ï‚ÝŠÖ”‚ðƒVƒiƒŠƒI‚©‚çŒÄ‚Ño‚µ‰Â”\
+- ƒvƒ‰ƒOƒCƒ“API‹K–ñ‚É]‚Á‚½ŽÀ‘•
 
-### 8.3 å¤‰æ•°ã‚·ã‚¹ãƒ†ãƒ æ‹¡å¼µ
-æ–°ã—ã„å¤‰æ•°ã‚¿ã‚¤ãƒ—ã®è¿½åŠ :
+### 8.3 •Ï”ƒVƒXƒeƒ€Šg’£
+V‚µ‚¢•Ï”ƒ^ƒCƒv‚Ì’Ç‰Á:
 ```powershell
-# Modules/MessageHandler.ps1 å†…
+# Modules/MessageHandler.ps1 “à
 function Expand-Variables {
-    # ${CUSTOM:xxx} ãƒ‘ã‚¿ãƒ¼ãƒ³ã®å‡¦ç†è¿½åŠ 
+    # ${CUSTOM:xxx} ƒpƒ^[ƒ“‚Ìˆ—’Ç‰Á
 }
 ```
 
 ---
 
-## 9. ã‚»ã‚­ãƒ¥ãƒªãƒ†ã‚£è€ƒæ…®äº‹é …
+## 9. ƒZƒLƒ…ƒŠƒeƒBl—¶Ž–€
 
-### 9.1 å®Ÿè¡Œç’°å¢ƒ
-- PowerShellå®Ÿè¡Œãƒãƒªã‚·ãƒ¼: RemoteSignedæŽ¨å¥¨
-- ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯ã‚¢ã‚¯ã‚»ã‚¹æ¨©é™ãŒå¿…è¦
+### 9.1 ŽÀsŠÂ‹«
+- PowerShellŽÀsƒ|ƒŠƒV[: RemoteSigned„§
+- ƒlƒbƒgƒ[ƒNƒAƒNƒZƒXŒ ŒÀ‚ª•K—v
 
-> **ç”¨é€”**: æœ¬ãƒ„ãƒ¼ãƒ«ã¯TCP/IPé€šä¿¡è©¦é¨“ç”¨ã®æ²»å…·ã§ã‚ã‚Šã€ä¿¡é ¼ã•ã‚ŒãŸãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯ç’°å¢ƒã§ã®ä½¿ç”¨ã‚’æƒ³å®šã€‚åŽ³æ ¼ãªã‚»ã‚­ãƒ¥ãƒªãƒ†ã‚£è¦ä»¶ãŒå¿…è¦ãªç’°å¢ƒã§ã¯ã€é©åˆ‡ãªã‚¢ã‚¯ã‚»ã‚¹åˆ¶å¾¡ã¨ç›£è¦–ã‚’å®Ÿæ–½ã™ã‚‹ã“ã¨ã€‚
-
----
-
-## 10. ãƒ‘ãƒ•ã‚©ãƒ¼ãƒžãƒ³ã‚¹
-
-### 10.1 æœ€é©åŒ–ãƒã‚¤ãƒ³ãƒˆ
-- å¤§é‡ãƒ‡ãƒ¼ã‚¿å—ä¿¡æ™‚ã®ãƒãƒƒãƒ•ã‚¡ãƒªãƒ³ã‚°
-- UIæ›´æ–°ã®é–“å¼•ãï¼ˆé«˜é »åº¦æ›´æ–°æ™‚ï¼‰
-- ãƒ­ã‚°ä¿æŒä»¶æ•°ã®åˆ¶é™ï¼ˆãƒ¡ãƒ¢ãƒªä¸Š100ä»¶ï¼‰
-- ãƒ¯ãƒ³ã‚¯ãƒªãƒƒã‚¯é€ä¿¡æ™‚ã®ãƒ‡ãƒã‚¦ãƒ³ã‚¹
-
-### 10.2 ã‚¹ã‚±ãƒ¼ãƒ©ãƒ“ãƒªãƒ†ã‚£
-- åŒæ™‚æŽ¥ç¶šæ•°: 20?30æŽ¥ç¶šç¨‹åº¦ã‚’æƒ³å®š
-- ãƒ¡ãƒ¢ãƒªä½¿ç”¨é‡: æŽ¥ç¶šã‚ãŸã‚Šæ•°MB
-- CPUè² è·: é€šå¸¸æ™‚ < 5%
-- ä¸€æ‹¬åˆ¶å¾¡æ™‚ã‚‚UIãŒãƒ–ãƒ­ãƒƒã‚¯ã—ãªã„ã‚ˆã†éžåŒæœŸåŒ–
+> **—p“r**: –{ƒc[ƒ‹‚ÍTCP/IP’ÊMŽŽŒ±—p‚ÌŽ¡‹ï‚Å‚ ‚èAM—Š‚³‚ê‚½ƒlƒbƒgƒ[ƒNŠÂ‹«‚Å‚ÌŽg—p‚ð‘z’èBŒµŠi‚ÈƒZƒLƒ…ƒŠƒeƒB—vŒ‚ª•K—v‚ÈŠÂ‹«‚Å‚ÍA“KØ‚ÈƒAƒNƒZƒX§Œä‚ÆŠÄŽ‹‚ðŽÀŽ{‚·‚é‚±‚ÆB
 
 ---
 
-## 11. ãƒ†ã‚¹ãƒˆæ–¹é‡
+## 10. ƒpƒtƒH[ƒ}ƒ“ƒX
 
-### 11.1 å˜ä½“ãƒ†ã‚¹ãƒˆ
-- å„ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã®ç‹¬ç«‹ãƒ†ã‚¹ãƒˆ
-- QuickSender: ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆå±•é–‹ã€å¤‰æ•°ç½®æ›
-- InstanceManager: ã‚°ãƒ«ãƒ¼ãƒ—ä½œæˆã€ã‚¿ã‚°ãƒ•ã‚£ãƒ«ã‚¿
-- NetworkAnalyzer: Ping/Portçµæžœã®åˆ¤å®šãƒ­ã‚¸ãƒƒã‚¯
+### 10.1 Å“K‰»ƒ|ƒCƒ“ƒg
+- ‘å—Êƒf[ƒ^ŽóMŽž‚Ìƒoƒbƒtƒ@ƒŠƒ“ƒO
+- UIXV‚ÌŠÔˆø‚«i‚•p“xXVŽžj
+- ƒƒO•ÛŽŒ”‚Ì§ŒÀiƒƒ‚ƒŠã100Œj
+- ƒƒ“ƒNƒŠƒbƒN‘—MŽž‚ÌƒfƒoƒEƒ“ƒX
 
-### 11.2 çµåˆãƒ†ã‚¹ãƒˆ
-- ãƒ­ãƒ¼ã‚«ãƒ«ãƒ«ãƒ¼ãƒ—ãƒãƒƒã‚¯é€šä¿¡ãƒ†ã‚¹ãƒˆ
-- è¤‡æ•°æŽ¥ç¶šåŒæ™‚å‹•ä½œãƒ†ã‚¹ãƒˆ
-- ã‚·ãƒŠãƒªã‚ªå®Ÿè¡Œãƒ†ã‚¹ãƒˆï¼ˆSAVE_RECVâ†’å¤‰æ•°åŸ‹ã‚è¾¼ã¿é€ä¿¡ï¼‰
-- DataBankâ†’QuickSenderâ†’è¤‡æ•°æŽ¥ç¶šã¸ã®ä¸€æ‹¬é€ä¿¡
-
-### 11.3 å®Ÿç’°å¢ƒãƒ†ã‚¹ãƒˆ
-- å®Ÿæ©Ÿå™¨ã¨ã®æŽ¥ç¶šãƒ†ã‚¹ãƒˆ
-- é•·æ™‚é–“ç¨¼åƒãƒ†ã‚¹ãƒˆ
-- ã‚¨ãƒ©ãƒ¼ãƒªã‚«ãƒãƒªãƒ†ã‚¹ãƒˆ
-- 10?20æŽ¥ç¶šè¦æ¨¡ã®ã‚°ãƒ«ãƒ¼ãƒ—åˆ¶å¾¡è©¦é¨“
+### 10.2 ƒXƒP[ƒ‰ƒrƒŠƒeƒB
+- “¯ŽžÚ‘±”: 20?30Ú‘±’ö“x‚ð‘z’è
+- ƒƒ‚ƒŠŽg—p—Ê: Ú‘±‚ ‚½‚è”MB
+- CPU•‰‰×: ’ÊíŽž < 5%
+- ˆêŠ‡§ŒäŽž‚àUI‚ªƒuƒƒbƒN‚µ‚È‚¢‚æ‚¤”ñ“¯Šú‰»
 
 ---
 
-## 12. é…å¸ƒã¨é‹ç”¨
+## 11. ƒeƒXƒg•ûj
 
-### 12.1 é…å¸ƒæˆ¦ç•¥
-- **ãƒãƒ¼ã‚¿ãƒ–ãƒ«ãƒ‘ãƒƒã‚±ãƒ¼ã‚¸**: å˜ä¸€ZIPãƒ•ã‚¡ã‚¤ãƒ«ã§å®Œå…¨ãªå®Ÿè¡Œç’°å¢ƒã‚’é…å¸ƒ
-- **ä¾å­˜é–¢ä¿‚**: PowerShell 5.1ä»¥ä¸Šï¼ˆWindowsæ¨™æº–ï¼‰ã®ã¿
-- **USBå®Ÿè¡Œå¯¾å¿œ**: ä»»æ„ã®ãƒ‰ãƒ©ã‚¤ãƒ–ã‹ã‚‰å®Ÿè¡Œå¯èƒ½ã€ãƒ¬ã‚¸ã‚¹ãƒˆãƒªéžä¾å­˜
+### 11.1 ’P‘ÌƒeƒXƒg
+- Šeƒ‚ƒWƒ…[ƒ‹‚Ì“Æ—§ƒeƒXƒg
+- QuickSender: ƒeƒ“ƒvƒŒ[ƒg“WŠJA•Ï”’uŠ·
+- InstanceManager: ƒOƒ‹[ƒvì¬Aƒ^ƒOƒtƒBƒ‹ƒ^
+- NetworkAnalyzer: Ping/PortŒ‹‰Ê‚Ì”»’èƒƒWƒbƒN
 
-### 12.2 ãƒ‘ãƒƒã‚±ãƒ¼ã‚¸æ§‹æˆ
+### 11.2 Œ‹‡ƒeƒXƒg
+- ƒ[ƒJƒ‹ƒ‹[ƒvƒoƒbƒN’ÊMƒeƒXƒg
+- •¡”Ú‘±“¯Žž“®ìƒeƒXƒg
+- ƒVƒiƒŠƒIŽÀsƒeƒXƒgiSAVE_RECV¨•Ï”–„‚ßž‚Ý‘—Mj
+- DataBank¨QuickSender¨•¡”Ú‘±‚Ö‚ÌˆêŠ‡‘—M
+
+### 11.3 ŽÀŠÂ‹«ƒeƒXƒg
+- ŽÀ‹@Ší‚Æ‚ÌÚ‘±ƒeƒXƒg
+- ’·ŽžŠÔ‰Ò“­ƒeƒXƒg
+- ƒGƒ‰[ƒŠƒJƒoƒŠƒeƒXƒg
+- 10?20Ú‘±‹K–Í‚ÌƒOƒ‹[ƒv§ŒäŽŽŒ±
+
+---
+
+## 12. ”z•z‚Æ‰^—p
+
+### 12.1 ”z•zí—ª
+- **ƒ|[ƒ^ƒuƒ‹ƒpƒbƒP[ƒW**: ’PˆêZIPƒtƒ@ƒCƒ‹‚ÅŠ®‘S‚ÈŽÀsŠÂ‹«‚ð”z•z
+- **ˆË‘¶ŠÖŒW**: PowerShell 5.1ˆÈãiWindows•W€j‚Ì‚Ý
+- **USBŽÀs‘Î‰ž**: ”CˆÓ‚Ìƒhƒ‰ƒCƒu‚©‚çŽÀs‰Â”\AƒŒƒWƒXƒgƒŠ”ñˆË‘¶
+
+### 12.2 ƒpƒbƒP[ƒW\¬
 ```
 TcpDebugger/
-â”œâ”€â”€ TcpDebugger.ps1              # ãƒ¡ã‚¤ãƒ³ã‚¹ã‚¯ãƒªãƒ—ãƒˆ
-â”œâ”€â”€ Modules/                     # ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ç¾¤
-â”œâ”€â”€ Config/
-â”‚   â””â”€â”€ defaults.psd1            # ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆè¨­å®š
-â”œâ”€â”€ Instances/                   # é€šä¿¡ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ãƒ•ã‚©ãƒ«ãƒ€ç¾¤
-â”‚   â””â”€â”€ Example/                 # ã‚µãƒ³ãƒ—ãƒ«ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹
-â”‚       â”œâ”€â”€ instance.psd1
-â”‚       â”œâ”€â”€ scenarios/
-â”‚       â””â”€â”€ templates/
-â””â”€â”€ README.md
+„¥„Ÿ„Ÿ TcpDebugger.ps1              # ƒƒCƒ“ƒXƒNƒŠƒvƒg
+„¥„Ÿ„Ÿ Modules/                     # ƒ‚ƒWƒ…[ƒ‹ŒQ
+„¥„Ÿ„Ÿ Config/
+„    „¤„Ÿ„Ÿ defaults.psd1            # ƒfƒtƒHƒ‹ƒgÝ’è
+„¥„Ÿ„Ÿ Instances/                   # ’ÊMƒCƒ“ƒXƒ^ƒ“ƒXƒtƒHƒ‹ƒ_ŒQ
+„    „¤„Ÿ„Ÿ Example/                 # ƒTƒ“ƒvƒ‹ƒCƒ“ƒXƒ^ƒ“ƒX
+„        „¥„Ÿ„Ÿ instance.psd1
+„        „¥„Ÿ„Ÿ scenarios/
+„        „¤„Ÿ„Ÿ templates/
+„¤„Ÿ„Ÿ README.md
 ```
 
-### 12.3 èµ·å‹•æ–¹æ³•
+### 12.3 ‹N“®•û–@
 ```powershell
-# åŸºæœ¬èµ·å‹•
+# Šî–{‹N“®
 .\TcpDebugger.ps1
 
-# ã¾ãŸã¯ã€PowerShell ã‹ã‚‰ç›´æŽ¥èµ·å‹•
+# ‚Ü‚½‚ÍAPowerShell ‚©‚ç’¼Ú‹N“®
 powershell.exe -ExecutionPolicy Bypass -File ".\TcpDebugger.ps1"
 ```
 
-### 12.4 é…å¸ƒæ–¹æ³•
+### 12.4 ”z•z•û–@
 
-#### ã‚¹ã‚¿ãƒ³ãƒ‰ã‚¢ãƒ­ãƒ³é…å¸ƒ
+#### ƒXƒ^ƒ“ƒhƒAƒƒ“”z•z
 ```powershell
-# ZIPã‚’é…å¸ƒ
-# â†’ TcpDebugger.zip
+# ZIP‚ð”z•z
+# ¨ TcpDebugger.zip
 
-# å±•é–‹ã¨å®Ÿè¡Œ
+# “WŠJ‚ÆŽÀs
 Expand-Archive -Path "TcpDebugger.zip" -DestinationPath "C:\Tools\TcpDebugger"
 cd "C:\Tools\TcpDebugger"
 .\TcpDebugger.ps1
 ```
 
-#### ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯å…±æœ‰é…å¸ƒ
+#### ƒlƒbƒgƒ[ƒN‹¤—L”z•z
 ```powershell
-# ã‚µãƒ¼ãƒãƒ¼å´: å…±æœ‰ãƒ•ã‚©ãƒ«ãƒ€ã«é…ç½®
+# ƒT[ƒo[‘¤: ‹¤—LƒtƒHƒ‹ƒ_‚É”z’u
 Copy-Item -Path "TcpDebugger" -Destination "\\server\tools\TcpDebugger" -Recurse
 
-# ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆå´: ç›´æŽ¥å®Ÿè¡Œ
+# ƒNƒ‰ƒCƒAƒ“ƒg‘¤: ’¼ÚŽÀs
 \\server\tools\TcpDebugger\TcpDebugger.ps1
 ```
 
 ---
 
-## 13. ä»Šå¾Œã®æ‹¡å¼µäºˆå®š
+## 13. ¡Œã‚ÌŠg’£—\’è
 
-### 13.1 ãƒ•ã‚§ãƒ¼ã‚º1ï¼ˆåŸºæœ¬å®Ÿè£…ï¼‰- ç¾åœ¨ã®è¨­è¨ˆç¯„å›²
-- TCP/UDPåŸºæœ¬é€šä¿¡
-- æ‰‹å‹•é€å—ä¿¡
-- ã‚·ãƒŠãƒªã‚ªã‚¨ãƒ³ã‚¸ãƒ³ï¼ˆå—ä¿¡ãƒ‡ãƒ¼ã‚¿æ´»ç”¨å«ã‚€ï¼‰
-- WinFormsãƒ™ãƒ¼ã‚¹GUI
-- 1ãƒ•ã‚©ãƒ«ãƒ€=1ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ç®¡ç†
-- è¨ºæ–­æ”¯æ´æ©Ÿèƒ½
+### 13.1 ƒtƒF[ƒY1iŠî–{ŽÀ‘•j- Œ»Ý‚ÌÝŒv”ÍˆÍ
+- TCP/UDPŠî–{’ÊM
+- Žè“®‘—ŽóM
+- ƒVƒiƒŠƒIƒGƒ“ƒWƒ“iŽóMƒf[ƒ^Šˆ—pŠÜ‚Þj
+- WinFormsƒx[ƒXGUI
+- 1ƒtƒHƒ‹ƒ_=1ƒCƒ“ƒXƒ^ƒ“ƒXŠÇ—
+- f’fŽx‰‡‹@”\
 
-### 13.2 ãƒ•ã‚§ãƒ¼ã‚º2ï¼ˆæ©Ÿèƒ½æ‹¡å¼µï¼‰- å°†æ¥æ¤œè¨Ž
-- ãƒ—ãƒ­ãƒˆã‚³ãƒ«è§£æžãƒ—ãƒ©ã‚°ã‚¤ãƒ³
-- æ€§èƒ½æ¸¬å®šæ©Ÿèƒ½ï¼ˆiperfäº’æ›ï¼‰
-- ã‚ˆã‚Šé«˜åº¦ãªã‚·ãƒŠãƒªã‚ªDSL
+### 13.2 ƒtƒF[ƒY2i‹@”\Šg’£j- «—ˆŒŸ“¢
+- ƒvƒƒgƒRƒ‹‰ðÍƒvƒ‰ƒOƒCƒ“
+- «”\‘ª’è‹@”\iiperfŒÝŠ·j
+- ‚æ‚è‚“x‚ÈƒVƒiƒŠƒIDSL
 
 ---
 
-## 14. å‚è€ƒè³‡æ–™
+## 14. ŽQlŽ‘—¿
 
-### 14.1 æŠ€è¡“å‚è€ƒ
+### 14.1 ‹ZpŽQl
 - [PowerShell WinForms GUI Tutorial](https://learn.microsoft.com/powershell/scripting/samples/sample-gui)
 - [.NET Socket Programming](https://docs.microsoft.com/dotnet/api/system.net.sockets)
 
-### 14.2 é–¢é€£ãƒ„ãƒ¼ãƒ«
-- VSCode: ã‚¹ã‚¯ãƒªãƒ—ãƒˆç·¨é›†
-- Excel/LibreOffice: CSVç·¨é›†
+### 14.2 ŠÖ˜Aƒc[ƒ‹
+- VSCode: ƒXƒNƒŠƒvƒg•ÒW
+- Excel/LibreOffice: CSV•ÒW
 
 ---
 
-## ä»˜éŒ²A: ã‚µãƒ³ãƒ—ãƒ«è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«
+## •t˜^A: ƒTƒ“ƒvƒ‹Ý’èƒtƒ@ƒCƒ‹
 
-è©³ç´°ãªã‚µãƒ³ãƒ—ãƒ«ã¯å®Ÿè£…æ™‚ã«åˆ¥é€”ä½œæˆäºˆå®šã€‚
+Ú×‚ÈƒTƒ“ƒvƒ‹‚ÍŽÀ‘•Žž‚É•Ê“rì¬—\’èB
 
 ---
 
-**æ–‡æ›¸å±¥æ­´**
-- Version 1.0 (2025-11-15): åˆç‰ˆä½œæˆ
-- Version 1.1 (2025-11-15): è¦ä»¶æ•´ç†ã¨ç°¡ç´ åŒ–
-  - 1ãƒ•ã‚©ãƒ«ãƒ€=1ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã«åŽ³å¯†çµ±ä¸€
-  - WinFormsã§ç¾å®Ÿçš„ãªGUIã«å¤‰æ›´
-  - ã‚¹ãƒ¬ãƒƒãƒ‰æ§‹æˆã‚’æ˜Žç¢ºåŒ–ï¼ˆãƒ­ãƒƒã‚¯ä¸è¦ï¼‰
-  - iperfå‰Šé™¤ã€è¨ºæ–­æ©Ÿèƒ½ã¯ç¶­æŒ
-  - å…¥åŠ›æ¤œè¨¼ã¯ä¸è¦ã¨æ˜Žè¨˜
-  - å—ä¿¡ãƒ‡ãƒ¼ã‚¿æ´»ç”¨æ©Ÿèƒ½ï¼ˆSAVE_RECVï¼‰ã‚’è¿½åŠ 
-  - PowerShellå˜ä½“ã§ã®å®Ÿè¡Œã«é™å®š
+**•¶‘—š—ð**
+- Version 1.0 (2025-11-15): ‰”Åì¬
+- Version 1.1 (2025-11-15): —vŒ®—‚ÆŠÈ‘f‰»
+  - 1ƒtƒHƒ‹ƒ_=1ƒCƒ“ƒXƒ^ƒ“ƒX‚ÉŒµ–§“ˆê
+  - WinForms‚ÅŒ»ŽÀ“I‚ÈGUI‚É•ÏX
+  - ƒXƒŒƒbƒh\¬‚ð–¾Šm‰»iƒƒbƒN•s—vj
+  - iperfíœAf’f‹@”\‚ÍˆÛŽ
+  - “ü—ÍŒŸØ‚Í•s—v‚Æ–¾‹L
+  - ŽóMƒf[ƒ^Šˆ—p‹@”\iSAVE_RECVj‚ð’Ç‰Á
+  - PowerShell’P‘Ì‚Å‚ÌŽÀs‚ÉŒÀ’è
 
 
-**æ–‡æ›¸å±¥æ­´**
-- Version 1.0 (2025-11-15): åˆç‰ˆä½œæˆ
+**•¶‘—š—ð**
+- Version 1.0 (2025-11-15): ‰”Åì¬

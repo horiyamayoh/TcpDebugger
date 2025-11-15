@@ -16,6 +16,7 @@ function Show-MainForm {
     $form.Size = New-Object System.Drawing.Size(1200, 700)
     $form.StartPosition = "CenterScreen"
     $form.Font = New-Object System.Drawing.Font("Segoe UI", 9)
+    $script:CurrentMainForm = $form
 
     # DataGridView (connection list)
     $dgvInstances = New-Object System.Windows.Forms.DataGridView
@@ -561,6 +562,14 @@ function Show-MainForm {
         }
     })
 
+    $form.Add_FormClosed({
+        param($sender, $eventArgs)
+
+        if ($script:CurrentMainForm -eq $sender) {
+            $script:CurrentMainForm = $null
+        }
+    })
+
     # Initial load
     Update-InstanceList -DataGridView $dgvInstances
     & $updateDetails $true
@@ -569,6 +578,10 @@ function Show-MainForm {
     # Show form
     $form.Add_Shown({ $form.Activate() })
     [void]$form.ShowDialog()
+
+    if ($script:CurrentMainForm -eq $form) {
+        $script:CurrentMainForm = $null
+    }
 }
 
 function Update-InstanceList {
@@ -797,7 +810,7 @@ function Update-LogDisplay {
 
             $summary = Get-MessageSummary -Data $recv.Data -MaxLength 40
             $timeStr = $recv.Timestamp.ToString("HH:mm:ss")
-            $logLines += "[$timeStr] $($conn.DisplayName) ‚áê $summary ($($recv.Length) bytes)"
+            $logLines += "[$timeStr] $($conn.DisplayName) ‚á? $summary ($($recv.Length) bytes)"
         }
     }
 

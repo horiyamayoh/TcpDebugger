@@ -1,7 +1,7 @@
 # ConnectionManager.ps1
-# æ¥ç¶šç®¡ç†ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ« - è¤‡æ•°æ¥ç¶šã®ä¸€å…ƒç®¡ç†
+# Ú‘±ŠÇ—ƒ‚ƒWƒ…[ƒ‹ - •¡”Ú‘±‚ÌˆêŒ³ŠÇ—
 
-# ã‚°ãƒ­ãƒ¼ãƒãƒ«æ¥ç¶šã‚¹ãƒˆã‚¢ï¼ˆã‚¹ãƒ¬ãƒƒãƒ‰ã‚»ãƒ¼ãƒ•ï¼‰
+# ƒOƒ[ƒoƒ‹Ú‘±ƒXƒgƒAiƒXƒŒƒbƒhƒZ[ƒtj
 if (-not $Global:Connections) {
     $Global:Connections = [System.Collections.Hashtable]::Synchronized(@{})
 }
@@ -21,7 +21,7 @@ class ConnectionContext {
     [System.Threading.Thread]$Thread
     [System.Threading.CancellationTokenSource]$CancellationSource
     [hashtable]$ScenarioTimers
-    [hashtable]$Variables  # ã‚·ãƒŠãƒªã‚ªå¤‰æ•°ã‚¹ã‚³ãƒ¼ãƒ—
+    [hashtable]$Variables  # ƒVƒiƒŠƒI•Ï”ƒXƒR[ƒv
     [System.Collections.ArrayList]$SendQueue
     [System.Collections.ArrayList]$RecvBuffer
     [datetime]$LastActivity
@@ -42,12 +42,12 @@ class ConnectionContext {
 function New-ConnectionManager {
     <#
     .SYNOPSIS
-    æ¥ç¶šãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼ã‚’åˆæœŸåŒ–
+    Ú‘±ƒ}ƒl[ƒWƒƒ[‚ğ‰Šú‰»
     #>
     
     Write-Host "[ConnectionManager] Initializing..." -ForegroundColor Cyan
     
-    # æ—¢å­˜æ¥ç¶šã®ã‚¯ãƒªãƒ¼ãƒ³ã‚¢ãƒƒãƒ—
+    # Šù‘¶Ú‘±‚ÌƒNƒŠ[ƒ“ƒAƒbƒv
     foreach ($key in $Global:Connections.Keys) {
         try {
             Stop-Connection -ConnectionId $key -Force
@@ -63,7 +63,7 @@ function New-ConnectionManager {
 function Add-Connection {
     <#
     .SYNOPSIS
-    æ–°ã—ã„æ¥ç¶šã‚’è¿½åŠ 
+    V‚µ‚¢Ú‘±‚ğ’Ç‰Á
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -72,7 +72,7 @@ function Add-Connection {
     
     $conn = [ConnectionContext]::new()
     
-    # IDç”Ÿæˆï¼ˆæœªæŒ‡å®šæ™‚ã¯è‡ªå‹•ç”Ÿæˆï¼‰
+    # ID¶¬i–¢w’è‚Í©“®¶¬j
     $conn.Id = if ($Config.Id) { $Config.Id } else { [guid]::NewGuid().ToString() }
     $conn.Name = $Config.Name
     $conn.DisplayName = if ($Config.DisplayName) { $Config.DisplayName } else { $Config.Name }
@@ -86,7 +86,7 @@ function Add-Connection {
     $conn.Group = $Config.Group
     $conn.Tags = $Config.Tags
     
-    # ã‚°ãƒ­ãƒ¼ãƒãƒ«ã‚¹ãƒˆã‚¢ã«è¿½åŠ 
+    # ƒOƒ[ƒoƒ‹ƒXƒgƒA‚É’Ç‰Á
     $Global:Connections[$conn.Id] = $conn
     
     Write-Host "[ConnectionManager] Added connection: $($conn.DisplayName) [$($conn.Id)]" -ForegroundColor Green
@@ -97,7 +97,7 @@ function Add-Connection {
 function Remove-Connection {
     <#
     .SYNOPSIS
-    æ¥ç¶šã‚’å‰Šé™¤
+    Ú‘±‚ğíœ
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -105,10 +105,10 @@ function Remove-Connection {
     )
     
     if ($Global:Connections.ContainsKey($ConnectionId)) {
-        # æ¥ç¶šåœæ­¢
+        # Ú‘±’â~
         Stop-Connection -ConnectionId $ConnectionId -Force
         
-        # ã‚¹ãƒˆã‚¢ã‹ã‚‰å‰Šé™¤
+        # ƒXƒgƒA‚©‚çíœ
         $Global:Connections.Remove($ConnectionId)
         
         Write-Host "[ConnectionManager] Removed connection: $ConnectionId" -ForegroundColor Yellow
@@ -118,7 +118,7 @@ function Remove-Connection {
 function Start-Connection {
     <#
     .SYNOPSIS
-    æ¥ç¶šã‚’é–‹å§‹
+    Ú‘±‚ğŠJn
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -131,7 +131,7 @@ function Start-Connection {
     
     $conn = $Global:Connections[$ConnectionId]
     
-    # æ—¢ã«æ¥ç¶šä¸­ã®å ´åˆã¯ã‚¹ã‚­ãƒƒãƒ—
+    # Šù‚ÉÚ‘±’†‚Ìê‡‚ÍƒXƒLƒbƒv
     if ($conn.Status -eq "CONNECTED" -or $conn.Status -eq "CONNECTING") {
         Write-Warning "[ConnectionManager] Connection already active: $($conn.DisplayName)"
         return
@@ -143,7 +143,7 @@ function Start-Connection {
     Write-Host "[ConnectionManager] Starting connection: $($conn.DisplayName)" -ForegroundColor Cyan
     
     try {
-        # ãƒ—ãƒ­ãƒˆã‚³ãƒ«åˆ¥ã«æ¥ç¶šå‡¦ç†ã‚’å‘¼ã³å‡ºã—
+        # ƒvƒƒgƒRƒ‹•Ê‚ÉÚ‘±ˆ—‚ğŒÄ‚Ño‚µ
         switch ($conn.Protocol) {
             "TCP" {
                 if ($conn.Mode -eq "Client") {
@@ -217,12 +217,12 @@ function Stop-Connection {
     Write-Host "[ConnectionManager] Stopping connection: $($conn.DisplayName)" -ForegroundColor Yellow
     
     try {
-        # ã‚­ãƒ£ãƒ³ã‚»ãƒ«ãƒˆãƒ¼ã‚¯ãƒ³ã‚’ç™ºè¡Œ
+        # ƒLƒƒƒ“ƒZƒ‹ƒg[ƒNƒ“‚ğ”­s
         if ($conn.CancellationSource) {
             $conn.CancellationSource.Cancel()
         }
         
-        # ã‚½ã‚±ãƒƒãƒˆã‚’ã‚¯ãƒ­ãƒ¼ã‚º
+        # ƒ\ƒPƒbƒg‚ğƒNƒ[ƒY
         if ($conn.Socket) {
             if ($conn.Socket -is [System.Net.Sockets.TcpClient]) {
                 $conn.Socket.Close()
@@ -235,10 +235,10 @@ function Stop-Connection {
             $conn.Socket = $null
         }
         
-        # ã‚¹ãƒ¬ãƒƒãƒ‰çµ‚äº†ã‚’å¾…æ©Ÿ
+        # ƒXƒŒƒbƒhI—¹‚ğ‘Ò‹@
         if ($conn.Thread -and $conn.Thread.IsAlive) {
             if (-not $Force) {
-                $conn.Thread.Join(5000)  # 5ç§’å¾…æ©Ÿ
+                $conn.Thread.Join(5000)  # 5•b‘Ò‹@
             }
             if ($conn.Thread.IsAlive) {
                 Write-Warning "Thread still alive, forcing abort"
@@ -259,7 +259,7 @@ function Stop-Connection {
 function Get-ConnectionsByGroup {
     <#
     .SYNOPSIS
-    ã‚°ãƒ«ãƒ¼ãƒ—åã§æ¥ç¶šã‚’æŠ½å‡º
+    ƒOƒ‹[ƒv–¼‚ÅÚ‘±‚ğ’Šo
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -278,7 +278,7 @@ function Get-ConnectionsByGroup {
 function Get-ConnectionsByTag {
     <#
     .SYNOPSIS
-    ã‚¿ã‚°ã§æ¥ç¶šã‚’æŠ½å‡º
+    ƒ^ƒO‚ÅÚ‘±‚ğ’Šo
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -297,7 +297,7 @@ function Get-ConnectionsByTag {
 function Get-AllConnections {
     <#
     .SYNOPSIS
-    å…¨æ¥ç¶šã‚’å–å¾—
+    ‘SÚ‘±‚ğæ“¾
     #>
     return $Global:Connections.Values
 }
@@ -305,7 +305,7 @@ function Get-AllConnections {
 function Send-Data {
     <#
     .SYNOPSIS
-    ãƒ‡ãƒ¼ã‚¿é€ä¿¡ï¼ˆé€ä¿¡ã‚­ãƒ¥ãƒ¼ã«æŠ•å…¥ï¼‰
+    ƒf[ƒ^‘—Mi‘—MƒLƒ…[‚É“Š“üj
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -325,13 +325,13 @@ function Send-Data {
         throw "Connection not connected: $($conn.DisplayName)"
     }
     
-    # é€ä¿¡ã‚­ãƒ¥ãƒ¼ã«è¿½åŠ 
+    # ‘—MƒLƒ…[‚É’Ç‰Á
     [void]$conn.SendQueue.Add($Data)
     
     Write-Verbose "[ConnectionManager] Data queued for $($conn.DisplayName): $($Data.Length) bytes"
 }
 
-# Export-ModuleMember ã¯ Import-Module ã§ã®ã¿æœ‰åŠ¹ãªãŸã‚ã€ãƒ‰ãƒƒãƒˆã‚½ãƒ¼ã‚¹èª­ã¿è¾¼ã¿ã§ã¯ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆ
+# Export-ModuleMember ‚Í Import-Module ‚Å‚Ì‚İ—LŒø‚È‚½‚ßAƒhƒbƒgƒ\[ƒX“Ç‚İ‚İ‚Å‚ÍƒRƒƒ“ƒgƒAƒEƒg
 # Export-ModuleMember -Function @(
 #     'New-ConnectionManager',
 #     'Add-Connection',

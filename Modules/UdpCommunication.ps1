@@ -1,30 +1,30 @@
 # UdpCommunication.ps1
-# UDPé€šä¿¡å‡¦ç†
+# UDP’ÊMˆ—
 
 function Start-UdpConnection {
     <#
     .SYNOPSIS
-    UDPé€šä¿¡ã‚’é–‹å§‹
+    UDP’ÊM‚ğŠJn
     #>
     param(
         [Parameter(Mandatory=$true)]
         [object]$Connection
     )
     
-    # ã‚¹ãƒ¬ãƒƒãƒ‰ã§éåŒæœŸå®Ÿè¡Œ
+    # ƒXƒŒƒbƒh‚Å”ñ“¯ŠúÀs
     $scriptBlock = {
         param($connId, $localIP, $localPort, $remoteIP, $remotePort, $mode)
         
         try {
             Write-Host "[UDP] Starting UDP on ${localIP}:${localPort}..." -ForegroundColor Cyan
             
-            # æ¥ç¶šã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’å–å¾—
+            # Ú‘±ƒIƒuƒWƒFƒNƒg‚ğæ“¾
             $conn = $Global:Connections[$connId]
             
-            # UDPã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆä½œæˆ
+            # UDPƒNƒ‰ƒCƒAƒ“ƒgì¬
             $udpClient = New-Object System.Net.Sockets.UdpClient($localPort)
             
-            # ãƒªãƒ¢ãƒ¼ãƒˆã‚¨ãƒ³ãƒ‰ãƒã‚¤ãƒ³ãƒˆè¨­å®šï¼ˆé€ä¿¡ç”¨ï¼‰
+            # ƒŠƒ‚[ƒgƒGƒ“ƒhƒ|ƒCƒ“ƒgİ’èi‘—M—pj
             if ($remoteIP -and $remotePort -gt 0) {
                 $remoteEndPoint = New-Object System.Net.IPEndPoint(
                     [System.Net.IPAddress]::Parse($remoteIP), 
@@ -39,22 +39,22 @@ function Start-UdpConnection {
             
             Write-Host "[UDP] UDP socket ready on ${localIP}:${localPort}" -ForegroundColor Green
             
-            # å—ä¿¡ç”¨ã‚¨ãƒ³ãƒ‰ãƒã‚¤ãƒ³ãƒˆï¼ˆä»»æ„ã®ã‚¢ãƒ‰ãƒ¬ã‚¹ã‹ã‚‰å—ä¿¡ï¼‰
+            # óM—pƒGƒ“ƒhƒ|ƒCƒ“ƒgi”CˆÓ‚ÌƒAƒhƒŒƒX‚©‚çóMj
             $anyEndPoint = New-Object System.Net.IPEndPoint([System.Net.IPAddress]::Any, 0)
             
-            # é€å—ä¿¡ãƒ«ãƒ¼ãƒ—
+            # ‘—óMƒ‹[ƒv
             while (-not $conn.CancellationSource.Token.IsCancellationRequested) {
                 try {
-                    # é€ä¿¡å‡¦ç†
+                    # ‘—Mˆ—
                     while ($conn.SendQueue.Count -gt 0) {
                         $data = $conn.SendQueue[0]
                         $conn.SendQueue.RemoveAt(0)
                         
                         if ($remoteEndPoint) {
-                            # ãƒªãƒ¢ãƒ¼ãƒˆã‚¨ãƒ³ãƒ‰ãƒã‚¤ãƒ³ãƒˆæŒ‡å®šæ¸ˆã¿
+                            # ƒŠƒ‚[ƒgƒGƒ“ƒhƒ|ƒCƒ“ƒgw’èÏ‚İ
                             $bytesSent = $udpClient.Send($data, $data.Length, $remoteEndPoint)
                         } else {
-                            # ã‚¨ãƒ³ãƒ‰ãƒã‚¤ãƒ³ãƒˆæœªæŒ‡å®šï¼ˆæœ€å¾Œã®å—ä¿¡å…ƒã«é€ä¿¡ï¼‰
+                            # ƒGƒ“ƒhƒ|ƒCƒ“ƒg–¢w’èiÅŒã‚ÌóMŒ³‚É‘—Mj
                             if ($conn.Variables.ContainsKey('LastRemoteEndPoint')) {
                                 $lastEndPoint = $conn.Variables['LastRemoteEndPoint']
                                 $bytesSent = $udpClient.Send($data, $data.Length, $lastEndPoint)
@@ -70,12 +70,12 @@ function Start-UdpConnection {
                     
 
                             Invoke-ConnectionAutoResponse -ConnectionId $connId -ReceivedData $receivedData
-                    # å—ä¿¡å‡¦ç†ï¼ˆéãƒ–ãƒ­ãƒƒã‚­ãƒ³ã‚°ï¼‰
+                    # óMˆ—i”ñƒuƒƒbƒLƒ“ƒOj
                     if ($udpClient.Available -gt 0) {
                         $receivedData = $udpClient.Receive([ref]$anyEndPoint)
                         
                         if ($receivedData.Length -gt 0) {
-                            # å—ä¿¡ãƒãƒƒãƒ•ã‚¡ã«è¿½åŠ 
+                            # óMƒoƒbƒtƒ@‚É’Ç‰Á
                             [void]$conn.RecvBuffer.Add([PSCustomObject]@{
                                 Timestamp = Get-Date
                                 Data = $receivedData
@@ -83,7 +83,7 @@ function Start-UdpConnection {
                                 RemoteEndPoint = $anyEndPoint.ToString()
                             })
                             
-                            # æœ€å¾Œã®å—ä¿¡å…ƒã‚’è¨˜éŒ²
+                            # ÅŒã‚ÌóMŒ³‚ğ‹L˜^
                             $conn.Variables['LastRemoteEndPoint'] = $anyEndPoint
                             
                             Write-Host "[UDP] Received $($receivedData.Length) bytes from $anyEndPoint" -ForegroundColor Magenta
@@ -91,7 +91,7 @@ function Start-UdpConnection {
                         }
                     }
                     
-                    # CPUè² è·è»½æ¸›
+                    # CPU•‰‰×ŒyŒ¸
                     Start-Sleep -Milliseconds 10
                     
                 } catch {
@@ -109,7 +109,7 @@ function Start-UdpConnection {
             Write-Error "[UDP] Socket error: $_"
             
         } finally {
-            # ã‚¯ãƒªãƒ¼ãƒ³ã‚¢ãƒƒãƒ—
+            # ƒNƒŠ[ƒ“ƒAƒbƒv
             if ($udpClient) {
                 $udpClient.Close()
                 $udpClient.Dispose()
@@ -125,7 +125,7 @@ function Start-UdpConnection {
         }
     }
     
-    # ã‚¹ãƒ¬ãƒƒãƒ‰é–‹å§‹
+    # ƒXƒŒƒbƒhŠJn
     $thread = New-Object System.Threading.Thread([System.Threading.ThreadStart]{
         & $scriptBlock -connId $Connection.Id `
                        -localIP $Connection.LocalIP `

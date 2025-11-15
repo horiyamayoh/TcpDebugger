@@ -1,27 +1,27 @@
 # TcpClient.ps1
-# TCPã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆæ¥ç¶šå‡¦ç†
+# TCPƒNƒ‰ƒCƒAƒ“ƒgÚ‘±ˆ—
 
 function Start-TcpClientConnection {
     <#
     .SYNOPSIS
-    TCPã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆæ¥ç¶šã‚’é–‹å§‹
+    TCPƒNƒ‰ƒCƒAƒ“ƒgÚ‘±‚ğŠJn
     #>
     param(
         [Parameter(Mandatory=$true)]
         [object]$Connection
     )
     
-    # ã‚¹ãƒ¬ãƒƒãƒ‰ã§éåŒæœŸå®Ÿè¡Œ
+    # ƒXƒŒƒbƒh‚Å”ñ“¯ŠúÀs
     $scriptBlock = {
         param($connId, $remoteIP, $remotePort)
         
         try {
             Write-Host "[TcpClient] Connecting to ${remoteIP}:${remotePort}..." -ForegroundColor Cyan
             
-            # æ¥ç¶šã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’å–å¾—
+            # Ú‘±ƒIƒuƒWƒFƒNƒg‚ğæ“¾
             $conn = $Global:Connections[$connId]
             
-            # TCPã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆä½œæˆ
+            # TCPƒNƒ‰ƒCƒAƒ“ƒgì¬
             $tcpClient = New-Object System.Net.Sockets.TcpClient
             $tcpClient.Connect($remoteIP, $remotePort)
             
@@ -31,14 +31,14 @@ function Start-TcpClientConnection {
                 
                 Write-Host "[TcpClient] Connected to ${remoteIP}:${remotePort}" -ForegroundColor Green
                 
-                # ã‚¹ãƒˆãƒªãƒ¼ãƒ å–å¾—
+                # ƒXƒgƒŠ[ƒ€æ“¾
                 $stream = $tcpClient.GetStream()
                 $buffer = New-Object byte[] 8192
                 
-                # é€å—ä¿¡ãƒ«ãƒ¼ãƒ—
+                # ‘—óMƒ‹[ƒv
                 while ($tcpClient.Connected -and -not $conn.CancellationSource.Token.IsCancellationRequested) {
                     try {
-                        # é€ä¿¡å‡¦ç†
+                        # ‘—Mˆ—
                         while ($conn.SendQueue.Count -gt 0) {
                             $data = $conn.SendQueue[0]
                             $conn.SendQueue.RemoveAt(0)
@@ -52,14 +52,14 @@ function Start-TcpClientConnection {
                         
 
                                 Invoke-ConnectionAutoResponse -ConnectionId $connId -ReceivedData $receivedData
-                        # å—ä¿¡å‡¦ç†ï¼ˆéãƒ–ãƒ­ãƒƒã‚­ãƒ³ã‚°ï¼‰
+                        # óMˆ—i”ñƒuƒƒbƒLƒ“ƒOj
                         if ($stream.DataAvailable) {
                             $bytesRead = $stream.Read($buffer, 0, $buffer.Length)
                             
                             if ($bytesRead -gt 0) {
                                 $receivedData = $buffer[0..($bytesRead-1)]
                                 
-                                # å—ä¿¡ãƒãƒƒãƒ•ã‚¡ã«è¿½åŠ 
+                                # óMƒoƒbƒtƒ@‚É’Ç‰Á
                                 [void]$conn.RecvBuffer.Add([PSCustomObject]@{
                                     Timestamp = Get-Date
                                     Data = $receivedData
@@ -71,7 +71,7 @@ function Start-TcpClientConnection {
                             }
                         }
                         
-                        # CPUè² è·è»½æ¸›
+                        # CPU•‰‰×ŒyŒ¸
                         Start-Sleep -Milliseconds 10
                         
                     } catch {
@@ -93,7 +93,7 @@ function Start-TcpClientConnection {
             Write-Error "[TcpClient] Connection error: $_"
             
         } finally {
-            # ã‚¯ãƒªãƒ¼ãƒ³ã‚¢ãƒƒãƒ—
+            # ƒNƒŠ[ƒ“ƒAƒbƒv
             if ($tcpClient) {
                 $tcpClient.Close()
                 $tcpClient.Dispose()
@@ -109,7 +109,7 @@ function Start-TcpClientConnection {
         }
     }
     
-    # ã‚¹ãƒ¬ãƒƒãƒ‰é–‹å§‹
+    # ƒXƒŒƒbƒhŠJn
     $thread = New-Object System.Threading.Thread([System.Threading.ThreadStart]{
         & $scriptBlock -connId $Connection.Id -remoteIP $Connection.RemoteIP -remotePort $Connection.RemotePort
     })

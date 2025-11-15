@@ -1,88 +1,88 @@
 # TCP Test Controller
 
-TCP/UDPé€šä¿¡ã®ãƒ†ã‚¹ãƒˆãƒ»ãƒ‡ãƒãƒƒã‚°ã‚’è¡Œã†ãŸã‚ã®è©¦é¨“è£…ç½®ã§ã™ã€‚è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«ãƒ™ãƒ¼ã‚¹ã§ã‚·ãƒŠãƒªã‚ªå®Ÿè¡ŒãŒå¯èƒ½ã§ã€è¦–è¦šçš„ã«æŽ¥ç¶šçŠ¶æ…‹ã‚’ç¢ºèªã§ãã‚‹GUIã‚’å‚™ãˆã¦ã„ã¾ã™ã€‚
+TCP/UDP’ÊM‚ÌƒeƒXƒgEƒfƒoƒbƒO‚ðs‚¤‚½‚ß‚ÌŽŽŒ±‘•’u‚Å‚·BÝ’èƒtƒ@ƒCƒ‹ƒx[ƒX‚ÅƒVƒiƒŠƒIŽÀs‚ª‰Â”\‚ÅAŽ‹Šo“I‚ÉÚ‘±ó‘Ô‚ðŠm”F‚Å‚«‚éGUI‚ð”õ‚¦‚Ä‚¢‚Ü‚·B
 
-## é‡è¦ãªæ³¨æ„
-æœ¬ã‚¢ãƒ—ãƒªã¯ Windows ä¸Šã® Powershell ã§å®Ÿè¡Œã™ã‚‹ãŸã‚ãƒ†ã‚­ã‚¹ãƒˆã‚¨ãƒ³ã‚³ãƒ¼ãƒ‡ã‚£ãƒ³ã‚°ã¯ UTF8 ã§ã¯ãªã Shift-JIS ã‚’åˆ©ç”¨ã—ã¦ãã ã•ã„ã€‚
+## d—v‚È’ˆÓ
+–{ƒAƒvƒŠ‚Í Windows ã‚Ì Powershell ‚ÅŽÀs‚·‚é‚½‚ßƒeƒLƒXƒgƒGƒ“ƒR[ƒfƒBƒ“ƒO‚Í UTF8 ‚Å‚Í‚È‚­ Shift-JIS ‚ð—˜—p‚µ‚Ä‚­‚¾‚³‚¢B
 
-## ç‰¹å¾´
+## “Á’¥
 
-- **è¤‡æ•°æŽ¥ç¶šã®åŒæ™‚ç®¡ç†**: TCP/UDPã®è¤‡æ•°æŽ¥ç¶šã‚’åŒæ™‚ã«æ‰±ã„ã€ä¸€å…ƒç®¡ç†
-- **ã‚·ãƒŠãƒªã‚ªå®Ÿè¡Œ**: CSVå½¢å¼ã®ã‚·ãƒŠãƒªã‚ªãƒ•ã‚¡ã‚¤ãƒ«ã§é€å—ä¿¡ã‚·ãƒ¼ã‚±ãƒ³ã‚¹ã‚’å®šç¾©
-- **å¤‰æ•°æ©Ÿèƒ½**: å—ä¿¡ãƒ‡ãƒ¼ã‚¿ã‚’å¤‰æ•°ã¨ã—ã¦ä¿å­˜ã—ã€æ¬¡å›žé€ä¿¡ã«å‹•çš„ã«åŸ‹ã‚è¾¼ã¿
-- **è‡ªå‹•å¿œç­”**: å—ä¿¡ãƒ‘ã‚¿ãƒ¼ãƒ³ã«å¿œã˜ãŸè‡ªå‹•è¿”ä¿¡æ©Ÿèƒ½
-- **ãƒ‡ãƒ¼ã‚¿ãƒãƒ³ã‚¯**: ã‚ˆãä½¿ã†é›»æ–‡ã‚’ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆã¨ã—ã¦ç®¡ç†ã—ã€ãƒ¯ãƒ³ã‚¯ãƒªãƒƒã‚¯é€ä¿¡
-- **ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯è¨ºæ–­**: Ping/ãƒãƒ¼ãƒˆç–Žé€šç¢ºèªãªã©ã€æŽ¥ç¶šãƒˆãƒ©ãƒ–ãƒ«ã‚·ãƒ¥ãƒ¼ãƒ†ã‚£ãƒ³ã‚°æ©Ÿèƒ½
-- **GUIã‚¤ãƒ³ã‚¿ãƒ¼ãƒ•ã‚§ãƒ¼ã‚¹**: WinFormsãƒ™ãƒ¼ã‚¹ã®ã‚·ãƒ³ãƒ—ãƒ«ã§ä½¿ã„ã‚„ã™ã„UI
+- **•¡”Ú‘±‚Ì“¯ŽžŠÇ—**: TCP/UDP‚Ì•¡”Ú‘±‚ð“¯Žž‚Éˆµ‚¢AˆêŒ³ŠÇ—
+- **ƒVƒiƒŠƒIŽÀs**: CSVŒ`Ž®‚ÌƒVƒiƒŠƒIƒtƒ@ƒCƒ‹‚Å‘—ŽóMƒV[ƒPƒ“ƒX‚ð’è‹`
+- **•Ï”‹@”\**: ŽóMƒf[ƒ^‚ð•Ï”‚Æ‚µ‚Ä•Û‘¶‚µAŽŸ‰ñ‘—M‚É“®“I‚É–„‚ßž‚Ý
+- **Ž©“®‰ž“š**: ŽóMƒpƒ^[ƒ“‚É‰ž‚¶‚½Ž©“®•ÔM‹@”\
+- **ƒf[ƒ^ƒoƒ“ƒN**: ‚æ‚­Žg‚¤“d•¶‚ðƒeƒ“ƒvƒŒ[ƒg‚Æ‚µ‚ÄŠÇ—‚µAƒƒ“ƒNƒŠƒbƒN‘—M
+- **ƒlƒbƒgƒ[ƒNf’f**: Ping/ƒ|[ƒg‘a’ÊŠm”F‚È‚ÇAÚ‘±ƒgƒ‰ƒuƒ‹ƒVƒ…[ƒeƒBƒ“ƒO‹@”\
+- **GUIƒCƒ“ƒ^[ƒtƒF[ƒX**: WinFormsƒx[ƒX‚ÌƒVƒ“ƒvƒ‹‚ÅŽg‚¢‚â‚·‚¢UI
 
-## å¿…è¦ç’°å¢ƒ
+## •K—vŠÂ‹«
 
 - **OS**: Windows 10/11
-- **PowerShell**: 5.1ä»¥é™ï¼ˆWindowsæ¨™æº–æ­è¼‰ï¼‰
-- **.NET Framework**: Windowsæ¨™æº–æ­è¼‰
-- **è¿½åŠ ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«**: ä¸è¦
+- **PowerShell**: 5.1ˆÈ~iWindows•W€“‹Új
+- **.NET Framework**: Windows•W€“‹Ú
+- **’Ç‰ÁƒCƒ“ƒXƒg[ƒ‹**: •s—v
 
-## ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«
+## ƒCƒ“ƒXƒg[ƒ‹
 
-1. ãƒªãƒã‚¸ãƒˆãƒªã‚’ã‚¯ãƒ­ãƒ¼ãƒ³ã¾ãŸã¯ZIPã§ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰
-2. ä»»æ„ã®ãƒ•ã‚©ãƒ«ãƒ€ã«å±•é–‹
-3. `TcpDebugger.ps1`ã‚’å®Ÿè¡Œ
+1. ƒŠƒ|ƒWƒgƒŠ‚ðƒNƒ[ƒ“‚Ü‚½‚ÍZIP‚Åƒ_ƒEƒ“ƒ[ƒh
+2. ”CˆÓ‚ÌƒtƒHƒ‹ƒ_‚É“WŠJ
+3. `TcpDebugger.ps1`‚ðŽÀs
 
 ```powershell
-# å®Ÿè¡Œãƒãƒªã‚·ãƒ¼ã‚’ä¸€æ™‚çš„ã«å¤‰æ›´ã™ã‚‹å ´åˆ
+# ŽÀsƒ|ƒŠƒV[‚ðˆêŽž“I‚É•ÏX‚·‚éê‡
 powershell.exe -ExecutionPolicy Bypass -File ".\TcpDebugger.ps1"
 
-# ã¾ãŸã¯ã€ç¾åœ¨ã®ã‚»ãƒƒã‚·ãƒ§ãƒ³ã§å®Ÿè¡Œãƒãƒªã‚·ãƒ¼ã‚’å¤‰æ›´
+# ‚Ü‚½‚ÍAŒ»Ý‚ÌƒZƒbƒVƒ‡ƒ“‚ÅŽÀsƒ|ƒŠƒV[‚ð•ÏX
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 .\TcpDebugger.ps1
 ```
 
-## ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªæ§‹æˆ
+## ƒfƒBƒŒƒNƒgƒŠ\¬
 
 ```
 TcpDebugger/
-â”œâ”€â”€ TcpDebugger.ps1              # ãƒ¡ã‚¤ãƒ³ã‚¹ã‚¯ãƒªãƒ—ãƒˆï¼ˆèµ·å‹•ãƒ•ã‚¡ã‚¤ãƒ«ï¼‰
-â”œâ”€â”€ DESIGN.md                    # è¨­è¨ˆæ›¸
-â”œâ”€â”€ README.md                    # æœ¬ãƒ•ã‚¡ã‚¤ãƒ«
-â”œâ”€â”€ Modules/                     # æ©Ÿèƒ½ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ç¾¤
-â”‚   â”œâ”€â”€ ConnectionManager.ps1        # æŽ¥ç¶šç®¡ç†
-â”‚   â”œâ”€â”€ TcpClient.ps1               # TCPã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆ
-â”‚   â”œâ”€â”€ TcpServer.ps1               # TCPã‚µãƒ¼ãƒãƒ¼
-â”‚   â”œâ”€â”€ UdpCommunication.ps1        # UDPé€šä¿¡
-â”‚   â”œâ”€â”€ ScenarioEngine.ps1          # ã‚·ãƒŠãƒªã‚ªå®Ÿè¡Œ
-â”‚   â”œâ”€â”€ MessageHandler.ps1          # ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å‡¦ç†
-â”‚   â”œâ”€â”€ AutoResponse.ps1            # è‡ªå‹•å¿œç­”
-â”‚   â”œâ”€â”€ QuickSender.ps1             # ã‚¯ã‚¤ãƒƒã‚¯é€ä¿¡
-â”‚   â”œâ”€â”€ InstanceManager.ps1         # ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ç®¡ç†
-â”‚   â””â”€â”€ NetworkAnalyzer.ps1         # ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯è¨ºæ–­
-â”œâ”€â”€ Config/                      # å…±é€šè¨­å®š
-â”‚   â””â”€â”€ defaults.psd1                # ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆè¨­å®š
-â”œâ”€â”€ Instances/                   # é€šä¿¡ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ãƒ•ã‚©ãƒ«ãƒ€ç¾¤
-â”‚   â””â”€â”€ Example/                     # ã‚µãƒ³ãƒ—ãƒ«ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹
-â”‚       â”œâ”€â”€ instance.psd1            # ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹è¨­å®š
-â”‚       â”œâ”€â”€ scenarios/               # ã‚·ãƒŠãƒªã‚ªãƒ•ã‚¡ã‚¤ãƒ«
-â”‚       â”‚   â””â”€â”€ echo_test.csv
-â”‚       â””â”€â”€ templates/               # é›»æ–‡ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆ
-â”‚           â”œâ”€â”€ databank.csv
-â”‚           â””â”€â”€ messages.csv
-â”œâ”€â”€ Scripts/                     # ã‚«ã‚¹ã‚¿ãƒ ã‚¹ã‚¯ãƒªãƒ—ãƒˆï¼ˆæ‹¡å¼µç”¨ï¼‰
-â””â”€â”€ UI/                          # UIå®šç¾©
-    â””â”€â”€ MainForm.ps1                # ãƒ¡ã‚¤ãƒ³ãƒ•ã‚©ãƒ¼ãƒ 
+„¥„Ÿ„Ÿ TcpDebugger.ps1              # ƒƒCƒ“ƒXƒNƒŠƒvƒgi‹N“®ƒtƒ@ƒCƒ‹j
+„¥„Ÿ„Ÿ DESIGN.md                    # ÝŒv‘
+„¥„Ÿ„Ÿ README.md                    # –{ƒtƒ@ƒCƒ‹
+„¥„Ÿ„Ÿ Modules/                     # ‹@”\ƒ‚ƒWƒ…[ƒ‹ŒQ
+„    „¥„Ÿ„Ÿ ConnectionManager.ps1        # Ú‘±ŠÇ—
+„    „¥„Ÿ„Ÿ TcpClient.ps1               # TCPƒNƒ‰ƒCƒAƒ“ƒg
+„    „¥„Ÿ„Ÿ TcpServer.ps1               # TCPƒT[ƒo[
+„    „¥„Ÿ„Ÿ UdpCommunication.ps1        # UDP’ÊM
+„    „¥„Ÿ„Ÿ ScenarioEngine.ps1          # ƒVƒiƒŠƒIŽÀs
+„    „¥„Ÿ„Ÿ MessageHandler.ps1          # ƒƒbƒZ[ƒWˆ—
+„    „¥„Ÿ„Ÿ AutoResponse.ps1            # Ž©“®‰ž“š
+„    „¥„Ÿ„Ÿ QuickSender.ps1             # ƒNƒCƒbƒN‘—M
+„    „¥„Ÿ„Ÿ InstanceManager.ps1         # ƒCƒ“ƒXƒ^ƒ“ƒXŠÇ—
+„    „¤„Ÿ„Ÿ NetworkAnalyzer.ps1         # ƒlƒbƒgƒ[ƒNf’f
+„¥„Ÿ„Ÿ Config/                      # ‹¤’ÊÝ’è
+„    „¤„Ÿ„Ÿ defaults.psd1                # ƒfƒtƒHƒ‹ƒgÝ’è
+„¥„Ÿ„Ÿ Instances/                   # ’ÊMƒCƒ“ƒXƒ^ƒ“ƒXƒtƒHƒ‹ƒ_ŒQ
+„    „¤„Ÿ„Ÿ Example/                     # ƒTƒ“ƒvƒ‹ƒCƒ“ƒXƒ^ƒ“ƒX
+„        „¥„Ÿ„Ÿ instance.psd1            # ƒCƒ“ƒXƒ^ƒ“ƒXÝ’è
+„        „¥„Ÿ„Ÿ scenarios/               # ƒVƒiƒŠƒIƒtƒ@ƒCƒ‹
+„        „    „¤„Ÿ„Ÿ echo_test.csv
+„        „¤„Ÿ„Ÿ templates/               # “d•¶ƒeƒ“ƒvƒŒ[ƒg
+„            „¥„Ÿ„Ÿ databank.csv
+„            „¤„Ÿ„Ÿ messages.csv
+„¥„Ÿ„Ÿ Scripts/                     # ƒJƒXƒ^ƒ€ƒXƒNƒŠƒvƒgiŠg’£—pj
+„¤„Ÿ„Ÿ UI/                          # UI’è‹`
+    „¤„Ÿ„Ÿ MainForm.ps1                # ƒƒCƒ“ƒtƒH[ƒ€
 ```
 
-## ä½¿ç”¨æ–¹æ³•
+## Žg—p•û–@
 
-### 1. ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®ä½œæˆ
+### 1. ƒCƒ“ƒXƒ^ƒ“ƒX‚Ìì¬
 
-`Instances/` ãƒ•ã‚©ãƒ«ãƒ€é…ä¸‹ã«æ–°ã—ã„ãƒ•ã‚©ãƒ«ãƒ€ã‚’ä½œæˆã—ã€`instance.psd1` ãƒ•ã‚¡ã‚¤ãƒ«ã‚’é…ç½®ã—ã¾ã™ã€‚
+`Instances/` ƒtƒHƒ‹ƒ_”z‰º‚ÉV‚µ‚¢ƒtƒHƒ‹ƒ_‚ðì¬‚µA`instance.psd1` ƒtƒ@ƒCƒ‹‚ð”z’u‚µ‚Ü‚·B
 
-**ä¾‹: Instances/MyServer/instance.psd1**
+**—á: Instances/MyServer/instance.psd1**
 
 ```powershell
 @{
     Id = "my-server"
     DisplayName = "My TCP Server"
-    Description = "ãƒ†ã‚¹ãƒˆç”¨TCPã‚µãƒ¼ãƒãƒ¼"
+    Description = "ƒeƒXƒg—pTCPƒT[ƒo["
     
     Connection = @{
         Protocol = "TCP"           # TCP/UDP
@@ -103,25 +103,25 @@ TcpDebugger/
 }
 ```
 
-### 2. ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ã®èµ·å‹•
+### 2. ƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚Ì‹N“®
 
 ```powershell
 .\TcpDebugger.ps1
 ```
 
-GUIãŒèµ·å‹•ã—ã€`Instances/` é…ä¸‹ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ãŒè‡ªå‹•çš„ã«èª­ã¿è¾¼ã¾ã‚Œã¾ã™ã€‚
+GUI‚ª‹N“®‚µA`Instances/` ”z‰º‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ªŽ©“®“I‚É“Ç‚Ýž‚Ü‚ê‚Ü‚·B
 
-### 3. æŽ¥ç¶šã®é–‹å§‹
+### 3. Ú‘±‚ÌŠJŽn
 
-1. ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ä¸€è¦§ã‹ã‚‰æŽ¥ç¶šã—ãŸã„ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’é¸æŠž
-2. **Connect**ãƒœã‚¿ãƒ³ã‚’ã‚¯ãƒªãƒƒã‚¯
-3. ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹åˆ—ãŒã€ŒCONNECTEDã€ã«ãªã‚Œã°æŽ¥ç¶šæˆåŠŸ
+1. ƒCƒ“ƒXƒ^ƒ“ƒXˆê——‚©‚çÚ‘±‚µ‚½‚¢ƒCƒ“ƒXƒ^ƒ“ƒX‚ð‘I‘ð
+2. **Connect**ƒ{ƒ^ƒ“‚ðƒNƒŠƒbƒN
+3. ƒXƒe[ƒ^ƒX—ñ‚ªuCONNECTEDv‚É‚È‚ê‚ÎÚ‘±¬Œ÷
 
-### 4. ãƒ‡ãƒ¼ã‚¿é€ä¿¡
+### 4. ƒf[ƒ^‘—M
 
-`Instances/Example/scenarios/loop_test.csv` ã«ã¯ãƒã‚¹ãƒˆã—ãŸãƒ«ãƒ¼ãƒ—ã‚’å«ã‚€ãƒ†ã‚¹ãƒˆã‚·ãƒŠãƒªã‚ªãŒç”¨æ„ã•ã‚Œã¦ãŠã‚Šã€æ‰‹å‹•å®Ÿè¡Œã§å‹•ä½œã‚’ç¢ºèªã§ãã¾ã™ã€‚
+`Instances/Example/scenarios/loop_test.csv` ‚É‚ÍƒlƒXƒg‚µ‚½ƒ‹[ƒv‚ðŠÜ‚ÞƒeƒXƒgƒVƒiƒŠƒI‚ª—pˆÓ‚³‚ê‚Ä‚¨‚èAŽè“®ŽÀs‚Å“®ì‚ðŠm”F‚Å‚«‚Ü‚·B
 
-- **LOOP**: æŒ‡å®šãƒ–ãƒ­ãƒƒã‚¯ã‚’ç¹°ã‚Šè¿”ã—å®Ÿè¡Œã—ã¾ã™ã€‚`Parameter1` ã« `BEGIN` ã¾ãŸã¯ `END` ã‚’æŒ‡å®šã—ã€`Parameter2` ã§å›žæ•° (`COUNT=3` ãªã©)ã€`Parameter3` ã§ä»»æ„ã®ãƒ©ãƒ™ãƒ« (`LABEL=outer` ãªã©) ã‚’æŒ‡å®šã—ã¾ã™ã€‚ãƒ©ãƒ™ãƒ«ã‚’ä»˜ã‘ã‚‹ã“ã¨ã§ãƒã‚¹ãƒˆã—ãŸãƒ«ãƒ¼ãƒ—ã‚‚ç®¡ç†ã§ãã¾ã™ã€‚
+- **LOOP**: Žw’èƒuƒƒbƒN‚ðŒJ‚è•Ô‚µŽÀs‚µ‚Ü‚·B`Parameter1` ‚É `BEGIN` ‚Ü‚½‚Í `END` ‚ðŽw’è‚µA`Parameter2` ‚Å‰ñ” (`COUNT=3` ‚È‚Ç)A`Parameter3` ‚Å”CˆÓ‚Ìƒ‰ƒxƒ‹ (`LABEL=outer` ‚È‚Ç) ‚ðŽw’è‚µ‚Ü‚·Bƒ‰ƒxƒ‹‚ð•t‚¯‚é‚±‚Æ‚ÅƒlƒXƒg‚µ‚½ƒ‹[ƒv‚àŠÇ—‚Å‚«‚Ü‚·B
   ```csv
   1,LOOP,BEGIN,COUNT=2,LABEL=outer,Outer loop start
   2,LOOP,BEGIN,COUNT=3,LABEL=inner,Inner loop start
@@ -129,40 +129,40 @@ GUIãŒèµ·å‹•ã—ã€`Instances/` é…ä¸‹ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ãŒè‡ªå‹•çš„ã«èª­ã¿è
   4,LOOP,END,LABEL=inner,,Close inner loop
   5,LOOP,END,LABEL=outer,,Close outer loop
   ```
-  æ—¢å­˜ã®å¾Œæ–¹äº’æ›å½¢å¼ (`LOOP,1,,COUNT=3` ãªã©) ã‚‚ã‚µãƒãƒ¼ãƒˆã•ã‚Œã¾ã™ãŒã€ãƒã‚¹ãƒˆã«ã¯å¯¾å¿œã—ã¾ã›ã‚“ã€‚
+  Šù‘¶‚ÌŒã•ûŒÝŠ·Œ`Ž® (`LOOP,1,,COUNT=3` ‚È‚Ç) ‚àƒTƒ|[ƒg‚³‚ê‚Ü‚·‚ªAƒlƒXƒg‚É‚Í‘Î‰ž‚µ‚Ü‚¹‚ñB
 
-ç¾åœ¨ã®ãƒãƒ¼ã‚¸ãƒ§ãƒ³ã§ã¯ã€ã‚·ãƒŠãƒªã‚ªæ©Ÿèƒ½ã‚’ä½¿ç”¨ã—ã¦ãƒ‡ãƒ¼ã‚¿ã‚’é€ä¿¡ã—ã¾ã™ã€‚
+Œ»Ý‚Ìƒo[ƒWƒ‡ƒ“‚Å‚ÍAƒVƒiƒŠƒI‹@”\‚ðŽg—p‚µ‚Äƒf[ƒ^‚ð‘—M‚µ‚Ü‚·B
 
-**ã‚·ãƒŠãƒªã‚ªãƒ•ã‚¡ã‚¤ãƒ«ã®ä¾‹: scenarios/simple_send.csv**
+**ƒVƒiƒŠƒIƒtƒ@ƒCƒ‹‚Ì—á: scenarios/simple_send.csv**
 
 ```csv
 Step,Action,Parameter1,Parameter2,Parameter3,Description
-1,SEND,Hello World!,UTF-8,,ãƒ†ã‚­ã‚¹ãƒˆé€ä¿¡
-2,WAIT_RECV,TIMEOUT=5000,,,å¿œç­”å¾…æ©Ÿ
-3,SAVE_RECV,VAR_NAME=response,,,å—ä¿¡ãƒ‡ãƒ¼ã‚¿ã‚’ä¿å­˜
-4,SEND,Echo: ${response},UTF-8,,å—ä¿¡ãƒ‡ãƒ¼ã‚¿ã‚’ã‚¨ã‚³ãƒ¼ãƒãƒƒã‚¯
+1,SEND,Hello World!,UTF-8,,ƒeƒLƒXƒg‘—M
+2,WAIT_RECV,TIMEOUT=5000,,,‰ž“š‘Ò‹@
+3,SAVE_RECV,VAR_NAME=response,,,ŽóMƒf[ƒ^‚ð•Û‘¶
+4,SEND,Echo: ${response},UTF-8,,ŽóMƒf[ƒ^‚ðƒGƒR[ƒoƒbƒN
 ```
 
-### 5. ã‚·ãƒŠãƒªã‚ªã®å®Ÿè¡Œ
+### 5. ƒVƒiƒŠƒI‚ÌŽÀs
 
-PowerShellã‚³ãƒ³ã‚½ãƒ¼ãƒ«ã‹ã‚‰ä»¥ä¸‹ã®ã‚³ãƒžãƒ³ãƒ‰ã§ã‚·ãƒŠãƒªã‚ªã‚’å®Ÿè¡Œã§ãã¾ã™ï¼š
+PowerShellƒRƒ“ƒ\[ƒ‹‚©‚çˆÈ‰º‚ÌƒRƒ}ƒ“ƒh‚ÅƒVƒiƒŠƒI‚ðŽÀs‚Å‚«‚Ü‚·F
 
 ```powershell
-# ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®ãƒ‘ã‚¹ã‚’æŒ‡å®š
+# ƒCƒ“ƒXƒ^ƒ“ƒX‚ÌƒpƒX‚ðŽw’è
 $scenarioPath = "C:\path\to\TcpDebugger\Instances\Example\scenarios\echo_test.csv"
 $connectionId = "example-server"
 
-# ã‚·ãƒŠãƒªã‚ªå®Ÿè¡Œ
+# ƒVƒiƒŠƒIŽÀs
 Start-Scenario -ConnectionId $connectionId -ScenarioPath $scenarioPath
 ```
 
-### 6. è‡ªå‹•å¿œç­”ãƒ—ãƒ­ãƒ•ã‚¡ã‚¤ãƒ«ã®åˆ‡ã‚Šæ›¿ãˆ
+### 6. Ž©“®‰ž“šƒvƒƒtƒ@ƒCƒ‹‚ÌØ‚è‘Ö‚¦
 
-- å„ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ãƒ•ã‚©ãƒ«ãƒ€ã® `scenarios/auto/` é…ä¸‹ã«ã€å—ä¿¡ãƒˆãƒªã‚¬ãƒ¼ã¨å¿œç­”å†…å®¹ã‚’å®šç¾©ã—ãŸCSVãƒ•ã‚¡ã‚¤ãƒ«ã‚’é…ç½®ã—ã¾ã™ã€‚
-- ä¸€è¦§ç”»é¢ã® **Auto Response** åˆ—ã‹ã‚‰ãƒ—ãƒ­ãƒ•ã‚¡ã‚¤ãƒ«ã‚’é¸æŠžã™ã‚‹ã¨ã€é¸æŠžä¸­ã®æŽ¥ç¶šã«å³åº§ã«é©ç”¨ã•ã‚Œã¾ã™ã€‚
-- ãƒ—ãƒ­ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ã€Œ(None)ã€ã«æˆ»ã™ã¨è‡ªå‹•å¿œç­”ã‚’ç„¡åŠ¹åŒ–ã§ãã¾ã™ã€‚
+- ŠeƒCƒ“ƒXƒ^ƒ“ƒXƒtƒHƒ‹ƒ_‚Ì `scenarios/auto/` ”z‰º‚ÉAŽóMƒgƒŠƒK[‚Æ‰ž“š“à—e‚ð’è‹`‚µ‚½CSVƒtƒ@ƒCƒ‹‚ð”z’u‚µ‚Ü‚·B
+- ˆê——‰æ–Ê‚Ì **Auto Response** —ñ‚©‚çƒvƒƒtƒ@ƒCƒ‹‚ð‘I‘ð‚·‚é‚ÆA‘I‘ð’†‚ÌÚ‘±‚É‘¦À‚É“K—p‚³‚ê‚Ü‚·B
+- ƒvƒƒtƒ@ƒCƒ‹‚ðu(None)v‚É–ß‚·‚ÆŽ©“®‰ž“š‚ð–³Œø‰»‚Å‚«‚Ü‚·B
 
-**ä¾‹: Instances/Example/scenarios/auto/normal.csv**
+**—á: Instances/Example/scenarios/auto/normal.csv**
 
 ```csv
 TriggerPattern,ResponseTemplate,Encoding,Delay,MatchType
@@ -170,7 +170,7 @@ PING,PONG,UTF-8,0,Exact
 REQUEST,OK ${TIMESTAMP},UTF-8,100,Contains
 ```
 
-**ä¾‹: Instances/Example/scenarios/auto/error.csv**
+**—á: Instances/Example/scenarios/auto/error.csv**
 
 ```csv
 TriggerPattern,ResponseTemplate,Encoding,Delay,MatchType
@@ -178,167 +178,172 @@ PING,ERROR_TIMEOUT,UTF-8,3000,Exact
 REQUEST,ERROR 500,UTF-8,0,Contains
 ```
 
-## ã‚·ãƒŠãƒªã‚ªã‚¢ã‚¯ã‚·ãƒ§ãƒ³
+## ƒVƒiƒŠƒIƒAƒNƒVƒ‡ƒ“
 
-### é€ä¿¡ã‚¢ã‚¯ã‚·ãƒ§ãƒ³
+### ‘—MƒAƒNƒVƒ‡ƒ“
 
-- **SEND**: ãƒ†ã‚­ã‚¹ãƒˆãƒ‡ãƒ¼ã‚¿é€ä¿¡ï¼ˆå¤‰æ•°å±•é–‹å¯¾å¿œï¼‰
+- **SEND**: ƒeƒLƒXƒgƒf[ƒ^‘—Mi•Ï”“WŠJ‘Î‰žj
   ```csv
-  1,SEND,Hello ${TIMESTAMP},UTF-8,,ç¾åœ¨æ™‚åˆ»ã‚’å«ã‚€æŒ¨æ‹¶
+  1,SEND,Hello ${TIMESTAMP},UTF-8,,Œ»ÝŽž‚ðŠÜ‚Þˆ¥ŽA
   ```
 
-- **SEND_HEX**: HEXãƒ‡ãƒ¼ã‚¿é€ä¿¡
+- **SEND_HEX**: HEXƒf[ƒ^‘—M
   ```csv
-  1,SEND_HEX,48656C6C6F,,,ã€ŒHelloã€ã‚’HEXã§é€ä¿¡
+  1,SEND_HEX,48656C6C6F,,,uHellov‚ðHEX‚Å‘—M
   ```
 
-- **SEND_FILE**: ãƒ•ã‚¡ã‚¤ãƒ«å†…å®¹é€ä¿¡
+- **SEND_FILE**: ƒtƒ@ƒCƒ‹“à—e‘—M
   ```csv
-  1,SEND_FILE,C:\data\test.bin,,,ãƒã‚¤ãƒŠãƒªãƒ•ã‚¡ã‚¤ãƒ«é€ä¿¡
+  1,SEND_FILE,C:\data\test.bin,,,ƒoƒCƒiƒŠƒtƒ@ƒCƒ‹‘—M
   ```
 
-### å—ä¿¡ã‚¢ã‚¯ã‚·ãƒ§ãƒ³
+### ŽóMƒAƒNƒVƒ‡ƒ“
 
-- **WAIT_RECV**: å—ä¿¡å¾…æ©Ÿ
+- **WAIT_RECV**: ŽóM‘Ò‹@
   ```csv
-  1,WAIT_RECV,TIMEOUT=5000,PATTERN=OK,,ã€ŒOKã€ã‚’å«ã‚€ãƒ‡ãƒ¼ã‚¿ã‚’å¾…æ©Ÿ
+  1,WAIT_RECV,TIMEOUT=5000,PATTERN=OK,,uOKv‚ðŠÜ‚Þƒf[ƒ^‚ð‘Ò‹@
   ```
 
-- **SAVE_RECV**: å—ä¿¡ãƒ‡ãƒ¼ã‚¿ã‚’å¤‰æ•°ã«ä¿å­˜
+- **SAVE_RECV**: ŽóMƒf[ƒ^‚ð•Ï”‚É•Û‘¶
   ```csv
-  1,SAVE_RECV,VAR_NAME=mydata,,,å—ä¿¡ãƒ‡ãƒ¼ã‚¿ã‚’mydataå¤‰æ•°ã«ä¿å­˜
+  1,SAVE_RECV,VAR_NAME=mydata,,,ŽóMƒf[ƒ^‚ðmydata•Ï”‚É•Û‘¶
   ```
 
-### åˆ¶å¾¡ã‚¢ã‚¯ã‚·ãƒ§ãƒ³
+### §ŒäƒAƒNƒVƒ‡ƒ“
 
-- **SLEEP**: å¾…æ©Ÿ
+- **SLEEP**: ‘Ò‹@
   ```csv
-  1,SLEEP,1000,,,1ç§’å¾…æ©Ÿ
+  1,SLEEP,1000,,,1•b‘Ò‹@
   ```
 
-- **SET_VAR**: å¤‰æ•°è¨­å®š
+- **SET_VAR**: •Ï”Ý’è
   ```csv
-  1,SET_VAR,counter,10,,counterå¤‰æ•°ã«10ã‚’è¨­å®š
+  1,SET_VAR,counter,10,,counter•Ï”‚É10‚ðÝ’è
   ```
 
-- **TIMER_START / START_TIMER / TIMER_SEND**: ã‚¿ã‚¤ãƒžã§å®šå‘¨æœŸé€ä¿¡ï¼ˆéžåŒæœŸï¼‰
+- **TIMER_START / START_TIMER / TIMER_SEND**: ƒ^ƒCƒ}‚Å’èŽüŠú‘—Mi”ñ“¯Šúj
   ```csv
-  1,TIMER_START,HEARTBEAT ${TIMESTAMP},INTERVAL=2000,NAME=hb,,2ç§’ã”ã¨ã«ãƒãƒ¼ãƒˆãƒ“ãƒ¼ãƒˆé€ä¿¡
-  2,WAIT_RECV,TIMEOUT=5000,,,å—ä¿¡ã‚’å¾…ã¡ãªãŒã‚‰ã‚¿ã‚¤ãƒžé€ä¿¡ã‚’ç¶™ç¶š
-  3,TIMER_STOP,NAME=hb,,,ç™»éŒ²æ¸ˆã¿ã‚¿ã‚¤ãƒžã‚’åœæ­¢
+  1,TIMER_START,HEARTBEAT ${TIMESTAMP},INTERVAL=2000,NAME=hb,,2•b‚²‚Æ‚Éƒn[ƒgƒr[ƒg‘—M
+  2,WAIT_RECV,TIMEOUT=5000,,,ŽóM‚ð‘Ò‚¿‚È‚ª‚çƒ^ƒCƒ}‘—M‚ðŒp‘±
+  3,TIMER_STOP,NAME=hb,,,“o˜^Ï‚Ýƒ^ƒCƒ}‚ð’âŽ~
   ```
-  - `Parameter1`: é€ä¿¡ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ï¼ˆå¤‰æ•°å±•é–‹å¯ï¼‰
-  - `Parameter2/3`: `INTERVAL=<ãƒŸãƒªç§’>`ã€`DELAY=<åˆå›žé…å»¶>`ã€`ENCODING=<æ–‡å­—ã‚³ãƒ¼ãƒ‰>`ã€`NAME=<è­˜åˆ¥å­>`ã€`COUNT=<é€ä¿¡å›žæ•°>` ãªã©ã‚’æŒ‡å®šå¯èƒ½
+  - `Parameter1`: ‘—MƒƒbƒZ[ƒWi•Ï”“WŠJ‰Âj
+  - `Parameter2/3`: `INTERVAL=<ƒ~ƒŠ•b>`A`DELAY=<‰‰ñ’x‰„>`A`ENCODING=<•¶ŽšƒR[ƒh>`A`NAME=<Ž¯•ÊŽq>`A`COUNT=<‘—M‰ñ”>` ‚È‚Ç‚ðŽw’è‰Â”\
 
-- **TIMER_STOP / STOP_TIMER**: ã‚¿ã‚¤ãƒžåœæ­¢ï¼ˆ`Parameter1=ALL` ã§å…¨åœæ­¢ï¼‰
+- **TIMER_STOP / STOP_TIMER**: ƒ^ƒCƒ}’âŽ~i`Parameter1=ALL` ‚Å‘S’âŽ~j
   ```csv
-  1,TIMER_STOP,ALL,,,ç™»éŒ²æ¸ˆã¿ã‚¿ã‚¤ãƒžã‚’å…¨åœæ­¢
-  ```
-
-
-- **CALL_SCRIPT**: ã‚«ã‚¹ã‚¿ãƒ ã‚¹ã‚¯ãƒªãƒ—ãƒˆå®Ÿè¡Œ
-  ```csv
-  1,CALL_SCRIPT,Scripts\custom.ps1,,,å¤–éƒ¨ã‚¹ã‚¯ãƒªãƒ—ãƒˆå®Ÿè¡Œ
+  1,TIMER_STOP,ALL,,,“o˜^Ï‚Ýƒ^ƒCƒ}‚ð‘S’âŽ~
   ```
 
-- **DISCONNECT**: åˆ‡æ–­
+
+- **CALL_SCRIPT**: ƒJƒXƒ^ƒ€ƒXƒNƒŠƒvƒgŽÀs
   ```csv
-  1,DISCONNECT,,,,æŽ¥ç¶šã‚’åˆ‡æ–­
+  1,CALL_SCRIPT,Scripts\custom.ps1,,,ŠO•”ƒXƒNƒŠƒvƒgŽÀs
   ```
 
-- **RECONNECT**: å†æŽ¥ç¶š
+- **DISCONNECT**: Ø’f
   ```csv
-  1,RECONNECT,,,,åˆ‡æ–­ã—ã¦å†æŽ¥ç¶š
+  1,DISCONNECT,,,,Ú‘±‚ðØ’f
   ```
 
-## å¤‰æ•°å±•é–‹
+- **RECONNECT**: ÄÚ‘±
+  ```csv
+  1,RECONNECT,,,,Ø’f‚µ‚ÄÄÚ‘±
+  ```
 
-ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å†…ã§ä»¥ä¸‹ã®å¤‰æ•°ãŒä½¿ç”¨ã§ãã¾ã™ï¼š
+## •Ï”“WŠJ
 
-- `${å¤‰æ•°å}`: ãƒ¦ãƒ¼ã‚¶ãƒ¼å®šç¾©å¤‰æ•°ï¼ˆSAVE_RECVã§ä¿å­˜ã—ãŸãƒ‡ãƒ¼ã‚¿ãªã©ï¼‰
-- `${TIMESTAMP}`: ç¾åœ¨æ™‚åˆ»ï¼ˆyyyyMMddHHmmsså½¢å¼ï¼‰
-- `${DATETIME:format}`: æ›¸å¼æŒ‡å®šæ—¥æ™‚
-- `${RANDOM:min-max}`: ãƒ©ãƒ³ãƒ€ãƒ å€¤ï¼ˆä¾‹: `${RANDOM:1-100}`ï¼‰
-- `${SEQ:name}`: ã‚·ãƒ¼ã‚±ãƒ³ã‚¹ç•ªå·ï¼ˆè‡ªå‹•ã‚¤ãƒ³ã‚¯ãƒªãƒ¡ãƒ³ãƒˆï¼‰
-- `${CALC:expression}`: è¨ˆç®—å¼è©•ä¾¡
+ƒƒbƒZ[ƒW“à‚ÅˆÈ‰º‚Ì•Ï”‚ªŽg—p‚Å‚«‚Ü‚·F
 
-**ä¾‹:**
+- `${•Ï”–¼}`: ƒ†[ƒU[’è‹`•Ï”iSAVE_RECV‚Å•Û‘¶‚µ‚½ƒf[ƒ^‚È‚Çj
+- `${TIMESTAMP}`: Œ»ÝŽžiyyyyMMddHHmmssŒ`Ž®j
+- `${DATETIME:format}`: ‘Ž®Žw’è“úŽž
+- `${RANDOM:min-max}`: ƒ‰ƒ“ƒ_ƒ€’li—á: `${RANDOM:1-100}`j
+- `${SEQ:name}`: ƒV[ƒPƒ“ƒX”Ô†iŽ©“®ƒCƒ“ƒNƒŠƒƒ“ƒgj
+- `${CALC:expression}`: ŒvŽZŽ®•]‰¿
+
+**—á:**
 ```csv
 1,SEND,TIME=${TIMESTAMP}|SEQ=${SEQ:main}|RAND=${RANDOM:1-100},UTF-8,,
 ```
 
-## ãƒ‡ãƒ¼ã‚¿ãƒãƒ³ã‚¯
+## ƒf[ƒ^ƒoƒ“ƒN
 
-`templates/databank.csv` ã§ã‚ˆãä½¿ã†é›»æ–‡ã‚’ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆåŒ–ã§ãã¾ã™ã€‚
+`templates/databank.csv` ‚Å‚æ‚­Žg‚¤“d•¶‚ðƒeƒ“ƒvƒŒ[ƒg‰»‚Å‚«‚Ü‚·B
 
 ```csv
 DataID,Category,Description,Type,Content
-HELLO,Basic,æŒ¨æ‹¶,TEXT,Hello!
-PING,Health,ç–Žé€šç¢ºèª,TEXT,PING
-STATUS,Status,ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹è¦æ±‚,TEMPLATE,STATUS|TIME=${TIMESTAMP}
+HELLO,Basic,ˆ¥ŽA,TEXT,Hello!
+PING,Health,‘a’ÊŠm”F,TEXT,PING
+STATUS,Status,ƒXƒe[ƒ^ƒX—v‹,TEMPLATE,STATUS|TIME=${TIMESTAMP}
 ```
 
-å°†æ¥ã®ãƒãƒ¼ã‚¸ãƒ§ãƒ³ã§GUIã‹ã‚‰ãƒ¯ãƒ³ã‚¯ãƒªãƒƒã‚¯é€ä¿¡æ©Ÿèƒ½ã‚’å®Ÿè£…äºˆå®šã§ã™ã€‚
+«—ˆ‚Ìƒo[ƒWƒ‡ƒ“‚ÅGUI‚©‚çƒƒ“ƒNƒŠƒbƒN‘—M‹@”\‚ðŽÀ‘•—\’è‚Å‚·B
 
-## ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯è¨ºæ–­
+## ƒlƒbƒgƒ[ƒNf’f
 
-PowerShellã‚³ãƒ³ã‚½ãƒ¼ãƒ«ã‹ã‚‰è¨ºæ–­æ©Ÿèƒ½ã‚’å®Ÿè¡Œã§ãã¾ã™ï¼š
+PowerShellƒRƒ“ƒ\[ƒ‹‚©‚çf’f‹@”\‚ðŽÀs‚Å‚«‚Ü‚·F
 
 ```powershell
-# æŽ¥ç¶šIDã‚’æŒ‡å®šã—ã¦è¨ºæ–­å®Ÿè¡Œ
+# Ú‘±ID‚ðŽw’è‚µ‚Äf’fŽÀs
 Invoke-ComprehensiveDiagnostics -ConnectionId "example-server"
 ```
 
-å®Ÿè¡Œçµæžœï¼š
-- Pingç–Žé€šç¢ºèª
-- ãƒãƒ¼ãƒˆé–‹æ”¾çŠ¶æ³
-- ãƒ«ãƒ¼ãƒ†ã‚£ãƒ³ã‚°æƒ…å ±
-- æŽ¨å¥¨ã‚¢ã‚¯ã‚·ãƒ§ãƒ³
+ŽÀsŒ‹‰ÊF
+- Ping‘a’ÊŠm”F
+- ƒ|[ƒgŠJ•úó‹µ
+- ƒ‹[ƒeƒBƒ“ƒOî•ñ
+- „§ƒAƒNƒVƒ‡ƒ“
 
-## ãƒˆãƒ©ãƒ–ãƒ«ã‚·ãƒ¥ãƒ¼ãƒ†ã‚£ãƒ³ã‚°
+## ƒgƒ‰ƒuƒ‹ƒVƒ…[ƒeƒBƒ“ƒO
 
-### æŽ¥ç¶šã§ããªã„
+### Ú‘±‚Å‚«‚È‚¢
 
-1. ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯è¨ºæ–­ã‚’å®Ÿè¡Œã—ã¦å•é¡Œç®‡æ‰€ã‚’ç‰¹å®š
-2. ãƒ•ã‚¡ã‚¤ã‚¢ã‚¦ã‚©ãƒ¼ãƒ«è¨­å®šã‚’ç¢ºèª
-3. å¯¾è±¡è£…ç½®ãŒèµ·å‹•ã—ã¦ã„ã‚‹ã‹ç¢ºèª
-4. IPã‚¢ãƒ‰ãƒ¬ã‚¹ã€ãƒãƒ¼ãƒˆç•ªå·ãŒæ­£ã—ã„ã‹ç¢ºèª
+1. ƒlƒbƒgƒ[ƒNf’f‚ðŽÀs‚µ‚Ä–â‘è‰ÓŠ‚ð“Á’è
+2. ƒtƒ@ƒCƒAƒEƒH[ƒ‹Ý’è‚ðŠm”F
+3. ‘ÎÛ‘•’u‚ª‹N“®‚µ‚Ä‚¢‚é‚©Šm”F
+4. IPƒAƒhƒŒƒXAƒ|[ƒg”Ô†‚ª³‚µ‚¢‚©Šm”F
 
-### ã‚·ãƒŠãƒªã‚ªãŒå®Ÿè¡Œã•ã‚Œãªã„
+### ƒVƒiƒŠƒI‚ªŽÀs‚³‚ê‚È‚¢
 
-1. CSVãƒ•ã‚¡ã‚¤ãƒ«ã®å½¢å¼ãŒæ­£ã—ã„ã‹ç¢ºèª
-2. ãƒ•ã‚¡ã‚¤ãƒ«ãƒ‘ã‚¹ãŒæ­£ã—ã„ã‹ç¢ºèª
-3. ã‚¨ãƒ©ãƒ¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’ã‚³ãƒ³ã‚½ãƒ¼ãƒ«ã§ç¢ºèª
+1. CSVƒtƒ@ƒCƒ‹‚ÌŒ`Ž®‚ª³‚µ‚¢‚©Šm”F
+2. ƒtƒ@ƒCƒ‹ƒpƒX‚ª³‚µ‚¢‚©Šm”F
+3. ƒGƒ‰[ƒƒbƒZ[ƒW‚ðƒRƒ“ƒ\[ƒ‹‚ÅŠm”F
 
-### GUIãŒèµ·å‹•ã—ãªã„
+### GUI‚ª‹N“®‚µ‚È‚¢
 
-1. PowerShell 5.1ä»¥é™ãŒã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ã•ã‚Œã¦ã„ã‚‹ã‹ç¢ºèª
-2. å®Ÿè¡Œãƒãƒªã‚·ãƒ¼ã‚’ç¢ºèª: `Get-ExecutionPolicy`
-3. ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ãƒ•ã‚¡ã‚¤ãƒ«ãŒæ­£ã—ãé…ç½®ã•ã‚Œã¦ã„ã‚‹ã‹ç¢ºèª
+1. PowerShell 5.1ˆÈ~‚ªƒCƒ“ƒXƒg[ƒ‹‚³‚ê‚Ä‚¢‚é‚©Šm”F
+2. ŽÀsƒ|ƒŠƒV[‚ðŠm”F: `Get-ExecutionPolicy`
+3. ƒ‚ƒWƒ…[ƒ‹ƒtƒ@ƒCƒ‹‚ª³‚µ‚­”z’u‚³‚ê‚Ä‚¢‚é‚©Šm”F
 
-## ä»Šå¾Œã®æ‹¡å¼µäºˆå®š
+### Ctrl + C ‚ÅI—¹‚µ‚½‚¢
 
-- [ ] GUIã‹ã‚‰ã®ã‚·ãƒŠãƒªã‚ªå®Ÿè¡Œãƒ»åœæ­¢
-- [ ] GUIã‹ã‚‰ã®ã‚¯ã‚¤ãƒƒã‚¯é€ä¿¡ï¼ˆãƒ‡ãƒ¼ã‚¿ãƒãƒ³ã‚¯é€£æºï¼‰
-- [ ] å—ä¿¡ãƒ­ã‚°ã®è©³ç´°è¡¨ç¤º
-- [ ] ãƒ­ã‚°ã®ã‚¨ã‚¯ã‚¹ãƒãƒ¼ãƒˆæ©Ÿèƒ½
-- [ ] è¤‡æ•°ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã¸ã®ä¸€æ‹¬é€ä¿¡
-- [ ] ãƒ—ãƒ­ãƒˆã‚³ãƒ«è§£æžãƒ—ãƒ©ã‚°ã‚¤ãƒ³
-- [ ] æ€§èƒ½æ¸¬å®šæ©Ÿèƒ½
+- PowerShellƒRƒ“ƒ\[ƒ‹‚Å `TcpDebugger.ps1` ‚ðŽÀs‚µ‚Ä‚¢‚éê‡A`Ctrl + C` ‚ð‰Ÿ‚·‚ÆGUI‚ÉI—¹—v‹‚ª‘—‚ç‚êAŽ©“®“I‚ÉƒtƒH[ƒ€‚ª•Â‚¶‚Ü‚·B
+- GUI‚ª‰ž“š‚µ‚È‚¢ê‡‚ÍAƒEƒBƒ“ƒhƒE‰Eã‚Ì~ƒ{ƒ^ƒ“‚ÅI—¹‚·‚é‚©A•ÊƒRƒ“ƒ\[ƒ‹‚©‚ç `Stop-Process -Name powershell` ‚È‚Ç‚ÅƒvƒƒZƒX‚ðI—¹‚µ‚Ä‚­‚¾‚³‚¢B
 
-## ãƒ©ã‚¤ã‚»ãƒ³ã‚¹
+## ¡Œã‚ÌŠg’£—\’è
 
-æœ¬ã‚½ãƒ•ãƒˆã‚¦ã‚§ã‚¢ã¯æ•™è‚²ãƒ»è©¦é¨“ç›®çš„ã§æä¾›ã•ã‚Œã¦ã„ã¾ã™ã€‚
+- [ ] GUI‚©‚ç‚ÌƒVƒiƒŠƒIŽÀsE’âŽ~
+- [ ] GUI‚©‚ç‚ÌƒNƒCƒbƒN‘—Miƒf[ƒ^ƒoƒ“ƒN˜AŒgj
+- [ ] ŽóMƒƒO‚ÌÚ×•\Ž¦
+- [ ] ƒƒO‚ÌƒGƒNƒXƒ|[ƒg‹@”\
+- [ ] •¡”ƒCƒ“ƒXƒ^ƒ“ƒX‚Ö‚ÌˆêŠ‡‘—M
+- [ ] ƒvƒƒgƒRƒ‹‰ðÍƒvƒ‰ƒOƒCƒ“
+- [ ] «”\‘ª’è‹@”\
 
-## ãƒãƒ¼ã‚¸ãƒ§ãƒ³
+## ƒ‰ƒCƒZƒ“ƒX
 
-- **v1.0.0** (2025-11-15): åˆç‰ˆãƒªãƒªãƒ¼ã‚¹
-  - åŸºæœ¬çš„ãªTCP/UDPé€šä¿¡æ©Ÿèƒ½
-  - ã‚·ãƒŠãƒªã‚ªå®Ÿè¡Œã‚¨ãƒ³ã‚¸ãƒ³
-  - å¤‰æ•°æ©Ÿèƒ½ãƒ»è‡ªå‹•å¿œç­”
-  - WinFormsãƒ™ãƒ¼ã‚¹GUI
-  - ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯è¨ºæ–­æ©Ÿèƒ½
+–{ƒ\ƒtƒgƒEƒFƒA‚Í‹³ˆçEŽŽŒ±–Ú“I‚Å’ñ‹Ÿ‚³‚ê‚Ä‚¢‚Ü‚·B
 
-## ãŠå•ã„åˆã‚ã›
+## ƒo[ƒWƒ‡ƒ“
 
-ä¸å…·åˆã‚„æ©Ÿèƒ½è¦æœ›ã¯ã€GitHubã®Issuesã§ã”å ±å‘Šãã ã•ã„ã€‚
+- **v1.0.0** (2025-11-15): ‰”ÅƒŠƒŠ[ƒX
+  - Šî–{“I‚ÈTCP/UDP’ÊM‹@”\
+  - ƒVƒiƒŠƒIŽÀsƒGƒ“ƒWƒ“
+  - •Ï”‹@”\EŽ©“®‰ž“š
+  - WinFormsƒx[ƒXGUI
+  - ƒlƒbƒgƒ[ƒNf’f‹@”\
+
+## ‚¨–â‚¢‡‚í‚¹
+
+•s‹ï‡‚â‹@”\—v–]‚ÍAGitHub‚ÌIssues‚Å‚²•ñ‚­‚¾‚³‚¢B

@@ -1,10 +1,10 @@
 # InstanceManager.ps1
-# ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ç®¡ç†ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ« - ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®èª­ã¿è¾¼ã¿ã¨è«–ç†ã‚°ãƒ«ãƒ¼ãƒ—ç®¡ç†
+# ƒCƒ“ƒXƒ^ƒ“ƒXŠÇ—ƒ‚ƒWƒ…[ƒ‹ - ƒCƒ“ƒXƒ^ƒ“ƒX‚Ì“Ç‚İ‚İ‚Æ˜_—ƒOƒ‹[ƒvŠÇ—
 
 function Find-InstanceFolders {
     <#
     .SYNOPSIS
-    Instancesãƒ•ã‚©ãƒ«ãƒ€ã‚’ã‚¹ã‚­ãƒ£ãƒ³ã—ã¦ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹è¨­å®šã‚’èª­ã¿è¾¼ã¿
+    InstancesƒtƒHƒ‹ƒ_‚ğƒXƒLƒƒƒ“‚µ‚ÄƒCƒ“ƒXƒ^ƒ“ƒXİ’è‚ğ“Ç‚İ‚İ
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -20,7 +20,7 @@ function Find-InstanceFolders {
     
     $instances = @()
     
-    # ã‚µãƒ–ãƒ•ã‚©ãƒ«ãƒ€ã‚’åˆ—æŒ™
+    # ƒTƒuƒtƒHƒ‹ƒ_‚ğ—ñ‹“
     $folders = Get-ChildItem -Path $InstancesPath -Directory
     
     foreach ($folder in $folders) {
@@ -28,19 +28,19 @@ function Find-InstanceFolders {
         
         if (Test-Path $instanceFile) {
             try {
-                # PSD1ãƒ•ã‚¡ã‚¤ãƒ«ã‚’èª­ã¿è¾¼ã¿
+                # PSD1ƒtƒ@ƒCƒ‹‚ğ“Ç‚İ‚İ
                 $config = Import-PowerShellDataFile -Path $instanceFile
                 
-                # ãƒ•ã‚©ãƒ«ãƒ€åã‚’ãƒ™ãƒ¼ã‚¹åã¨ã—ã¦ä½¿ç”¨
+                # ƒtƒHƒ‹ƒ_–¼‚ğƒx[ƒX–¼‚Æ‚µ‚Äg—p
                 $config['FolderName'] = $folder.Name
                 $config['FolderPath'] = $folder.FullName
                 
-                # IDæœªæŒ‡å®šã®å ´åˆã¯ãƒ•ã‚©ãƒ«ãƒ€åã‹ã‚‰ç”Ÿæˆ
+                # ID–¢w’è‚Ìê‡‚ÍƒtƒHƒ‹ƒ_–¼‚©‚ç¶¬
                 if (-not $config.Id) {
                     $config['Id'] = $folder.Name -replace '\s', '-'
                 }
                 
-                # DisplayNameæœªæŒ‡å®šã®å ´åˆã¯ãƒ•ã‚©ãƒ«ãƒ€åã‚’ä½¿ç”¨
+                # DisplayName–¢w’è‚Ìê‡‚ÍƒtƒHƒ‹ƒ_–¼‚ğg—p
                 if (-not $config.DisplayName) {
                     $config['DisplayName'] = $folder.Name
                 }
@@ -63,7 +63,7 @@ function Find-InstanceFolders {
 function Initialize-InstanceConnections {
     <#
     .SYNOPSIS
-    ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹è¨­å®šã‹ã‚‰æ¥ç¶šã‚’ä½œæˆ
+    ƒCƒ“ƒXƒ^ƒ“ƒXİ’è‚©‚çÚ‘±‚ğì¬
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -74,7 +74,7 @@ function Initialize-InstanceConnections {
     
     foreach ($instance in $Instances) {
         try {
-            # æ¥ç¶šè¨­å®šã‚’æ§‹ç¯‰
+            # Ú‘±İ’è‚ğ\’z
             $connConfig = @{
                 Id = $instance.Id
                 Name = $instance.FolderName
@@ -89,10 +89,10 @@ function Initialize-InstanceConnections {
                 Tags = $instance.Tags
             }
             
-            # æ¥ç¶šã‚’è¿½åŠ 
+            # Ú‘±‚ğ’Ç‰Á
             $conn = Add-Connection -Config $connConfig
             
-            # ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹å›ºæœ‰ã®è¨­å®šã‚’ä¿å­˜
+            # ƒCƒ“ƒXƒ^ƒ“ƒXŒÅ—L‚Ìİ’è‚ğ•Û‘¶
             $conn.Variables['InstancePath'] = $instance.FolderPath
             $conn.Variables['DefaultEncoding'] = $instance.DefaultEncoding
             $conn.Variables['AutoScenario'] = $instance.AutoScenario
@@ -110,7 +110,7 @@ function Initialize-InstanceConnections {
 function Start-AutoStartConnections {
     <#
     .SYNOPSIS
-    AutoStart=trueã®æ¥ç¶šã‚’è‡ªå‹•é–‹å§‹
+    AutoStart=true‚ÌÚ‘±‚ğ©“®ŠJn
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -125,11 +125,11 @@ function Start-AutoStartConnections {
                 Write-Host "  [+] Auto-starting: $($instance.DisplayName)" -ForegroundColor Cyan
                 Start-Connection -ConnectionId $instance.Id
                 
-                # AutoScenarioãŒã‚ã‚‹å ´åˆã¯å®Ÿè¡Œ
+                # AutoScenario‚ª‚ ‚éê‡‚ÍÀs
                 if ($instance.AutoScenario) {
                     $scenarioPath = Join-Path $instance.FolderPath "scenarios\$($instance.AutoScenario)"
                     if (Test-Path $scenarioPath) {
-                        Start-Sleep -Seconds 1  # æ¥ç¶šç¢ºç«‹ã‚’å¾…ã¤
+                        Start-Sleep -Seconds 1  # Ú‘±Šm—§‚ğ‘Ò‚Â
                         Start-Scenario -ConnectionId $instance.Id -ScenarioPath $scenarioPath
                     }
                 }
@@ -146,7 +146,7 @@ function Start-AutoStartConnections {
 function Get-InstanceScenarios {
     <#
     .SYNOPSIS
-    ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ãƒ•ã‚©ãƒ«ãƒ€å†…ã®ã‚·ãƒŠãƒªã‚ªãƒ•ã‚¡ã‚¤ãƒ«ä¸€è¦§ã‚’å–å¾—
+    ƒCƒ“ƒXƒ^ƒ“ƒXƒtƒHƒ‹ƒ_“à‚ÌƒVƒiƒŠƒIƒtƒ@ƒCƒ‹ˆê——‚ğæ“¾
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -167,7 +167,7 @@ function Get-InstanceScenarios {
 function Get-InstanceDataBank {
     <#
     .SYNOPSIS
-    ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ãƒ•ã‚©ãƒ«ãƒ€å†…ã®ãƒ‡ãƒ¼ã‚¿ãƒãƒ³ã‚¯ã‚’èª­ã¿è¾¼ã¿
+    ƒCƒ“ƒXƒ^ƒ“ƒXƒtƒHƒ‹ƒ_“à‚Ìƒf[ƒ^ƒoƒ“ƒN‚ğ“Ç‚İ‚İ
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -186,7 +186,7 @@ function Get-InstanceDataBank {
 function Get-GroupNames {
     <#
     .SYNOPSIS
-    å…¨æ¥ç¶šã®ã‚°ãƒ«ãƒ¼ãƒ—åä¸€è¦§ã‚’å–å¾—
+    ‘SÚ‘±‚ÌƒOƒ‹[ƒv–¼ˆê——‚ğæ“¾
     #>
     
     $groups = @()
@@ -203,7 +203,7 @@ function Get-GroupNames {
 function Get-AllTags {
     <#
     .SYNOPSIS
-    å…¨æ¥ç¶šã®ã‚¿ã‚°ä¸€è¦§ã‚’å–å¾—
+    ‘SÚ‘±‚Ìƒ^ƒOˆê——‚ğæ“¾
     #>
     
     $tags = @()
@@ -234,7 +234,7 @@ function Get-AllTags {
 function Get-InstanceAutoResponseProfiles {
     <#
     .SYNOPSIS
-    CX^XzÌvt@Cê——æ“¾
+    CX^Xz?vt@C?ï
     #>
     param(
         [Parameter(Mandatory=$true)]

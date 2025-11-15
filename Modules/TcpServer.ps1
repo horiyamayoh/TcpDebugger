@@ -1,27 +1,27 @@
 # TcpServer.ps1
-# TCPã‚µãƒ¼ãƒãƒ¼æ¥ç¶šå‡¦ç†
+# TCPƒT[ƒo[Ú‘±ˆ—
 
 function Start-TcpServerConnection {
     <#
     .SYNOPSIS
-    TCPã‚µãƒ¼ãƒãƒ¼ã‚’èµ·å‹•
+    TCPƒT[ƒo[‚ğ‹N“®
     #>
     param(
         [Parameter(Mandatory=$true)]
         [object]$Connection
     )
     
-    # ã‚¹ãƒ¬ãƒƒãƒ‰ã§éåŒæœŸå®Ÿè¡Œ
+    # ƒXƒŒƒbƒh‚Å”ñ“¯ŠúÀs
     $scriptBlock = {
         param($connId, $localIP, $localPort)
         
         try {
             Write-Host "[TcpServer] Starting server on ${localIP}:${localPort}..." -ForegroundColor Cyan
             
-            # æ¥ç¶šã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’å–å¾—
+            # Ú‘±ƒIƒuƒWƒFƒNƒg‚ğæ“¾
             $conn = $Global:Connections[$connId]
             
-            # TCPãƒªã‚¹ãƒŠãƒ¼ä½œæˆ
+            # TCPƒŠƒXƒi[ì¬
             $ipAddress = [System.Net.IPAddress]::Parse($localIP)
             $listener = New-Object System.Net.Sockets.TcpListener($ipAddress, $localPort)
             $listener.Start()
@@ -31,15 +31,15 @@ function Start-TcpServerConnection {
             
             Write-Host "[TcpServer] Server listening on ${localIP}:${localPort}" -ForegroundColor Green
             
-            # ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆæ¥ç¶šå¾…æ©Ÿï¼ˆéãƒ–ãƒ­ãƒƒã‚­ãƒ³ã‚°ï¼‰
+            # ƒNƒ‰ƒCƒAƒ“ƒgÚ‘±‘Ò‹@i”ñƒuƒƒbƒLƒ“ƒOj
             $client = $null
             $stream = $null
             
             while (-not $conn.CancellationSource.Token.IsCancellationRequested) {
                 try {
-                    # æ¥ç¶šå¾…æ©Ÿï¼ˆãƒãƒ¼ãƒªãƒ³ã‚°æ–¹å¼ï¼‰
+                    # Ú‘±‘Ò‹@iƒ|[ƒŠƒ“ƒO•û®j
                     if ($listener.Pending()) {
-                        # æ—¢å­˜ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆãŒã‚ã‚Œã°ã‚¯ãƒ­ãƒ¼ã‚º
+                        # Šù‘¶ƒNƒ‰ƒCƒAƒ“ƒg‚ª‚ ‚ê‚ÎƒNƒ[ƒY
                         if ($client) {
                             $client.Close()
                         }
@@ -51,9 +51,9 @@ function Start-TcpServerConnection {
                         Write-Host "[TcpServer] Client connected: $remoteEndpoint" -ForegroundColor Green
                     }
                     
-                    # ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆãŒæ¥ç¶šä¸­ã®å ´åˆã€é€å—ä¿¡å‡¦ç†
+                    # ƒNƒ‰ƒCƒAƒ“ƒg‚ªÚ‘±’†‚Ìê‡A‘—óMˆ—
                     if ($client -and $client.Connected) {
-                        # é€ä¿¡å‡¦ç†
+                        # ‘—Mˆ—
                         while ($conn.SendQueue.Count -gt 0) {
                             $data = $conn.SendQueue[0]
                             $conn.SendQueue.RemoveAt(0)
@@ -65,7 +65,7 @@ function Start-TcpServerConnection {
                             $conn.LastActivity = Get-Date
                         }
                         
-                        # å—ä¿¡å‡¦ç†
+                        # óMˆ—
                         if ($stream.DataAvailable) {
                             $buffer = New-Object byte[] 8192
                             $bytesRead = $stream.Read($buffer, 0, $buffer.Length)
@@ -73,7 +73,7 @@ function Start-TcpServerConnection {
                             if ($bytesRead -gt 0) {
                                 $receivedData = $buffer[0..($bytesRead-1)]
                                 
-                                # å—ä¿¡ãƒãƒƒãƒ•ã‚¡ã«è¿½åŠ 
+                                # óMƒoƒbƒtƒ@‚É’Ç‰Á
                                 [void]$conn.RecvBuffer.Add([PSCustomObject]@{
                                     Timestamp = Get-Date
                                     Data = $receivedData
@@ -88,7 +88,7 @@ function Start-TcpServerConnection {
                         }
                     }
                     
-                    # CPUè² è·è»½æ¸›
+                    # CPU•‰‰×ŒyŒ¸
                     Start-Sleep -Milliseconds 10
                     
                 } catch {
@@ -105,7 +105,7 @@ function Start-TcpServerConnection {
             Write-Error "[TcpServer] Server error: $_"
             
         } finally {
-            # ã‚¯ãƒªãƒ¼ãƒ³ã‚¢ãƒƒãƒ—
+            # ƒNƒŠ[ƒ“ƒAƒbƒv
             if ($client) {
                 $client.Close()
                 $client.Dispose()
@@ -125,7 +125,7 @@ function Start-TcpServerConnection {
         }
     }
     
-    # ã‚¹ãƒ¬ãƒƒãƒ‰é–‹å§‹
+    # ƒXƒŒƒbƒhŠJn
     $thread = New-Object System.Threading.Thread([System.Threading.ThreadStart]{
         & $scriptBlock -connId $Connection.Id -localIP $Connection.LocalIP -localPort $Connection.LocalPort
     })
