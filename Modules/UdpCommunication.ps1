@@ -68,15 +68,6 @@ function Start-UdpConnection {
                         $conn.LastActivity = Get-Date
                     }
                     
-
-                            $rules = Get-ActiveAutoResponseRules -Connection $conn
-                            if ($rules -and $rules.Count -gt 0) {
-                                try {
-                                    Invoke-AutoResponse -ConnectionId $connId -ReceivedData $receivedData -Rules $rules
-                                } catch {
-                                    Write-Warning "[UDP] Auto-response failed: $_"
-                                }
-                            }
                     # 受信処理（非ブロッキング）
                     if ($udpClient.Available -gt 0) {
                         $receivedData = $udpClient.Receive([ref]$anyEndPoint)
@@ -95,6 +86,16 @@ function Start-UdpConnection {
                             
                             Write-Host "[UDP] Received $($receivedData.Length) bytes from $anyEndPoint" -ForegroundColor Magenta
                             $conn.LastActivity = Get-Date
+                            
+                            # Auto-response処理
+                            $rules = Get-ActiveAutoResponseRules -Connection $conn
+                            if ($rules -and $rules.Count -gt 0) {
+                                try {
+                                    Invoke-AutoResponse -ConnectionId $connId -ReceivedData $receivedData -Rules $rules
+                                } catch {
+                                    Write-Warning "[UDP] Auto-response failed: $_"
+                                }
+                            }
                         }
                     }
                     
