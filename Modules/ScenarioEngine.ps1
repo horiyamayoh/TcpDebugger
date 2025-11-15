@@ -44,26 +44,6 @@ function Start-Scenario {
     
     $conn = $Global:Connections[$ConnectionId]
     
-        $currentIndex = 0
-        $loopStack = New-Object System.Collections.ArrayList
-
-            while ($currentIndex -lt $totalSteps) {
-
-                $step = $scenarioSteps[$currentIndex]
-                $stepNumber = $currentIndex + 1
-                $currentIndex++
-
-                Write-Host "[ScenarioEngine] Step $stepNumber/$totalSteps : $($step.Action)" -ForegroundColor Cyan
-
-                $actionName = if ($step.Action) { $step.Action.ToUpperInvariant() } else { "" }
-
-                switch ($actionName) {
-                        $loopResult = Invoke-LoopAction -Connection $conn -Step $step -ScenarioSteps $scenarioSteps -CurrentIndex ([ref]$currentIndex) -CurrentStepIndex $stepNumber -LoopStack ([ref]$loopStack)
-
-                        if ($loopResult.ShouldBreak) {
-                            break
-                        }
-        
         try {
             foreach ($step in $scenarioSteps) {
                 $currentStep++
