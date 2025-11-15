@@ -44,6 +44,10 @@ function Start-Scenario {
     
     $conn = $Global:Connections[$ConnectionId]
     
+    # Load scenario file
+    $scenarioSteps = Read-ScenarioFile -FilePath $ScenarioPath
+    $totalSteps = $scenarioSteps.Count
+    
         try {
             $currentStep = 0
             foreach ($step in $scenarioSteps) {
