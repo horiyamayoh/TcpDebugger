@@ -60,6 +60,15 @@ function Show-MainForm {
     $colStatus.FillWeight = 100
     $dgvInstances.Columns.Add($colStatus) | Out-Null
 
+    $colAutoResponse = New-Object System.Windows.Forms.DataGridViewComboBoxColumn
+    $colAutoResponse.HeaderText = "Auto Response"
+    $colAutoResponse.Name = "Scenario"
+    $colAutoResponse.DisplayMember = "Display"
+    $colAutoResponse.ValueMember = "Key"
+    $colAutoResponse.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
+    $colAutoResponse.FillWeight = 140
+    $dgvInstances.Columns.Add($colAutoResponse) | Out-Null
+
     $colId = New-Object System.Windows.Forms.DataGridViewTextBoxColumn
     $colId.HeaderText = "Id"
     $colId.Name = "Id"
@@ -225,6 +234,7 @@ function Show-MainForm {
     # State holders
     $currentDataBank = @()
     $suppressCategoryEvent = $false
+    $suppressScenarioEvent = $false
 
     $getSelectedConnection = {
         if ($dgvInstances.SelectedRows.Count -eq 0) {
@@ -408,6 +418,55 @@ function Show-MainForm {
 
     $dgvInstances.Add_SelectionChanged({
         & $updateDetails
+    })
+
+    $dgvInstances.Add_CurrentCellDirtyStateChanged({
+        if ($dgvInstances.IsCurrentCellDirty -and $dgvInstances.CurrentCell -and
+            $dgvInstances.CurrentCell.OwningColumn -and
+            $dgvInstances.CurrentCell.OwningColumn.Name -eq "Scenario") {
+            $dgvInstances.CommitEdit([System.Windows.Forms.DataGridViewDataErrorContexts]::Commit)
+        }
+    })
+
+    $dgvInstances.Add_CellValueChanged({
+        param($sender, $args)
+
+        if ($suppressScenarioEvent) {
+            return
+        }
+
+        if ($args.ColumnIndex -lt 0 -or $args.RowIndex -lt 0) {
+            return
+        }
+
+        $column = $sender.Columns[$args.ColumnIndex]
+        if ($column.Name -ne "Scenario") {
+            return
+        }
+
+        $row = $sender.Rows[$args.RowIndex]
+        if (-not $row.Cells.Contains("Id")) {
+            return
+        }
+
+        $connId = $row.Cells["Id"].Value
+        if (-not $connId) {
+            return
+        }
+
+        $cell = $row.Cells["Scenario"]
+        $selectedKey = $cell.Value
+        $profilePath = $null
+        $mapping = $cell.Tag
+        if ($mapping -and $selectedKey -and $mapping.ContainsKey($selectedKey)) {
+            $profilePath = $mapping[$selectedKey]
+        }
+
+        try {
+            Set-ConnectionAutoResponseProfile -ConnectionId $connId -ProfileName $selectedKey -ProfilePath $profilePath | Out-Null
+        } catch {
+            [System.Windows.Forms.MessageBox]::Show("Failed to apply auto-response profile: $_", "Error") | Out-Null
+        }
     })
 
     $lstScenarios.Add_SelectedIndexChanged({
@@ -626,10 +685,67 @@ function Update-InstanceList {
             "$($conn.Protocol) $($conn.Mode)",
             $endpoint,
             $conn.Status,
+            $null,
             $conn.Id
         )
 
         $row = $DataGridView.Rows[$rowIndex]
+
+        try {
+            $suppressScenarioEvent = $true
+            $items = New-Object System.Collections.ArrayList
+            [void]$items.Add([PSCustomObject]@{ Display = "(None)"; Key = ""; Path = $null })
+
+            $mapping = @{}
+            $currentProfile = ""
+            $currentPath = $null
+            if ($conn.Variables.ContainsKey('AutoResponseProfile')) {
+                $currentProfile = $conn.Variables['AutoResponseProfile']
+            }
+            if ($conn.Variables.ContainsKey('AutoResponseProfilePath')) {
+                $currentPath = $conn.Variables['AutoResponseProfilePath']
+            }
+
+            $profiles = @()
+            if ($conn.Variables.ContainsKey('InstancePath')) {
+                $instancePath = $conn.Variables['InstancePath']
+                if ($instancePath) {
+                    try {
+                        $profiles = Get-InstanceAutoResponseProfiles -InstancePath $instancePath
+                    } catch {
+                        $profiles = @()
+                    }
+                }
+            }
+
+            foreach ($profile in $profiles) {
+                [void]$items.Add([PSCustomObject]@{ Display = $profile.DisplayName; Key = $profile.Name; Path = $profile.FilePath })
+                if ($profile.Name) {
+                    $mapping[$profile.Name] = $profile.FilePath
+                }
+            }
+
+            if ($currentProfile -and -not $mapping.ContainsKey($currentProfile)) {
+                $displayName = if ($currentPath) { "$currentProfile (missing)" } else { $currentProfile }
+                [void]$items.Add([PSCustomObject]@{ Display = $displayName; Key = $currentProfile; Path = $currentPath })
+                if ($currentPath) {
+                    $mapping[$currentProfile] = $currentPath
+                }
+            }
+
+            $scenarioCell = New-Object System.Windows.Forms.DataGridViewComboBoxCell
+            $scenarioCell.DisplayMember = "Display"
+            $scenarioCell.ValueMember = "Key"
+            $scenarioCell.DataSource = $items
+            $scenarioCell.Value = if ($currentProfile) { $currentProfile } else { "" }
+            $scenarioCell.Tag = $mapping
+            $row.Cells["Scenario"] = $scenarioCell
+        } catch {
+            $row.Cells["Scenario"].Value = ""
+        } finally {
+            $suppressScenarioEvent = $false
+        }
+
         switch ($conn.Status) {
             "CONNECTED" {
                 $row.DefaultCellStyle.BackColor = [System.Drawing.Color]::LightGreen

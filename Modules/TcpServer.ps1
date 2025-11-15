@@ -82,6 +82,8 @@ function Start-TcpServerConnection {
                                 
                                 Write-Host "[TcpServer] Received $bytesRead bytes" -ForegroundColor Magenta
                                 $conn.LastActivity = Get-Date
+
+                                Invoke-ConnectionAutoResponse -ConnectionId $connId -ReceivedData $receivedData
                             }
                         }
                     }

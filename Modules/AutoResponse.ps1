@@ -1,10 +1,10 @@
 # AutoResponse.ps1
-# ©“®‰“šˆ—ƒ‚ƒWƒ…[ƒ‹
+# è‡ªå‹•å¿œç­”å‡¦ç†ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«
 
 function Read-AutoResponseRules {
     <#
     .SYNOPSIS
-    ©“®‰“šƒ‹[ƒ‹‚ğ“Ç‚İ‚İ
+    è‡ªå‹•å¿œç­”ãƒ«ãƒ¼ãƒ«ã‚’èª­ã¿è¾¼ã¿
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -16,7 +16,7 @@ function Read-AutoResponseRules {
         return @()
     }
     
-    # CSV“Ç‚İ‚İ
+    # CSVèª­ã¿è¾¼ã¿
     $rules = Import-Csv -Path $FilePath -Encoding UTF8
     
     Write-Host "[AutoResponse] Loaded $($rules.Count) rules from $FilePath" -ForegroundColor Green
@@ -27,7 +27,7 @@ function Read-AutoResponseRules {
 function Test-AutoResponseMatch {
     <#
     .SYNOPSIS
-    óMƒf[ƒ^‚ª©“®‰“šƒ‹[ƒ‹‚Éƒ}ƒbƒ`‚·‚é‚©ƒ`ƒFƒbƒN
+    å—ä¿¡ãƒ‡ãƒ¼ã‚¿ãŒè‡ªå‹•å¿œç­”ãƒ«ãƒ¼ãƒ«ã«ãƒãƒƒãƒã™ã‚‹ã‹ãƒã‚§ãƒƒã‚¯
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -40,31 +40,160 @@ function Test-AutoResponseMatch {
         [string]$Encoding = "UTF-8"
     )
     
-    # ƒoƒCƒg”z—ñ‚ğ•¶š—ñ‚É•ÏŠ·
-    $receivedText = ConvertFrom-ByteArray -Data $ReceivedData -Encoding $Encoding
-    
-    # ƒ}ƒbƒ`ƒ^ƒCƒv‚É‚æ‚é”»’è
-    switch ($Rule.MatchType) {
-        "Regex" {
-            return $receivedText -match $Rule.TriggerPattern
-        }
-        "Exact" {
-            return $receivedText -eq $Rule.TriggerPattern
-        }
-        "Contains" {
-            return $receivedText -like "*$($Rule.TriggerPattern)*"
-        }
-        default {
-            # ƒfƒtƒHƒ‹ƒg‚ÍContains
-            return $receivedText -like "*$($Rule.TriggerPattern)*"
+    Execute auto response
+
+
+
+
+    if (-not $Rules -or $Rules.Count -eq 0) {
+        return
+    }
+
+    $defaultEncoding = "UTF-8"
+    if ($conn.Variables.ContainsKey('DefaultEncoding') -and $conn.Variables['DefaultEncoding']) {
+        $defaultEncoding = $conn.Variables['DefaultEncoding']
+    }
+
+        if (Test-AutoResponseMatch -ReceivedData $ReceivedData -Rule $rule -Encoding $defaultEncoding) {
+
+
+
+            $encoding = if ($rule.Encoding) { $rule.Encoding } else { $defaultEncoding }
+
+            try {
+                Send-Data -ConnectionId $ConnectionId -Data $responseBytes
+                Write-Host "[AutoResponse] Auto-responded: $response" -ForegroundColor Blue
+            } catch {
+                Write-Warning "[AutoResponse] Failed to send auto-response: $_"
+            }
+
+
+
+
+function Get-ConnectionAutoResponseRules {
+    param(
+        [Parameter(Mandatory=$true)]
+        [object]$Connection
+    )
+
+    if (-not $Connection -or -not $Connection.Variables.ContainsKey('AutoResponseProfilePath')) {
+        return @()
+    }
+
+    $profilePath = $Connection.Variables['AutoResponseProfilePath']
+    if (-not $profilePath) {
+        return @()
+    }
+
+    if (-not (Test-Path -LiteralPath $profilePath)) {
+        Write-Warning "[AutoResponse] Profile path not found: $profilePath"
+        $Connection.Variables['AutoResponseRulesCache'] = $null
+        return @()
+    }
+
+    $resolved = (Resolve-Path -LiteralPath $profilePath).Path
+    $fileInfo = Get-Item -LiteralPath $resolved
+    $lastWrite = $fileInfo.LastWriteTimeUtc
+
+    $cache = $null
+    if ($Connection.Variables.ContainsKey('AutoResponseRulesCache')) {
+        $cache = $Connection.Variables['AutoResponseRulesCache']
+        if ($cache -and $cache.LastWriteTimeUtc -eq $lastWrite) {
+            return $cache.Rules
         }
     }
+
+    try {
+        $rules = Read-AutoResponseRules -FilePath $resolved
+    } catch {
+        Write-Warning "[AutoResponse] Failed to load rules: $_"
+        $Connection.Variables['AutoResponseRulesCache'] = $null
+        return @()
+    }
+
+    $Connection.Variables['AutoResponseRulesCache'] = @{
+        LastWriteTimeUtc = $lastWrite
+        Rules            = $rules
+    }
+
+    return $rules
 }
 
-function Invoke-AutoResponse {
+function Set-ConnectionAutoResponseProfile {
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$ConnectionId,
+
+        [Parameter(Mandatory=$false)]
+        [string]$ProfileName,
+
+        [Parameter(Mandatory=$false)]
+        [string]$ProfilePath
+    )
+
+    if (-not $Global:Connections.ContainsKey($ConnectionId)) {
+        throw "Connection not found: $ConnectionId"
+    }
+
+    $conn = $Global:Connections[$ConnectionId]
+
+    if ([string]::IsNullOrWhiteSpace($ProfileName) -or -not $ProfilePath) {
+        $conn.Variables.Remove('AutoResponseProfile')
+        $conn.Variables.Remove('AutoResponseProfilePath')
+        $conn.Variables.Remove('AutoResponseRulesCache')
+        Write-Host "[AutoResponse] Cleared auto-response profile for $($conn.DisplayName)" -ForegroundColor Yellow
+        return @()
+    }
+
+    if (-not (Test-Path -LiteralPath $ProfilePath)) {
+        throw "Auto-response profile not found: $ProfilePath"
+    }
+
+    $resolved = (Resolve-Path -LiteralPath $ProfilePath).Path
+    $conn.Variables['AutoResponseProfile'] = $ProfileName
+    $conn.Variables['AutoResponseProfilePath'] = $resolved
+    $conn.Variables.Remove('AutoResponseRulesCache')
+
+    Write-Host "[AutoResponse] Profile '$ProfileName' applied to $($conn.DisplayName)" -ForegroundColor Green
+
+    return Get-ConnectionAutoResponseRules -Connection $conn
+}
+
+function Invoke-ConnectionAutoResponse {
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$ConnectionId,
+
+        [Parameter(Mandatory=$true)]
+        [byte[]]$ReceivedData
+    )
+
+    if (-not $Global:Connections.ContainsKey($ConnectionId)) {
+        return
+    }
+
+    $conn = $Global:Connections[$ConnectionId]
+    if (-not $conn.Variables.ContainsKey('AutoResponseProfilePath')) {
+        return
+    }
+
+    try {
+        $rules = Get-ConnectionAutoResponseRules -Connection $conn
+    } catch {
+        Write-Warning "[AutoResponse] Unable to load auto-response rules: $_"
+        return
+    }
+
+    if (-not $rules -or $rules.Count -eq 0) {
+        return
+    }
+
+    Invoke-AutoResponse -ConnectionId $ConnectionId -ReceivedData $ReceivedData -Rules $rules
+}
+
     <#
     .SYNOPSIS
-    óMƒf[ƒ^‚É‘Î‚µ‚Ä©“®‰“š‚ğÀs
+    å—ä¿¡ãƒ‡ãƒ¼ã‚¿ã«å¯¾ã—ã¦è‡ªå‹•å¿œç­”ã‚’å®Ÿè¡Œ
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -84,28 +213,28 @@ function Invoke-AutoResponse {
     $conn = $Global:Connections[$ConnectionId]
     
     foreach ($rule in $Rules) {
-        # ƒ}ƒbƒ`ƒ“ƒO”»’è
+        # ãƒãƒƒãƒãƒ³ã‚°åˆ¤å®š
         if (Test-AutoResponseMatch -ReceivedData $ReceivedData -Rule $rule) {
             Write-Host "[AutoResponse] Rule matched: $($rule.TriggerPattern)" -ForegroundColor Cyan
             
-            # ƒfƒBƒŒƒC
+            # ãƒ‡ã‚£ãƒ¬ã‚¤
             if ($rule.Delay -and [int]$rule.Delay -gt 0) {
                 Start-Sleep -Milliseconds ([int]$rule.Delay)
             }
             
-            # ‰“šƒƒbƒZ[ƒW¶¬
+            # å¿œç­”ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ç”Ÿæˆ
             $response = Expand-MessageVariables -Template $rule.ResponseTemplate -Variables $conn.Variables
             
-            # ƒGƒ“ƒR[ƒfƒBƒ“ƒO
+            # ã‚¨ãƒ³ã‚³ãƒ¼ãƒ‡ã‚£ãƒ³ã‚°
             $encoding = if ($rule.Encoding) { $rule.Encoding } else { "UTF-8" }
             $responseBytes = ConvertTo-ByteArray -Data $response -Encoding $encoding
             
-            # ‘—M
+            # é€ä¿¡
             Send-Data -ConnectionId $ConnectionId -Data $responseBytes
             
             Write-Host "[AutoResponse] Auto-responded: $response" -ForegroundColor Blue
             
-            # Å‰‚Éƒ}ƒbƒ`‚µ‚½ƒ‹[ƒ‹‚Ì‚İÀs
+            # æœ€åˆã«ãƒãƒƒãƒã—ãŸãƒ«ãƒ¼ãƒ«ã®ã¿å®Ÿè¡Œ
             break
         }
     }
