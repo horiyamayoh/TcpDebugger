@@ -16,10 +16,30 @@ function Read-AutoResponseRules {
         return @()
     }
 
-    # CSV読み込み
-    $rules = Import-Csv -Path $FilePath -Encoding UTF8
+    # Shift-JISでCSV読み込み
+    $sjisEncoding = [System.Text.Encoding]::GetEncoding("Shift_JIS")
+    $rules = Import-Csv -Path $FilePath -Encoding $sjisEncoding
 
-    Write-Host "[AutoResponse] Loaded $($rules.Count) rules from $FilePath" -ForegroundColor Green
+    # 新形式（バイナリマッチング）か旧形式（テキストマッチング）かを判定
+    $isNewFormat = $false
+    if ($rules.Count -gt 0) {
+        $firstRule = $rules[0]
+        # 新形式の必須フィールド: MatchOffset, MatchLength, MatchValue, ResponseMessageFile
+        if ($firstRule.PSObject.Properties.Name -contains 'MatchOffset' -and
+            $firstRule.PSObject.Properties.Name -contains 'MatchLength' -and
+            $firstRule.PSObject.Properties.Name -contains 'MatchValue' -and
+            $firstRule.PSObject.Properties.Name -contains 'ResponseMessageFile') {
+            $isNewFormat = $true
+        }
+    }
+
+    # ルールにフォーマット情報を追加
+    foreach ($rule in $rules) {
+        $rule | Add-Member -NotePropertyName '__Format' -NotePropertyValue $(if ($isNewFormat) { 'Binary' } else { 'Text' }) -Force
+    }
+
+    $formatType = if ($isNewFormat) { "Binary" } else { "Text" }
+    Write-Host "[AutoResponse] Loaded $($rules.Count) rules (Format: $formatType) from $FilePath" -ForegroundColor Green
 
     return $rules
 }
@@ -44,6 +64,12 @@ function Test-AutoResponseMatch {
         return $false
     }
 
+    # 新形式（バイナリマッチング）の場合
+    if ($Rule.__Format -eq 'Binary') {
+        return Test-BinaryPatternMatch -ReceivedData $ReceivedData -Rule $Rule
+    }
+
+    # 旧形式（テキストマッチング）の場合
     $pattern = $Rule.TriggerPattern
     if ([string]::IsNullOrWhiteSpace($pattern)) {
         return $false
@@ -87,6 +113,83 @@ function Test-AutoResponseMatch {
             return $receivedText.Equals($pattern, [System.StringComparison]::OrdinalIgnoreCase)
         }
     }
+}
+
+function Test-BinaryPatternMatch {
+    <#
+    .SYNOPSIS
+    バイナリデータのパターンマッチング（新形式）
+    #>
+    param(
+        [Parameter(Mandatory=$true)]
+        [byte[]]$ReceivedData,
+
+        [Parameter(Mandatory=$true)]
+        [object]$Rule
+    )
+
+    # 必須パラメータチェック
+    if ([string]::IsNullOrWhiteSpace($Rule.MatchOffset) -or
+        [string]::IsNullOrWhiteSpace($Rule.MatchLength) -or
+        [string]::IsNullOrWhiteSpace($Rule.MatchValue)) {
+        Write-Warning "[AutoResponse] Binary rule missing required fields: MatchOffset, MatchLength, or MatchValue"
+        return $false
+    }
+
+    # パラメータ解析
+    try {
+        $offset = [int]($Rule.MatchOffset)
+        $length = [int]($Rule.MatchLength)
+        $hexValue = $Rule.MatchValue.Trim() -replace '\s', '' -replace '0x', ''
+    } catch {
+        Write-Warning "[AutoResponse] Failed to parse binary match parameters: $_"
+        return $false
+    }
+
+    # オフセットと長さのバリデーション
+    if ($offset -lt 0 -or $length -le 0) {
+        Write-Warning "[AutoResponse] Invalid offset ($offset) or length ($length)"
+        return $false
+    }
+
+    if ($offset + $length -gt $ReceivedData.Length) {
+        # 受信データが短すぎる
+        return $false
+    }
+
+    # 16進数値のバリデーション
+    if ($hexValue -notmatch '^[0-9A-Fa-f]+$') {
+        Write-Warning "[AutoResponse] MatchValue contains invalid hex characters: $hexValue"
+        return $false
+    }
+
+    if ($hexValue.Length % 2 -ne 0) {
+        Write-Warning "[AutoResponse] MatchValue has odd length: $hexValue"
+        return $false
+    }
+
+    # 長さチェック
+    $expectedBytes = $hexValue.Length / 2
+    if ($expectedBytes -ne $length) {
+        Write-Warning "[AutoResponse] MatchValue length ($expectedBytes bytes) doesn't match MatchLength ($length)"
+        return $false
+    }
+
+    # 16進数文字列をバイト配列に変換
+    $expectedBytes = @()
+    for ($i = 0; $i -lt $hexValue.Length; $i += 2) {
+        $hexByte = $hexValue.Substring($i, 2)
+        $expectedBytes += [Convert]::ToByte($hexByte, 16)
+    }
+
+    # 受信データの該当部分と比較
+    for ($i = 0; $i -lt $length; $i++) {
+        if ($ReceivedData[$offset + $i] -ne $expectedBytes[$i]) {
+            return $false
+        }
+    }
+
+    return $true
 }
 
 function Get-ConnectionAutoResponseRules {
@@ -244,32 +347,142 @@ function Invoke-AutoResponse {
             continue
         }
 
-        Write-Host "[AutoResponse] Rule matched: $($rule.TriggerPattern)" -ForegroundColor Cyan
+        # マッチした場合の処理
+        $ruleName = if ($rule.RuleName) { $rule.RuleName } else { "Unknown" }
+        Write-Host "[AutoResponse] Rule matched: $ruleName" -ForegroundColor Cyan
 
+        # 遅延処理
         if ($rule.Delay -and [int]$rule.Delay -gt 0) {
             Start-Sleep -Milliseconds ([int]$rule.Delay)
         }
 
-        $responseTemplate = if ($rule.ResponseTemplate) { $rule.ResponseTemplate } else { "" }
-        $response = Expand-MessageVariables -Template $responseTemplate -Variables $conn.Variables
-
-        $responseEncoding = if ($rule.Encoding) { $rule.Encoding } else { $defaultEncoding }
-
-        try {
-            $responseBytes = ConvertTo-ByteArray -Data $response -Encoding $responseEncoding
-        } catch {
-            Write-Warning "[AutoResponse] Failed to encode auto-response message: $_"
-            continue
-        }
-
-        try {
-            Send-Data -ConnectionId $ConnectionId -Data $responseBytes
-            Write-Host "[AutoResponse] Auto-responded: $response" -ForegroundColor Blue
-        } catch {
-            Write-Warning "[AutoResponse] Failed to send auto-response: $_"
+        # 新形式（バイナリマッチング）の場合
+        if ($rule.__Format -eq 'Binary') {
+            Invoke-BinaryAutoResponse -ConnectionId $ConnectionId -Rule $rule -Connection $conn
+        } else {
+            # 旧形式（テキストマッチング）の場合
+            Invoke-TextAutoResponse -ConnectionId $ConnectionId -Rule $rule -Connection $conn -DefaultEncoding $defaultEncoding
         }
 
         break
+    }
+}
+
+function Invoke-BinaryAutoResponse {
+    <#
+    .SYNOPSIS
+    バイナリマッチングルールに基づく自動応答（電文ファイル参照）
+    #>
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$ConnectionId,
+
+        [Parameter(Mandatory=$true)]
+        [object]$Rule,
+
+        [Parameter(Mandatory=$true)]
+        [object]$Connection
+    )
+
+    if ([string]::IsNullOrWhiteSpace($Rule.ResponseMessageFile)) {
+        Write-Warning "[AutoResponse] ResponseMessageFile is not specified in the rule"
+        return
+    }
+
+    # 電文ファイルのパスを解決
+    $messageFilePath = $Rule.ResponseMessageFile
+    
+    # 相対パスの場合、インスタンスのtemplatesフォルダからの相対パスとして解釈
+    if (-not [System.IO.Path]::IsPathRooted($messageFilePath)) {
+        if ($Connection.Variables.ContainsKey('InstancePath')) {
+            $instancePath = $Connection.Variables['InstancePath']
+            $messageFilePath = Join-Path $instancePath "templates\$messageFilePath"
+        }
+    }
+
+    if (-not (Test-Path -LiteralPath $messageFilePath)) {
+        Write-Warning "[AutoResponse] Response message file not found: $messageFilePath"
+        return
+    }
+
+    # 電文ファイルを読み込む
+    try {
+        $templates = Get-MessageTemplateCache -FilePath $messageFilePath -ThrowOnMissing
+    } catch {
+        Write-Warning "[AutoResponse] Failed to load response message file: $_"
+        return
+    }
+
+    if (-not $templates -or $templates.Count -eq 0) {
+        Write-Warning "[AutoResponse] No templates found in $messageFilePath"
+        return
+    }
+
+    # DEFAULTテンプレートを取得（新形式の電文定義は常にDEFAULT名で格納される）
+    if (-not $templates.ContainsKey('DEFAULT')) {
+        Write-Warning "[AutoResponse] DEFAULT template not found in $messageFilePath"
+        return
+    }
+
+    $template = $templates['DEFAULT']
+    
+    # 16進数ストリームをバイト配列に変換
+    try {
+        $responseBytes = ConvertTo-ByteArray -Data $template.Format -Encoding 'HEX'
+    } catch {
+        Write-Warning "[AutoResponse] Failed to convert hex stream to bytes: $_"
+        return
+    }
+
+    # 送信
+    try {
+        Send-Data -ConnectionId $ConnectionId -Data $responseBytes
+        $hexPreview = $template.Format
+        if ($hexPreview.Length -gt 40) {
+            $hexPreview = $hexPreview.Substring(0, 40) + "..."
+        }
+        Write-Host "[AutoResponse] Sent message from $($Rule.ResponseMessageFile) (${hexPreview})" -ForegroundColor Blue
+    } catch {
+        Write-Warning "[AutoResponse] Failed to send auto-response: $_"
+    }
+}
+
+function Invoke-TextAutoResponse {
+    <#
+    .SYNOPSIS
+    テキストマッチングルールに基づく自動応答（旧形式）
+    #>
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$ConnectionId,
+
+        [Parameter(Mandatory=$true)]
+        [object]$Rule,
+
+        [Parameter(Mandatory=$true)]
+        [object]$Connection,
+
+        [Parameter(Mandatory=$true)]
+        [string]$DefaultEncoding
+    )
+
+    $responseTemplate = if ($rule.ResponseTemplate) { $rule.ResponseTemplate } else { "" }
+    $response = Expand-MessageVariables -Template $responseTemplate -Variables $Connection.Variables
+
+    $responseEncoding = if ($rule.Encoding) { $rule.Encoding } else { $DefaultEncoding }
+
+    try {
+        $responseBytes = ConvertTo-ByteArray -Data $response -Encoding $responseEncoding
+    } catch {
+        Write-Warning "[AutoResponse] Failed to encode auto-response message: $_"
+        return
+    }
+
+    try {
+        Send-Data -ConnectionId $ConnectionId -Data $responseBytes
+        Write-Host "[AutoResponse] Auto-responded: $response" -ForegroundColor Blue
+    } catch {
+        Write-Warning "[AutoResponse] Failed to send auto-response: $_"
     }
 }
 

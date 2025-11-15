@@ -1,0 +1,4 @@
+RuleName,MatchOffset,MatchLength,MatchValue,ResponseMessageFile,Delay
+‰“š01,0,2,0102,response_01.csv,0
+‰“š02,0,2,0103,response_02.csv,100
+ƒGƒ‰[‰“š,0,2,0199,error_response.csv,0
