@@ -45,6 +45,7 @@ function Start-Scenario {
     $conn = $Global:Connections[$ConnectionId]
     
         try {
+            $currentStep = 0
             foreach ($step in $scenarioSteps) {
                 $currentStep++
                 
