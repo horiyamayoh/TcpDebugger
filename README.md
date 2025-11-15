@@ -176,7 +176,7 @@ Start-Scenario -ConnectionId $connectionId -ScenarioPath $scenarioPath
 
 ### Tv
 
-`Instances/Example/scenarios/conditional_branch.csv` ɂ́A`OnTrue`/`OnFalse` g `SCENARIO:` / `STEP:` fBNeBuA`GOTO` ɂ鍇A `nested_retry.csv` ĂяolXg IF mFłTvpӂĂ܂BCSV sƐ^U̕ƃTuViIĂяõXLbv؂ł܂B
+`Instances/Example/scenarios/conditional_branch.csv` では、`OnTrue` や `OnFalse` に `SCENARIO:` や `STEP:` を指定することで条件分岐を実現しています。また、`nested_retry.csv` では IF 文をネストしてリトライ処理を行う例を示しており、CSVシナリオによる柔軟な制御が可能です。
 ### 受信アクション
 
 - **WAIT_RECV**: 受信待機
