@@ -1,6 +1,10 @@
 # QuickSender.ps1
 # データバンク & ワンクリック送信モジュール
 
+if (-not $script:QuickSenderDataBankCache) {
+    $script:QuickSenderDataBankCache = @{}
+}
+
 function Read-DataBank {
     <#
     .SYNOPSIS
@@ -11,17 +15,78 @@ function Read-DataBank {
         [string]$FilePath
     )
     
-    if (-not (Test-Path $FilePath)) {
+    if (-not (Test-Path -LiteralPath $FilePath)) {
         Write-Warning "DataBank file not found: $FilePath"
         return @()
     }
-    
-    # CSV読み込み
-    $dataBank = Import-Csv -Path $FilePath -Encoding UTF8
-    
-    Write-Host "[QuickSender] Loaded $($dataBank.Count) data items from $FilePath" -ForegroundColor Green
-    
-    return $dataBank
+
+    return Get-DataBankRows -FilePath $FilePath
+}
+
+function Get-DataBankRows {
+    <#
+    .SYNOPSIS
+    データバンクCSVをキャッシュ付きで取得
+    #>
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$FilePath
+    )
+
+    if (-not (Test-Path -LiteralPath $FilePath)) {
+        return @()
+    }
+
+    $fileInfo = Get-Item -LiteralPath $FilePath
+    $lastWrite = $fileInfo.LastWriteTimeUtc
+
+    if ($script:QuickSenderDataBankCache.ContainsKey($FilePath)) {
+        $cached = $script:QuickSenderDataBankCache[$FilePath]
+        if ($cached.LastWrite -eq $lastWrite) {
+            return $cached.Rows
+        }
+    }
+
+    try {
+        $rows = Import-Csv -Path $FilePath -Encoding UTF8
+    } catch {
+        Write-Warning "Failed to read databank '$FilePath': $_"
+        return @()
+    }
+
+    $script:QuickSenderDataBankCache[$FilePath] = [PSCustomObject]@{
+        LastWrite = $lastWrite
+        Rows      = $rows
+    }
+
+    return $rows
+}
+
+function Get-DataBankEntry {
+    <#
+    .SYNOPSIS
+    データバンクCSVから指定IDの行を取得
+    #>
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$FilePath,
+
+        [Parameter(Mandatory=$true)]
+        [string]$DataID
+    )
+
+    if (-not (Test-Path -LiteralPath $FilePath)) {
+        throw "DataBank file not found: $FilePath"
+    }
+
+    $rows = Get-DataBankRows -FilePath $FilePath
+    $entry = $rows | Where-Object { $_.DataID -eq $DataID } | Select-Object -First 1
+
+    if (-not $entry) {
+        throw "DataID not found in DataBank file: $DataID"
+    }
+
+    return $entry
 }
 
 function Send-QuickData {
@@ -36,16 +101,27 @@ function Send-QuickData {
         [Parameter(Mandatory=$true)]
         [string]$DataID,
         
-        [Parameter(Mandatory=$true)]
-        [array]$DataBank
+        [Parameter(Mandatory=$false)]
+        [array]$DataBank,
+
+        [Parameter(Mandatory=$false)]
+        [string]$DataBankPath
     )
     
     if (-not $Global:Connections.ContainsKey($ConnectionId)) {
         throw "Connection not found: $ConnectionId"
     }
     
+    if (-not $DataBank -and [string]::IsNullOrWhiteSpace($DataBankPath)) {
+        throw "Either DataBank or DataBankPath must be provided."
+    }
+
     # データバンクからDataIDで検索
-    $dataItem = $DataBank | Where-Object { $_.DataID -eq $DataID } | Select-Object -First 1
+    if ($DataBank) {
+        $dataItem = $DataBank | Where-Object { $_.DataID -eq $DataID } | Select-Object -First 1
+    } else {
+        $dataItem = Get-DataBankEntry -FilePath $DataBankPath -DataID $DataID
+    }
     
     if (-not $dataItem) {
         throw "DataID not found in DataBank: $DataID"
@@ -53,7 +129,7 @@ function Send-QuickData {
     
     $conn = $Global:Connections[$ConnectionId]
     
-    Write-Host "[QuickSender] Sending '$DataID' to $($conn.DisplayName)..." -ForegroundColor Cyan
+    Write-Verbose "[QuickSender] Sending '$DataID' to $($conn.DisplayName)..."
     
     # データタイプに応じて処理
     switch ($dataItem.Type) {
@@ -89,7 +165,7 @@ function Send-QuickData {
     # 送信
     Send-Data -ConnectionId $ConnectionId -Data $bytes
     
-    Write-Host "[QuickSender] Sent '$DataID': $($bytes.Length) bytes" -ForegroundColor Blue
+    Write-Verbose "[QuickSender] Sent '$DataID': $($bytes.Length) bytes"
 }
 
 function Send-QuickDataToGroup {
@@ -104,8 +180,11 @@ function Send-QuickDataToGroup {
         [Parameter(Mandatory=$true)]
         [string]$DataID,
         
-        [Parameter(Mandatory=$true)]
-        [array]$DataBank
+        [Parameter(Mandatory=$false)]
+        [array]$DataBank,
+
+        [Parameter(Mandatory=$false)]
+        [string]$DataBankPath
     )
     
     # グループ内の接続を取得
@@ -115,18 +194,22 @@ function Send-QuickDataToGroup {
         Write-Warning "No connections found in group: $GroupName"
         return
     }
+
+    if (-not $DataBank -and -not [string]::IsNullOrWhiteSpace($DataBankPath)) {
+        $DataBank = Get-DataBankRows -FilePath $DataBankPath
+    }
     
-    Write-Host "[QuickSender] Sending '$DataID' to group '$GroupName' ($($connections.Count) connections)..." -ForegroundColor Cyan
+    Write-Verbose "[QuickSender] Sending '$DataID' to group '$GroupName' ($($connections.Count) connections)..."
     
     foreach ($conn in $connections) {
         try {
-            Send-QuickData -ConnectionId $conn.Id -DataID $DataID -DataBank $DataBank
+            Send-QuickData -ConnectionId $conn.Id -DataID $DataID -DataBank $DataBank -DataBankPath $DataBankPath
         } catch {
             Write-Error "Failed to send to $($conn.DisplayName): $_"
         }
     }
     
-    Write-Host "[QuickSender] Group send completed" -ForegroundColor Green
+    Write-Verbose "[QuickSender] Group send completed"
 }
 
 function Get-DataBankCategories {

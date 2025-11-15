@@ -175,12 +175,49 @@ function Get-InstanceDataBank {
     )
     
     $databankPath = Join-Path $InstancePath "templates\databank.csv"
-    
-    if (Test-Path $databankPath) {
-        return Read-DataBank -FilePath $databankPath
+
+    if (-not (Test-Path -LiteralPath $databankPath)) {
+        return @()
     }
-    
-    return @()
+
+    if (-not $script:DataBankIndexCache) {
+        $script:DataBankIndexCache = @{}
+    }
+
+    $fileInfo = Get-Item -LiteralPath $databankPath
+    $lastWrite = $fileInfo.LastWriteTimeUtc
+
+    if ($script:DataBankIndexCache.ContainsKey($databankPath)) {
+        $cached = $script:DataBankIndexCache[$databankPath]
+        if ($cached.LastWrite -eq $lastWrite) {
+            return $cached.Items
+        }
+    }
+
+    try {
+        $rows = Import-Csv -Path $databankPath -Encoding UTF8
+    } catch {
+        Write-Warning "Failed to read databank: $_"
+        return @()
+    }
+
+    $items = @()
+    foreach ($row in $rows) {
+        if (-not $row.DataID) { continue }
+        $items += [PSCustomObject]@{
+            DataID      = [string]$row.DataID
+            Description = $row.Description
+        }
+    }
+
+    $cacheEntry = [PSCustomObject]@{
+        LastWrite = $lastWrite
+        Items     = $items
+    }
+
+    $script:DataBankIndexCache[$databankPath] = $cacheEntry
+
+    return $items
 }
 
 function Get-GroupNames {
@@ -256,6 +293,72 @@ function Get-InstanceAutoResponseProfiles {
     foreach ($file in Get-ChildItem -Path $profilesPath -Filter "*.csv" -File) {
         $items += [PSCustomObject]@{
             Name        = $file.BaseName
+            DisplayName = $file.BaseName
+            FilePath    = $file.FullName
+        }
+    }
+
+    return $items | Sort-Object DisplayName
+}
+
+function Get-InstanceOnReceivedProfiles {
+    <#
+    .SYNOPSIS
+    インスタンスのOnReceivedプロファイル一覧を取得
+    #>
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$InstancePath
+    )
+
+    if (-not $InstancePath) {
+        return @()
+    }
+
+    $profilesPath = Join-Path $InstancePath "scenarios\onreceived"
+
+    if (-not (Test-Path $profilesPath)) {
+        return @()
+    }
+
+    $items = @()
+
+    foreach ($file in Get-ChildItem -Path $profilesPath -Filter "*.csv" -File) {
+        $items += [PSCustomObject]@{
+            Name        = $file.BaseName
+            DisplayName = $file.BaseName
+            FilePath    = $file.FullName
+        }
+    }
+
+    return $items | Sort-Object DisplayName
+}
+
+function Get-InstancePeriodicSendProfiles {
+    <#
+    .SYNOPSIS
+    インスタンスの定周期送信プロファイル一覧を取得
+    #>
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$InstancePath
+    )
+
+    if (-not $InstancePath) {
+        return @()
+    }
+
+    $profilesPath = Join-Path $InstancePath "scenarios\periodic"
+
+    if (-not (Test-Path $profilesPath)) {
+        return @()
+    }
+
+    $items = @()
+
+    foreach ($file in Get-ChildItem -Path $profilesPath -Filter "*.csv" -File) {
+        $items += [PSCustomObject]@{
+            ProfileName = $file.BaseName
             DisplayName = $file.BaseName
             FilePath    = $file.FullName
         }

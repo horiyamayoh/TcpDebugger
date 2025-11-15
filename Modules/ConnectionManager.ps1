@@ -163,6 +163,23 @@ function Start-Connection {
         $conn.Status = "CONNECTED"
         $conn.LastActivity = Get-Date
         
+        # 定周期送信を開始
+        if ($conn.PeriodicSendProfile -and (Test-Path -LiteralPath $conn.PeriodicSendProfile)) {
+            try {
+                $instancePath = if ($conn.Variables -and $conn.Variables.ContainsKey('InstancePath')) {
+                    $conn.Variables['InstancePath']
+                } else {
+                    $null
+                }
+                
+                if ($instancePath) {
+                    Start-PeriodicSend -ConnectionId $ConnectionId -RuleFilePath $conn.PeriodicSendProfile -InstancePath $instancePath
+                }
+            } catch {
+                Write-Warning "[ConnectionManager] Failed to start periodic send: $_"
+            }
+        }
+        
         Write-Host "[ConnectionManager] Connection established: $($conn.DisplayName)" -ForegroundColor Green
         
     } catch {
@@ -217,6 +234,13 @@ function Stop-Connection {
     Write-Host "[ConnectionManager] Stopping connection: $($conn.DisplayName)" -ForegroundColor Yellow
     
     try {
+        # 定周期送信を停止
+        try {
+            Stop-PeriodicSend -ConnectionId $ConnectionId
+        } catch {
+            Write-Verbose "[ConnectionManager] Failed to stop periodic send: $_"
+        }
+        
         # キャンセルトークンを発行
         if ($conn.CancellationSource) {
             $conn.CancellationSource.Cancel()

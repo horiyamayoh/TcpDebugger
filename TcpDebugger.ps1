@@ -38,6 +38,11 @@ $modules = @(
     "MessageHandler.ps1",
     "ScenarioEngine.ps1",
     "AutoResponse.ps1",
+    "ReceivedRuleEngine.ps1",
+    "OnReceivedHandler.ps1",
+    "OnReceivedLibrary.ps1",
+    "ReceivedEventHandler.ps1",
+    "PeriodicSender.ps1",
     "QuickSender.ps1",
     "InstanceManager.ps1",
     "NetworkAnalyzer.ps1"

@@ -11,37 +11,8 @@ function Read-AutoResponseRules {
         [string]$FilePath
     )
 
-    if (-not (Test-Path $FilePath)) {
-        Write-Warning "AutoResponse file not found: $FilePath"
-        return @()
-    }
-
-    # Shift-JISでCSV読み込み
-    $sjisEncoding = [System.Text.Encoding]::GetEncoding("Shift_JIS")
-    $rules = Import-Csv -Path $FilePath -Encoding $sjisEncoding
-
-    # 新形式（バイナリマッチング）か旧形式（テキストマッチング）かを判定
-    $isNewFormat = $false
-    if ($rules.Count -gt 0) {
-        $firstRule = $rules[0]
-        # 新形式の必須フィールド: MatchOffset, MatchLength, MatchValue, ResponseMessageFile
-        if ($firstRule.PSObject.Properties.Name -contains 'MatchOffset' -and
-            $firstRule.PSObject.Properties.Name -contains 'MatchLength' -and
-            $firstRule.PSObject.Properties.Name -contains 'MatchValue' -and
-            $firstRule.PSObject.Properties.Name -contains 'ResponseMessageFile') {
-            $isNewFormat = $true
-        }
-    }
-
-    # ルールにフォーマット情報を追加
-    foreach ($rule in $rules) {
-        $rule | Add-Member -NotePropertyName '__Format' -NotePropertyValue $(if ($isNewFormat) { 'Binary' } else { 'Text' }) -Force
-    }
-
-    $formatType = if ($isNewFormat) { "Binary" } else { "Text" }
-    Write-Host "[AutoResponse] Loaded $($rules.Count) rules (Format: $formatType) from $FilePath" -ForegroundColor Green
-
-    return $rules
+    # 共通エンジンを使用
+    return Read-ReceivedRules -FilePath $FilePath -RuleType "AutoResponse"
 }
 
 function Test-AutoResponseMatch {
@@ -60,136 +31,8 @@ function Test-AutoResponseMatch {
         [string]$Encoding = "UTF-8"
     )
 
-    if (-not $Rule -or -not $ReceivedData) {
-        return $false
-    }
-
-    # 新形式（バイナリマッチング）の場合
-    if ($Rule.__Format -eq 'Binary') {
-        return Test-BinaryPatternMatch -ReceivedData $ReceivedData -Rule $Rule
-    }
-
-    # 旧形式（テキストマッチング）の場合
-    $pattern = $Rule.TriggerPattern
-    if ([string]::IsNullOrWhiteSpace($pattern)) {
-        return $false
-    }
-
-    $effectiveEncoding = if ($Rule.Encoding) { $Rule.Encoding } elseif ($Encoding) { $Encoding } else { "UTF-8" }
-
-    try {
-        $receivedText = ConvertFrom-ByteArray -Data $ReceivedData -Encoding $effectiveEncoding
-    } catch {
-        Write-Warning "[AutoResponse] Failed to decode received data with encoding '$effectiveEncoding': $_"
-        return $false
-    }
-
-    if ($null -eq $receivedText) {
-        $receivedText = ""
-    }
-
-    $matchType = if ($Rule.MatchType) { $Rule.MatchType } else { "Exact" }
-    $normalizedMatch = $matchType.ToUpperInvariant()
-
-    switch ($normalizedMatch) {
-        "REGEX" {
-            try {
-                return [System.Text.RegularExpressions.Regex]::IsMatch($receivedText, $pattern)
-            } catch {
-                Write-Warning "[AutoResponse] Invalid regex pattern '$pattern': $_"
-                return $false
-            }
-        }
-        "CONTAINS" {
-            return $receivedText.IndexOf($pattern, [System.StringComparison]::OrdinalIgnoreCase) -ge 0
-        }
-        "STARTSWITH" {
-            return $receivedText.StartsWith($pattern, [System.StringComparison]::OrdinalIgnoreCase)
-        }
-        "ENDSWITH" {
-            return $receivedText.EndsWith($pattern, [System.StringComparison]::OrdinalIgnoreCase)
-        }
-        default {
-            return $receivedText.Equals($pattern, [System.StringComparison]::OrdinalIgnoreCase)
-        }
-    }
-}
-
-function Test-BinaryPatternMatch {
-    <#
-    .SYNOPSIS
-    バイナリデータのパターンマッチング（新形式）
-    #>
-    param(
-        [Parameter(Mandatory=$true)]
-        [byte[]]$ReceivedData,
-
-        [Parameter(Mandatory=$true)]
-        [object]$Rule
-    )
-
-    # 必須パラメータチェック
-    if ([string]::IsNullOrWhiteSpace($Rule.MatchOffset) -or
-        [string]::IsNullOrWhiteSpace($Rule.MatchLength) -or
-        [string]::IsNullOrWhiteSpace($Rule.MatchValue)) {
-        Write-Warning "[AutoResponse] Binary rule missing required fields: MatchOffset, MatchLength, or MatchValue"
-        return $false
-    }
-
-    # パラメータ解析
-    try {
-        $offset = [int]($Rule.MatchOffset)
-        $length = [int]($Rule.MatchLength)
-        $hexValue = $Rule.MatchValue.Trim() -replace '\s', '' -replace '0x', ''
-    } catch {
-        Write-Warning "[AutoResponse] Failed to parse binary match parameters: $_"
-        return $false
-    }
-
-    # オフセットと長さのバリデーション
-    if ($offset -lt 0 -or $length -le 0) {
-        Write-Warning "[AutoResponse] Invalid offset ($offset) or length ($length)"
-        return $false
-    }
-
-    if ($offset + $length -gt $ReceivedData.Length) {
-        # 受信データが短すぎる
-        return $false
-    }
-
-    # 16進数値のバリデーション
-    if ($hexValue -notmatch '^[0-9A-Fa-f]+$') {
-        Write-Warning "[AutoResponse] MatchValue contains invalid hex characters: $hexValue"
-        return $false
-    }
-
-    if ($hexValue.Length % 2 -ne 0) {
-        Write-Warning "[AutoResponse] MatchValue has odd length: $hexValue"
-        return $false
-    }
-
-    # 長さチェック
-    $expectedBytes = $hexValue.Length / 2
-    if ($expectedBytes -ne $length) {
-        Write-Warning "[AutoResponse] MatchValue length ($expectedBytes bytes) doesn't match MatchLength ($length)"
-        return $false
-    }
-
-    # 16進数文字列をバイト配列に変換
-    $expectedBytes = @()
-    for ($i = 0; $i -lt $hexValue.Length; $i += 2) {
-        $hexByte = $hexValue.Substring($i, 2)
-        $expectedBytes += [Convert]::ToByte($hexByte, 16)
-    }
-
-    # 受信データの該当部分と比較
-    for ($i = 0; $i -lt $length; $i++) {
-        if ($ReceivedData[$offset + $i] -ne $expectedBytes[$i]) {
-            return $false
-        }
-    }
-
-    return $true
+    # 共通エンジンを使用
+    return Test-ReceivedRuleMatch -ReceivedData $ReceivedData -Rule $Rule -DefaultEncoding $Encoding
 }
 
 function Get-ConnectionAutoResponseRules {
@@ -340,6 +183,8 @@ function Invoke-AutoResponse {
         $defaultEncoding = $conn.Variables['DefaultEncoding']
     }
 
+    $matchedCount = 0
+
     foreach ($rule in $Rules) {
         $matchEncoding = if ($rule.Encoding) { $rule.Encoding } else { $defaultEncoding }
 
@@ -347,24 +192,56 @@ function Invoke-AutoResponse {
             continue
         }
 
+        $matchedCount++
+
         # マッチした場合の処理
         $ruleName = if ($rule.RuleName) { $rule.RuleName } else { "Unknown" }
-        Write-Host "[AutoResponse] Rule matched: $ruleName" -ForegroundColor Cyan
+        Write-Host "[AutoResponse] Rule matched ($matchedCount): $ruleName" -ForegroundColor Cyan
 
         # 遅延処理
         if ($rule.Delay -and [int]$rule.Delay -gt 0) {
             Start-Sleep -Milliseconds ([int]$rule.Delay)
         }
 
-        # 新形式（バイナリマッチング）の場合
-        if ($rule.__Format -eq 'Binary') {
-            Invoke-BinaryAutoResponse -ConnectionId $ConnectionId -Rule $rule -Connection $conn
-        } else {
-            # 旧形式（テキストマッチング）の場合
-            Invoke-TextAutoResponse -ConnectionId $ConnectionId -Rule $rule -Connection $conn -DefaultEncoding $defaultEncoding
+        # アクションタイプに応じて処理
+        $actionType = if ($rule.PSObject.Properties.Name -contains '__ActionType') { 
+            $rule.__ActionType 
+        } else { 
+            'AutoResponse' 
         }
 
-        break
+        switch ($actionType) {
+            'AutoResponse' {
+                # AutoResponse処理のみ
+                Invoke-BinaryAutoResponse -ConnectionId $ConnectionId -Rule $rule -Connection $conn
+            }
+            'OnReceived' {
+                # OnReceivedスクリプト実行のみ
+                Invoke-OnReceivedScript -ConnectionId $ConnectionId -ReceivedData $ReceivedData -Rule $rule -Connection $conn
+            }
+            'Both' {
+                # 両方実行（AutoResponse → OnReceived の順）
+                Invoke-BinaryAutoResponse -ConnectionId $ConnectionId -Rule $rule -Connection $conn
+                Invoke-OnReceivedScript -ConnectionId $ConnectionId -ReceivedData $ReceivedData -Rule $rule -Connection $conn
+            }
+            'None' {
+                Write-Warning "[AutoResponse] Rule has no action defined: $ruleName"
+            }
+            default {
+                # 旧形式の場合
+                if ($rule.__RuleType -eq 'AutoResponse_Legacy') {
+                    Invoke-TextAutoResponse -ConnectionId $ConnectionId -Rule $rule -Connection $conn -DefaultEncoding $defaultEncoding
+                } else {
+                    Invoke-BinaryAutoResponse -ConnectionId $ConnectionId -Rule $rule -Connection $conn
+                }
+            }
+        }
+
+        # 複数ルール対応: breakせずに継続
+    }
+
+    if ($matchedCount -gt 0) {
+        Write-Host "[AutoResponse] Total $matchedCount rule(s) processed" -ForegroundColor Green
     }
 }
 

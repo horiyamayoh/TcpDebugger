@@ -1,0 +1,5 @@
+RuleName,MatchOffset,MatchLength,MatchValue,ResponseMessageFile,Delay
+ログイン応答,0,2,0001,login_response.csv,0
+データ応答,0,2,0010,data_response.csv,0
+エコー応答,0,2,0020,echo_response.csv,0
+ステータス応答,0,2,0030,status_response.csv,0

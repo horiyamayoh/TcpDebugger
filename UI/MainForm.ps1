@@ -70,6 +70,24 @@ function Show-MainForm {
     $colAutoResponse.FillWeight = 140
     $dgvInstances.Columns.Add($colAutoResponse) | Out-Null
 
+    $colOnReceived = New-Object System.Windows.Forms.DataGridViewComboBoxColumn
+    $colOnReceived.HeaderText = "On Received"
+    $colOnReceived.Name = "OnReceived"
+    $colOnReceived.DisplayMember = "Display"
+    $colOnReceived.ValueMember = "Key"
+    $colOnReceived.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
+    $colOnReceived.FillWeight = 140
+    $dgvInstances.Columns.Add($colOnReceived) | Out-Null
+
+    $colPeriodicSend = New-Object System.Windows.Forms.DataGridViewComboBoxColumn
+    $colPeriodicSend.HeaderText = "Periodic Send"
+    $colPeriodicSend.Name = "PeriodicSend"
+    $colPeriodicSend.DisplayMember = "Display"
+    $colPeriodicSend.ValueMember = "Key"
+    $colPeriodicSend.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
+    $colPeriodicSend.FillWeight = 140
+    $dgvInstances.Columns.Add($colPeriodicSend) | Out-Null
+
     $colQuickData = New-Object System.Windows.Forms.DataGridViewComboBoxColumn
     $colQuickData.HeaderText = "Quick Data"
     $colQuickData.Name = "QuickData"
@@ -327,6 +345,138 @@ function Show-MainForm {
         }
     })
 
+    $dgvInstances.Add_CellValueChanged({
+        param($sender, $args)
+
+        if ($script:suppressOnReceivedEvent) {
+            return
+        }
+
+        if ($args.RowIndex -lt 0) {
+            return
+        }
+
+        $column = $sender.Columns[$args.ColumnIndex]
+        if (-not $column -or $column.Name -ne "OnReceived") {
+            return
+        }
+
+        $row = $sender.Rows[$args.RowIndex]
+        $cell = $row.Cells[$args.ColumnIndex]
+        $connId = $row.Cells["Id"].Value
+
+        if (-not $connId -or -not $Global:Connections.ContainsKey($connId)) {
+            return
+        }
+
+        $tagData = $row.Tag
+        $currentProfileKey = if ($tagData -is [System.Collections.IDictionary] -and $tagData.ContainsKey("OnReceivedProfileKey")) {
+            $tagData["OnReceivedProfileKey"]
+        } else {
+            $null
+        }
+
+        $selectedKey = $cell.Value
+        if ($selectedKey -eq $currentProfileKey) {
+            return
+        }
+
+        $conn = $Global:Connections[$connId]
+        $dataSource = $cell.OwningColumn.DataSource
+        $entry = $dataSource | Where-Object { $_.Key -eq $selectedKey } | Select-Object -First 1
+
+        $profileName = $null
+        $profilePath = $null
+        if ($entry -and $entry.Type -eq "Profile") {
+            $profileName = $entry.Name
+            $profilePath = $entry.Path
+        }
+
+        try {
+            Set-ConnectionOnReceivedProfile -ConnectionId $connId -ProfileName $profileName -ProfilePath $profilePath | Out-Null
+            if ($tagData -is [System.Collections.IDictionary] -and $tagData.ContainsKey("OnReceivedProfileKey")) {
+                $tagData["OnReceivedProfileKey"] = $selectedKey
+            }
+        } catch {
+            if ($currentProfileKey -ne $selectedKey) {
+                $suppressOnReceivedEvent = $true
+                try {
+                    $cell.Value = $currentProfileKey
+                } finally {
+                    $suppressOnReceivedEvent = $false
+                }
+                $sender.InvalidateCell($cell)
+            }
+            [System.Windows.Forms.MessageBox]::Show("Failed to apply OnReceived profile: $_", "Error") | Out-Null
+        }
+    })
+
+    # Periodic Send profile change handler
+    $dgvInstances.Add_CellValueChanged({
+        param($sender, $args)
+
+        if ($script:suppressPeriodicSendEvent) {
+            return
+        }
+
+        if ($args.RowIndex -lt 0) {
+            return
+        }
+
+        $column = $sender.Columns[$args.ColumnIndex]
+        if (-not $column -or $column.Name -ne "PeriodicSend") {
+            return
+        }
+
+        $row = $sender.Rows[$args.RowIndex]
+        $cell = $row.Cells[$args.ColumnIndex]
+        $connId = $row.Cells["Id"].Value
+
+        if (-not $connId -or -not $Global:Connections.ContainsKey($connId)) {
+            return
+        }
+
+        $tagData = $row.Tag
+        $currentProfileKey = if ($tagData -is [System.Collections.IDictionary] -and $tagData.ContainsKey("PeriodicSendProfileKey")) {
+            $tagData["PeriodicSendProfileKey"]
+        } else {
+            $null
+        }
+
+        $selectedKey = $cell.Value
+        if ($selectedKey -eq $currentProfileKey) {
+            return
+        }
+
+        $conn = $Global:Connections[$connId]
+        $dataSource = $cell.OwningColumn.DataSource
+        $entry = $dataSource | Where-Object { $_.Key -eq $selectedKey } | Select-Object -First 1
+
+        $profilePath = $null
+        if ($entry -and $entry.Type -eq "Profile") {
+            $profilePath = $entry.Path
+        }
+
+        try {
+            $instancePath = Get-InstancePath -InstanceName $conn.InstanceName
+            Set-ConnectionPeriodicSendProfile -ConnectionId $connId -ProfilePath $profilePath -InstancePath $instancePath | Out-Null
+            if ($tagData -is [System.Collections.IDictionary] -and $tagData.ContainsKey("PeriodicSendProfileKey")) {
+                $tagData["PeriodicSendProfileKey"] = $selectedKey
+            }
+        } catch {
+            if ($currentProfileKey -ne $selectedKey) {
+                $suppressPeriodicSendEvent = $true
+                try {
+                    $cell.Value = $currentProfileKey
+                } finally {
+                    $suppressPeriodicSendEvent = $false
+                }
+                $sender.InvalidateCell($cell)
+            }
+            [System.Windows.Forms.MessageBox]::Show("Failed to apply Periodic Send profile: $_", "Error") | Out-Null
+        }
+    })
+
     $dgvInstances.Add_CellContentClick({
         param($sender, $args)
 
@@ -366,18 +516,29 @@ function Show-MainForm {
                 }
 
                 $tagData = $comboCell.Tag
-                $dataBank = $null
-                if ($tagData -is [System.Collections.IDictionary] -and $tagData.ContainsKey("DataBank")) {
-                    $dataBank = $tagData["DataBank"]
+                $dataBankPath = $null
+                $dataBankCount = 0
+                if ($tagData -is [System.Collections.IDictionary]) {
+                    if ($tagData.ContainsKey("DataBankPath")) {
+                        $dataBankPath = $tagData["DataBankPath"]
+                    }
+                    if ($tagData.ContainsKey("DataBankCount")) {
+                        $dataBankCount = [int]$tagData["DataBankCount"]
+                    }
                 }
 
-                if (-not $dataBank -or $dataBank.Count -eq 0) {
+                if ($dataBankCount -le 0 -and [string]::IsNullOrWhiteSpace($dataBankPath)) {
                     [System.Windows.Forms.MessageBox]::Show("No data bank entries available for this connection.", "Warning") | Out-Null
                     return
                 }
 
+                if ($dataBankPath -and -not (Test-Path -LiteralPath $dataBankPath)) {
+                    [System.Windows.Forms.MessageBox]::Show("Data bank file not found: $dataBankPath", "Warning") | Out-Null
+                    return
+                }
+
                 try {
-                    Send-QuickData -ConnectionId $connId -DataID $selectedKey -DataBank $dataBank
+                    Send-QuickData -ConnectionId $connId -DataID $selectedKey -DataBankPath $dataBankPath
                     $targetName = if ($connection) { $connection.DisplayName } else { $connId }
                     [System.Windows.Forms.MessageBox]::Show("Sent data item '$selectedKey' to $targetName.", "Success") | Out-Null
                 } catch {
@@ -481,6 +642,15 @@ function Update-InstanceList {
     $selectedId = $null
     if ($DataGridView.SelectedRows.Count -gt 0 -and $DataGridView.Columns.Contains("Id")) {
         $selectedId = $DataGridView.SelectedRows[0].Cells["Id"].Value
+    }
+
+    $firstDisplayedIndex = $null
+    try {
+        if ($DataGridView.RowCount -gt 0 -and $DataGridView.FirstDisplayedScrollingRowIndex -ge 0) {
+            $firstDisplayedIndex = $DataGridView.FirstDisplayedScrollingRowIndex
+        }
+    } catch {
+        $firstDisplayedIndex = $null
     }
 
     $DataGridView.Rows.Clear()
@@ -624,8 +794,136 @@ function Update-InstanceList {
             }
             $row.Cells["Scenario"] = $scenarioCell
 
-            $dataBankEntries = @()
+            # OnReceivedóÒÇÃê›íË
+            $onReceivedItems = New-Object System.Collections.ArrayList
+            $onReceivedMapping = @{}
+
+            $onReceivedNone = [PSCustomObject]@{
+                Display = "(None)"
+                Key     = ""
+                Type    = "Profile"
+                Name    = $null
+                Path    = $null
+            }
+            [void]$onReceivedItems.Add($onReceivedNone)
+            $onReceivedMapping[$onReceivedNone.Key] = $onReceivedNone
+
+            $currentOnReceivedProfile = ""
+            $currentOnReceivedPath = $null
+            if ($conn.Variables.ContainsKey('OnReceivedProfile')) {
+                $currentOnReceivedProfile = $conn.Variables['OnReceivedProfile']
+            }
+            if ($conn.Variables.ContainsKey('OnReceivedProfilePath')) {
+                $currentOnReceivedPath = $conn.Variables['OnReceivedProfilePath']
+            }
+
+            $onReceivedProfiles = @()
             if ($instancePath) {
+                try {
+                    $onReceivedProfiles = Get-InstanceOnReceivedProfiles -InstancePath $instancePath
+                } catch {
+                    $onReceivedProfiles = @()
+                }
+            }
+
+            foreach ($profile in $onReceivedProfiles) {
+                if ([string]::IsNullOrWhiteSpace($profile.Name)) {
+                    continue
+                }
+
+                $key = "onreceived::$($profile.Name)"
+                $entry = [PSCustomObject]@{
+                    Display = $profile.DisplayName
+                    Key     = $key
+                    Type    = "Profile"
+                    Name    = $profile.Name
+                    Path    = $profile.FilePath
+                }
+
+                [void]$onReceivedItems.Add($entry)
+                $onReceivedMapping[$key] = $entry
+            }
+
+            $currentOnReceivedKey = ""
+            if ($currentOnReceivedProfile) {
+                $currentOnReceivedKey = "onreceived::$currentOnReceivedProfile"
+                if (-not $onReceivedMapping.ContainsKey($currentOnReceivedKey)) {
+                    $displayName = if ($currentOnReceivedPath) { "$currentOnReceivedProfile (missing)" } else { $currentOnReceivedProfile }
+                    $entry = [PSCustomObject]@{
+                        Display = $displayName
+                        Key     = $currentOnReceivedKey
+                        Type    = "Profile"
+                        Name    = $currentOnReceivedProfile
+                        Path    = $currentOnReceivedPath
+                    }
+                    [void]$onReceivedItems.Add($entry)
+                    $onReceivedMapping[$currentOnReceivedKey] = $entry
+                }
+            }
+
+            $onReceivedCell = New-Object System.Windows.Forms.DataGridViewComboBoxCell
+            $onReceivedCell.DisplayMember = "Display"
+            $onReceivedCell.ValueMember = "Key"
+            $onReceivedCell.DataSource = $onReceivedItems
+            $onReceivedCell.Value = $currentOnReceivedKey
+            $onReceivedCell.Tag = @{
+                Mapping              = $onReceivedMapping
+                OnReceivedProfileKey = $currentOnReceivedKey
+            }
+            $row.Cells["OnReceived"] = $onReceivedCell
+
+            # Periodic Send profiles
+            $periodicSendProfiles = @()
+            if ($instancePath) {
+                try {
+                    $periodicSendProfiles = Get-InstancePeriodicSendProfiles -InstancePath $instancePath
+                } catch {
+                    $periodicSendProfiles = @()
+                }
+            }
+
+            $periodicSendItems = New-Object System.Collections.ArrayList
+            $periodicSendMapping = @{}
+            
+            $periodicSendPlaceholder = [PSCustomObject]@{
+                Display = "(None)"
+                Key     = ""
+                Type    = "None"
+                Name    = $null
+                Path    = $null
+            }
+            [void]$periodicSendItems.Add($periodicSendPlaceholder)
+            $periodicSendMapping[$periodicSendPlaceholder.Key] = $periodicSendPlaceholder
+
+            foreach ($profile in $periodicSendProfiles) {
+                $key = "periodic::$($profile.ProfileName)"
+                $entry = [PSCustomObject]@{
+                    Display = $profile.ProfileName
+                    Key     = $key
+                    Type    = "Profile"
+                    Name    = $profile.ProfileName
+                    Path    = $profile.FilePath
+                }
+
+                [void]$periodicSendItems.Add($entry)
+                $periodicSendMapping[$key] = $entry
+            }
+
+            $periodicSendCell = New-Object System.Windows.Forms.DataGridViewComboBoxCell
+            $periodicSendCell.DisplayMember = "Display"
+            $periodicSendCell.ValueMember = "Key"
+            $periodicSendCell.DataSource = $periodicSendItems
+            $periodicSendCell.Value = ""
+            $periodicSendCell.Tag = @{
+                Mapping              = $periodicSendMapping
+                PeriodicSendProfileKey = ""
+            }
+            $row.Cells["PeriodicSend"] = $periodicSendCell
+
+            $dataBankEntries = @()
+            $dataBankPath = $null
+            if ($instancePath) {
+                $dataBankPath = Join-Path $instancePath "templates\databank.csv"
                 try {
                     $dataBankEntries = Get-InstanceDataBank -InstancePath $instancePath
                 } catch {
@@ -666,7 +964,8 @@ function Update-InstanceList {
             $quickDataCell.DataSource = $dataSource
             $quickDataCell.Value = ""
             $quickDataCell.Tag = @{
-                DataBank = $dataBankEntries
+                DataBankCount = $dataBankEntries.Count
+                DataBankPath  = if ($dataBankPath -and (Test-Path -LiteralPath $dataBankPath)) { $dataBankPath } else { $null }
             }
             $row.Cells["QuickData"] = $quickDataCell
 
@@ -739,6 +1038,15 @@ function Update-InstanceList {
                 }
                 break
             }
+        }
+    }
+
+    if ($firstDisplayedIndex -ne $null -and $DataGridView.RowCount -gt 0) {
+        $targetIndex = [Math]::Min([Math]::Max(0, $firstDisplayedIndex), $DataGridView.RowCount - 1)
+        try {
+            $DataGridView.FirstDisplayedScrollingRowIndex = $targetIndex
+        } catch {
+            # ignore scroll errors
         }
     }
 }

@@ -1,0 +1,4 @@
+RuleName,MessageFile,IntervalMs
+ハートビート,heartbeat.csv,3000
+ステータス確認,status_request.csv,5000
+キープアライブ,keepalive.csv,10000

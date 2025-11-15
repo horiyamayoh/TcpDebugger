@@ -1,0 +1,5 @@
+RuleName,MatchOffset,MatchLength,MatchValue,ResponseMessageFile,ScriptFile,Delay,Enabled
+応答01,0,2,0102,response_01.csv,,0,true
+応答02,0,2,0103,response_02.csv,,100,true
+ID転記,0,2,0102,,copy_message_id.ps1,0,true
+シーケンス処理,0,2,0103,,process_sequence.ps1,0,true
