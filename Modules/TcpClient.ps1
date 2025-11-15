@@ -50,15 +50,6 @@ function Start-TcpClientConnection {
                             $conn.LastActivity = Get-Date
                         }
                         
-
-                                $rules = Get-ActiveAutoResponseRules -Connection $conn
-                                if ($rules -and $rules.Count -gt 0) {
-                                    try {
-                                        Invoke-AutoResponse -ConnectionId $connId -ReceivedData $receivedData -Rules $rules
-                                    } catch {
-                                        Write-Warning "[TcpClient] Auto-response failed: $_"
-                                    }
-                                }
                         # 受信処理（非ブロッキング）
                         if ($stream.DataAvailable) {
                             $bytesRead = $stream.Read($buffer, 0, $buffer.Length)
@@ -75,6 +66,16 @@ function Start-TcpClientConnection {
                                 
                                 Write-Host "[TcpClient] Received $bytesRead bytes" -ForegroundColor Magenta
                                 $conn.LastActivity = Get-Date
+                                
+                                # Auto-response processing
+                                $rules = Get-ActiveAutoResponseRules -Connection $conn
+                                if ($rules -and $rules.Count -gt 0) {
+                                    try {
+                                        Invoke-AutoResponse -ConnectionId $connId -ReceivedData $receivedData -Rules $rules
+                                    } catch {
+                                        Write-Warning "[TcpClient] Auto-response failed: $_"
+                                    }
+                                }
                             }
                         }
                         
