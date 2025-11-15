@@ -169,7 +169,7 @@ Start-Scenario -ConnectionId $connectionId -ScenarioPath $scenarioPath
 
 - **GOTO**: `Parameter1` Ɏw肵XebvIDփWv܂BIFubNŋʏɍ邽߂ɗpł܂B
   ```csv
-  TRUE_EXIT,GOTO,AFTER_BRANCH,,,,TRUEubNIɋʏ
+  TRUE_EXIT,GOTO,AFTER_BRANCH,,,,TRUEブロック後に共通処理へジャンプ
   ```
 
 
