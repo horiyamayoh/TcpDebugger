@@ -538,6 +538,11 @@ function Invoke-SetVarAction {
     $varName = $Step.Parameter1
     $varValue = $Step.Parameter2
     
+    $expandedValue = Expand-MessageVariables -Template $varValue -Variables $Connection.Variables
+    
+    $Connection.Variables[$varName] = $expandedValue
+    
+    Write-Host "[ScenarioEngine] Set variable '$varName' = '$expandedValue'" -ForegroundColor Green
 }
 
 function Invoke-GotoAction {
@@ -563,7 +568,7 @@ function Invoke-GotoAction {
     }
 }
 
-
+function Invoke-IfAction {
     param(
         $Connection,
         $Step,
@@ -613,17 +618,6 @@ function Invoke-GotoAction {
         -ScenarioPath $ScenarioPath `
         -ConnectionId $ConnectionId `
         -CurrentIndex $CurrentIndex
-
-    $Connection.Variables[$varName] = $expandedValue
-    
-    Write-Host "[ScenarioEngine] Set variable '$varName' = '$expandedValue'" -ForegroundColor Green
-}
-
-function Invoke-IfAction {
-    param($Connection, $Step)
-    
-    # 簡易的な条件判定（将来拡張）
-    Write-Warning "[ScenarioEngine] IF action not fully implemented"
 }
 
 function Invoke-CallScriptAction {
