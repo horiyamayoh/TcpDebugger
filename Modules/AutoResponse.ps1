@@ -10,17 +10,17 @@ function Read-AutoResponseRules {
         [Parameter(Mandatory=$true)]
         [string]$FilePath
     )
-    
+
     if (-not (Test-Path $FilePath)) {
         Write-Warning "AutoResponse file not found: $FilePath"
         return @()
     }
-    
+
     # CSV読み込み
     $rules = Import-Csv -Path $FilePath -Encoding UTF8
-    
+
     Write-Host "[AutoResponse] Loaded $($rules.Count) rules from $FilePath" -ForegroundColor Green
-    
+
     return $rules
 }
 
@@ -32,43 +32,62 @@ function Test-AutoResponseMatch {
     param(
         [Parameter(Mandatory=$true)]
         [byte[]]$ReceivedData,
-        
+
         [Parameter(Mandatory=$true)]
         [object]$Rule,
-        
+
         [Parameter(Mandatory=$false)]
         [string]$Encoding = "UTF-8"
     )
-    
-    Execute auto response
 
-
-
-
-    if (-not $Rules -or $Rules.Count -eq 0) {
-        return
+    if (-not $Rule -or -not $ReceivedData) {
+        return $false
     }
 
-    $defaultEncoding = "UTF-8"
-    if ($conn.Variables.ContainsKey('DefaultEncoding') -and $conn.Variables['DefaultEncoding']) {
-        $defaultEncoding = $conn.Variables['DefaultEncoding']
+    $pattern = $Rule.TriggerPattern
+    if ([string]::IsNullOrWhiteSpace($pattern)) {
+        return $false
     }
 
-        if (Test-AutoResponseMatch -ReceivedData $ReceivedData -Rule $rule -Encoding $defaultEncoding) {
+    $effectiveEncoding = if ($Rule.Encoding) { $Rule.Encoding } elseif ($Encoding) { $Encoding } else { "UTF-8" }
 
+    try {
+        $receivedText = ConvertFrom-ByteArray -Data $ReceivedData -Encoding $effectiveEncoding
+    } catch {
+        Write-Warning "[AutoResponse] Failed to decode received data with encoding '$effectiveEncoding': $_"
+        return $false
+    }
 
+    if ($null -eq $receivedText) {
+        $receivedText = ""
+    }
 
-            $encoding = if ($rule.Encoding) { $rule.Encoding } else { $defaultEncoding }
+    $matchType = if ($Rule.MatchType) { $Rule.MatchType } else { "Exact" }
+    $normalizedMatch = $matchType.ToUpperInvariant()
 
+    switch ($normalizedMatch) {
+        "REGEX" {
             try {
-                Send-Data -ConnectionId $ConnectionId -Data $responseBytes
-                Write-Host "[AutoResponse] Auto-responded: $response" -ForegroundColor Blue
+                return [System.Text.RegularExpressions.Regex]::IsMatch($receivedText, $pattern)
             } catch {
-                Write-Warning "[AutoResponse] Failed to send auto-response: $_"
+                Write-Warning "[AutoResponse] Invalid regex pattern '$pattern': $_"
+                return $false
             }
-
-
-
+        }
+        "CONTAINS" {
+            return $receivedText.IndexOf($pattern, [System.StringComparison]::OrdinalIgnoreCase) -ge 0
+        }
+        "STARTSWITH" {
+            return $receivedText.StartsWith($pattern, [System.StringComparison]::OrdinalIgnoreCase)
+        }
+        "ENDSWITH" {
+            return $receivedText.EndsWith($pattern, [System.StringComparison]::OrdinalIgnoreCase)
+        }
+        default {
+            return $receivedText.Equals($pattern, [System.StringComparison]::OrdinalIgnoreCase)
+        }
+    }
+}
 
 function Get-ConnectionAutoResponseRules {
     param(
@@ -191,6 +210,7 @@ function Invoke-ConnectionAutoResponse {
     Invoke-AutoResponse -ConnectionId $ConnectionId -ReceivedData $ReceivedData -Rules $rules
 }
 
+function Invoke-AutoResponse {
     <#
     .SYNOPSIS
     受信データに対して自動応答を実行
@@ -198,45 +218,58 @@ function Invoke-ConnectionAutoResponse {
     param(
         [Parameter(Mandatory=$true)]
         [string]$ConnectionId,
-        
+
         [Parameter(Mandatory=$true)]
         [byte[]]$ReceivedData,
-        
+
         [Parameter(Mandatory=$true)]
         [array]$Rules
     )
-    
+
     if (-not $Global:Connections.ContainsKey($ConnectionId)) {
         return
     }
-    
+
     $conn = $Global:Connections[$ConnectionId]
-    
+
+    $defaultEncoding = "UTF-8"
+    if ($conn.Variables.ContainsKey('DefaultEncoding') -and $conn.Variables['DefaultEncoding']) {
+        $defaultEncoding = $conn.Variables['DefaultEncoding']
+    }
+
     foreach ($rule in $Rules) {
-        # マッチング判定
-        if (Test-AutoResponseMatch -ReceivedData $ReceivedData -Rule $rule) {
-            Write-Host "[AutoResponse] Rule matched: $($rule.TriggerPattern)" -ForegroundColor Cyan
-            
-            # ディレイ
-            if ($rule.Delay -and [int]$rule.Delay -gt 0) {
-                Start-Sleep -Milliseconds ([int]$rule.Delay)
-            }
-            
-            # 応答メッセージ生成
-            $response = Expand-MessageVariables -Template $rule.ResponseTemplate -Variables $conn.Variables
-            
-            # エンコーディング
-            $encoding = if ($rule.Encoding) { $rule.Encoding } else { "UTF-8" }
-            $responseBytes = ConvertTo-ByteArray -Data $response -Encoding $encoding
-            
-            # 送信
-            Send-Data -ConnectionId $ConnectionId -Data $responseBytes
-            
-            Write-Host "[AutoResponse] Auto-responded: $response" -ForegroundColor Blue
-            
-            # 最初にマッチしたルールのみ実行
-            break
+        $matchEncoding = if ($rule.Encoding) { $rule.Encoding } else { $defaultEncoding }
+
+        if (-not (Test-AutoResponseMatch -ReceivedData $ReceivedData -Rule $rule -Encoding $matchEncoding)) {
+            continue
         }
+
+        Write-Host "[AutoResponse] Rule matched: $($rule.TriggerPattern)" -ForegroundColor Cyan
+
+        if ($rule.Delay -and [int]$rule.Delay -gt 0) {
+            Start-Sleep -Milliseconds ([int]$rule.Delay)
+        }
+
+        $responseTemplate = if ($rule.ResponseTemplate) { $rule.ResponseTemplate } else { "" }
+        $response = Expand-MessageVariables -Template $responseTemplate -Variables $conn.Variables
+
+        $responseEncoding = if ($rule.Encoding) { $rule.Encoding } else { $defaultEncoding }
+
+        try {
+            $responseBytes = ConvertTo-ByteArray -Data $response -Encoding $responseEncoding
+        } catch {
+            Write-Warning "[AutoResponse] Failed to encode auto-response message: $_"
+            continue
+        }
+
+        try {
+            Send-Data -ConnectionId $ConnectionId -Data $responseBytes
+            Write-Host "[AutoResponse] Auto-responded: $response" -ForegroundColor Blue
+        } catch {
+            Write-Warning "[AutoResponse] Failed to send auto-response: $_"
+        }
+
+        break
     }
 }
 

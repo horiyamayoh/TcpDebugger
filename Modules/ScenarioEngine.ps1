@@ -569,15 +569,6 @@ function Get-StepIndexFromParameter {
     return $null
 }
 
-    # 変数展開
-    $expandedValue = Expand-MessageVariables -Template $varValue -Variables $Connection.Variables
-    
-    # 変数設定
-    $Connection.Variables[$varName] = $expandedValue
-    
-    Write-Host "[ScenarioEngine] Set variable '$varName' = '$expandedValue'" -ForegroundColor Green
-}
-
 function Invoke-IfAction {
     param($Connection, $Step)
     
