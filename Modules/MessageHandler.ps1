@@ -128,12 +128,73 @@ function Get-MessageTemplateCache {
     }
 
     $templates = @{}
-    $csv = Import-Csv -Path $resolvedPath -Encoding UTF8
-    foreach ($row in $csv) {
-        $templates[$row.TemplateName] = [PSCustomObject]@{
-            Name     = $row.TemplateName
-            Format   = $row.MessageFormat
-            Encoding = $row.Encoding
+    
+    # Shift-JISでCSVファイルを読み込み
+    $sjisEncoding = [System.Text.Encoding]::GetEncoding("Shift_JIS")
+    $csvLines = [System.IO.File]::ReadAllLines($resolvedPath, $sjisEncoding)
+    
+    # 新形式の電文定義: 2列CSV（1列目=コメント、2列目=16進数データ）
+    $isNewFormat = $false
+    if ($csvLines.Count -gt 0) {
+        # ヘッダーの有無を確認（旧形式はTemplateName,MessageFormat,Encoding）
+        $firstLine = $csvLines[0]
+        if ($firstLine -notmatch '^TemplateName,') {
+            $isNewFormat = $true
+        }
+    }
+    
+    if ($isNewFormat) {
+        # 新形式: 全行の2列目を連結して1つの16進数ストリームを作成
+        $hexStream = ""
+        $lineNumber = 0
+        
+        foreach ($line in $csvLines) {
+            $lineNumber++
+            if ([string]::IsNullOrWhiteSpace($line)) {
+                continue
+            }
+            
+            # カンマで分割
+            $parts = $line.Split(',')
+            if ($parts.Count -lt 2) {
+                throw "Line ${lineNumber}: CSV must have 2 columns (comment, hexdata)"
+            }
+            
+            $hexData = $parts[1].Trim()
+            
+            if ([string]::IsNullOrWhiteSpace($hexData)) {
+                continue
+            }
+            
+            # 16進数文字のみかチェック
+            if ($hexData -notmatch '^[0-9A-Fa-f]+$') {
+                throw "Line ${lineNumber}: Invalid hex characters found in '${hexData}'"
+            }
+            
+            $hexStream += $hexData
+        }
+        
+        # 奇数長チェック
+        if ($hexStream.Length % 2 -ne 0) {
+            throw "Total hex stream length is odd (${hexStream.Length} characters). Must be even."
+        }
+        
+        # デフォルトテンプレート名で格納
+        $templates['DEFAULT'] = [PSCustomObject]@{
+            Name     = 'DEFAULT'
+            Format   = $hexStream
+            Encoding = 'HEX'
+        }
+        
+    } else {
+        # 旧形式: UTF-8でCSVを読み込み
+        $csv = Import-Csv -Path $resolvedPath -Encoding UTF8
+        foreach ($row in $csv) {
+            $templates[$row.TemplateName] = [PSCustomObject]@{
+                Name     = $row.TemplateName
+                Format   = $row.MessageFormat
+                Encoding = $row.Encoding
+            }
         }
     }
 
