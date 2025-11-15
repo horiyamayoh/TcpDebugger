@@ -40,6 +40,26 @@ function Test-AutoResponseMatch {
         [string]$Encoding = "UTF-8"
     )
     
+    $receivedText = ConvertFrom-ByteArray -Data $ReceivedData -Encoding $Encoding
+    
+    # マッチタイプによる判定
+    switch ($Rule.MatchType) {
+        "Regex" {
+            return $receivedText -match $Rule.TriggerPattern
+        }
+        "Exact" {
+            return $receivedText -eq $Rule.TriggerPattern
+        }
+        "Contains" {
+            return $receivedText -like "*$($Rule.TriggerPattern)*"
+        }
+        default {
+            # デフォルトはContains
+            return $receivedText -like "*$($Rule.TriggerPattern)*"
+        }
+    }
+}
+
 function Get-ActiveAutoResponseRules {
     <#
     .SYNOPSIS
@@ -62,28 +82,6 @@ function Get-ActiveAutoResponseRules {
     }
 
     return @()
-}
-
-        $matchEncoding = if ($rule.Encoding) { $rule.Encoding } elseif ($conn.Variables.ContainsKey('DefaultEncoding')) { $conn.Variables['DefaultEncoding'] } else { "UTF-8" }
-        if (Test-AutoResponseMatch -ReceivedData $ReceivedData -Rule $rule -Encoding $matchEncoding) {
-    $receivedText = ConvertFrom-ByteArray -Data $ReceivedData -Encoding $Encoding
-    
-    # マッチタイプによる判定
-    switch ($Rule.MatchType) {
-        "Regex" {
-            return $receivedText -match $Rule.TriggerPattern
-        }
-        "Exact" {
-            return $receivedText -eq $Rule.TriggerPattern
-        }
-        "Contains" {
-            return $receivedText -like "*$($Rule.TriggerPattern)*"
-        }
-        default {
-            # デフォルトはContains
-            return $receivedText -like "*$($Rule.TriggerPattern)*"
-        }
-    }
 }
 
 function Invoke-AutoResponse {
