@@ -234,7 +234,7 @@ function Show-MainForm {
     # State holders
     $currentDataBank = @()
     $suppressCategoryEvent = $false
-    $suppressScenarioEvent = $false
+    $lastSelectedConnectionId = $null
 
     $getSelectedConnection = {
         if ($dgvInstances.SelectedRows.Count -eq 0) {
@@ -356,7 +356,21 @@ function Show-MainForm {
     }
 
     $updateDetails = {
+        param([bool]$ForceRefresh = $false)
+
         $connection = & $getSelectedConnection
+        $connectionId = $null
+
+        if ($connection) {
+            $connectionId = $connection.Id
+        }
+
+        if (-not $ForceRefresh -and $connectionId -eq $lastSelectedConnectionId) {
+            return
+        }
+
+        $lastSelectedConnectionId = $connectionId
+
         & $refreshScenarioList $connection
         & $refreshQuickSender $connection
     }
@@ -364,7 +378,7 @@ function Show-MainForm {
     # Events
     $btnRefresh.Add_Click({
         Update-InstanceList -DataGridView $dgvInstances
-        & $updateDetails
+        & $updateDetails $true
         & $refreshGroupList
     })
 
@@ -388,7 +402,7 @@ function Show-MainForm {
             }
 
             Update-InstanceList -DataGridView $dgvInstances
-            & $updateDetails
+            & $updateDetails $true
         }
     })
 
@@ -412,7 +426,7 @@ function Show-MainForm {
             }
 
             Update-InstanceList -DataGridView $dgvInstances
-            & $updateDetails
+            & $updateDetails $true
         }
     })
 
@@ -644,7 +658,7 @@ function Show-MainForm {
 
     # Initial load
     Update-InstanceList -DataGridView $dgvInstances
-    & $updateDetails
+    & $updateDetails $true
     & $refreshGroupList
 
     # Show form
@@ -790,8 +804,32 @@ function Update-LogDisplay {
     $logLines = @()
 
     foreach ($conn in $Global:Connections.Values) {
-        $recentRecv = $conn.RecvBuffer | Select-Object -Last 10
-        foreach ($recv in $recentRecv) {
+        $snapshot = @()
+
+        try {
+            if ($conn.RecvBuffer -and $conn.RecvBuffer.Count -gt 0) {
+                $syncRoot = $conn.RecvBuffer.SyncRoot
+                [System.Threading.Monitor]::Enter($syncRoot)
+                try {
+                    $snapshot = $conn.RecvBuffer.ToArray()
+                } finally {
+                    [System.Threading.Monitor]::Exit($syncRoot)
+                }
+            }
+        } catch {
+            continue
+        }
+
+        if (-not $snapshot -or $snapshot.Length -eq 0) {
+            continue
+        }
+
+        $count = $snapshot.Length
+        $startIndex = [Math]::Max(0, $count - 10)
+        for ($i = $startIndex; $i -lt $count; $i++) {
+            $recv = $snapshot[$i]
+            if (-not $recv) { continue }
+
             $summary = Get-MessageSummary -Data $recv.Data -MaxLength 40
             $timeStr = $recv.Timestamp.ToString("HH:mm:ss")
             $logLines += "[$timeStr] $($conn.DisplayName) ⇐ $summary ($($recv.Length) bytes)"
