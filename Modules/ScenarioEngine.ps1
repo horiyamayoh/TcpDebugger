@@ -1,85 +1,364 @@
 # ScenarioEngine.ps1
-# ƒVƒiƒŠƒIÀsƒGƒ“ƒWƒ“ - CSVŒ`®ƒVƒiƒŠƒI‚Ì“Ç‚İ‚İ‚ÆÀs
+# ã‚·ãƒŠãƒªã‚ªå®Ÿè¡Œã‚¨ãƒ³ã‚¸ãƒ³ - CSVå½¢å¼ã‚·ãƒŠãƒªã‚ªã®èª­ã¿è¾¼ã¿ã¨å®Ÿè¡Œ
 
 function Read-ScenarioFile {
     <#
     .SYNOPSIS
-    CSVƒVƒiƒŠƒIƒtƒ@ƒCƒ‹‚ğ“Ç‚İ‚İ
-    #>
+
+function Resolve-ScenarioPath {
     param(
-        [Parameter(Mandatory=$true)]
-        [string]$FilePath
+        [string]$BasePath,
+        [string]$TargetPath
     )
-    
-    if (-not (Test-Path $FilePath)) {
-        throw "Scenario file not found: $FilePath"
+
+    if ([string]::IsNullOrWhiteSpace($TargetPath)) {
+        return $null
     }
-    
-    Write-Host "[ScenarioEngine] Loading scenario: $FilePath" -ForegroundColor Cyan
-    
-    # CSV“Ç‚İ‚İ
-    $steps = Import-Csv -Path $FilePath -Encoding UTF8
-    
-    Write-Host "[ScenarioEngine] Loaded $($steps.Count) steps" -ForegroundColor Green
-    
-    return $steps
+
+    if ([System.IO.Path]::IsPathRooted($TargetPath)) {
+        return $TargetPath
+    }
+
+    $baseDirectory = if ($BasePath) {
+        Split-Path -Path $BasePath -Parent
+    } else {
+        Get-Location
+    }
+
+    return Join-Path -Path $baseDirectory -ChildPath $TargetPath
 }
 
-function Start-Scenario {
-    <#
-    .SYNOPSIS
-    ƒVƒiƒŠƒI‚ğÀs
-    #>
+function Get-StepFieldValue {
     param(
         [Parameter(Mandatory=$true)]
-        [string]$ConnectionId,
-        
+        $Step,
+
         [Parameter(Mandatory=$true)]
-        [string]$ScenarioPath
+        [string[]]$PropertyNames
     )
-    
-    if (-not $Global:Connections.ContainsKey($ConnectionId)) {
-        throw "Connection not found: $ConnectionId"
+
+    foreach ($name in $PropertyNames) {
+        if ($Step.PSObject.Properties.Match($name)) {
+            $value = $Step.$name
+            if ($null -ne $value -and -not [string]::IsNullOrWhiteSpace([string]$value)) {
+                return [string]$value
+            }
+        }
     }
-    
-    $conn = $Global:Connections[$ConnectionId]
-    
-    # ƒVƒiƒŠƒI“Ç‚İ‚İ
-    $steps = Read-ScenarioFile -FilePath $ScenarioPath
-    
-    # ƒVƒiƒŠƒIÀsƒXƒŒƒbƒh
-    $scriptBlock = {
-        param($connId, $scenarioSteps)
-        
-        $conn = $Global:Connections[$connId]
-        
-        Write-Host "[ScenarioEngine] Starting scenario execution for $($conn.DisplayName)" -ForegroundColor Cyan
-        
-        $currentStep = 0
-        $totalSteps = $scenarioSteps.Count
-        
-        try {
-            foreach ($step in $scenarioSteps) {
-                $currentStep++
-                
-                # ƒLƒƒƒ“ƒZƒ‹ƒ`ƒFƒbƒN
-                if ($conn.CancellationSource.Token.IsCancellationRequested) {
-                    Write-Host "[ScenarioEngine] Scenario cancelled" -ForegroundColor Yellow
-                    break
+
+    return $null
+}
+
+function Test-ScenarioCondition {
+    param(
+        [string]$LeftValue,
+        [string]$RightValue,
+        [string]$Operator
+    )
+
+    $normalizedOperator = if ($null -ne $Operator) { [string]$Operator } else { '' }
+    $normalizedOperator = $normalizedOperator.Trim()
+    if ([string]::IsNullOrWhiteSpace($normalizedOperator)) {
+        throw "IF action requires a comparison operator"
+    }
+
+    $normalizedOperator = $normalizedOperator.ToLowerInvariant()
+
+    $left = if ($null -eq $LeftValue) { '' } else { [string]$LeftValue }
+    $right = if ($null -eq $RightValue) { '' } else { [string]$RightValue }
+
+    $leftNumber = 0
+    $rightNumber = 0
+    $leftIsNumber = [double]::TryParse($left, [ref]$leftNumber)
+    $rightIsNumber = [double]::TryParse($right, [ref]$rightNumber)
+
+    switch ($normalizedOperator) {
+        '==' { return $left -eq $right }
+        '=' { return $left -eq $right }
+        '-eq' { return $left -eq $right }
+        'eq' { return $left -eq $right }
+        '!=' { return $left -ne $right }
+        '-ne' { return $left -ne $right }
+        'ne' { return $left -ne $right }
+        '-like' { return $left -like $right }
+        'like' { return $left -like $right }
+        '-notlike' { return $left -notlike $right }
+        'notlike' { return $left -notlike $right }
+        '-match' { return $left -match $right }
+        'match' { return $left -match $right }
+        '-notmatch' { return $left -notmatch $right }
+        'notmatch' { return $left -notmatch $right }
+        '-gt' { if ($leftIsNumber -and $rightIsNumber) { return $leftNumber -gt $rightNumber } else { return $left -gt $right } }
+        '>' { if ($leftIsNumber -and $rightIsNumber) { return $leftNumber -gt $rightNumber } else { return $left -gt $right } }
+        '-ge' { if ($leftIsNumber -and $rightIsNumber) { return $leftNumber -ge $rightNumber } else { return $left -ge $right } }
+        '>=' { if ($leftIsNumber -and $rightIsNumber) { return $leftNumber -ge $rightNumber } else { return $left -ge $right } }
+        '-lt' { if ($leftIsNumber -and $rightIsNumber) { return $leftNumber -lt $rightNumber } else { return $left -lt $right } }
+        '<' { if ($leftIsNumber -and $rightIsNumber) { return $leftNumber -lt $rightNumber } else { return $left -lt $right } }
+        '-le' { if ($leftIsNumber -and $rightIsNumber) { return $leftNumber -le $rightNumber } else { return $left -le $right } }
+        '<=' { if ($leftIsNumber -and $rightIsNumber) { return $leftNumber -le $rightNumber } else { return $left -le $right } }
+        default { throw "Unsupported operator for IF action: $Operator" }
+    }
+}
+
+function Resolve-IfBranchAction {
+    param(
+        $Connection,
+        [string]$ActionSpec,
+        [hashtable]$StepIndexMap,
+        $ScenarioSteps,
+        [string]$ScenarioPath,
+        [string]$ConnectionId,
+        [int]$CurrentIndex
+    )
+
+    if ([string]::IsNullOrWhiteSpace($ActionSpec)) {
+        return $null
+    }
+
+    $directives = $ActionSpec -split ';'
+    $nextStepIndex = $null
+    $terminate = $false
+
+    foreach ($directive in $directives) {
+        $instruction = $directive.Trim()
+        if ([string]::IsNullOrWhiteSpace($instruction)) {
+            continue
+        }
+
+        if ($instruction -match '^(STEP|GOTO):(.+)$') {
+            $targetId = $Matches[2].Trim()
+            if (-not $StepIndexMap.ContainsKey($targetId)) {
+                throw "Step not found for IF branch: $targetId"
+            }
+            $nextStepIndex = $StepIndexMap[$targetId]
+        } elseif ($instruction -match '^(INDEX):(\d+)$') {
+            $nextStepIndex = [int]$Matches[2]
+        } elseif ($instruction -match '^(CALL|SCENARIO):(.+)$') {
+            $scenarioPath = $Matches[2].Trim()
+            $resolvedPath = Resolve-ScenarioPath -BasePath $ScenarioPath -TargetPath $scenarioPath
+            if (-not (Test-Path $resolvedPath)) {
+                throw "Scenario file not found for IF branch: $resolvedPath"
+            }
+
+            Write-Host "[ScenarioEngine] IF branch calling scenario: $resolvedPath" -ForegroundColor DarkCyan
+            $subSteps = Read-ScenarioFile -FilePath $resolvedPath
+            Invoke-ScenarioSteps -Connection $Connection -ScenarioSteps $subSteps -ScenarioPath $resolvedPath -ConnectionId $ConnectionId
+        } elseif ($instruction -match '^(END|STOP|TERMINATE)$') {
+            $terminate = $true
+        } elseif ($instruction -match '^(NEXT)$') {
+            $nextStepIndex = $CurrentIndex + 1
+        } elseif ($StepIndexMap.ContainsKey($instruction)) {
+            $nextStepIndex = $StepIndexMap[$instruction]
+        } else {
+            throw "Unsupported IF branch directive: $instruction"
+        }
+    }
+
+    if ($terminate -or ($null -ne $nextStepIndex)) {
+        $result = @{}
+        if ($null -ne $nextStepIndex) {
+            $result['NextStepIndex'] = [int]$nextStepIndex
+        }
+        if ($terminate) {
+            $result['Terminate'] = $true
+        }
+        return [pscustomobject]$result
+    }
+
+    return $null
+}
+
+
+
+
+
+
+
+
+
+        param($connId, $scenarioSteps, $scenarioPath)
+
+
+
+            Invoke-ScenarioSteps -Connection $conn -ScenarioSteps $scenarioSteps -ScenarioPath $scenarioPath -ConnectionId $connId
+
+        & $scriptBlock -connId $ConnectionId -scenarioSteps $steps -scenarioPath $ScenarioPath
+
+
+function Invoke-ScenarioSteps {
+    param(
+        [Parameter(Mandatory=$true)]
+        $Connection,
+
+        [Parameter(Mandatory=$true)]
+        $ScenarioSteps,
+
+        [string]$ScenarioPath,
+
+        [string]$ConnectionId
+    )
+
+    if (-not $ScenarioSteps) {
+        return
+    }
+
+    $stepIndexMap = @{}
+    for ($i = 0; $i -lt $ScenarioSteps.Count; $i++) {
+        $stepId = $ScenarioSteps[$i].Step
+        if (-not [string]::IsNullOrWhiteSpace([string]$stepId)) {
+            if ($stepIndexMap.ContainsKey($stepId)) {
+                Write-Warning "Duplicate step identifier detected: $stepId"
+            }
+            $stepIndexMap[$stepId] = $i
+        }
+    }
+
+    $stepIndex = 0
+    $totalSteps = $ScenarioSteps.Count
+
+    while ($stepIndex -lt $totalSteps) {
+        if ($Connection.CancellationSource -and $Connection.CancellationSource.Token.IsCancellationRequested) {
+            Write-Host "[ScenarioEngine] Scenario cancelled" -ForegroundColor Yellow
+            break
+        }
+
+        $step = $ScenarioSteps[$stepIndex]
+        $actionName = if ($step.Action) { $step.Action.ToUpperInvariant() } else { '' }
+        $displayStep = if ($step.Step) { $step.Step } else { $stepIndex + 1 }
+
+        Write-Host "[ScenarioEngine] Step $($stepIndex + 1)/$totalSteps [$displayStep] : $actionName" -ForegroundColor Cyan
+
+        $actionResult = $null
+        $shouldBreak = $false
+
+        if ([string]::IsNullOrWhiteSpace($actionName)) {
+            Write-Warning "Step $displayStep has no action defined. Skipping."
+            $stepIndex++
+            continue
+        }
+
+        switch ($actionName) {
+            'SEND' {
+                Invoke-SendAction -Connection $Connection -Step $step
+            }
+            'SEND_HEX' {
+                Invoke-SendHexAction -Connection $Connection -Step $step
+            }
+            'SEND_FILE' {
+                Invoke-SendFileAction -Connection $Connection -Step $step
+            }
+            'WAIT_RECV' {
+                Invoke-WaitRecvAction -Connection $Connection -Step $step
+            }
+            'SAVE_RECV' {
+                Invoke-SaveRecvAction -Connection $Connection -Step $step
+            }
+            'SLEEP' {
+                Invoke-SleepAction -Connection $Connection -Step $step
+            }
+            'SET_VAR' {
+                Invoke-SetVarAction -Connection $Connection -Step $step
+            }
+            'IF' {
+                $actionResult = Invoke-IfAction `
+                    -Connection $Connection `
+                    -Step $step `
+                    -StepIndexMap $stepIndexMap `
+                    -CurrentIndex $stepIndex `
+                    -ScenarioSteps $ScenarioSteps `
+                    -ScenarioPath $ScenarioPath `
+                    -ConnectionId $ConnectionId
+            }
+            'GOTO' {
+                $actionResult = Invoke-GotoAction -Step $step -StepIndexMap $stepIndexMap
+            }
+            'LOOP' {
+                Write-Warning "LOOP action not yet implemented"
+            }
+            'CALL_SCRIPT' {
+                Invoke-CallScriptAction -Connection $Connection -Step $step
+            }
+            'DISCONNECT' {
+                if ($ConnectionId) {
+                    Stop-Connection -ConnectionId $ConnectionId
+                } elseif ($Connection.Id) {
+                    Stop-Connection -ConnectionId $Connection.Id
                 }
-                
-                Write-Host "[ScenarioEngine] Step $currentStep/$totalSteps : $($step.Action)" -ForegroundColor Cyan
-                
-                # ƒAƒNƒVƒ‡ƒ“Às
-                switch ($step.Action) {
-                    "SEND" {
-                        Invoke-SendAction -Connection $conn -Step $step
+                $shouldBreak = $true
+            }
+            'RECONNECT' {
+                if ($ConnectionId) {
+                    Stop-Connection -ConnectionId $ConnectionId
+                    Start-Sleep -Seconds 1
+                    Start-Connection -ConnectionId $ConnectionId
+                } elseif ($Connection.Id) {
+                    Stop-Connection -ConnectionId $Connection.Id
+                    Start-Sleep -Seconds 1
+                    Start-Connection -ConnectionId $Connection.Id
+                }
+            }
+            default {
+                if (-not [string]::IsNullOrWhiteSpace($actionName)) {
+                    Write-Warning "Unknown action: $actionName"
+                }
+            }
+        }
+
+        if ($shouldBreak) {
+            break
+        }
+
+        $terminate = $false
+        $nextStepIndex = $null
+
+        if ($null -ne $actionResult) {
+            if ($actionResult -is [int]) {
+                $nextStepIndex = [int]$actionResult
+            } elseif ($actionResult -is [System.Collections.IDictionary]) {
+                if ($actionResult.Contains('Terminate') -and $actionResult['Terminate']) {
+                    $terminate = $true
+                }
+                if ($actionResult.Contains('NextStepIndex')) {
+                    $nextStepIndex = [int]$actionResult['NextStepIndex']
+                } elseif ($actionResult.Contains('NextStepId')) {
+                    $targetId = [string]$actionResult['NextStepId']
+                    if (-not $stepIndexMap.ContainsKey($targetId)) {
+                        throw "Step not found: $targetId"
                     }
-                    "SEND_HEX" {
-                        Invoke-SendHexAction -Connection $conn -Step $step
+                    $nextStepIndex = $stepIndexMap[$targetId]
+                }
+            } else {
+                $props = $actionResult.PSObject.Properties
+                if ($props['Terminate'] -and $props['Terminate'].Value) {
+                    $terminate = $true
+                }
+                if ($props['NextStepIndex']) {
+                    $nextStepIndex = [int]$props['NextStepIndex'].Value
+                } elseif ($props['NextStepId']) {
+                    $targetId = [string]$props['NextStepId'].Value
+                    if (-not $stepIndexMap.ContainsKey($targetId)) {
+                        throw "Step not found: $targetId"
                     }
-                    "SEND_FILE" {
-                        Invoke-SendFileAction -Connection $conn -Step $step
+                    $nextStepIndex = $stepIndexMap[$targetId]
+                }
+            }
+        }
+
+        if ($terminate) {
+            break
+        }
+
+        if ($null -ne $nextStepIndex) {
+            $stepIndex = $nextStepIndex
+            continue
+        }
+
+        $stepIndex++
+    }
+}
+
+
+
                     }
                     "WAIT_RECV" {
                         Invoke-WaitRecvAction -Connection $conn -Step $step
@@ -97,7 +376,7 @@ function Start-Scenario {
                         Invoke-IfAction -Connection $conn -Step $step
                     }
                     "LOOP" {
-                        # TODO: ƒ‹[ƒvˆ—À‘•
+                        # TODO: ãƒ«ãƒ¼ãƒ—å‡¦ç†å®Ÿè£…
                         Write-Warning "LOOP action not yet implemented"
                     }
                     "CALL_SCRIPT" {
@@ -125,7 +404,7 @@ function Start-Scenario {
         }
     }
     
-    # ƒXƒŒƒbƒhŠJn
+    # ã‚¹ãƒ¬ãƒƒãƒ‰é–‹å§‹
     $thread = New-Object System.Threading.Thread([System.Threading.ThreadStart]{
         & $scriptBlock -connId $ConnectionId -scenarioSteps $steps
     })
@@ -136,19 +415,19 @@ function Start-Scenario {
     Write-Host "[ScenarioEngine] Scenario thread started" -ForegroundColor Green
 }
 
-# ƒAƒNƒVƒ‡ƒ“À‘•
+# ã‚¢ã‚¯ã‚·ãƒ§ãƒ³å®Ÿè£…
 
 function Invoke-SendAction {
     param($Connection, $Step)
     
-    # ƒeƒ“ƒvƒŒ[ƒg“WŠJ
+    # ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆå±•é–‹
     $message = Expand-MessageVariables -Template $Step.Parameter1 -Variables $Connection.Variables
     
-    # ƒoƒCƒg”z—ñ‚É•ÏŠ·
+    # ãƒã‚¤ãƒˆé…åˆ—ã«å¤‰æ›
     $encoding = if ($Step.Parameter2) { $Step.Parameter2 } else { "UTF-8" }
     $bytes = ConvertTo-ByteArray -Data $message -Encoding $encoding
     
-    # ‘—MƒLƒ…[‚É’Ç‰Á
+    # é€ä¿¡ã‚­ãƒ¥ãƒ¼ã«è¿½åŠ 
     Send-Data -ConnectionId $Connection.Id -Data $bytes
     
     Write-Host "[ScenarioEngine] Sent: $message" -ForegroundColor Blue
@@ -157,10 +436,10 @@ function Invoke-SendAction {
 function Invoke-SendHexAction {
     param($Connection, $Step)
     
-    # HEX•¶š—ñ‚ğƒoƒCƒg”z—ñ‚É•ÏŠ·
+    # HEXæ–‡å­—åˆ—ã‚’ãƒã‚¤ãƒˆé…åˆ—ã«å¤‰æ›
     $bytes = ConvertTo-ByteArray -Data $Step.Parameter1 -IsHex
     
-    # ‘—MƒLƒ…[‚É’Ç‰Á
+    # é€ä¿¡ã‚­ãƒ¥ãƒ¼ã«è¿½åŠ 
     Send-Data -ConnectionId $Connection.Id -Data $bytes
     
     Write-Host "[ScenarioEngine] Sent HEX: $($Step.Parameter1)" -ForegroundColor Blue
@@ -176,10 +455,10 @@ function Invoke-SendFileAction {
         return
     }
     
-    # ƒtƒ@ƒCƒ‹“Ç‚İ‚İ
+    # ãƒ•ã‚¡ã‚¤ãƒ«èª­ã¿è¾¼ã¿
     $bytes = [System.IO.File]::ReadAllBytes($filePath)
     
-    # ‘—MƒLƒ…[‚É’Ç‰Á
+    # é€ä¿¡ã‚­ãƒ¥ãƒ¼ã«è¿½åŠ 
     Send-Data -ConnectionId $Connection.Id -Data $bytes
     
     Write-Host "[ScenarioEngine] Sent file: $filePath ($($bytes.Length) bytes)" -ForegroundColor Blue
@@ -188,8 +467,8 @@ function Invoke-SendFileAction {
 function Invoke-WaitRecvAction {
     param($Connection, $Step)
     
-    # ƒpƒ‰ƒ[ƒ^‰ğÍ
-    $timeout = 5000  # ƒfƒtƒHƒ‹ƒg5•b
+    # ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿è§£æ
+    $timeout = 5000  # ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆ5ç§’
     $pattern = $null
     
     if ($Step.Parameter1 -like "TIMEOUT=*") {
@@ -210,7 +489,7 @@ function Invoke-WaitRecvAction {
             $lastRecv = $Connection.RecvBuffer[-1]
             $recvText = ConvertFrom-ByteArray -Data $lastRecv.Data -Encoding "UTF-8"
             
-            # ƒpƒ^[ƒ“ƒ}ƒbƒ`ƒ“ƒO
+            # ãƒ‘ã‚¿ãƒ¼ãƒ³ãƒãƒƒãƒãƒ³ã‚°
             if ($pattern) {
                 if ($recvText -like "*$pattern*") {
                     $received = $true
@@ -244,7 +523,7 @@ function Invoke-SaveRecvAction {
         $lastRecv = $Connection.RecvBuffer[-1]
         $recvText = ConvertFrom-ByteArray -Data $lastRecv.Data -Encoding "UTF-8"
         
-        # •Ï”‚É•Û‘¶
+        # å¤‰æ•°ã«ä¿å­˜
         $Connection.Variables[$varName] = $recvText
         
         Write-Host "[ScenarioEngine] Saved to variable '$varName': $recvText" -ForegroundColor Green
@@ -268,10 +547,81 @@ function Invoke-SetVarAction {
     $varName = $Step.Parameter1
     $varValue = $Step.Parameter2
     
-    # •Ï”“WŠJ
-    $expandedValue = Expand-MessageVariables -Template $varValue -Variables $Connection.Variables
-    
-    # •Ï”İ’è
+
+function Invoke-GotoAction {
+    param(
+        $Step,
+        [hashtable]$StepIndexMap
+    )
+
+    $targetId = Get-StepFieldValue -Step $Step -PropertyNames @('Target', 'Parameter1')
+
+    if ([string]::IsNullOrWhiteSpace($targetId)) {
+        throw "GOTO action requires Parameter1 (target step identifier)"
+    }
+
+    if (-not $StepIndexMap.ContainsKey($targetId)) {
+        throw "GOTO target step not found: $targetId"
+    }
+
+    Write-Host "[ScenarioEngine] Jumping to step '$targetId'" -ForegroundColor DarkCyan
+
+    return [pscustomobject]@{
+        NextStepIndex = [int]$StepIndexMap[$targetId]
+    }
+}
+
+
+    param(
+        $Connection,
+        $Step,
+        [hashtable]$StepIndexMap,
+        [int]$CurrentIndex,
+        $ScenarioSteps,
+        [string]$ScenarioPath,
+        [string]$ConnectionId
+    )
+
+    $leftExpression = Get-StepFieldValue -Step $Step -PropertyNames @('Left', 'Parameter1')
+    $operator = Get-StepFieldValue -Step $Step -PropertyNames @('Operator', 'Parameter2')
+    $rightExpression = Get-StepFieldValue -Step $Step -PropertyNames @('Right', 'Parameter3')
+
+    if ([string]::IsNullOrWhiteSpace($leftExpression)) {
+        throw "IF action requires Parameter1 (left value)"
+    }
+
+    if ([string]::IsNullOrWhiteSpace($operator)) {
+        throw "IF action requires Parameter2 (comparison operator)"
+    }
+
+    $leftValue = Expand-MessageVariables -Template $leftExpression -Variables $Connection.Variables
+    $rightValue = Expand-MessageVariables -Template $rightExpression -Variables $Connection.Variables
+
+    $conditionResult = Test-ScenarioCondition -LeftValue $leftValue -RightValue $rightValue -Operator $operator
+
+    $branchLabel = if ($conditionResult) { 'TRUE' } else { 'FALSE' }
+    Write-Host "[ScenarioEngine] IF condition ($leftValue $operator $rightValue) => $branchLabel" -ForegroundColor DarkCyan
+
+    $branchAction = if ($conditionResult) {
+        Get-StepFieldValue -Step $Step -PropertyNames @('OnTrue', 'TrueAction', 'Parameter4')
+    } else {
+        Get-StepFieldValue -Step $Step -PropertyNames @('OnFalse', 'FalseAction', 'Parameter5')
+    }
+
+    if ([string]::IsNullOrWhiteSpace($branchAction)) {
+        Write-Host "[ScenarioEngine] IF branch '$branchLabel' has no action. Continuing." -ForegroundColor DarkGray
+        return $null
+    }
+
+    return Resolve-IfBranchAction `
+        -Connection $Connection `
+        -ActionSpec $branchAction `
+        -StepIndexMap $StepIndexMap `
+        -ScenarioSteps $ScenarioSteps `
+        -ScenarioPath $ScenarioPath `
+        -ConnectionId $ConnectionId `
+        -CurrentIndex $CurrentIndex
+
     $Connection.Variables[$varName] = $expandedValue
     
     Write-Host "[ScenarioEngine] Set variable '$varName' = '$expandedValue'" -ForegroundColor Green
@@ -280,7 +630,7 @@ function Invoke-SetVarAction {
 function Invoke-IfAction {
     param($Connection, $Step)
     
-    # ŠÈˆÕ“I‚ÈğŒ”»’èi«—ˆŠg’£j
+    # ç°¡æ˜“çš„ãªæ¡ä»¶åˆ¤å®šï¼ˆå°†æ¥æ‹¡å¼µï¼‰
     Write-Warning "[ScenarioEngine] IF action not fully implemented"
 }
 
@@ -295,7 +645,7 @@ function Invoke-CallScriptAction {
     }
     
     try {
-        # ƒXƒNƒŠƒvƒgÀs
+        # ã‚¹ã‚¯ãƒªãƒ—ãƒˆå®Ÿè¡Œ
         & $scriptPath -Connection $Connection | Out-Null
         
         Write-Host "[ScenarioEngine] Script executed: $scriptPath" -ForegroundColor Green

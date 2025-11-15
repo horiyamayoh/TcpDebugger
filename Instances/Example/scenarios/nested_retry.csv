@@ -1,0 +1,2 @@
+Step,Action,Parameter1,Parameter2,Parameter3,Description
+NESTED_MESSAGE,SEND,Retry branch executed,UTF-8,,ネストしたIFが真の場合の送信

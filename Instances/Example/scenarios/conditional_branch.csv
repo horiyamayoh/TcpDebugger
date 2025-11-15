@@ -1,0 +1,10 @@
+Step,Action,Parameter1,Parameter2,Parameter3,OnTrue,OnFalse,Description
+INIT_MODE,SET_VAR,MODE,AUTO,,,,モード初期化
+INIT_RETRY,SET_VAR,RETRY,1,,,,リトライフラグ初期化
+CHECK_MODE,IF,${MODE},==,AUTO,STEP:TRUE_BLOCK,STEP:FALSE_BLOCK,MODE変数で分岐
+TRUE_BLOCK,SEND,MODE is AUTO,UTF-8,,,AUTOモード時の通知
+TRUE_EXIT,GOTO,AFTER_BRANCH,,,,TRUEブロック終了後は共通処理へ
+FALSE_BLOCK,IF,${RETRY},-eq,1,SCENARIO:nested_retry.csv;STEP:FALSE_EXIT,STEP:FALSE_SEND,リトライフラグでネスト分岐
+FALSE_SEND,SEND,MODE is MANUAL,UTF-8,,,手動モード時の通知
+FALSE_EXIT,GOTO,AFTER_BRANCH,,,,FALSEブロック終了後は共通処理へ
+AFTER_BRANCH,SEND,Branch completed,UTF-8,,,共通完了メッセージ
