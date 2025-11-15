@@ -266,8 +266,6 @@ Invoke-ComprehensiveDiagnostics -ConnectionId "example-server"
 
 ## 今後の拡張予定
 
-## V@\
-
 - Scenario Control ZNV "Auto Response Profiles" XgǉA`auto_responses/*.csv` 牞p^[IēKpł悤ɂȂ܂B
 - [ ] GUIからのシナリオ実行・停止
 - [ ] GUIからのクイック送信（データバンク連携）
