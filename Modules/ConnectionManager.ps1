@@ -1,7 +1,7 @@
 # ConnectionManager.ps1
-# Ú‘±ŠÇ—ƒ‚ƒWƒ…[ƒ‹ - •¡”Ú‘±‚ÌˆêŒ³ŠÇ—
+# æ¥ç¶šç®¡ç†ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ« - è¤‡æ•°æ¥ç¶šã®ä¸€å…ƒç®¡ç†
 
-# ƒOƒ[ƒoƒ‹Ú‘±ƒXƒgƒAiƒXƒŒƒbƒhƒZ[ƒtj
+# ã‚°ãƒ­ãƒ¼ãƒãƒ«æ¥ç¶šã‚¹ãƒˆã‚¢ï¼ˆã‚¹ãƒ¬ãƒƒãƒ‰ã‚»ãƒ¼ãƒ•ï¼‰
 if (-not $Global:Connections) {
     $Global:Connections = [System.Collections.Hashtable]::Synchronized(@{})
 }
@@ -20,7 +20,9 @@ class ConnectionContext {
     [object]$Socket    # TcpClient/TcpListener/UdpClient
     [System.Threading.Thread]$Thread
     [System.Threading.CancellationTokenSource]$CancellationSource
-    [hashtable]$Variables  # ƒVƒiƒŠƒI•Ï”ƒXƒR[ƒv
+    [hashtable]$ScenarioTimers
+        $this.ScenarioTimers = [System.Collections.Hashtable]::Synchronized(@{})
+    [hashtable]$Variables  # ã‚·ãƒŠãƒªã‚ªå¤‰æ•°ã‚¹ã‚³ãƒ¼ãƒ—
     [System.Collections.ArrayList]$SendQueue
     [System.Collections.ArrayList]$RecvBuffer
     [datetime]$LastActivity
@@ -40,12 +42,12 @@ class ConnectionContext {
 function New-ConnectionManager {
     <#
     .SYNOPSIS
-    Ú‘±ƒ}ƒl[ƒWƒƒ[‚ğ‰Šú‰»
+    æ¥ç¶šãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼ã‚’åˆæœŸåŒ–
     #>
     
     Write-Host "[ConnectionManager] Initializing..." -ForegroundColor Cyan
     
-    # Šù‘¶Ú‘±‚ÌƒNƒŠ[ƒ“ƒAƒbƒv
+    # æ—¢å­˜æ¥ç¶šã®ã‚¯ãƒªãƒ¼ãƒ³ã‚¢ãƒƒãƒ—
     foreach ($key in $Global:Connections.Keys) {
         try {
             Stop-Connection -ConnectionId $key -Force
@@ -61,7 +63,7 @@ function New-ConnectionManager {
 function Add-Connection {
     <#
     .SYNOPSIS
-    V‚µ‚¢Ú‘±‚ğ’Ç‰Á
+    æ–°ã—ã„æ¥ç¶šã‚’è¿½åŠ 
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -70,7 +72,7 @@ function Add-Connection {
     
     $conn = [ConnectionContext]::new()
     
-    # ID¶¬i–¢w’è‚Í©“®¶¬j
+    # IDç”Ÿæˆï¼ˆæœªæŒ‡å®šæ™‚ã¯è‡ªå‹•ç”Ÿæˆï¼‰
     $conn.Id = if ($Config.Id) { $Config.Id } else { [guid]::NewGuid().ToString() }
     $conn.Name = $Config.Name
     $conn.DisplayName = if ($Config.DisplayName) { $Config.DisplayName } else { $Config.Name }
@@ -84,7 +86,7 @@ function Add-Connection {
     $conn.Group = $Config.Group
     $conn.Tags = $Config.Tags
     
-    # ƒOƒ[ƒoƒ‹ƒXƒgƒA‚É’Ç‰Á
+    # ã‚°ãƒ­ãƒ¼ãƒãƒ«ã‚¹ãƒˆã‚¢ã«è¿½åŠ 
     $Global:Connections[$conn.Id] = $conn
     
     Write-Host "[ConnectionManager] Added connection: $($conn.DisplayName) [$($conn.Id)]" -ForegroundColor Green
@@ -95,7 +97,7 @@ function Add-Connection {
 function Remove-Connection {
     <#
     .SYNOPSIS
-    Ú‘±‚ğíœ
+    æ¥ç¶šã‚’å‰Šé™¤
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -103,10 +105,10 @@ function Remove-Connection {
     )
     
     if ($Global:Connections.ContainsKey($ConnectionId)) {
-        # Ú‘±’â~
+        # æ¥ç¶šåœæ­¢
         Stop-Connection -ConnectionId $ConnectionId -Force
         
-        # ƒXƒgƒA‚©‚çíœ
+        # ã‚¹ãƒˆã‚¢ã‹ã‚‰å‰Šé™¤
         $Global:Connections.Remove($ConnectionId)
         
         Write-Host "[ConnectionManager] Removed connection: $ConnectionId" -ForegroundColor Yellow
@@ -116,7 +118,7 @@ function Remove-Connection {
 function Start-Connection {
     <#
     .SYNOPSIS
-    Ú‘±‚ğŠJn
+    æ¥ç¶šã‚’é–‹å§‹
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -129,7 +131,7 @@ function Start-Connection {
     
     $conn = $Global:Connections[$ConnectionId]
     
-    # Šù‚ÉÚ‘±’†‚Ìê‡‚ÍƒXƒLƒbƒv
+    # æ—¢ã«æ¥ç¶šä¸­ã®å ´åˆã¯ã‚¹ã‚­ãƒƒãƒ—
     if ($conn.Status -eq "CONNECTED" -or $conn.Status -eq "CONNECTING") {
         Write-Warning "[ConnectionManager] Connection already active: $($conn.DisplayName)"
         return
@@ -141,7 +143,7 @@ function Start-Connection {
     Write-Host "[ConnectionManager] Starting connection: $($conn.DisplayName)" -ForegroundColor Cyan
     
     try {
-        # ƒvƒƒgƒRƒ‹•Ê‚ÉÚ‘±ˆ—‚ğŒÄ‚Ño‚µ
+        # ãƒ—ãƒ­ãƒˆã‚³ãƒ«åˆ¥ã«æ¥ç¶šå‡¦ç†ã‚’å‘¼ã³å‡ºã—
         switch ($conn.Protocol) {
             "TCP" {
                 if ($conn.Mode -eq "Client") {
@@ -173,7 +175,30 @@ function Start-Connection {
 function Stop-Connection {
     <#
     .SYNOPSIS
-    Ú‘±‚ğ’â~
+        if ($conn.ScenarioTimers -and $conn.ScenarioTimers.Count -gt 0) {
+            foreach ($timerState in @($conn.ScenarioTimers.Values)) {
+                try {
+                    if ($timerState -and $timerState.Timer) {
+                        [void]$timerState.Timer.Change([System.Threading.Timeout]::Infinite, [System.Threading.Timeout]::Infinite)
+                        $timerState.Timer.Dispose()
+                    }
+                } catch {
+                    Write-Verbose "[ConnectionManager] Failed to dispose timer '$($timerState.Id)': $_"
+                }
+
+                try {
+                    if ($timerState -and $timerState.CancellationSource) {
+                        $timerState.CancellationSource.Cancel()
+                        $timerState.CancellationSource.Dispose()
+                    }
+                } catch {
+                    Write-Verbose "[ConnectionManager] Failed to cancel timer '$($timerState.Id)': $_"
+                }
+            }
+            
+            $conn.ScenarioTimers.Clear()
+        }
+
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -192,12 +217,12 @@ function Stop-Connection {
     Write-Host "[ConnectionManager] Stopping connection: $($conn.DisplayName)" -ForegroundColor Yellow
     
     try {
-        # ƒLƒƒƒ“ƒZƒ‹ƒg[ƒNƒ“‚ğ”­s
+        # ã‚­ãƒ£ãƒ³ã‚»ãƒ«ãƒˆãƒ¼ã‚¯ãƒ³ã‚’ç™ºè¡Œ
         if ($conn.CancellationSource) {
             $conn.CancellationSource.Cancel()
         }
         
-        # ƒ\ƒPƒbƒg‚ğƒNƒ[ƒY
+        # ã‚½ã‚±ãƒƒãƒˆã‚’ã‚¯ãƒ­ãƒ¼ã‚º
         if ($conn.Socket) {
             if ($conn.Socket -is [System.Net.Sockets.TcpClient]) {
                 $conn.Socket.Close()
@@ -210,10 +235,10 @@ function Stop-Connection {
             $conn.Socket = $null
         }
         
-        # ƒXƒŒƒbƒhI—¹‚ğ‘Ò‹@
+        # ã‚¹ãƒ¬ãƒƒãƒ‰çµ‚äº†ã‚’å¾…æ©Ÿ
         if ($conn.Thread -and $conn.Thread.IsAlive) {
             if (-not $Force) {
-                $conn.Thread.Join(5000)  # 5•b‘Ò‹@
+                $conn.Thread.Join(5000)  # 5ç§’å¾…æ©Ÿ
             }
             if ($conn.Thread.IsAlive) {
                 Write-Warning "Thread still alive, forcing abort"
@@ -234,7 +259,7 @@ function Stop-Connection {
 function Get-ConnectionsByGroup {
     <#
     .SYNOPSIS
-    ƒOƒ‹[ƒv–¼‚ÅÚ‘±‚ğ’Šo
+    ã‚°ãƒ«ãƒ¼ãƒ—åã§æ¥ç¶šã‚’æŠ½å‡º
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -253,7 +278,7 @@ function Get-ConnectionsByGroup {
 function Get-ConnectionsByTag {
     <#
     .SYNOPSIS
-    ƒ^ƒO‚ÅÚ‘±‚ğ’Šo
+    ã‚¿ã‚°ã§æ¥ç¶šã‚’æŠ½å‡º
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -272,7 +297,7 @@ function Get-ConnectionsByTag {
 function Get-AllConnections {
     <#
     .SYNOPSIS
-    ‘SÚ‘±‚ğæ“¾
+    å…¨æ¥ç¶šã‚’å–å¾—
     #>
     return $Global:Connections.Values
 }
@@ -280,7 +305,7 @@ function Get-AllConnections {
 function Send-Data {
     <#
     .SYNOPSIS
-    ƒf[ƒ^‘—Mi‘—MƒLƒ…[‚É“Š“üj
+    ãƒ‡ãƒ¼ã‚¿é€ä¿¡ï¼ˆé€ä¿¡ã‚­ãƒ¥ãƒ¼ã«æŠ•å…¥ï¼‰
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -300,13 +325,13 @@ function Send-Data {
         throw "Connection not connected: $($conn.DisplayName)"
     }
     
-    # ‘—MƒLƒ…[‚É’Ç‰Á
+    # é€ä¿¡ã‚­ãƒ¥ãƒ¼ã«è¿½åŠ 
     [void]$conn.SendQueue.Add($Data)
     
     Write-Verbose "[ConnectionManager] Data queued for $($conn.DisplayName): $($Data.Length) bytes"
 }
 
-# Export-ModuleMember ‚Í Import-Module ‚Å‚Ì‚İ—LŒø‚È‚½‚ßAƒhƒbƒgƒ\[ƒX“Ç‚İ‚İ‚Å‚ÍƒRƒƒ“ƒgƒAƒEƒg
+# Export-ModuleMember ã¯ Import-Module ã§ã®ã¿æœ‰åŠ¹ãªãŸã‚ã€ãƒ‰ãƒƒãƒˆã‚½ãƒ¼ã‚¹èª­ã¿è¾¼ã¿ã§ã¯ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆ
 # Export-ModuleMember -Function @(
 #     'New-ConnectionManager',
 #     'Add-Connection',

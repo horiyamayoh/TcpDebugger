@@ -113,6 +113,21 @@ function Start-Scenario {
                     "CALL_SCRIPT" {
                         Invoke-CallScriptAction -Connection $connection -Step $step
                     }
+                    "TIMER_START" {
+                        Invoke-TimerStartAction -Connection $connection -Step $step -CurrentStep $currentStep
+                    }
+                    "START_TIMER" {
+                        Invoke-TimerStartAction -Connection $connection -Step $step -CurrentStep $currentStep
+                    }
+                    "TIMER_SEND" {
+                        Invoke-TimerStartAction -Connection $connection -Step $step -CurrentStep $currentStep
+                    }
+                    "TIMER_STOP" {
+                        Invoke-TimerStopAction -Connection $connection -Step $step
+                    }
+                    "STOP_TIMER" {
+                        Invoke-TimerStopAction -Connection $connection -Step $step
+                    }
                     "DISCONNECT" {
                         Stop-Connection -ConnectionId $ConnectionId
                         $stopScenario = $true
@@ -136,6 +151,10 @@ function Start-Scenario {
             Write-Host "[ScenarioEngine] Scenario completed successfully" -ForegroundColor Green
         } catch {
             Write-Error "[ScenarioEngine] Scenario execution error: $_"
+        } finally {
+            if ($connection) {
+                Stop-AllScenarioTimers -Connection $connection -Silent
+            }
         }
     }
 
@@ -150,6 +169,332 @@ function Start-Scenario {
     $thread.Start()
 
     Write-Host "[ScenarioEngine] Scenario thread started" -ForegroundColor Green
+}
+
+function Get-ScenarioTimerKey {
+    param(
+        [string]$TimerId
+    )
+
+    if ([string]::IsNullOrWhiteSpace($TimerId)) {
+        return $null
+    }
+
+    return $TimerId.Trim().ToUpperInvariant()
+}
+
+function Stop-ScenarioTimer {
+    param(
+        $Connection,
+        [Parameter(Mandatory=$true)][string]$TimerId,
+        [switch]$Silent
+    )
+
+    if (-not $Connection -or -not $Connection.ScenarioTimers) {
+        if (-not $Silent) {
+            Write-Warning "[ScenarioEngine] Timer stop requested but connection does not have timer storage"
+        }
+        return $false
+    }
+
+    $key = Get-ScenarioTimerKey -TimerId $TimerId
+    if (-not $key) {
+        if (-not $Silent) {
+            Write-Warning "[ScenarioEngine] Timer identifier is empty"
+        }
+        return $false
+    }
+
+    if (-not $Connection.ScenarioTimers.ContainsKey($key)) {
+        if (-not $Silent) {
+            Write-Warning "[ScenarioEngine] Timer '$TimerId' not found"
+        }
+        return $false
+    }
+
+    $state = $Connection.ScenarioTimers[$key]
+    $Connection.ScenarioTimers.Remove($key)
+
+    if ($state) {
+        try {
+            if ($state.Timer) {
+                [void]$state.Timer.Change([System.Threading.Timeout]::Infinite, [System.Threading.Timeout]::Infinite)
+                $state.Timer.Dispose()
+            }
+        } catch {
+            if (-not $Silent) {
+                Write-Warning "[ScenarioEngine] Failed to dispose timer '$TimerId': $_"
+            }
+        }
+
+        try {
+            if ($state.CancellationSource) {
+                $state.CancellationSource.Cancel()
+                $state.CancellationSource.Dispose()
+            }
+        } catch {
+            if (-not $Silent) {
+                Write-Warning "[ScenarioEngine] Failed to cancel timer '$TimerId': $_"
+            }
+        }
+    }
+
+    if (-not $Silent) {
+        Write-Host "[ScenarioEngine] Timer '$TimerId' stopped" -ForegroundColor Yellow
+    }
+
+    return $true
+}
+
+function Stop-AllScenarioTimers {
+    param(
+        $Connection,
+        [switch]$Silent
+    )
+
+    if (-not $Connection -or -not $Connection.ScenarioTimers -or $Connection.ScenarioTimers.Count -eq 0) {
+        return 0
+    }
+
+    $stopped = 0
+    $timers = @($Connection.ScenarioTimers.Values)
+    foreach ($timer in $timers) {
+        if ($timer -and $timer.Id) {
+            if (Stop-ScenarioTimer -Connection $Connection -TimerId $timer.Id -Silent:$Silent) {
+                $stopped++
+            }
+        }
+    }
+
+    return $stopped
+}
+
+function Invoke-TimerStartAction {
+    param(
+        $Connection,
+        $Step,
+        [int]$CurrentStep
+    )
+
+    if (-not $Connection) {
+        Write-Warning "[ScenarioEngine] TIMER_START requires an active connection context"
+        return
+    }
+
+    $messageTemplate = if ($Step.Parameter1) { $Step.Parameter1.ToString() } else { "" }
+    if ($messageTemplate -match '^(?i)(MESSAGE|TEXT)\s*=\s*(.+)$') {
+        $messageTemplate = $Matches[2]
+    }
+
+    if ([string]::IsNullOrWhiteSpace($messageTemplate)) {
+        Write-Warning "[ScenarioEngine] TIMER_START requires a message template"
+        return
+    }
+
+    $intervalMs = 1000
+    $dueTime = $null
+    $encoding = "UTF-8"
+    $timerId = $null
+    $maxCount = $null
+
+    foreach ($rawOption in @($Step.Parameter2, $Step.Parameter3)) {
+        if ($null -eq $rawOption) {
+            continue
+        }
+
+        $optionText = $rawOption.ToString().Trim()
+        if (-not $optionText) {
+            continue
+        }
+
+        $expandedOption = Expand-MessageVariables -Template $optionText -Variables $Connection.Variables
+        if ([string]::IsNullOrWhiteSpace($expandedOption)) {
+            continue
+        }
+
+        if ($expandedOption -match '^(?i)(INTERVAL|PERIOD|EVERY)\s*=\s*(\d+)$') {
+            $intervalMs = [int]$Matches[2]
+            continue
+        }
+
+        if ($expandedOption -match '^(?i)(DELAY|DUE|OFFSET|START)\s*=\s*(\d+)$') {
+            $dueTime = [int]$Matches[2]
+            continue
+        }
+
+        if ($expandedOption -match '^(?i)(ENCODING)\s*=\s*(.+)$') {
+            $encoding = $Matches[2].Trim()
+            continue
+        }
+
+        if ($expandedOption -match '^(?i)(NAME|ID|TIMER|TIMER_ID)\s*=\s*(.+)$') {
+            $timerId = $Matches[2].Trim()
+            continue
+        }
+
+        if ($expandedOption -match '^(?i)(COUNT|LIMIT|MAX|REPEAT)\s*=\s*(\d+)$') {
+            $maxCount = [int]$Matches[2]
+            continue
+        }
+    }
+
+    if ($intervalMs -lt 1) {
+        Write-Warning "[ScenarioEngine] TIMER_START interval must be greater than zero. Using 1000ms instead."
+        $intervalMs = 1000
+    }
+
+    if ($null -eq $dueTime) {
+        $dueTime = $intervalMs
+    } elseif ($dueTime -lt 0) {
+        $dueTime = 0
+    }
+
+    if (-not $timerId) {
+        $stepLabel = if ($CurrentStep) { $CurrentStep } elseif ($Step.Step) { $Step.Step } else { (Get-Random) }
+        $timerId = "STEP${stepLabel}_TIMER"
+    }
+
+    $timerKey = Get-ScenarioTimerKey -TimerId $timerId
+    if (-not $timerKey) {
+        Write-Warning "[ScenarioEngine] Failed to normalize timer identifier"
+        return
+    }
+
+    if ($Connection.ScenarioTimers.ContainsKey($timerKey)) {
+        Stop-ScenarioTimer -Connection $Connection -TimerId $timerId -Silent
+    }
+
+    $timerState = [pscustomobject]@{
+        Id = $timerId
+        Key = $timerKey
+        ConnectionId = $Connection.Id
+        MessageTemplate = $messageTemplate
+        Encoding = if ($encoding) { $encoding } else { "UTF-8" }
+        Interval = $intervalMs
+        DueTime = $dueTime
+        MaxCount = $maxCount
+        SendCount = 0
+        CancellationSource = New-Object System.Threading.CancellationTokenSource
+        Timer = $null
+    }
+
+    $callback = [System.Threading.TimerCallback]{
+        param($state)
+
+        if (-not $state) {
+            return
+        }
+
+        $timerContext = $state
+
+        try {
+            if ($timerContext.CancellationSource -and $timerContext.CancellationSource.IsCancellationRequested) {
+                return
+            }
+
+            if (-not $Global:Connections.ContainsKey($timerContext.ConnectionId)) {
+                return
+            }
+
+            $conn = $Global:Connections[$timerContext.ConnectionId]
+            if (-not $conn) {
+                return
+            }
+
+            if ($conn.CancellationSource -and $conn.CancellationSource.IsCancellationRequested) {
+                Stop-ScenarioTimer -Connection $conn -TimerId $timerContext.Id -Silent
+                return
+            }
+
+            if ($conn.Status -ne "CONNECTED") {
+                return
+            }
+
+            $messageText = Expand-MessageVariables -Template $timerContext.MessageTemplate -Variables $conn.Variables
+            $encodingName = if ($timerContext.Encoding) { $timerContext.Encoding } else { "UTF-8" }
+            $payload = ConvertTo-ByteArray -Data $messageText -Encoding $encodingName
+            Send-Data -ConnectionId $conn.Id -Data $payload
+            $timerContext.SendCount++
+
+            Write-Host "[ScenarioEngine] Timer '$($timerContext.Id)' sent: $messageText" -ForegroundColor DarkCyan
+
+            if ($timerContext.MaxCount -and $timerContext.SendCount -ge $timerContext.MaxCount) {
+                Stop-ScenarioTimer -Connection $conn -TimerId $timerContext.Id -Silent
+                Write-Host "[ScenarioEngine] Timer '$($timerContext.Id)' reached limit $($timerContext.MaxCount)" -ForegroundColor Yellow
+            }
+        } catch {
+            $timerIdForError = if ($timerContext -and $timerContext.Id) { $timerContext.Id } else { $null }
+            if ($timerIdForError) {
+                Write-Warning "[ScenarioEngine] Timer '$timerIdForError' execution error: $_"
+            } else {
+                Write-Warning "[ScenarioEngine] Timer execution error: $_"
+            }
+        }
+    }
+
+    $timerState.Timer = New-Object System.Threading.Timer($callback, $timerState, $dueTime, $intervalMs)
+    $Connection.ScenarioTimers[$timerKey] = $timerState
+
+    Write-Host "[ScenarioEngine] Timer '$timerId' started (interval: ${intervalMs}ms, delay: ${dueTime}ms)" -ForegroundColor Cyan
+}
+
+function Invoke-TimerStopAction {
+    param(
+        $Connection,
+        $Step
+    )
+
+    if (-not $Connection) {
+        Write-Warning "[ScenarioEngine] TIMER_STOP requires an active connection context"
+        return
+    }
+
+    $candidates = @($Step.Parameter1, $Step.Parameter2, $Step.Parameter3)
+    $target = $null
+
+    foreach ($candidate in $candidates) {
+        if ($null -eq $candidate) {
+            continue
+        }
+
+        $text = $candidate.ToString().Trim()
+        if (-not $text) {
+            continue
+        }
+
+        $expanded = Expand-MessageVariables -Template $text -Variables $Connection.Variables
+        if ([string]::IsNullOrWhiteSpace($expanded)) {
+            continue
+        }
+
+        if ($expanded -match '^(?i)(ALL|\*)$') {
+            $target = 'ALL'
+            break
+        }
+
+        if ($expanded -match '^(?i)(NAME|ID|TIMER|TIMER_ID)\s*=\s*(.+)$') {
+            $target = $Matches[2].Trim()
+            break
+        }
+
+        $target = $expanded
+        break
+    }
+
+    if (-not $target) {
+        Write-Warning "[ScenarioEngine] TIMER_STOP requires a timer identifier or ALL"
+        return
+    }
+
+    if ($target.ToUpperInvariant() -eq 'ALL') {
+        $stopped = Stop-AllScenarioTimers -Connection $Connection -Silent
+        Write-Host "[ScenarioEngine] Stopped $stopped timer(s)" -ForegroundColor Yellow
+        return
+    }
+
+    if (-not (Stop-ScenarioTimer -Connection $Connection -TimerId $target)) {
+        Write-Warning "[ScenarioEngine] Timer '$target' not found"
+    }
 }
 
 # アクション実装
