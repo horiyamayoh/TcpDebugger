@@ -1,79 +1,70 @@
 # UdpCommunication.ps1
-# UDP’ÊMˆ—
+# UDP connection handling
 
 function Start-UdpConnection {
     <#
     .SYNOPSIS
-    UDP’ÊM‚ğŠJn
+    Starts a UDP communication worker
     #>
     param(
         [Parameter(Mandatory=$true)]
         [object]$Connection
     )
     
-    # ƒXƒŒƒbƒh‚Å”ñ“¯ŠúÀs
+    # Run work on background thread
     $scriptBlock = {
-        param($connId, $localIP, $localPort, $remoteIP, $remotePort, $mode)
-        
+        param($conn)
+
+        if (-not $conn) {
+            return
+        }
+
         try {
-            Write-Host "[UDP] Starting UDP on ${localIP}:${localPort}..." -ForegroundColor Cyan
-            
-            # Ú‘±ƒIƒuƒWƒFƒNƒg‚ğæ“¾
-            $conn = $Global:Connections[$connId]
-            
-            # UDPƒNƒ‰ƒCƒAƒ“ƒgì¬
-            $udpClient = New-Object System.Net.Sockets.UdpClient($localPort)
-            
-            # ƒŠƒ‚[ƒgƒGƒ“ƒhƒ|ƒCƒ“ƒgİ’èi‘—M—pj
-            if ($remoteIP -and $remotePort -gt 0) {
-                $remoteEndPoint = New-Object System.Net.IPEndPoint(
-                    [System.Net.IPAddress]::Parse($remoteIP), 
-                    $remotePort
-                )
-            } else {
-                $remoteEndPoint = $null
+            Write-Host "[UDP] Starting UDP on ${($conn.LocalIP)}:${($conn.LocalPort)}..." -ForegroundColor Cyan
+
+            $udpClient = New-Object System.Net.Sockets.UdpClient($conn.LocalPort)
+
+            # Mİ’iIvVj
+            if ($conn.RemoteIP -and $conn.RemotePort -gt 0) {
+                    [System.Net.IPAddress]::Parse($conn.RemoteIP),
+                    $conn.RemotePort
+
+
+            Write-Host "[UDP] UDP socket ready on ${($conn.LocalIP)}:${($conn.LocalPort)}" -ForegroundColor Green
+
+            # MpGh|Cg
+
+            while ($conn.CancellationSource -and -not $conn.CancellationSource.Token.IsCancellationRequested) {
+
+
+
+                    # M
+
+
+
+
+
+                    if (-not ($conn.CancellationSource -and $conn.CancellationSource.Token.IsCancellationRequested)) {
+
+            if ($conn) {
+                $conn.Status = "ERROR"
+                $conn.ErrorMessage = $_.Exception.Message
             }
-            
-            $conn.Socket = $udpClient
-            $conn.Status = "CONNECTED"
-            
-            Write-Host "[UDP] UDP socket ready on ${localIP}:${localPort}" -ForegroundColor Green
-            
-            # óM—pƒGƒ“ƒhƒ|ƒCƒ“ƒgi”CˆÓ‚ÌƒAƒhƒŒƒX‚©‚çóMj
-            $anyEndPoint = New-Object System.Net.IPEndPoint([System.Net.IPAddress]::Any, 0)
-            
-            # ‘—óMƒ‹[ƒv
-            while (-not $conn.CancellationSource.Token.IsCancellationRequested) {
-                try {
-                    # ‘—Mˆ—
-                    while ($conn.SendQueue.Count -gt 0) {
-                        $data = $conn.SendQueue[0]
-                        $conn.SendQueue.RemoveAt(0)
-                        
-                        if ($remoteEndPoint) {
-                            # ƒŠƒ‚[ƒgƒGƒ“ƒhƒ|ƒCƒ“ƒgw’èÏ‚İ
-                            $bytesSent = $udpClient.Send($data, $data.Length, $remoteEndPoint)
-                        } else {
-                            # ƒGƒ“ƒhƒ|ƒCƒ“ƒg–¢w’èiÅŒã‚ÌóMŒ³‚É‘—Mj
-                            if ($conn.Variables.ContainsKey('LastRemoteEndPoint')) {
-                                $lastEndPoint = $conn.Variables['LastRemoteEndPoint']
-                                $bytesSent = $udpClient.Send($data, $data.Length, $lastEndPoint)
-                            } else {
-                                Write-Warning "[UDP] No remote endpoint available for sending"
-                                continue
-                            }
-                        }
-                        
-                        Write-Host "[UDP] Sent $bytesSent bytes" -ForegroundColor Blue
-                        $conn.LastActivity = Get-Date
-                    }
-                    
-                    # óMˆ—i”ñƒuƒƒbƒLƒ“ƒOj
+
+
+            if ($conn) {
+                if ($conn.Status -ne "ERROR") {
+                    $conn.Status = "DISCONNECTED"
+                }
+                $conn.Socket = $null
+
+
+        & $scriptBlock $Connection
                     if ($udpClient.Available -gt 0) {
                         $receivedData = $udpClient.Receive([ref]$anyEndPoint)
                         
                         if ($receivedData.Length -gt 0) {
-                            # óMƒoƒbƒtƒ@‚É’Ç‰Á
+                            # å—ä¿¡ãƒãƒƒãƒ•ã‚¡ã«è¿½åŠ 
                             [void]$conn.RecvBuffer.Add([PSCustomObject]@{
                                 Timestamp = Get-Date
                                 Data = $receivedData
@@ -81,7 +72,7 @@ function Start-UdpConnection {
                                 RemoteEndPoint = $anyEndPoint.ToString()
                             })
                             
-                            # ÅŒã‚ÌóMŒ³‚ğ‹L˜^
+                            # æœ€å¾Œã®å—ä¿¡å…ƒã‚’è¨˜éŒ²
                             $conn.Variables['LastRemoteEndPoint'] = $anyEndPoint
                             
                             Write-Host "[UDP] Received $($receivedData.Length) bytes from $anyEndPoint" -ForegroundColor Magenta
@@ -89,7 +80,7 @@ function Start-UdpConnection {
                         }
                     }
                     
-                    # CPU•‰‰×ŒyŒ¸
+                    # CPUè² è·è»½æ¸›
                     Start-Sleep -Milliseconds 10
                     
                 } catch {
@@ -107,7 +98,7 @@ function Start-UdpConnection {
             Write-Error "[UDP] Socket error: $_"
             
         } finally {
-            # ƒNƒŠ[ƒ“ƒAƒbƒv
+            # ã‚¯ãƒªãƒ¼ãƒ³ã‚¢ãƒƒãƒ—
             if ($udpClient) {
                 $udpClient.Close()
                 $udpClient.Dispose()
@@ -123,7 +114,7 @@ function Start-UdpConnection {
         }
     }
     
-    # ƒXƒŒƒbƒhŠJn
+    # ã‚¹ãƒ¬ãƒƒãƒ‰é–‹å§‹
     $thread = New-Object System.Threading.Thread([System.Threading.ThreadStart]{
         & $scriptBlock -connId $Connection.Id `
                        -localIP $Connection.LocalIP `
