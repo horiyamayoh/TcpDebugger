@@ -1,10 +1,10 @@
 # ScenarioEngine.ps1
-# ƒVƒiƒŠƒIÀsƒGƒ“ƒWƒ“ - CSVŒ`®ƒVƒiƒŠƒI‚Ì“Ç‚İ‚İ‚ÆÀs
+# ã‚·ãƒŠãƒªã‚ªå®Ÿè¡Œã‚¨ãƒ³ã‚¸ãƒ³ - CSVå½¢å¼ã‚·ãƒŠãƒªã‚ªã®èª­ã¿è¾¼ã¿ã¨å®Ÿè¡Œ
 
 function Read-ScenarioFile {
     <#
     .SYNOPSIS
-    CSVƒVƒiƒŠƒIƒtƒ@ƒCƒ‹‚ğ“Ç‚İ‚İ
+    CSVã‚·ãƒŠãƒªã‚ªãƒ•ã‚¡ã‚¤ãƒ«ã‚’èª­ã¿è¾¼ã¿
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -17,7 +17,7 @@ function Read-ScenarioFile {
     
     Write-Host "[ScenarioEngine] Loading scenario: $FilePath" -ForegroundColor Cyan
     
-    # CSV“Ç‚İ‚İ
+    # CSVèª­ã¿è¾¼ã¿
     $steps = Import-Csv -Path $FilePath -Encoding UTF8
     
     Write-Host "[ScenarioEngine] Loaded $($steps.Count) steps" -ForegroundColor Green
@@ -28,7 +28,7 @@ function Read-ScenarioFile {
 function Start-Scenario {
     <#
     .SYNOPSIS
-    ƒVƒiƒŠƒI‚ğÀs
+    ã‚·ãƒŠãƒªã‚ªã‚’å®Ÿè¡Œ
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -44,25 +44,16 @@ function Start-Scenario {
     
     $conn = $Global:Connections[$ConnectionId]
     
-    # ƒVƒiƒŠƒI“Ç‚İ‚İ
-    $steps = Read-ScenarioFile -FilePath $ScenarioPath
+    # Load scenario file
+    $scenarioSteps = Read-ScenarioFile -FilePath $ScenarioPath
+    $totalSteps = $scenarioSteps.Count
     
-    # ƒVƒiƒŠƒIÀsƒXƒŒƒbƒh
-    $scriptBlock = {
-        param($connId, $scenarioSteps)
-        
-        $conn = $Global:Connections[$connId]
-        
-        Write-Host "[ScenarioEngine] Starting scenario execution for $($conn.DisplayName)" -ForegroundColor Cyan
-        
-        $currentStep = 0
-        $totalSteps = $scenarioSteps.Count
-        
         try {
+            $currentStep = 0
             foreach ($step in $scenarioSteps) {
                 $currentStep++
                 
-                # ƒLƒƒƒ“ƒZƒ‹ƒ`ƒFƒbƒN
+                # ã‚­ãƒ£ãƒ³ã‚»ãƒ«ãƒã‚§ãƒƒã‚¯
                 if ($conn.CancellationSource.Token.IsCancellationRequested) {
                     Write-Host "[ScenarioEngine] Scenario cancelled" -ForegroundColor Yellow
                     break
@@ -70,7 +61,7 @@ function Start-Scenario {
                 
                 Write-Host "[ScenarioEngine] Step $currentStep/$totalSteps : $($step.Action)" -ForegroundColor Cyan
                 
-                # ƒAƒNƒVƒ‡ƒ“Às
+                # ã‚¢ã‚¯ã‚·ãƒ§ãƒ³å®Ÿè¡Œ
                 switch ($step.Action) {
                     "SEND" {
                         Invoke-SendAction -Connection $conn -Step $step
@@ -97,7 +88,7 @@ function Start-Scenario {
                         Invoke-IfAction -Connection $conn -Step $step
                     }
                     "LOOP" {
-                        # TODO: ƒ‹[ƒvˆ—À‘•
+                        # TODO: ãƒ«ãƒ¼ãƒ—å‡¦ç†å®Ÿè£…
                         Write-Warning "LOOP action not yet implemented"
                     }
                     "CALL_SCRIPT" {
@@ -125,7 +116,7 @@ function Start-Scenario {
         }
     }
     
-    # ƒXƒŒƒbƒhŠJn
+    # ã‚¹ãƒ¬ãƒƒãƒ‰é–‹å§‹
     $thread = New-Object System.Threading.Thread([System.Threading.ThreadStart]{
         & $scriptBlock -connId $ConnectionId -scenarioSteps $steps
     })
@@ -136,19 +127,19 @@ function Start-Scenario {
     Write-Host "[ScenarioEngine] Scenario thread started" -ForegroundColor Green
 }
 
-# ƒAƒNƒVƒ‡ƒ“À‘•
+# ã‚¢ã‚¯ã‚·ãƒ§ãƒ³å®Ÿè£…
 
 function Invoke-SendAction {
     param($Connection, $Step)
     
-    # ƒeƒ“ƒvƒŒ[ƒg“WŠJ
+    # ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆå±•é–‹
     $message = Expand-MessageVariables -Template $Step.Parameter1 -Variables $Connection.Variables
     
-    # ƒoƒCƒg”z—ñ‚É•ÏŠ·
+    # ãƒã‚¤ãƒˆé…åˆ—ã«å¤‰æ›
     $encoding = if ($Step.Parameter2) { $Step.Parameter2 } else { "UTF-8" }
     $bytes = ConvertTo-ByteArray -Data $message -Encoding $encoding
     
-    # ‘—MƒLƒ…[‚É’Ç‰Á
+    # é€ä¿¡ã‚­ãƒ¥ãƒ¼ã«è¿½åŠ 
     Send-Data -ConnectionId $Connection.Id -Data $bytes
     
     Write-Host "[ScenarioEngine] Sent: $message" -ForegroundColor Blue
@@ -157,10 +148,10 @@ function Invoke-SendAction {
 function Invoke-SendHexAction {
     param($Connection, $Step)
     
-    # HEX•¶š—ñ‚ğƒoƒCƒg”z—ñ‚É•ÏŠ·
+    # HEXæ–‡å­—åˆ—ã‚’ãƒã‚¤ãƒˆé…åˆ—ã«å¤‰æ›
     $bytes = ConvertTo-ByteArray -Data $Step.Parameter1 -IsHex
     
-    # ‘—MƒLƒ…[‚É’Ç‰Á
+    # é€ä¿¡ã‚­ãƒ¥ãƒ¼ã«è¿½åŠ 
     Send-Data -ConnectionId $Connection.Id -Data $bytes
     
     Write-Host "[ScenarioEngine] Sent HEX: $($Step.Parameter1)" -ForegroundColor Blue
@@ -176,10 +167,10 @@ function Invoke-SendFileAction {
         return
     }
     
-    # ƒtƒ@ƒCƒ‹“Ç‚İ‚İ
+    # ãƒ•ã‚¡ã‚¤ãƒ«èª­ã¿è¾¼ã¿
     $bytes = [System.IO.File]::ReadAllBytes($filePath)
     
-    # ‘—MƒLƒ…[‚É’Ç‰Á
+    # é€ä¿¡ã‚­ãƒ¥ãƒ¼ã«è¿½åŠ 
     Send-Data -ConnectionId $Connection.Id -Data $bytes
     
     Write-Host "[ScenarioEngine] Sent file: $filePath ($($bytes.Length) bytes)" -ForegroundColor Blue
@@ -188,8 +179,8 @@ function Invoke-SendFileAction {
 function Invoke-WaitRecvAction {
     param($Connection, $Step)
     
-    # ƒpƒ‰ƒ[ƒ^‰ğÍ
-    $timeout = 5000  # ƒfƒtƒHƒ‹ƒg5•b
+    # ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿è§£æ
+    $timeout = 5000  # ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆ5ç§’
     $pattern = $null
     
     if ($Step.Parameter1 -like "TIMEOUT=*") {
@@ -210,7 +201,7 @@ function Invoke-WaitRecvAction {
             $lastRecv = $Connection.RecvBuffer[-1]
             $recvText = ConvertFrom-ByteArray -Data $lastRecv.Data -Encoding "UTF-8"
             
-            # ƒpƒ^[ƒ“ƒ}ƒbƒ`ƒ“ƒO
+            # ãƒ‘ã‚¿ãƒ¼ãƒ³ãƒãƒƒãƒãƒ³ã‚°
             if ($pattern) {
                 if ($recvText -like "*$pattern*") {
                     $received = $true
@@ -244,7 +235,7 @@ function Invoke-SaveRecvAction {
         $lastRecv = $Connection.RecvBuffer[-1]
         $recvText = ConvertFrom-ByteArray -Data $lastRecv.Data -Encoding "UTF-8"
         
-        # •Ï”‚É•Û‘¶
+        # å¤‰æ•°ã«ä¿å­˜
         $Connection.Variables[$varName] = $recvText
         
         Write-Host "[ScenarioEngine] Saved to variable '$varName': $recvText" -ForegroundColor Green
@@ -268,10 +259,275 @@ function Invoke-SetVarAction {
     $varName = $Step.Parameter1
     $varValue = $Step.Parameter2
     
-    # •Ï”“WŠJ
+function Invoke-LoopAction {
+    param(
+        $Connection,
+        $Step,
+        [object[]]$ScenarioSteps,
+        [ref]$CurrentIndex,
+        [int]$CurrentStepIndex,
+        [ref]$LoopStack
+    )
+
+    $result = [pscustomobject]@{
+        ShouldBreak = $false
+    }
+
+    $token = $null
+    if ($Connection -and $Connection.CancellationSource) {
+        $token = $Connection.CancellationSource.Token
+    }
+
+    $normalizedParams = @()
+    foreach ($value in @($Step.Parameter1, $Step.Parameter2, $Step.Parameter3)) {
+        if ($null -ne $value) {
+            $textValue = $value.ToString().Trim()
+            if ($textValue) {
+                $normalizedParams += $textValue
+            }
+        }
+    }
+
+    $primaryToken = if ($normalizedParams.Count -gt 0) { $normalizedParams[0].ToUpperInvariant() } else { "" }
+
+    if ($primaryToken -in @("BEGIN", "START")) {
+        $loopCount = Get-LoopCountFromParameters @($Step.Parameter2, $Step.Parameter3)
+        if ($loopCount -ne $null -and $loopCount -lt 1) {
+            Write-Warning "[ScenarioEngine] LOOP count must be greater than zero. Using 1 instead."
+            $loopCount = 1
+        }
+
+        $loopLabel = Get-LoopLabelFromParameters @($Step.Parameter1, $Step.Parameter2, $Step.Parameter3)
+        $labelInfo = if ([string]::IsNullOrWhiteSpace($loopLabel)) { "(auto)" } else { $loopLabel }
+        $countInfo = if ($loopCount) { $loopCount } else { "infinite" }
+
+        $entry = [pscustomobject]@{
+            Mode = "Block"
+            Label = $loopLabel
+            StartIndex = $CurrentIndex.Value
+            TotalCount = $loopCount
+            Completed = 0
+            Step = $CurrentStepIndex
+        }
+
+        [void]$LoopStack.Value.Add($entry)
+
+        Write-Host "[ScenarioEngine] LOOP start (step $CurrentStepIndex, label: $labelInfo, count: $countInfo)" -ForegroundColor Cyan
+        return $result
+    }
+
+    if ($primaryToken -eq "END") {
+        if ($LoopStack.Value.Count -eq 0) {
+            Write-Warning "[ScenarioEngine] LOOP END encountered without matching start (step $CurrentStepIndex)"
+            return $result
+        }
+
+        $labelFilter = Get-LoopLabelFromParameters @($Step.Parameter1, $Step.Parameter2, $Step.Parameter3)
+
+        $entryIndex = $null
+        for ($i = $LoopStack.Value.Count - 1; $i -ge 0; $i--) {
+            $candidate = $LoopStack.Value[$i]
+            if ($candidate.Mode -ne "Block") {
+                continue
+            }
+
+            if ($labelFilter -and $candidate.Label -ne $labelFilter) {
+                continue
+            }
+
+            $entryIndex = $i
+            break
+        }
+
+        if ($null -eq $entryIndex) {
+            Write-Warning "[ScenarioEngine] LOOP END label '$labelFilter' not found (step $CurrentStepIndex)"
+            return $result
+        }
+
+        $entry = $LoopStack.Value[$entryIndex]
+        $entry.Completed++
+
+        $labelInfo = if ([string]::IsNullOrWhiteSpace($entry.Label)) { "(auto)" } else { $entry.Label }
+
+        if ($entry.TotalCount) {
+            if ($entry.Completed -lt $entry.TotalCount) {
+                $LoopStack.Value[$entryIndex] = $entry
+                $CurrentIndex.Value = $entry.StartIndex
+                $remaining = $entry.TotalCount - $entry.Completed
+                Write-Host "[ScenarioEngine] LOOP continue (label: $labelInfo, remaining: $remaining)" -ForegroundColor Cyan
+            } else {
+                $LoopStack.Value.RemoveAt($entryIndex)
+                Write-Host "[ScenarioEngine] LOOP completed (label: $labelInfo)" -ForegroundColor Green
+            }
+        } else {
+            if ($token -and $token.IsCancellationRequested) {
+                $LoopStack.Value.RemoveAt($entryIndex)
+                $result.ShouldBreak = $true
+                Write-Host "[ScenarioEngine] LOOP cancelled (label: $labelInfo)" -ForegroundColor Yellow
+            } else {
+                $LoopStack.Value[$entryIndex] = $entry
+                $CurrentIndex.Value = $entry.StartIndex
+                Write-Host "[ScenarioEngine] LOOP continue (label: $labelInfo, iterations completed: $($entry.Completed))" -ForegroundColor Cyan
+            }
+        }
+
+        return $result
+    }
+
+    $startIndex = Get-StepIndexFromParameter $Step.Parameter1
+    if ($null -eq $startIndex) {
+        Write-Warning "[ScenarioEngine] LOOP parameters not understood at step $CurrentStepIndex"
+        return $result
+    }
+
+    $loopCount = Get-LoopCountFromParameters @($Step.Parameter3, $Step.Parameter2)
+    if ($loopCount -ne $null -and $loopCount -lt 1) {
+        Write-Warning "[ScenarioEngine] LOOP count must be greater than zero. Using 1 instead."
+        $loopCount = 1
+    }
+
+    $legacyEntryIndex = $null
+    for ($i = 0; $i -lt $LoopStack.Value.Count; $i++) {
+        $candidate = $LoopStack.Value[$i]
+        if ($candidate.Mode -eq "Legacy" -and $candidate.EndIndex -eq ($CurrentStepIndex - 1)) {
+            $legacyEntryIndex = $i
+            break
+        }
+    }
+
+    if ($null -eq $legacyEntryIndex) {
+        $entry = [pscustomobject]@{
+            Mode = "Legacy"
+            StartIndex = $startIndex
+            EndIndex = $CurrentStepIndex - 1
+            TotalCount = $loopCount
+            Completed = 0
+        }
+
+        [void]$LoopStack.Value.Add($entry)
+        $legacyEntryIndex = $LoopStack.Value.Count - 1
+    }
+
+    $entry = $LoopStack.Value[$legacyEntryIndex]
+    $entry.Completed++
+
+    if ($entry.TotalCount) {
+        if ($entry.Completed -lt $entry.TotalCount) {
+            $LoopStack.Value[$legacyEntryIndex] = $entry
+            $CurrentIndex.Value = $entry.StartIndex
+            $remaining = $entry.TotalCount - $entry.Completed
+            Write-Host "[ScenarioEngine] LOOP continue (legacy, remaining: $remaining)" -ForegroundColor Cyan
+        } else {
+            $LoopStack.Value.RemoveAt($legacyEntryIndex)
+            Write-Host "[ScenarioEngine] LOOP completed (legacy)" -ForegroundColor Green
+        }
+    } else {
+        if ($token -and $token.IsCancellationRequested) {
+            $LoopStack.Value.RemoveAt($legacyEntryIndex)
+            $result.ShouldBreak = $true
+            Write-Host "[ScenarioEngine] LOOP cancelled (legacy)" -ForegroundColor Yellow
+        } else {
+            $LoopStack.Value[$legacyEntryIndex] = $entry
+            $CurrentIndex.Value = $entry.StartIndex
+            Write-Host "[ScenarioEngine] LOOP continue (legacy iterations completed: $($entry.Completed))" -ForegroundColor Cyan
+        }
+    }
+
+    return $result
+}
+
+
+function Get-LoopCountFromParameters {
+    param(
+        [object[]]$Values
+    )
+
+    foreach ($value in $Values) {
+        if ($null -eq $value) {
+            continue
+        }
+
+        $text = $value.ToString().Trim()
+        if (-not $text) {
+            continue
+        }
+
+        if ($text -match '^COUNT\s*=\s*(\d+)$') {
+            return [int]$Matches[1]
+        }
+
+        if ($text -match '^TIMES\s*=\s*(\d+)$') {
+            return [int]$Matches[1]
+        }
+
+        if ($text -match '^REPEAT\s*=\s*(\d+)$') {
+            return [int]$Matches[1]
+        }
+
+        if ($text -match '^\d+$') {
+            return [int]$text
+        }
+    }
+
+    return $null
+}
+
+function Get-LoopLabelFromParameters {
+    param(
+        [object[]]$Values
+    )
+
+    foreach ($value in $Values) {
+        if ($null -eq $value) {
+            continue
+        }
+
+        $text = $value.ToString().Trim()
+        if (-not $text) {
+            continue
+        }
+
+        if ($text -match '^(LABEL|NAME|ID)\s*=\s*(.+)$') {
+            return $Matches[2].Trim()
+        }
+    }
+
+    return $null
+}
+
+function Get-StepIndexFromParameter {
+    param(
+        $Value
+    )
+
+    if ($null -eq $Value) {
+        return $null
+    }
+
+    $text = $Value.ToString().Trim()
+    if (-not $text) {
+        return $null
+    }
+
+    if ($text -match '^(FROM|START|STEP|INDEX)\s*=\s*(\d+)$') {
+        return [int]$Matches[2] - 1
+    }
+
+    if ($text -match '^(TO|END)\s*=\s*(\d+)$') {
+        return [int]$Matches[2] - 1
+    }
+
+    if ($text -match '^\d+$') {
+        return [int]$text - 1
+    }
+
+    return $null
+}
+
+    # å¤‰æ•°å±•é–‹
     $expandedValue = Expand-MessageVariables -Template $varValue -Variables $Connection.Variables
     
-    # •Ï”İ’è
+    # å¤‰æ•°è¨­å®š
     $Connection.Variables[$varName] = $expandedValue
     
     Write-Host "[ScenarioEngine] Set variable '$varName' = '$expandedValue'" -ForegroundColor Green
@@ -280,7 +536,7 @@ function Invoke-SetVarAction {
 function Invoke-IfAction {
     param($Connection, $Step)
     
-    # ŠÈˆÕ“I‚ÈğŒ”»’èi«—ˆŠg’£j
+    # ç°¡æ˜“çš„ãªæ¡ä»¶åˆ¤å®šï¼ˆå°†æ¥æ‹¡å¼µï¼‰
     Write-Warning "[ScenarioEngine] IF action not fully implemented"
 }
 
@@ -295,7 +551,7 @@ function Invoke-CallScriptAction {
     }
     
     try {
-        # ƒXƒNƒŠƒvƒgÀs
+        # ã‚¹ã‚¯ãƒªãƒ—ãƒˆå®Ÿè¡Œ
         & $scriptPath -Connection $Connection | Out-Null
         
         Write-Host "[ScenarioEngine] Script executed: $scriptPath" -ForegroundColor Green
