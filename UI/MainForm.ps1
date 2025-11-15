@@ -97,60 +97,11 @@ function Show-MainForm {
     $btnDisconnect.Text = "Disconnect"
     $form.Controls.Add($btnDisconnect)
 
-    # Scenario controls
-    $grpScenario = New-Object System.Windows.Forms.GroupBox
-    $grpScenario.Text = "Scenario Control"
-    $grpScenario.Location = New-Object System.Drawing.Point(10, 290)
-    $grpScenario.Size = New-Object System.Drawing.Size(570, 150)
-
-    $lblScenarioList = New-Object System.Windows.Forms.Label
-    $lblScenarioList.Location = New-Object System.Drawing.Point(10, 25)
-    $lblScenarioList.Size = New-Object System.Drawing.Size(150, 20)
-    $lblScenarioList.Text = "Available Scenarios"
-    $grpScenario.Controls.Add($lblScenarioList)
-
-    $lstScenarios = New-Object System.Windows.Forms.ListBox
-    $lstScenarios.Location = New-Object System.Drawing.Point(10, 50)
-    $lstScenarios.Size = New-Object System.Drawing.Size(250, 60)
-    $grpScenario.Controls.Add($lstScenarios)
-
-    $txtScenarioPath = New-Object System.Windows.Forms.TextBox
-    $txtScenarioPath.Location = New-Object System.Drawing.Point(270, 50)
-    $txtScenarioPath.Size = New-Object System.Drawing.Size(285, 23)
-    $txtScenarioPath.ReadOnly = $true
-    $grpScenario.Controls.Add($txtScenarioPath)
-
-    $btnScenarioRefresh = New-Object System.Windows.Forms.Button
-    $btnScenarioRefresh.Location = New-Object System.Drawing.Point(10, 115)
-    $btnScenarioRefresh.Size = New-Object System.Drawing.Size(80, 25)
-    $btnScenarioRefresh.Text = "Refresh"
-    $grpScenario.Controls.Add($btnScenarioRefresh)
-
-    $btnScenarioBrowse = New-Object System.Windows.Forms.Button
-    $btnScenarioBrowse.Location = New-Object System.Drawing.Point(100, 115)
-    $btnScenarioBrowse.Size = New-Object System.Drawing.Size(80, 25)
-    $btnScenarioBrowse.Text = "Browse..."
-    $grpScenario.Controls.Add($btnScenarioBrowse)
-
-    $btnScenarioRun = New-Object System.Windows.Forms.Button
-    $btnScenarioRun.Location = New-Object System.Drawing.Point(270, 115)
-    $btnScenarioRun.Size = New-Object System.Drawing.Size(140, 25)
-    $btnScenarioRun.Text = "Run Scenario"
-    $grpScenario.Controls.Add($btnScenarioRun)
-
-    $btnScenarioOpenFolder = New-Object System.Windows.Forms.Button
-    $btnScenarioOpenFolder.Location = New-Object System.Drawing.Point(420, 115)
-    $btnScenarioOpenFolder.Size = New-Object System.Drawing.Size(135, 25)
-    $btnScenarioOpenFolder.Text = "Open Folder"
-    $grpScenario.Controls.Add($btnScenarioOpenFolder)
-
-    $form.Controls.Add($grpScenario)
-
     # Quick sender controls
     $grpQuick = New-Object System.Windows.Forms.GroupBox
     $grpQuick.Text = "Quick Sender"
-    $grpQuick.Location = New-Object System.Drawing.Point(605, 290)
-    $grpQuick.Size = New-Object System.Drawing.Size(570, 150)
+    $grpQuick.Location = New-Object System.Drawing.Point(10, 290)
+    $grpQuick.Size = New-Object System.Drawing.Size(1165, 150)
 
     $lblCategory = New-Object System.Windows.Forms.Label
     $lblCategory.Location = New-Object System.Drawing.Point(10, 25)
@@ -234,6 +185,7 @@ function Show-MainForm {
     # State holders
     $currentDataBank = @()
     $suppressCategoryEvent = $false
+    $suppressScenarioEvent = $false
     $lastSelectedConnectionId = $null
 
     $getSelectedConnection = {
@@ -255,35 +207,6 @@ function Show-MainForm {
         }
 
         return $null
-    }
-
-    $refreshScenarioList = {
-        param($connection)
-
-        $lstScenarios.Items.Clear()
-        $txtScenarioPath.Clear()
-
-        if (-not $connection) {
-            return
-        }
-
-        if (-not $connection.Variables.ContainsKey('InstancePath')) {
-            return
-        }
-
-        $instancePath = $connection.Variables['InstancePath']
-        if (-not $instancePath) {
-            return
-        }
-
-        try {
-            $scenarios = Get-InstanceScenarios -InstancePath $instancePath
-            foreach ($scenario in $scenarios) {
-                [void]$lstScenarios.Items.Add($scenario)
-            }
-        } catch {
-            [System.Windows.Forms.MessageBox]::Show("Failed to load scenarios: $_", "Error") | Out-Null
-        }
     }
 
     $refreshQuickSender = {
@@ -371,7 +294,6 @@ function Show-MainForm {
 
         $lastSelectedConnectionId = $connectionId
 
-        & $refreshScenarioList $connection
         & $refreshQuickSender $connection
     }
 
@@ -469,89 +391,72 @@ function Show-MainForm {
         }
 
         $cell = $row.Cells["Scenario"]
-        $selectedKey = $cell.Value
-        $profilePath = $null
-        $mapping = $cell.Tag
-        if ($mapping -and $selectedKey -and $mapping.ContainsKey($selectedKey)) {
-            $profilePath = $mapping[$selectedKey]
+        $tagData = $cell.Tag
+        $mapping = $null
+        $currentProfileKey = ""
+
+        if ($tagData -is [System.Collections.IDictionary] -and $tagData.ContainsKey("Mapping") -and $tagData.ContainsKey("ProfileKey")) {
+            $mapping = $tagData["Mapping"]
+            $currentProfileKey = $tagData["ProfileKey"]
+        } elseif ($tagData -is [System.Collections.IDictionary]) {
+            $mapping = $tagData
         }
 
-        try {
-            Set-ConnectionAutoResponseProfile -ConnectionId $connId -ProfileName $selectedKey -ProfilePath $profilePath | Out-Null
-        } catch {
-            [System.Windows.Forms.MessageBox]::Show("Failed to apply auto-response profile: $_", "Error") | Out-Null
-        }
-    })
-
-    $lstScenarios.Add_SelectedIndexChanged({
-        if ($lstScenarios.SelectedItem) {
-            $connection = & $getSelectedConnection
-            if ($connection -and $connection.Variables.ContainsKey('InstancePath')) {
-                $scenarioRoot = Join-Path $connection.Variables['InstancePath'] "scenarios"
-                $fullPath = Join-Path $scenarioRoot $lstScenarios.SelectedItem
-                $txtScenarioPath.Text = $fullPath
-            }
-        } else {
-            $txtScenarioPath.Clear()
-        }
-    })
-
-    $lstScenarios.Add_DoubleClick({
-        $btnScenarioRun.PerformClick()
-    })
-
-    $btnScenarioRefresh.Add_Click({
-        $connection = & $getSelectedConnection
-        & $refreshScenarioList $connection
-    })
-
-    $btnScenarioBrowse.Add_Click({
-        $connection = & $getSelectedConnection
-        $dialog = New-Object System.Windows.Forms.OpenFileDialog
-        $dialog.Filter = "CSV Files (*.csv)|*.csv|All Files (*.*)|*.*"
-        if ($connection -and $connection.Variables.ContainsKey('InstancePath')) {
-            $scenarioDir = Join-Path $connection.Variables['InstancePath'] "scenarios"
-            if (Test-Path $scenarioDir) {
-                $dialog.InitialDirectory = $scenarioDir
-            }
+        $selectedKey = if ($cell.Value) { [string]$cell.Value } else { "" }
+        $entry = $null
+        if ($mapping -and $mapping.ContainsKey($selectedKey)) {
+            $entry = $mapping[$selectedKey]
         }
 
-        if ($dialog.ShowDialog() -eq [System.Windows.Forms.DialogResult]::OK) {
-            $txtScenarioPath.Text = $dialog.FileName
-        }
-    })
-
-    $btnScenarioOpenFolder.Add_Click({
-        $connection = & $getSelectedConnection
-        if ($connection -and $connection.Variables.ContainsKey('InstancePath')) {
-            $scenarioDir = Join-Path $connection.Variables['InstancePath'] "scenarios"
-            if (Test-Path $scenarioDir) {
-                Start-Process "explorer.exe" $scenarioDir
+        if ($entry -and $entry.Type -eq "Scenario") {
+            $scenarioPath = $entry.Path
+            if (-not $scenarioPath -or -not (Test-Path -LiteralPath $scenarioPath)) {
+                [System.Windows.Forms.MessageBox]::Show("Scenario file not found: $($entry.Name)", "Warning") | Out-Null
             } else {
-                [System.Windows.Forms.MessageBox]::Show("Scenario folder not found:`n$scenarioDir", "Information") | Out-Null
+                try {
+                    Start-Scenario -ConnectionId $connId -ScenarioPath $scenarioPath
+                    [System.Windows.Forms.MessageBox]::Show("Scenario started: $($entry.Name)", "Success") | Out-Null
+                } catch {
+                    [System.Windows.Forms.MessageBox]::Show("Failed to start scenario: $_", "Error") | Out-Null
+                }
             }
-        }
-    })
 
-    $btnScenarioRun.Add_Click({
-        $connection = & $getSelectedConnection
-        if (-not $connection) {
-            [System.Windows.Forms.MessageBox]::Show("Please select a connection first.", "Warning") | Out-Null
+            if ($currentProfileKey -ne $selectedKey) {
+                $suppressScenarioEvent = $true
+                try {
+                    $cell.Value = $currentProfileKey
+                } finally {
+                    $suppressScenarioEvent = $false
+                }
+                $sender.InvalidateCell($cell)
+            }
+
             return
         }
 
-        $scenarioPath = $txtScenarioPath.Text
-        if (-not $scenarioPath -or -not (Test-Path $scenarioPath)) {
-            [System.Windows.Forms.MessageBox]::Show("Scenario file not found. Please choose a scenario.", "Warning") | Out-Null
-            return
+        $profileName = $null
+        $profilePath = $null
+        if ($entry -and $entry.Type -eq "Profile") {
+            $profileName = $entry.Name
+            $profilePath = $entry.Path
         }
 
         try {
-            Start-Scenario -ConnectionId $connection.Id -ScenarioPath $scenarioPath
-            $scenarioName = [System.IO.Path]::GetFileName($scenarioPath)
-            [System.Windows.Forms.MessageBox]::Show("Scenario started: $scenarioName", "Success") | Out-Null
+            Set-ConnectionAutoResponseProfile -ConnectionId $connId -ProfileName $profileName -ProfilePath $profilePath | Out-Null
+            if ($tagData -is [System.Collections.IDictionary] -and $tagData.ContainsKey("ProfileKey")) {
+                $tagData["ProfileKey"] = $selectedKey
+            }
         } catch {
-            [System.Windows.Forms.MessageBox]::Show("Failed to start scenario: $_", "Error") | Out-Null
+            if ($currentProfileKey -ne $selectedKey) {
+                $suppressScenarioEvent = $true
+                try {
+                    $cell.Value = $currentProfileKey
+                } finally {
+                    $suppressScenarioEvent = $false
+                }
+                $sender.InvalidateCell($cell)
+            }
+            [System.Windows.Forms.MessageBox]::Show("Failed to apply auto-response profile: $_", "Error") | Out-Null
         }
     })
 
@@ -707,10 +612,20 @@ function Update-InstanceList {
 
         try {
             $suppressScenarioEvent = $true
-            $items = New-Object System.Collections.ArrayList
-            [void]$items.Add([PSCustomObject]@{ Display = "(None)"; Key = ""; Path = $null })
 
+            $items = New-Object System.Collections.ArrayList
             $mapping = @{}
+
+            $noneEntry = [PSCustomObject]@{
+                Display = "(None)"
+                Key     = ""
+                Type    = "Profile"
+                Name    = $null
+                Path    = $null
+            }
+            [void]$items.Add($noneEntry)
+            $mapping[$noneEntry.Key] = $noneEntry
+
             $currentProfile = ""
             $currentPath = $null
             if ($conn.Variables.ContainsKey('AutoResponseProfile')) {
@@ -720,30 +635,77 @@ function Update-InstanceList {
                 $currentPath = $conn.Variables['AutoResponseProfilePath']
             }
 
-            $profiles = @()
+            $instancePath = $null
             if ($conn.Variables.ContainsKey('InstancePath')) {
                 $instancePath = $conn.Variables['InstancePath']
-                if ($instancePath) {
-                    try {
-                        $profiles = Get-InstanceAutoResponseProfiles -InstancePath $instancePath
-                    } catch {
-                        $profiles = @()
-                    }
+            }
+
+            $profiles = @()
+            if ($instancePath) {
+                try {
+                    $profiles = Get-InstanceAutoResponseProfiles -InstancePath $instancePath
+                } catch {
+                    $profiles = @()
                 }
             }
 
             foreach ($profile in $profiles) {
-                [void]$items.Add([PSCustomObject]@{ Display = $profile.DisplayName; Key = $profile.Name; Path = $profile.FilePath })
-                if ($profile.Name) {
-                    $mapping[$profile.Name] = $profile.FilePath
+                if ([string]::IsNullOrWhiteSpace($profile.Name)) {
+                    continue
+                }
+
+                $key = "profile::$($profile.Name)"
+                $entry = [PSCustomObject]@{
+                    Display = $profile.DisplayName
+                    Key     = $key
+                    Type    = "Profile"
+                    Name    = $profile.Name
+                    Path    = $profile.FilePath
+                }
+
+                [void]$items.Add($entry)
+                $mapping[$key] = $entry
+            }
+
+            $currentKey = ""
+            if ($currentProfile) {
+                $currentKey = "profile::$currentProfile"
+                if (-not $mapping.ContainsKey($currentKey)) {
+                    $displayName = if ($currentPath) { "$currentProfile (missing)" } else { $currentProfile }
+                    $entry = [PSCustomObject]@{
+                        Display = $displayName
+                        Key     = $currentKey
+                        Type    = "Profile"
+                        Name    = $currentProfile
+                        Path    = $currentPath
+                    }
+                    [void]$items.Add($entry)
+                    $mapping[$currentKey] = $entry
                 }
             }
 
-            if ($currentProfile -and -not $mapping.ContainsKey($currentProfile)) {
-                $displayName = if ($currentPath) { "$currentProfile (missing)" } else { $currentProfile }
-                [void]$items.Add([PSCustomObject]@{ Display = $displayName; Key = $currentProfile; Path = $currentPath })
-                if ($currentPath) {
-                    $mapping[$currentProfile] = $currentPath
+            if ($instancePath) {
+                try {
+                    $scenarioFiles = Get-InstanceScenarios -InstancePath $instancePath
+                } catch {
+                    $scenarioFiles = @()
+                }
+
+                if ($scenarioFiles -and $scenarioFiles.Count -gt 0) {
+                    $scenarioRoot = Join-Path $instancePath "scenarios"
+                    foreach ($scenario in $scenarioFiles) {
+                        $scenarioKey = "scenario::$scenario"
+                        $scenarioPath = Join-Path $scenarioRoot $scenario
+                        $entry = [PSCustomObject]@{
+                            Display = "▶ $scenario"
+                            Key     = $scenarioKey
+                            Type    = "Scenario"
+                            Name    = $scenario
+                            Path    = $scenarioPath
+                        }
+                        [void]$items.Add($entry)
+                        $mapping[$scenarioKey] = $entry
+                    }
                 }
             }
 
@@ -751,8 +713,11 @@ function Update-InstanceList {
             $scenarioCell.DisplayMember = "Display"
             $scenarioCell.ValueMember = "Key"
             $scenarioCell.DataSource = $items
-            $scenarioCell.Value = if ($currentProfile) { $currentProfile } else { "" }
-            $scenarioCell.Tag = $mapping
+            $scenarioCell.Value = $currentKey
+            $scenarioCell.Tag = @{
+                Mapping    = $mapping
+                ProfileKey = $currentKey
+            }
             $row.Cells["Scenario"] = $scenarioCell
         } catch {
             $row.Cells["Scenario"].Value = ""
