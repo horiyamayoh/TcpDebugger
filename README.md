@@ -221,6 +221,21 @@ REQUEST,ERROR 500,UTF-8,0,Contains
   1,SET_VAR,counter,10,,counter変数に10を設定
   ```
 
+- **TIMER_START / START_TIMER / TIMER_SEND**: タイマで定周期送信（非同期）
+  ```csv
+  1,TIMER_START,HEARTBEAT ${TIMESTAMP},INTERVAL=2000,NAME=hb,,2秒ごとにハートビート送信
+  2,WAIT_RECV,TIMEOUT=5000,,,受信を待ちながらタイマ送信を継続
+  3,TIMER_STOP,NAME=hb,,,登録済みタイマを停止
+  ```
+  - `Parameter1`: 送信メッセージ（変数展開可）
+  - `Parameter2/3`: `INTERVAL=<ミリ秒>`、`DELAY=<初回遅延>`、`ENCODING=<文字コード>`、`NAME=<識別子>`、`COUNT=<送信回数>` などを指定可能
+
+- **TIMER_STOP / STOP_TIMER**: タイマ停止（`Parameter1=ALL` で全停止）
+  ```csv
+  1,TIMER_STOP,ALL,,,登録済みタイマを全停止
+  ```
+
+
 - **CALL_SCRIPT**: カスタムスクリプト実行
   ```csv
   1,CALL_SCRIPT,Scripts\custom.ps1,,,外部スクリプト実行
