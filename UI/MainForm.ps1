@@ -225,6 +225,7 @@ function Show-MainForm {
     # State holders
     $currentDataBank = @()
     $suppressCategoryEvent = $false
+    $lastSelectedConnectionId = $null
 
     $getSelectedConnection = {
         if ($dgvInstances.SelectedRows.Count -eq 0) {
@@ -346,7 +347,21 @@ function Show-MainForm {
     }
 
     $updateDetails = {
+        param([bool]$ForceRefresh = $false)
+
         $connection = & $getSelectedConnection
+        $connectionId = $null
+
+        if ($connection) {
+            $connectionId = $connection.Id
+        }
+
+        if (-not $ForceRefresh -and $connectionId -eq $lastSelectedConnectionId) {
+            return
+        }
+
+        $lastSelectedConnectionId = $connectionId
+
         & $refreshScenarioList $connection
         & $refreshQuickSender $connection
     }
@@ -354,7 +369,7 @@ function Show-MainForm {
     # Events
     $btnRefresh.Add_Click({
         Update-InstanceList -DataGridView $dgvInstances
-        & $updateDetails
+        & $updateDetails $true
         & $refreshGroupList
     })
 
@@ -378,7 +393,7 @@ function Show-MainForm {
             }
 
             Update-InstanceList -DataGridView $dgvInstances
-            & $updateDetails
+            & $updateDetails $true
         }
     })
 
@@ -402,7 +417,7 @@ function Show-MainForm {
             }
 
             Update-InstanceList -DataGridView $dgvInstances
-            & $updateDetails
+            & $updateDetails $true
         }
     })
 
@@ -585,7 +600,7 @@ function Show-MainForm {
 
     # Initial load
     Update-InstanceList -DataGridView $dgvInstances
-    & $updateDetails
+    & $updateDetails $true
     & $refreshGroupList
 
     # Show form
