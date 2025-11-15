@@ -21,7 +21,6 @@ class ConnectionContext {
     [System.Threading.Thread]$Thread
     [System.Threading.CancellationTokenSource]$CancellationSource
     [hashtable]$ScenarioTimers
-        $this.ScenarioTimers = [System.Collections.Hashtable]::Synchronized(@{})
     [hashtable]$Variables  # シナリオ変数スコープ
     [System.Collections.ArrayList]$SendQueue
     [System.Collections.ArrayList]$RecvBuffer
@@ -31,6 +30,7 @@ class ConnectionContext {
     [string[]]$Tags
     
     ConnectionContext() {
+        $this.ScenarioTimers = [System.Collections.Hashtable]::Synchronized(@{})
         $this.Variables = [System.Collections.Hashtable]::Synchronized(@{})
         $this.SendQueue = [System.Collections.ArrayList]::Synchronized((New-Object System.Collections.ArrayList))
         $this.RecvBuffer = [System.Collections.ArrayList]::Synchronized((New-Object System.Collections.ArrayList))
