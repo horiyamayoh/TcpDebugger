@@ -33,97 +33,122 @@ function Start-Scenario {
     param(
         [Parameter(Mandatory=$true)]
         [string]$ConnectionId,
-        
+
         [Parameter(Mandatory=$true)]
         [string]$ScenarioPath
     )
-    
+
     if (-not $Global:Connections.ContainsKey($ConnectionId)) {
         throw "Connection not found: $ConnectionId"
     }
-    
-    $conn = $Global:Connections[$ConnectionId]
-    
+
     # Load scenario file
     $scenarioSteps = Read-ScenarioFile -FilePath $ScenarioPath
-    $totalSteps = $scenarioSteps.Count
-    
+
+    $scriptBlock = {
+        param(
+            [string]$ConnectionId,
+            [object[]]$ScenarioSteps
+        )
+
+        if (-not $Global:Connections.ContainsKey($ConnectionId)) {
+            Write-Error "[ScenarioEngine] Connection not found inside scenario thread: $ConnectionId"
+            return
+        }
+
+        $connection = $Global:Connections[$ConnectionId]
+        $totalSteps = if ($ScenarioSteps) { $ScenarioSteps.Count } else { 0 }
+        $loopStack = New-Object System.Collections.Generic.List[object]
+
         try {
-            $currentStep = 0
-            foreach ($step in $scenarioSteps) {
-                $currentStep++
-                
-                # キャンセルチェック
-                if ($conn.CancellationSource.Token.IsCancellationRequested) {
+            $stopScenario = $false
+            for ($index = 0; $index -lt $ScenarioSteps.Count; $index++) {
+                $step = $ScenarioSteps[$index]
+                $currentStep = $index + 1
+
+                if ($connection.CancellationSource -and $connection.CancellationSource.Token.IsCancellationRequested) {
                     Write-Host "[ScenarioEngine] Scenario cancelled" -ForegroundColor Yellow
                     break
                 }
-                
+
                 Write-Host "[ScenarioEngine] Step $currentStep/$totalSteps : $($step.Action)" -ForegroundColor Cyan
-                
-                # アクション実行
-                switch ($step.Action) {
+
+                $action = if ($step.Action) { $step.Action.ToUpperInvariant() } else { "" }
+
+                switch ($action) {
                     "SEND" {
-                        Invoke-SendAction -Connection $conn -Step $step
+                        Invoke-SendAction -Connection $connection -Step $step
                     }
                     "SEND_HEX" {
-                        Invoke-SendHexAction -Connection $conn -Step $step
+                        Invoke-SendHexAction -Connection $connection -Step $step
                     }
                     "SEND_FILE" {
-                        Invoke-SendFileAction -Connection $conn -Step $step
+                        Invoke-SendFileAction -Connection $connection -Step $step
                     }
                     "WAIT_RECV" {
-                        Invoke-WaitRecvAction -Connection $conn -Step $step
+                        Invoke-WaitRecvAction -Connection $connection -Step $step
                     }
                     "SAVE_RECV" {
-                        Invoke-SaveRecvAction -Connection $conn -Step $step
+                        Invoke-SaveRecvAction -Connection $connection -Step $step
                     }
                     "SLEEP" {
-                        Invoke-SleepAction -Connection $conn -Step $step
+                        Invoke-SleepAction -Connection $connection -Step $step
                     }
                     "SET_VAR" {
-                        Invoke-SetVarAction -Connection $conn -Step $step
+                        Invoke-SetVarAction -Connection $connection -Step $step
                     }
                     "IF" {
-                        Invoke-IfAction -Connection $conn -Step $step
+                        Invoke-IfAction -Connection $connection -Step $step
                     }
                     "LOOP" {
-                        # TODO: ループ処理実装
-                        Write-Warning "LOOP action not yet implemented"
+                        $indexRef = [ref]$index
+                        $loopStackRef = [ref]$loopStack
+                        $result = Invoke-LoopAction -Connection $connection -Step $step -ScenarioSteps $ScenarioSteps -CurrentIndex $indexRef -CurrentStepIndex $currentStep -LoopStack $loopStackRef
+                        $index = $indexRef.Value
+                        if ($result.ShouldBreak) {
+                            $stopScenario = $true
+                            break
+                        }
                     }
                     "CALL_SCRIPT" {
-                        Invoke-CallScriptAction -Connection $conn -Step $step
+                        Invoke-CallScriptAction -Connection $connection -Step $step
                     }
                     "DISCONNECT" {
-                        Stop-Connection -ConnectionId $connId
+                        Stop-Connection -ConnectionId $ConnectionId
+                        $stopScenario = $true
                         break
                     }
                     "RECONNECT" {
-                        Stop-Connection -ConnectionId $connId
+                        Stop-Connection -ConnectionId $ConnectionId
                         Start-Sleep -Seconds 1
-                        Start-Connection -ConnectionId $connId
+                        Start-Connection -ConnectionId $ConnectionId
                     }
                     default {
                         Write-Warning "Unknown action: $($step.Action)"
                     }
                 }
+
+                if ($stopScenario) {
+                    break
+                }
             }
-            
+
             Write-Host "[ScenarioEngine] Scenario completed successfully" -ForegroundColor Green
-            
         } catch {
             Write-Error "[ScenarioEngine] Scenario execution error: $_"
         }
     }
-    
+
     # スレッド開始
+    $targetConnectionId = $ConnectionId
+    $localScenarioSteps = @($scenarioSteps)
     $thread = New-Object System.Threading.Thread([System.Threading.ThreadStart]{
-        & $scriptBlock -connId $ConnectionId -scenarioSteps $steps
+        & $scriptBlock -ConnectionId $targetConnectionId -ScenarioSteps $localScenarioSteps
     })
-    
+
     $thread.IsBackground = $true
     $thread.Start()
-    
+
     Write-Host "[ScenarioEngine] Scenario thread started" -ForegroundColor Green
 }
 
@@ -255,9 +280,29 @@ function Invoke-SleepAction {
 
 function Invoke-SetVarAction {
     param($Connection, $Step)
-    
+
     $varName = $Step.Parameter1
     $varValue = $Step.Parameter2
+
+    if ($varName -like "VAR_NAME=*") {
+        $varName = $varName -replace '^VAR_NAME=', ''
+    }
+
+    if ($varValue -like "VALUE=*") {
+        $varValue = $varValue -replace '^VALUE=', ''
+    }
+
+    if ([string]::IsNullOrWhiteSpace($varName)) {
+        Write-Warning "[ScenarioEngine] SET_VAR requires a variable name"
+        return
+    }
+
+    $expandedValue = Expand-MessageVariables -Template $varValue -Variables $Connection.Variables
+
+    $Connection.Variables[$varName] = $expandedValue
+
+    Write-Host "[ScenarioEngine] Set variable '$varName' = '$expandedValue'" -ForegroundColor Green
+}
     
 function Invoke-LoopAction {
     param(
