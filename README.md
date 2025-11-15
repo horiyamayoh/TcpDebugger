@@ -156,6 +156,28 @@ $connectionId = "example-server"
 Start-Scenario -ConnectionId $connectionId -ScenarioPath $scenarioPath
 ```
 
+### 6. 自動応答プロファイルの切り替え
+
+- 各インスタンスフォルダの `scenarios/auto/` 配下に、受信トリガーと応答内容を定義したCSVファイルを配置します。
+- 一覧画面の **Auto Response** 列からプロファイルを選択すると、選択中の接続に即座に適用されます。
+- プロファイルを「(None)」に戻すと自動応答を無効化できます。
+
+**例: Instances/Example/scenarios/auto/normal.csv**
+
+```csv
+TriggerPattern,ResponseTemplate,Encoding,Delay,MatchType
+PING,PONG,UTF-8,0,Exact
+REQUEST,OK ${TIMESTAMP},UTF-8,100,Contains
+```
+
+**例: Instances/Example/scenarios/auto/error.csv**
+
+```csv
+TriggerPattern,ResponseTemplate,Encoding,Delay,MatchType
+PING,ERROR_TIMEOUT,UTF-8,3000,Exact
+REQUEST,ERROR 500,UTF-8,0,Contains
+```
+
 ## シナリオアクション
 
 ### 送信アクション
