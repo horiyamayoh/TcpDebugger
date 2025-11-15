@@ -1,0 +1,4 @@
+TemplateName,MessageFormat,Encoding
+MSG_HELLO,Hello from ${HOSTNAME} at ${TIMESTAMP},UTF-8
+MSG_STATUS,STATUS OK,UTF-8
+MSG_ACK,ACK,ASCII
