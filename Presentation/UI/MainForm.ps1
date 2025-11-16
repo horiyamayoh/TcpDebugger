@@ -1,4 +1,4 @@
-﻿# MainForm.ps1
+# MainForm.ps1
 # WinForms main window definition
 
 Add-Type -AssemblyName System.Windows.Forms
@@ -19,11 +19,9 @@ function Get-UiConnection {
         [Parameter(Mandatory = $true)]
         [string]$ConnectionId
     )
-
     if ([string]::IsNullOrWhiteSpace($ConnectionId)) {
         return $null
     }
-
     $service = Get-UiConnectionService
     return $service.GetConnection($ConnectionId)
 }
@@ -33,819 +31,63 @@ function Get-UiConnections {
     return $service.GetAllConnections()
 }
 
-function New-UiMainForm {
-    param(
-        [string]$Title,
-        [System.Drawing.Size]$Size,
-        [System.Drawing.Font]$Font
-    )
-
-    $form = New-Object System.Windows.Forms.Form
-    $form.Text = $Title
-    $form.Size = $Size
-    $form.StartPosition = "CenterScreen"
-    $form.Font = $Font
-
-    return $form
-}
-
-function New-UiInstanceGrid {
-    param(
-        [System.Drawing.Point]$Location,
-        [System.Drawing.Size]$Size
-    )
-    $dgvInstances = New-Object System.Windows.Forms.DataGridView
-    $dgvInstances.Location = $Location
-    $dgvInstances.Size = $Size
-    $dgvInstances.AllowUserToAddRows = $false
-    $dgvInstances.AllowUserToDeleteRows = $false
-    $dgvInstances.AllowUserToResizeRows = $false
-    $dgvInstances.RowHeadersVisible = $false
-    $dgvInstances.ReadOnly = $false
-    $dgvInstances.SelectionMode = "FullRowSelect"
-    $dgvInstances.MultiSelect = $false
-    $dgvInstances.AutoSizeColumnsMode = "Fill"
-    $dgvInstances.AutoGenerateColumns = $false
-    $dgvInstances.EditMode = [System.Windows.Forms.DataGridViewEditMode]::EditOnEnter
-
-    Add-InstanceGridColumns -DataGridView $dgvInstances
-
-    return $dgvInstances
-}
-
-function Add-InstanceGridColumns {
-    param(
-        [Parameter(Mandatory = $true)]
-        [System.Windows.Forms.DataGridView]$DataGridView
-    )
-
-    $colName = New-Object System.Windows.Forms.DataGridViewTextBoxColumn
-    $colName.HeaderText = "Name"
-    $colName.Name = "Name"
-    $colName.ReadOnly = $true
-    $colName.FillWeight = 150
-    $DataGridView.Columns.Add($colName) | Out-Null
-
-    $colProtocol = New-Object System.Windows.Forms.DataGridViewTextBoxColumn
-    $colProtocol.HeaderText = "Protocol"
-    $colProtocol.Name = "Protocol"
-    $colProtocol.ReadOnly = $true
-    $colProtocol.FillWeight = 110
-    $DataGridView.Columns.Add($colProtocol) | Out-Null
-
-    $colEndpoint = New-Object System.Windows.Forms.DataGridViewTextBoxColumn
-    $colEndpoint.HeaderText = "Endpoint"
-    $colEndpoint.Name = "Endpoint"
-    $colEndpoint.ReadOnly = $true
-    $colEndpoint.FillWeight = 160
-    $DataGridView.Columns.Add($colEndpoint) | Out-Null
-
-    $colStatus = New-Object System.Windows.Forms.DataGridViewTextBoxColumn
-    $colStatus.HeaderText = "Status"
-    $colStatus.Name = "Status"
-    $colStatus.ReadOnly = $true
-    $colStatus.FillWeight = 100
-    $DataGridView.Columns.Add($colStatus) | Out-Null
-
-    $colAutoResponse = New-Object System.Windows.Forms.DataGridViewComboBoxColumn
-    $colAutoResponse.HeaderText = "Auto Response"
-    $colAutoResponse.Name = "Scenario"
-    $colAutoResponse.DisplayMember = "Display"
-    $colAutoResponse.ValueMember = "Key"
-    $colAutoResponse.ValueType = [string]
-    $colAutoResponse.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
-    $colAutoResponse.FillWeight = 140
-    $DataGridView.Columns.Add($colAutoResponse) | Out-Null
-
-    $colOnReceived = New-Object System.Windows.Forms.DataGridViewComboBoxColumn
-    $colOnReceived.HeaderText = "On Received"
-    $colOnReceived.Name = "OnReceived"
-    $colOnReceived.DisplayMember = "Display"
-    $colOnReceived.ValueMember = "Key"
-    $colOnReceived.ValueType = [string]
-    $colOnReceived.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
-    $colOnReceived.FillWeight = 140
-    $DataGridView.Columns.Add($colOnReceived) | Out-Null
-
-    $colPeriodicSend = New-Object System.Windows.Forms.DataGridViewComboBoxColumn
-    $colPeriodicSend.HeaderText = "Periodic Send"
-    $colPeriodicSend.Name = "PeriodicSend"
-    $colPeriodicSend.DisplayMember = "Display"
-    $colPeriodicSend.ValueMember = "Key"
-    $colPeriodicSend.ValueType = [string]
-    $colPeriodicSend.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
-    $colPeriodicSend.FillWeight = 140
-    $DataGridView.Columns.Add($colPeriodicSend) | Out-Null
-
-    $colQuickData = New-Object System.Windows.Forms.DataGridViewComboBoxColumn
-    $colQuickData.HeaderText = "Quick Data"
-    $colQuickData.Name = "QuickData"
-    $colQuickData.DisplayMember = "Display"
-    $colQuickData.ValueMember = "Key"
-    $colQuickData.ValueType = [string]
-    $colQuickData.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
-    $colQuickData.FillWeight = 170
-    $DataGridView.Columns.Add($colQuickData) | Out-Null
-
-    $colQuickSend = New-Object System.Windows.Forms.DataGridViewButtonColumn
-    $colQuickSend.HeaderText = "Send"
-    $colQuickSend.Name = "QuickSend"
-    $colQuickSend.Text = "Send"
-    $colQuickSend.UseColumnTextForButtonValue = $true
-    $colQuickSend.FillWeight = 70
-    $DataGridView.Columns.Add($colQuickSend) | Out-Null
-
-    $colQuickAction = New-Object System.Windows.Forms.DataGridViewComboBoxColumn
-    $colQuickAction.HeaderText = "Quick Action"
-    $colQuickAction.Name = "QuickAction"
-    $colQuickAction.DisplayMember = "Display"
-    $colQuickAction.ValueMember = "Key"
-    $colQuickAction.ValueType = [string]
-    $colQuickAction.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
-    $colQuickAction.FillWeight = 170
-    $DataGridView.Columns.Add($colQuickAction) | Out-Null
-
-    $colActionSend = New-Object System.Windows.Forms.DataGridViewButtonColumn
-    $colActionSend.HeaderText = "Run"
-    $colActionSend.Name = "ActionSend"
-    $colActionSend.Text = "Run"
-    $colActionSend.UseColumnTextForButtonValue = $true
-    $colActionSend.FillWeight = 70
-    $DataGridView.Columns.Add($colActionSend) | Out-Null
-
-    $colId = New-Object System.Windows.Forms.DataGridViewTextBoxColumn
-    $colId.HeaderText = "Id"
-    $colId.Name = "Id"
-    $colId.ReadOnly = $true
-    $colId.Visible = $false
-    $DataGridView.Columns.Add($colId) | Out-Null
-}
-
-function New-UiToolbarButton {
-    param(
-        [string]$Text,
-        [System.Drawing.Point]$Location
-    )
-
-    $button = New-Object System.Windows.Forms.Button
-    $button.Location = $Location
-    $button.Size = New-Object System.Drawing.Size(100, 30)
-    $button.Text = $Text
-
-    return $button
-}
-
-function New-UiLabel {
-    param(
-        [string]$Text,
-        [System.Drawing.Point]$Location,
-        [System.Drawing.Size]$Size
-    )
-
-    $label = New-Object System.Windows.Forms.Label
-    $label.Location = $Location
-    $label.Size = $Size
-    $label.Text = $Text
-
-    return $label
-}
-
-function New-UiLogTextBox {
-    param(
-        [System.Drawing.Point]$Location,
-        [System.Drawing.Size]$Size,
-        [System.Drawing.Font]$Font
-    )
-
-    $textBox = New-Object System.Windows.Forms.TextBox
-    $textBox.Location = $Location
-    $textBox.Size = $Size
-    $textBox.Multiline = $true
-    $textBox.ScrollBars = "Vertical"
-    $textBox.ReadOnly = $true
-    $textBox.Font = $Font
-
-    return $textBox
-}
-
 function Show-MainForm {
     <#
     .SYNOPSIS
     Show the main WinForms UI.
     #>
 
-    # Create main form
-    $form = New-UiMainForm -Title "TCP Test Controller v1.0" -Size (New-Object System.Drawing.Size(1200, 700)) -Font (New-Object System.Drawing.Font("Segoe UI", 9))
+    # Create main form using ViewBuilder
+    $form = New-MainFormWindow -Title "TCP Test Controller v1.0" -Width 1200 -Height 700
     $script:CurrentMainForm = $form
 
-    # DataGridView (connection list)
-    $dgvInstances = New-UiInstanceGrid -Location (New-Object System.Drawing.Point(10, 50)) -Size (New-Object System.Drawing.Size(1160, 230))
-
+    # DataGridView (connection list) using ViewBuilder
+    $dgvInstances = New-ConnectionDataGridView -X 10 -Y 50 -Width 1160 -Height 230
     $form.Controls.Add($dgvInstances)
 
-    # Toolbar buttons
-    $btnRefresh = New-UiToolbarButton -Text "Refresh" -Location (New-Object System.Drawing.Point(10, 10))
+    # Toolbar buttons using ViewBuilder
+    $btnRefresh = New-ToolbarButton -Text "Refresh" -X 10 -Y 10
     $form.Controls.Add($btnRefresh)
 
-    $btnConnect = New-UiToolbarButton -Text "Connect" -Location (New-Object System.Drawing.Point(120, 10))
+    $btnConnect = New-ToolbarButton -Text "Connect" -X 120 -Y 10
     $form.Controls.Add($btnConnect)
 
-    $btnDisconnect = New-UiToolbarButton -Text "Disconnect" -Location (New-Object System.Drawing.Point(230, 10))
+    $btnDisconnect = New-ToolbarButton -Text "Disconnect" -X 230 -Y 10
     $form.Controls.Add($btnDisconnect)
 
-    # Log area
-    $lblLog = New-UiLabel -Text "Connection Log:" -Location (New-Object System.Drawing.Point(10, 290)) -Size (New-Object System.Drawing.Size(200, 20))
+    # Log area using ViewBuilder
+    $lblLog = New-LabelControl -Text "Connection Log:" -X 10 -Y 290 -Width 200 -Height 20
     $form.Controls.Add($lblLog)
 
-    $txtLog = New-UiLogTextBox -Location (New-Object System.Drawing.Point(10, 315)) -Size (New-Object System.Drawing.Size(1165, 335)) -Font (New-Object System.Drawing.Font("Consolas", 9))
+    $txtLog = New-LogTextBox -X 10 -Y 315 -Width 1165 -Height 335
     $form.Controls.Add($txtLog)
 
     # State holders
     $script:suppressScenarioEvent = $false
-    $gridEditingInProgress = $false
-    $pendingComboDropDownColumn = $null
     $script:suppressOnReceivedEvent = $false
     $script:suppressPeriodicSendEvent = $false
-
-    $getSelectedConnection = {
-        if ($dgvInstances.SelectedRows.Count -eq 0) {
-            return $null
-        }
-
-        if (-not $dgvInstances.Columns.Contains("Id")) {
-            return $null
-        }
-
-        $connId = $dgvInstances.SelectedRows[0].Cells["Id"].Value
-        if (-not $connId) {
-            return $null
-        }
-
-        try {
-            return Get-UiConnection -ConnectionId $connId
-        } catch {
-            return $null
-        }
+    $gridState = @{
+        EditingInProgress = $false
+        PendingComboDropDown = $null
     }
 
-    # Events
-    $dgvInstances.Add_CellBeginEdit({
-        $gridEditingInProgress = $true
-    })
-
-    $dgvInstances.Add_CellEndEdit({
-        $gridEditingInProgress = $false
-    })
-
-    $dgvInstances.Add_Leave({
-        $gridEditingInProgress = $false
-    })
-
-    $btnRefresh.Add_Click({
-        Update-InstanceList -DataGridView $dgvInstances
-    })
-
-    $btnConnect.Add_Click({
-        if ($dgvInstances.SelectedRows.Count -eq 0) {
-            return
-        }
-
-        $connId = $dgvInstances.SelectedRows[0].Cells["Id"].Value
-        if (-not $connId) {
-            return
-        }
-
-        try {
-            $conn = Get-UiConnection -ConnectionId $connId
-        } catch {
-            $conn = $null
-        }
-
-        if (-not $conn) {
-            [System.Windows.Forms.MessageBox]::Show("Connection not found: $connId", "Error") | Out-Null
-            return
-        }
-
-        try {
-            Start-Connection -ConnectionId $conn.Id
-            [System.Windows.Forms.MessageBox]::Show("Connection started: $($conn.DisplayName)", "Success") | Out-Null
-        } catch {
-            [System.Windows.Forms.MessageBox]::Show("Failed to start connection: $_", "Error") | Out-Null
-        }
-
-        Update-InstanceList -DataGridView $dgvInstances
-    })
-
-    $btnDisconnect.Add_Click({
-        if ($dgvInstances.SelectedRows.Count -eq 0) {
-            return
-        }
-
-        $connId = $dgvInstances.SelectedRows[0].Cells["Id"].Value
-        if (-not $connId) {
-            return
-        }
-
-        try {
-            $conn = Get-UiConnection -ConnectionId $connId
-        } catch {
-            $conn = $null
-        }
-
-        if (-not $conn) {
-            [System.Windows.Forms.MessageBox]::Show("Connection not found: $connId", "Error") | Out-Null
-            return
-        }
-
-        try {
-            Stop-Connection -ConnectionId $conn.Id
-            [System.Windows.Forms.MessageBox]::Show("Connection stopped: $($conn.DisplayName)", "Success") | Out-Null
-        } catch {
-            [System.Windows.Forms.MessageBox]::Show("Failed to stop connection: $_", "Error") | Out-Null
-        }
-
-        Update-InstanceList -DataGridView $dgvInstances
-    })
-
-    $dgvInstances.Add_CurrentCellDirtyStateChanged({
-        if ($dgvInstances.IsCurrentCellDirty -and $dgvInstances.CurrentCell -and
-            $dgvInstances.CurrentCell.OwningColumn -and
-            $dgvInstances.CurrentCell.OwningColumn.Name -eq "Scenario") {
-            $dgvInstances.CommitEdit([System.Windows.Forms.DataGridViewDataErrorContexts]::Commit)
-        }
-    })
-
-    $dgvInstances.Add_CellValueChanged({
-        param($sender, $args)
-
-        if ($script:suppressScenarioEvent) {
-            return
-        }
-
-        if ($args.ColumnIndex -lt 0 -or $args.RowIndex -lt 0) {
-            return
-        }
-
-        $column = $sender.Columns[$args.ColumnIndex]
-        if ($column.Name -ne "Scenario") {
-            return
-        }
-
-        $row = $sender.Rows[$args.RowIndex]
-        if (-not $row.Cells.Contains("Id")) {
-            return
-        }
-
-        $connId = $row.Cells["Id"].Value
-        if (-not $connId) {
-            return
-        }
-
-        $cell = $row.Cells["Scenario"]
-        $tagData = $cell.Tag
-        $mapping = $null
-        $currentProfileKey = ""
-
-        if ($tagData -is [System.Collections.IDictionary] -and $tagData.ContainsKey("Mapping") -and $tagData.ContainsKey("ProfileKey")) {
-            $mapping = $tagData["Mapping"]
-            $currentProfileKey = $tagData["ProfileKey"]
-        } elseif ($tagData -is [System.Collections.IDictionary]) {
-            $mapping = $tagData
-        }
-
-        if (-not $currentProfileKey) {
-            $currentProfileKey = ""
-        } else {
-            $currentProfileKey = [string]$currentProfileKey
-        }
-
-        $selectedKey = if ($cell.Value) { [string]$cell.Value } else { "" }
-        $entry = $null
-        if ($mapping -and $mapping.ContainsKey($selectedKey)) {
-            $entry = $mapping[$selectedKey]
-        }
-
-        if ($entry -and $entry.Type -eq "Scenario") {
-            $scenarioPath = $entry.Path
-            if (-not $scenarioPath -or -not (Test-Path -LiteralPath $scenarioPath)) {
-                [System.Windows.Forms.MessageBox]::Show("Scenario file not found: $($entry.Name)", "Warning") | Out-Null
-            } else {
-                try {
-                    Start-Scenario -ConnectionId $connId -ScenarioPath $scenarioPath
-                    [System.Windows.Forms.MessageBox]::Show("Scenario started: $($entry.Name)", "Success") | Out-Null
-                } catch {
-                    [System.Windows.Forms.MessageBox]::Show("Failed to start scenario: $_", "Error") | Out-Null
-                }
-            }
-
-            if ($currentProfileKey -ne $selectedKey) {
-                $script:suppressScenarioEvent = $true
-                try {
-                    $cell.Value = $currentProfileKey
-                } finally {
-                    $script:suppressScenarioEvent = $false
-                }
-                $sender.InvalidateCell($cell)
-
-                if ($sender.IsCurrentCellInEditMode) {
-                    try {
-                        $sender.CancelEdit()
-                        $sender.EndEdit()
-                    } catch {
-                        # ignore edit cancellation failures
-                    }
-                }
-            }
-
-            return
-        }
-
-        $profileName = $null
-        $profilePath = $null
-        if ($entry -and $entry.Type -eq "Profile") {
-            $profileName = $entry.Name
-            $profilePath = $entry.Path
-        }
-
-        try {
-            Set-ConnectionAutoResponseProfile -ConnectionId $connId -ProfileName $profileName -ProfilePath $profilePath | Out-Null
-            if ($tagData -is [System.Collections.IDictionary] -and $tagData.ContainsKey("ProfileKey")) {
-                $tagData["ProfileKey"] = $selectedKey
-            }
-        } catch {
-            if ($currentProfileKey -ne $selectedKey) {
-                $script:suppressScenarioEvent = $true
-                try {
-                    $cell.Value = $currentProfileKey
-                } finally {
-                    $script:suppressScenarioEvent = $false
-                }
-                $sender.InvalidateCell($cell)
-            }
-            [System.Windows.Forms.MessageBox]::Show("Failed to apply auto-response profile: $_", "Error") | Out-Null
-        }
-    })
-
-    $dgvInstances.Add_CellValueChanged({
-        param($sender, $args)
-
-        if ($script:suppressOnReceivedEvent) {
-            return
-        }
-
-        if ($args.RowIndex -lt 0) {
-            return
-        }
-
-        $column = $sender.Columns[$args.ColumnIndex]
-        if (-not $column -or $column.Name -ne "OnReceived") {
-            return
-        }
-
-        $row = $sender.Rows[$args.RowIndex]
-        $cell = $row.Cells[$args.ColumnIndex]
-        $connId = $row.Cells["Id"].Value
-
-        if (-not $connId) {
-            return
-        }
-
-        try {
-            $conn = Get-UiConnection -ConnectionId $connId
-        } catch {
-            return
-        }
-
-        $tagData = $cell.Tag
-        $mapping = $null
-        $currentProfileKey = ""
-        if ($tagData -is [System.Collections.IDictionary]) {
-            if ($tagData.ContainsKey("Mapping")) {
-                $mapping = $tagData["Mapping"]
-            }
-            if ($tagData.ContainsKey("OnReceivedProfileKey")) {
-                $currentProfileKey = [string]$tagData["OnReceivedProfileKey"]
-            }
-        }
-
-        $selectedKey = if ($cell.Value) { [string]$cell.Value } else { "" }
-        if ($selectedKey -eq $currentProfileKey) {
-            return
-        }
-
-        $entry = $null
-        if ($mapping -and $mapping.ContainsKey($selectedKey)) {
-            $entry = $mapping[$selectedKey]
-        }
-
-        $profileName = $null
-        $profilePath = $null
-        if ($entry -and $entry.Type -eq "Profile") {
-            $profileName = $entry.Name
-            $profilePath = $entry.Path
-        }
-
-        try {
-            Set-ConnectionOnReceivedProfile -ConnectionId $connId -ProfileName $profileName -ProfilePath $profilePath | Out-Null
-            if ($tagData -is [System.Collections.IDictionary]) {
-                $tagData["OnReceivedProfileKey"] = $selectedKey
-            }
-        } catch {
-            if ($currentProfileKey -ne $selectedKey) {
-                $script:suppressOnReceivedEvent = $true
-                try {
-                    $cell.Value = $currentProfileKey
-                } finally {
-                    $script:suppressOnReceivedEvent = $false
-                }
-                $sender.InvalidateCell($cell)
-            }
-            [System.Windows.Forms.MessageBox]::Show("Failed to apply OnReceived profile: $_", "Error") | Out-Null
-        }
-    })
-
-    # Periodic Send profile change handler
-    $dgvInstances.Add_CellValueChanged({
-        param($sender, $args)
-
-        if ($script:suppressPeriodicSendEvent) {
-            return
-        }
-
-        if ($args.RowIndex -lt 0) {
-            return
-        }
-
-        $column = $sender.Columns[$args.ColumnIndex]
-        if (-not $column -or $column.Name -ne "PeriodicSend") {
-            return
-        }
-
-        $row = $sender.Rows[$args.RowIndex]
-        $cell = $row.Cells[$args.ColumnIndex]
-        $connId = $row.Cells["Id"].Value
-
-        if (-not $connId) {
-            return
-        }
-
-        try {
-            $conn = Get-UiConnection -ConnectionId $connId
-        } catch {
-            return
-        }
-
-        $tagData = $cell.Tag
-        $mapping = $null
-        $currentProfileKey = ""
-        if ($tagData -is [System.Collections.IDictionary]) {
-            if ($tagData.ContainsKey("Mapping")) {
-                $mapping = $tagData["Mapping"]
-            }
-            if ($tagData.ContainsKey("PeriodicSendProfileKey")) {
-                $currentProfileKey = [string]$tagData["PeriodicSendProfileKey"]
-            }
-        }
-
-        $selectedKey = if ($cell.Value) { [string]$cell.Value } else { "" }
-        if ($selectedKey -eq $currentProfileKey) {
-            return
-        }
-
-        $entry = $null
-        if ($mapping -and $mapping.ContainsKey($selectedKey)) {
-            $entry = $mapping[$selectedKey]
-        }
-
-        $profilePath = $null
-        if ($entry -and $entry.Type -eq "Profile") {
-            $profilePath = $entry.Path
-        }
-
-        try {
-            $instancePath = $null
-            if ($conn.Variables.ContainsKey('InstancePath')) {
-                $instancePath = $conn.Variables['InstancePath']
-            }
-
-            if (-not $instancePath) {
-                throw "Instance path is not available for this connection."
-            }
-
-            Set-ConnectionPeriodicSendProfile -ConnectionId $connId -ProfilePath $profilePath -InstancePath $instancePath | Out-Null
-            if ($tagData -is [System.Collections.IDictionary]) {
-                $tagData["PeriodicSendProfileKey"] = $selectedKey
-            }
-        } catch {
-            if ($currentProfileKey -ne $selectedKey) {
-                $script:suppressPeriodicSendEvent = $true
-                try {
-                    $cell.Value = $currentProfileKey
-                } finally {
-                    $script:suppressPeriodicSendEvent = $false
-                }
-                $sender.InvalidateCell($cell)
-            }
-            [System.Windows.Forms.MessageBox]::Show("Failed to apply Periodic Send profile: $_", "Error") | Out-Null
-        }
-    })
-
-    $dgvInstances.Add_CellContentClick({
-        param($sender, $args)
-
-        if ($args.RowIndex -lt 0 -or $args.ColumnIndex -lt 0) {
-            return
-        }
-
-        $column = $sender.Columns[$args.ColumnIndex]
-        if (-not $column) {
-            return
-        }
-
-        $row = $sender.Rows[$args.RowIndex]
-        if (-not $row.Cells.Contains("Id")) {
-            return
-        }
-
-        $connId = $row.Cells["Id"].Value
-        if (-not $connId) {
-            return
-        }
-
-        $connection = $null
-        try {
-            $connection = Get-ManagedConnection -ConnectionId $connId
-        } catch {
-            # connection might have been removed; leave $connection = $null for display fallback
-        }
-
-        switch ($column.Name) {
-            "QuickSend" {
-                $comboCell = $row.Cells["QuickData"]
-                if (-not $comboCell) { return }
-
-                $selectedKey = if ($comboCell.Value) { [string]$comboCell.Value } else { "" }
-                if ([string]::IsNullOrWhiteSpace($selectedKey)) {
-                    [System.Windows.Forms.MessageBox]::Show("Please select a data item to send.", "Warning") | Out-Null
-                    return
-                }
-
-                $tagData = $comboCell.Tag
-                $dataBankPath = $null
-                $dataBankCount = 0
-                if ($tagData -is [System.Collections.IDictionary]) {
-                    if ($tagData.ContainsKey("DataBankPath")) {
-                        $dataBankPath = $tagData["DataBankPath"]
-                    }
-                    if ($tagData.ContainsKey("DataBankCount")) {
-                        $dataBankCount = [int]$tagData["DataBankCount"]
-                    }
-                }
-
-                if ($dataBankCount -le 0 -and [string]::IsNullOrWhiteSpace($dataBankPath)) {
-                    [System.Windows.Forms.MessageBox]::Show("No data bank entries available for this connection.", "Warning") | Out-Null
-                    return
-                }
-
-                if ($dataBankPath -and -not (Test-Path -LiteralPath $dataBankPath)) {
-                    [System.Windows.Forms.MessageBox]::Show("Data bank file not found: $dataBankPath", "Warning") | Out-Null
-                    return
-                }
-
-                try {
-                    Send-QuickData -ConnectionId $connId -DataID $selectedKey -DataBankPath $dataBankPath
-                    $targetName = if ($connection) { $connection.DisplayName } else { $connId }
-                    [System.Windows.Forms.MessageBox]::Show("Sent data item '$selectedKey' to $targetName.", "Success") | Out-Null
-                } catch {
-                    [System.Windows.Forms.MessageBox]::Show("Failed to send data: $_", "Error") | Out-Null
-                }
-            }
-            "ActionSend" {
-                $actionCell = $row.Cells["QuickAction"]
-                if (-not $actionCell) { return }
-
-                $selectedKey = if ($actionCell.Value) { [string]$actionCell.Value } else { "" }
-                if ([string]::IsNullOrWhiteSpace($selectedKey)) {
-                    [System.Windows.Forms.MessageBox]::Show("Please select an action to run.", "Warning") | Out-Null
-                    return
-                }
-
-                $tagData = $actionCell.Tag
-                $actionMapping = $null
-                if ($tagData -is [System.Collections.IDictionary] -and $tagData.ContainsKey("Mapping")) {
-                    $actionMapping = $tagData["Mapping"]
-                }
-
-                if (-not $actionMapping -or -not $actionMapping.ContainsKey($selectedKey)) {
-                    [System.Windows.Forms.MessageBox]::Show("Selected action is not available.", "Warning") | Out-Null
-                    return
-                }
-
-                $actionEntry = $actionMapping[$selectedKey]
-                if ($actionEntry.Type -eq "Scenario") {
-                    $scenarioPath = $actionEntry.Path
-                    if (-not $scenarioPath -or -not (Test-Path -LiteralPath $scenarioPath)) {
-                        [System.Windows.Forms.MessageBox]::Show("Scenario file not found.", "Warning") | Out-Null
-                        return
-                    }
-
-                    try {
-                        Start-Scenario -ConnectionId $connId -ScenarioPath $scenarioPath
-                        $actionName = if ($actionEntry.Name) { $actionEntry.Name } else { $selectedKey }
-                        [System.Windows.Forms.MessageBox]::Show("Started scenario '$actionName'.", "Success") | Out-Null
-                    } catch {
-                        [System.Windows.Forms.MessageBox]::Show("Failed to start scenario: $_", "Error") | Out-Null
-                    }
-                } else {
-                    [System.Windows.Forms.MessageBox]::Show("Selected action is not supported.", "Warning") | Out-Null
-                }
-            }
-        }
-    })
-
-    $dgvInstances.Add_CellClick({
-        param($sender, $args)
-
-        if ($args.RowIndex -lt 0 -or $args.ColumnIndex -lt 0) {
-            return
-        }
-
-        $row = $sender.Rows[$args.RowIndex]
-        $cell = $row.Cells[$args.ColumnIndex]
-        $column = $cell.OwningColumn
-
-        if (-not $column -or ($column -isnot [System.Windows.Forms.DataGridViewComboBoxColumn])) {
-            return
-        }
-
-        $pendingComboDropDownColumn = $column.Name
-        if ($sender.CurrentCell -ne $cell) {
-            $sender.CurrentCell = $cell
-        }
-
-        if (-not $sender.IsCurrentCellInEditMode) {
-            [void]$sender.BeginEdit($true)
-        }
-
-        $combo = $sender.EditingControl
-        if ($combo -is [System.Windows.Forms.ComboBox]) {
-            $combo.DroppedDown = $true
-            $pendingComboDropDownColumn = $null
-        }
-    })
-
-    $dgvInstances.Add_EditingControlShowing({
-        param($sender, $eventArgs)
-
-        $control = $eventArgs.Control
-        if ($control -isnot [System.Windows.Forms.ComboBox]) {
-            return
-        }
-
-        if (-not $pendingComboDropDownColumn) {
-            return
-        }
-
-        $currentCell = $sender.CurrentCell
-        if (-not $currentCell -or -not $currentCell.OwningColumn) {
-            $pendingComboDropDownColumn = $null
-            return
-        }
-
-        if ($currentCell.OwningColumn.Name -eq $pendingComboDropDownColumn) {
-            $control.DroppedDown = $true
-        }
-
-        $pendingComboDropDownColumn = $null
-    })
-
-    $dgvInstances.Add_DataError({
-        param($sender, $eventArgs)
-
-        if ($eventArgs) {
-            $eventArgs.ThrowException = $false
-            $eventArgs.Cancel = $true
-        }
-
-        $context = if ($eventArgs) { $eventArgs.Context } else { "Unknown" }
-        Write-Verbose ("[UI] DataGridView error suppressed: {0}" -f $context)
-    })
+    # Register event handlers
+    Register-GridEvents -DataGridView $dgvInstances -GridState $gridState
+    Register-ButtonEvents -DataGridView $dgvInstances -BtnRefresh $btnRefresh -BtnConnect $btnConnect -BtnDisconnect $btnDisconnect
 
     # Timer for periodic refresh
-    $timer = New-Object System.Windows.Forms.Timer
-    $timer.Interval = 1000
+    $timer = New-RefreshTimer -IntervalMilliseconds 1000
     $timer.Add_Tick({
-        if (-not $gridEditingInProgress -and -not $dgvInstances.IsCurrentCellInEditMode) {
+        if (-not $gridState.EditingInProgress -and -not $dgvInstances.IsCurrentCellInEditMode) {
             Update-InstanceList -DataGridView $dgvInstances
         }
-        Update-LogDisplay -TextBox $txtLog
+        Update-LogDisplay -TextBox $txtLog -GetConnectionsCallback { Get-UiConnections }
     })
     $timer.Start()
 
     # Form closing cleanup
     $form.Add_FormClosing({
         $timer.Stop()
-
         foreach ($conn in Get-UiConnections) {
             try {
                 Stop-Connection -ConnectionId $conn.Id -Force
@@ -857,7 +99,6 @@ function Show-MainForm {
 
     $form.Add_FormClosed({
         param($sender, $eventArgs)
-
         if ($script:CurrentMainForm -eq $sender) {
             $script:CurrentMainForm = $null
         }
@@ -875,6 +116,447 @@ function Show-MainForm {
     }
 }
 
+function Register-GridEvents {
+    param(
+        [System.Windows.Forms.DataGridView]$DataGridView,
+        [hashtable]$GridState
+    )
+
+    $DataGridView.Add_CellBeginEdit({
+        $GridState.EditingInProgress = $true
+    })
+
+    $DataGridView.Add_CellEndEdit({
+        $GridState.EditingInProgress = $false
+    })
+
+    $DataGridView.Add_Leave({
+        $GridState.EditingInProgress = $false
+    })
+
+    $DataGridView.Add_CurrentCellDirtyStateChanged({
+        if ($DataGridView.IsCurrentCellDirty -and $DataGridView.CurrentCell -and
+            $DataGridView.CurrentCell.OwningColumn -and
+            $DataGridView.CurrentCell.OwningColumn.Name -eq "Scenario") {
+            $DataGridView.CommitEdit([System.Windows.Forms.DataGridViewDataErrorContexts]::Commit)
+        }
+    })
+
+    $DataGridView.Add_CellValueChanged({
+        param($sender, $args)
+        Handle-ScenarioChanged -Sender $sender -Args $args
+    })
+
+    $DataGridView.Add_CellContentClick({
+        param($sender, $args)
+        Handle-CellContentClick -Sender $sender -Args $args
+    })
+
+    $DataGridView.Add_CellClick({
+        param($sender, $args)
+        Handle-ComboBoxClick -Sender $sender -Args $args -GridState $GridState
+    })
+
+    $DataGridView.Add_EditingControlShowing({
+        param($sender, $eventArgs)
+        Handle-EditingControlShowing -Sender $sender -EventArgs $eventArgs -GridState $GridState
+    })
+
+    $DataGridView.Add_DataError({
+        param($sender, $eventArgs)
+
+        if ($eventArgs) {
+            $eventArgs.ThrowException = $false
+            $eventArgs.Cancel = $true
+        }
+
+        $context = if ($eventArgs) { $eventArgs.Context } else { "Unknown" }
+        Write-Verbose ("[UI] DataGridView error suppressed: {0}" -f $context)
+    })
+}
+
+function Register-ButtonEvents {
+    param(
+        [System.Windows.Forms.DataGridView]$DataGridView,
+        [System.Windows.Forms.Button]$BtnRefresh,
+        [System.Windows.Forms.Button]$BtnConnect,
+        [System.Windows.Forms.Button]$BtnDisconnect
+    )
+
+    $BtnRefresh.Add_Click({
+        Update-InstanceList -DataGridView $DataGridView
+    })
+
+    $BtnConnect.Add_Click({
+        $connection = Get-SelectedConnection -DataGridView $DataGridView
+        if (-not $connection) {
+            return
+        }
+        try {
+            Start-Connection -ConnectionId $connection.Id
+            [System.Windows.Forms.MessageBox]::Show("Connection started: $($connection.DisplayName)", "Success") | Out-Null
+        } catch {
+            [System.Windows.Forms.MessageBox]::Show("Failed to start connection: $_", "Error") | Out-Null
+        }
+        Update-InstanceList -DataGridView $DataGridView
+    })
+
+    $BtnDisconnect.Add_Click({
+        $connection = Get-SelectedConnection -DataGridView $DataGridView
+        if (-not $connection) {
+            return
+        }
+        try {
+            Stop-Connection -ConnectionId $connection.Id
+            [System.Windows.Forms.MessageBox]::Show("Connection stopped: $($connection.DisplayName)", "Success") | Out-Null
+        } catch {
+            [System.Windows.Forms.MessageBox]::Show("Failed to stop connection: $_", "Error") | Out-Null
+        }
+        Update-InstanceList -DataGridView $DataGridView
+    })
+}
+
+function Get-SelectedConnection {
+    param(
+        [System.Windows.Forms.DataGridView]$DataGridView
+    )
+
+    if ($DataGridView.SelectedRows.Count -eq 0) {
+        return $null
+    }
+    if (-not $DataGridView.Columns.Contains("Id")) {
+        return $null
+    }
+    $connId = $DataGridView.SelectedRows[0].Cells["Id"].Value
+    if (-not $connId) {
+        return $null
+    }
+    try {
+        return Get-UiConnection -ConnectionId $connId
+    } catch {
+        [System.Windows.Forms.MessageBox]::Show("Connection not found: $connId", "Error") | Out-Null
+        return $null
+    }
+}
+
+function Handle-ScenarioChanged {
+    param(
+        $Sender,
+        $Args
+    )
+
+    if ($script:suppressScenarioEvent) {
+        return
+    }
+    if ($Args.ColumnIndex -lt 0 -or $Args.RowIndex -lt 0) {
+        return
+    }
+    $column = $Sender.Columns[$Args.ColumnIndex]
+    if ($column.Name -ne "Scenario") {
+        return
+    }
+
+    $row = $Sender.Rows[$Args.RowIndex]
+    if (-not $row.Cells.Contains("Id")) {
+        return
+    }
+
+    $connId = $row.Cells["Id"].Value
+    if (-not $connId) {
+        return
+    }
+
+    $cell = $row.Cells["Scenario"]
+    $tagData = $cell.Tag
+    $mapping = $null
+    $currentProfileKey = ""
+
+    if ($tagData -is [System.Collections.IDictionary] -and $tagData.ContainsKey("Mapping") -and $tagData.ContainsKey("ProfileKey")) {
+        $mapping = $tagData["Mapping"]
+        $currentProfileKey = $tagData["ProfileKey"]
+    }
+
+    $selectedKey = if ($cell.Value) { [string]$cell.Value } else { "" }
+    $entry = $null
+    if ($mapping -and $mapping.ContainsKey($selectedKey)) {
+        $entry = $mapping[$selectedKey]
+    }
+
+    if ($entry -and $entry.Type -eq "Scenario") {
+        Execute-Scenario -ConnectionId $connId -Entry $entry -Cell $cell -CurrentKey $currentProfileKey -Sender $Sender
+        return
+    }
+
+    Apply-AutoResponseProfile -ConnectionId $connId -Entry $entry -Cell $cell -CurrentKey $currentProfileKey -Sender $Sender
+}
+
+function Execute-Scenario {
+    param(
+        [string]$ConnectionId,
+        $Entry,
+        $Cell,
+        [string]$CurrentKey,
+        $Sender
+    )
+
+    $scenarioPath = $Entry.Path
+    if (-not $scenarioPath -or -not (Test-Path -LiteralPath $scenarioPath)) {
+        [System.Windows.Forms.MessageBox]::Show("Scenario file not found: $($Entry.Name)", "Warning") | Out-Null
+    } else {
+        try {
+            Start-Scenario -ConnectionId $ConnectionId -ScenarioPath $scenarioPath
+            [System.Windows.Forms.MessageBox]::Show("Scenario started: $($Entry.Name)", "Success") | Out-Null
+        } catch {
+            [System.Windows.Forms.MessageBox]::Show("Failed to start scenario: $_", "Error") | Out-Null
+        }
+    }
+
+    if ($CurrentKey -ne $Cell.Value) {
+        $script:suppressScenarioEvent = $true
+        try {
+            $Cell.Value = $CurrentKey
+        } finally {
+            $script:suppressScenarioEvent = $false
+        }
+        $Sender.InvalidateCell($Cell)
+    }
+}
+
+function Apply-AutoResponseProfile {
+    param(
+        [string]$ConnectionId,
+        $Entry,
+        $Cell,
+        [string]$CurrentKey,
+        $Sender
+    )
+
+    $profileName = $null
+    $profilePath = $null
+    if ($Entry -and $Entry.Type -eq "Profile") {
+        $profileName = $Entry.Name
+        $profilePath = $Entry.Path
+    }
+
+    try {
+        Set-ConnectionAutoResponseProfile -ConnectionId $ConnectionId -ProfileName $profileName -ProfilePath $profilePath | Out-Null
+        $tagData = $Cell.Tag
+        if ($tagData -is [System.Collections.IDictionary] -and $tagData.ContainsKey("ProfileKey")) {
+            $tagData["ProfileKey"] = $Cell.Value
+        }
+    } catch {
+        if ($CurrentKey -ne $Cell.Value) {
+            $script:suppressScenarioEvent = $true
+            try {
+                $Cell.Value = $CurrentKey
+            } finally {
+                $script:suppressScenarioEvent = $false
+            }
+            $Sender.InvalidateCell($Cell)
+        }
+        [System.Windows.Forms.MessageBox]::Show("Failed to apply auto-response profile: $_", "Error") | Out-Null
+    }
+}
+
+function Handle-CellContentClick {
+    param(
+        $Sender,
+        $Args
+    )
+
+    if ($Args.RowIndex -lt 0 -or $Args.ColumnIndex -lt 0) {
+        return
+    }
+    $column = $Sender.Columns[$Args.ColumnIndex]
+    if (-not $column) {
+        return
+    }
+
+    $row = $Sender.Rows[$Args.RowIndex]
+    if (-not $row.Cells.Contains("Id")) {
+        return
+    }
+
+    $connId = $row.Cells["Id"].Value
+    if (-not $connId) {
+        return
+    }
+
+    $connection = $null
+    try {
+        $connection = Get-ManagedConnection -ConnectionId $connId
+    } catch {
+        # connection might have been removed
+    }
+
+    switch ($column.Name) {
+        "QuickSend" {
+            Handle-QuickSendClick -Row $row -ConnectionId $connId -Connection $connection
+        }
+        "ActionSend" {
+            Handle-ActionSendClick -Row $row -ConnectionId $connId -Connection $connection
+        }
+    }
+}
+
+function Handle-QuickSendClick {
+    param(
+        $Row,
+        [string]$ConnectionId,
+        $Connection
+    )
+
+    $comboCell = $Row.Cells["QuickData"]
+    if (-not $comboCell) { return }
+
+    $selectedKey = if ($comboCell.Value) { [string]$comboCell.Value } else { "" }
+    if ([string]::IsNullOrWhiteSpace($selectedKey)) {
+        [System.Windows.Forms.MessageBox]::Show("Please select a data item to send.", "Warning") | Out-Null
+        return
+    }
+
+    $tagData = $comboCell.Tag
+    $dataBankPath = $null
+    $dataBankCount = 0
+    if ($tagData -is [System.Collections.IDictionary]) {
+        if ($tagData.ContainsKey("DataBankPath")) {
+            $dataBankPath = $tagData["DataBankPath"]
+        }
+        if ($tagData.ContainsKey("DataBankCount")) {
+            $dataBankCount = [int]$tagData["DataBankCount"]
+        }
+    }
+
+    if ($dataBankCount -le 0 -and [string]::IsNullOrWhiteSpace($dataBankPath)) {
+        [System.Windows.Forms.MessageBox]::Show("No data bank entries available for this connection.", "Warning") | Out-Null
+        return
+    }
+
+    if ($dataBankPath -and -not (Test-Path -LiteralPath $dataBankPath)) {
+        [System.Windows.Forms.MessageBox]::Show("Data bank file not found: $dataBankPath", "Warning") | Out-Null
+        return
+    }
+
+    try {
+        Send-QuickData -ConnectionId $ConnectionId -DataID $selectedKey -DataBankPath $dataBankPath
+        $targetName = if ($Connection) { $Connection.DisplayName } else { $ConnectionId }
+        [System.Windows.Forms.MessageBox]::Show("Sent data item '$selectedKey' to $targetName.", "Success") | Out-Null
+    } catch {
+        [System.Windows.Forms.MessageBox]::Show("Failed to send data: $_", "Error") | Out-Null
+    }
+}
+
+function Handle-ActionSendClick {
+    param(
+        $Row,
+        [string]$ConnectionId,
+        $Connection
+    )
+
+    $actionCell = $Row.Cells["QuickAction"]
+    if (-not $actionCell) { return }
+
+    $selectedKey = if ($actionCell.Value) { [string]$actionCell.Value } else { "" }
+    if ([string]::IsNullOrWhiteSpace($selectedKey)) {
+        [System.Windows.Forms.MessageBox]::Show("Please select an action to run.", "Warning") | Out-Null
+        return
+    }
+
+    $tagData = $actionCell.Tag
+    $actionMapping = $null
+    if ($tagData -is [System.Collections.IDictionary] -and $tagData.ContainsKey("Mapping")) {
+        $actionMapping = $tagData["Mapping"]
+    }
+
+    if (-not $actionMapping -or -not $actionMapping.ContainsKey($selectedKey)) {
+        [System.Windows.Forms.MessageBox]::Show("Selected action is not available.", "Warning") | Out-Null
+        return
+    }
+
+    $actionEntry = $actionMapping[$selectedKey]
+    if ($actionEntry.Type -eq "Scenario") {
+        $scenarioPath = $actionEntry.Path
+        if (-not $scenarioPath -or -not (Test-Path -LiteralPath $scenarioPath)) {
+            [System.Windows.Forms.MessageBox]::Show("Scenario file not found.", "Warning") | Out-Null
+            return
+        }
+
+        try {
+            Start-Scenario -ConnectionId $ConnectionId -ScenarioPath $scenarioPath
+            $actionName = if ($actionEntry.Name) { $actionEntry.Name } else { $selectedKey }
+            [System.Windows.Forms.MessageBox]::Show("Started scenario '$actionName'.", "Success") | Out-Null
+        } catch {
+            [System.Windows.Forms.MessageBox]::Show("Failed to start scenario: $_", "Error") | Out-Null
+        }
+    } else {
+        [System.Windows.Forms.MessageBox]::Show("Selected action is not supported.", "Warning") | Out-Null
+    }
+}
+
+function Handle-ComboBoxClick {
+    param(
+        $Sender,
+        $Args,
+        [hashtable]$GridState
+    )
+
+    if ($Args.RowIndex -lt 0 -or $Args.ColumnIndex -lt 0) {
+        return
+    }
+
+    $row = $Sender.Rows[$Args.RowIndex]
+    $cell = $row.Cells[$Args.ColumnIndex]
+    $column = $cell.OwningColumn
+
+    if (-not $column -or ($column -isnot [System.Windows.Forms.DataGridViewComboBoxColumn])) {
+        return
+    }
+
+    $GridState.PendingComboDropDown = $column.Name
+    if ($Sender.CurrentCell -ne $cell) {
+        $Sender.CurrentCell = $cell
+    }
+
+    if (-not $Sender.IsCurrentCellInEditMode) {
+        [void]$Sender.BeginEdit($true)
+    }
+
+    $combo = $Sender.EditingControl
+    if ($combo -is [System.Windows.Forms.ComboBox]) {
+        $combo.DroppedDown = $true
+        $GridState.PendingComboDropDown = $null
+    }
+}
+
+function Handle-EditingControlShowing {
+    param(
+        $Sender,
+        $EventArgs,
+        [hashtable]$GridState
+    )
+
+    $control = $EventArgs.Control
+    if ($control -isnot [System.Windows.Forms.ComboBox]) {
+        return
+    }
+
+    if (-not $GridState.PendingComboDropDown) {
+        return
+    }
+
+    $currentCell = $Sender.CurrentCell
+    if (-not $currentCell -or -not $currentCell.OwningColumn) {
+        $GridState.PendingComboDropDown = $null
+        return
+    }
+
+    if ($currentCell.OwningColumn.Name -eq $GridState.PendingComboDropDown) {
+        $control.DroppedDown = $true
+    }
+
+    $GridState.PendingComboDropDown = $null
+}
+
 function Update-InstanceList {
     param(
         [System.Windows.Forms.DataGridView]$DataGridView
@@ -883,6 +565,26 @@ function Update-InstanceList {
     if (-not $DataGridView) {
         return
     }
+
+    $state = Save-GridState -DataGridView $DataGridView
+    $DataGridView.Rows.Clear()
+
+    $connections = Get-UiConnections
+    if (-not $connections -or $connections.Count -eq 0) {
+        return
+    }
+
+    foreach ($conn in $connections | Sort-Object DisplayName) {
+        Add-ConnectionRow -DataGridView $DataGridView -Connection $conn
+    }
+
+    Restore-GridState -DataGridView $DataGridView -State $state
+}
+
+function Save-GridState {
+    param(
+        [System.Windows.Forms.DataGridView]$DataGridView
+    )
 
     $selectedId = $null
     if ($DataGridView.SelectedRows.Count -gt 0 -and $DataGridView.Columns.Contains("Id")) {
@@ -898,433 +600,22 @@ function Update-InstanceList {
         $firstDisplayedIndex = $null
     }
 
-    $DataGridView.Rows.Clear()
-
-    $connections = Get-UiConnections
-    if (-not $connections -or $connections.Count -eq 0) {
-        return
+    return @{
+        SelectedId = $selectedId
+        FirstDisplayedIndex = $firstDisplayedIndex
     }
+}
 
-    foreach ($conn in $connections | Sort-Object DisplayName) {
-        $endpoint = ""
-        if ($conn.Mode -eq "Client" -or $conn.Mode -eq "Sender") {
-            $endpoint = "$($conn.RemoteIP):$($conn.RemotePort)"
-        } else {
-            $endpoint = "$($conn.LocalIP):$($conn.LocalPort)"
-        }
+function Restore-GridState {
+    param(
+        [System.Windows.Forms.DataGridView]$DataGridView,
+        [hashtable]$State
+    )
 
-        $rowIndex = $DataGridView.Rows.Add(
-            $conn.DisplayName,
-            "$($conn.Protocol) $($conn.Mode)",
-            $endpoint,
-            $conn.Status,
-            $null,
-            $null,
-            $null,
-            $null,
-            $null,
-            $conn.Id
-        )
-
-        $row = $DataGridView.Rows[$rowIndex]
-
-        try {
-            $script:suppressScenarioEvent = $true
-            $script:suppressOnReceivedEvent = $true
-            $script:suppressPeriodicSendEvent = $true
-
-            $items = New-Object System.Collections.ArrayList
-            $mapping = @{}
-            $availableScenarios = @()
-
-            $noneEntry = [PSCustomObject]@{
-                Display = "(None)"
-                Key     = ""
-                Type    = "Profile"
-                Name    = $null
-                Path    = $null
-            }
-            [void]$items.Add($noneEntry)
-            $mapping[$noneEntry.Key] = $noneEntry
-
-            $currentProfile = ""
-            $currentPath = $null
-            if ($conn.Variables.ContainsKey('AutoResponseProfile')) {
-                $currentProfile = $conn.Variables['AutoResponseProfile']
-                Write-Verbose "[UI] Auto Response: $currentProfile"
-            }
-            if ($conn.Variables.ContainsKey('AutoResponseProfilePath')) {
-                $currentPath = $conn.Variables['AutoResponseProfilePath']
-            }
-
-            $instancePath = $null
-            if ($conn.Variables.ContainsKey('InstancePath')) {
-                $instancePath = $conn.Variables['InstancePath']
-            }
-
-            $profiles = @()
-            if ($instancePath) {
-                try {
-                    $profiles = Get-InstanceAutoResponseProfiles -InstancePath $instancePath
-                } catch {
-                    $profiles = @()
-                }
-            }
-
-            foreach ($profile in $profiles) {
-                if ([string]::IsNullOrWhiteSpace($profile.Name)) {
-                    continue
-                }
-
-                $key = "profile::$($profile.Name)"
-                $entry = [PSCustomObject]@{
-                    Display = $profile.DisplayName
-                    Key     = $key
-                    Type    = "Profile"
-                    Name    = $profile.Name
-                    Path    = $profile.FilePath
-                }
-
-                [void]$items.Add($entry)
-                $mapping[$key] = $entry
-            }
-
-            $currentKey = ""
-            if ($currentProfile) {
-                $currentKey = "profile::$currentProfile"
-                if (-not $mapping.ContainsKey($currentKey)) {
-                    $displayName = if ($currentPath) { "$currentProfile (missing)" } else { $currentProfile }
-                    $entry = [PSCustomObject]@{
-                        Display = $displayName
-                        Key     = $currentKey
-                        Type    = "Profile"
-                        Name    = $currentProfile
-                        Path    = $currentPath
-                    }
-                    [void]$items.Add($entry)
-                    $mapping[$currentKey] = $entry
-                }
-            }
-
-            if ($instancePath) {
-                try {
-                    $scenarioFiles = Get-InstanceScenarios -InstancePath $instancePath
-                } catch {
-                    $scenarioFiles = @()
-                }
-
-                if ($scenarioFiles -and $scenarioFiles.Count -gt 0) {
-                    $scenarioRoot = Join-Path $instancePath "scenarios"
-                    foreach ($scenario in $scenarioFiles) {
-                        $scenarioKey = "scenario::$scenario"
-                        $scenarioPath = Join-Path $scenarioRoot $scenario
-                        $entry = [PSCustomObject]@{
-                            Display = "笆ｶ $scenario"
-                            Key     = $scenarioKey
-                            Type    = "Scenario"
-                            Name    = $scenario
-                            Path    = $scenarioPath
-                        }
-                        [void]$items.Add($entry)
-                        $mapping[$scenarioKey] = $entry
-                        $availableScenarios += $entry
-                    }
-                }
-            }
-
-            $scenarioCell = New-Object System.Windows.Forms.DataGridViewComboBoxCell
-            $scenarioCell.DisplayMember = "Display"
-            $scenarioCell.ValueMember = "Key"
-            foreach ($item in $items) {
-                [void]$scenarioCell.Items.Add($item)
-            }
-            if ($currentKey) {
-                Write-Host "[UI] Setting Auto Response: $currentKey for $($conn.DisplayName)" -ForegroundColor Magenta
-            }
-            $scenarioCell.Value = $currentKey
-            $scenarioCell.Tag = @{
-                Mapping    = $mapping
-                ProfileKey = $currentKey
-            }
-            $row.Cells["Scenario"] = $scenarioCell
-
-            # OnReceived列の設定
-            $onReceivedItems = New-Object System.Collections.ArrayList
-            $onReceivedMapping = @{}
-
-            $onReceivedNone = [PSCustomObject]@{
-                Display = "(None)"
-                Key     = ""
-                Type    = "Profile"
-                Name    = $null
-                Path    = $null
-            }
-            [void]$onReceivedItems.Add($onReceivedNone)
-            $onReceivedMapping[$onReceivedNone.Key] = $onReceivedNone
-
-            $currentOnReceivedProfile = ""
-            $currentOnReceivedPath = $null
-            if ($conn.Variables.ContainsKey('OnReceivedProfile')) {
-                $currentOnReceivedProfile = $conn.Variables['OnReceivedProfile']
-            }
-            if ($conn.Variables.ContainsKey('OnReceivedProfilePath')) {
-                $currentOnReceivedPath = $conn.Variables['OnReceivedProfilePath']
-            }
-
-            $onReceivedProfiles = @()
-            if ($instancePath) {
-                try {
-                    $onReceivedProfiles = Get-InstanceOnReceivedProfiles -InstancePath $instancePath
-                } catch {
-                    $onReceivedProfiles = @()
-                }
-            }
-
-            foreach ($profile in $onReceivedProfiles) {
-                if ([string]::IsNullOrWhiteSpace($profile.Name)) {
-                    continue
-                }
-
-                $key = "onreceived::$($profile.Name)"
-                $entry = [PSCustomObject]@{
-                    Display = $profile.DisplayName
-                    Key     = $key
-                    Type    = "Profile"
-                    Name    = $profile.Name
-                    Path    = $profile.FilePath
-                }
-
-                [void]$onReceivedItems.Add($entry)
-                $onReceivedMapping[$key] = $entry
-            }
-
-            $currentOnReceivedKey = ""
-            if ($currentOnReceivedProfile) {
-                $currentOnReceivedKey = "onreceived::$currentOnReceivedProfile"
-                if (-not $onReceivedMapping.ContainsKey($currentOnReceivedKey)) {
-                    $displayName = if ($currentOnReceivedPath) { "$currentOnReceivedProfile (missing)" } else { $currentOnReceivedProfile }
-                    $entry = [PSCustomObject]@{
-                        Display = $displayName
-                        Key     = $currentOnReceivedKey
-                        Type    = "Profile"
-                        Name    = $currentOnReceivedProfile
-                        Path    = $currentOnReceivedPath
-                    }
-                    [void]$onReceivedItems.Add($entry)
-                    $onReceivedMapping[$currentOnReceivedKey] = $entry
-                }
-            }
-
-            $onReceivedCell = New-Object System.Windows.Forms.DataGridViewComboBoxCell
-            $onReceivedCell.DisplayMember = "Display"
-            $onReceivedCell.ValueMember = "Key"
-            foreach ($item in $onReceivedItems) {
-                [void]$onReceivedCell.Items.Add($item)
-            }
-            $onReceivedCell.Value = $currentOnReceivedKey
-            $onReceivedCell.Tag = @{
-                Mapping              = $onReceivedMapping
-                OnReceivedProfileKey = $currentOnReceivedKey
-            }
-            $row.Cells["OnReceived"] = $onReceivedCell
-
-            # Periodic Send profiles
-            $currentPeriodicSendProfile = ""
-            $currentPeriodicSendPath = $null
-            if ($conn.Variables.ContainsKey('PeriodicSendProfile')) {
-                $currentPeriodicSendProfile = $conn.Variables['PeriodicSendProfile']
-            }
-            if ($conn.Variables.ContainsKey('PeriodicSendProfilePath')) {
-                $currentPeriodicSendPath = $conn.Variables['PeriodicSendProfilePath']
-            }
-
-            $periodicSendProfiles = @()
-            if ($instancePath) {
-                try {
-                    $periodicSendProfiles = Get-InstancePeriodicSendProfiles -InstancePath $instancePath
-                } catch {
-                    $periodicSendProfiles = @()
-                }
-            }
-
-            $periodicSendItems = New-Object System.Collections.ArrayList
-            $periodicSendMapping = @{}
-            
-            $periodicSendPlaceholder = [PSCustomObject]@{
-                Display = "(None)"
-                Key     = ""
-                Type    = "None"
-                Name    = $null
-                Path    = $null
-            }
-            [void]$periodicSendItems.Add($periodicSendPlaceholder)
-            $periodicSendMapping[$periodicSendPlaceholder.Key] = $periodicSendPlaceholder
-
-            foreach ($profile in $periodicSendProfiles) {
-                $key = "periodic::$($profile.ProfileName)"
-                $entry = [PSCustomObject]@{
-                    Display = $profile.ProfileName
-                    Key     = $key
-                    Type    = "Profile"
-                    Name    = $profile.ProfileName
-                    Path    = $profile.FilePath
-                }
-
-                [void]$periodicSendItems.Add($entry)
-                $periodicSendMapping[$key] = $entry
-            }
-
-            $currentPeriodicSendKey = ""
-            if ($currentPeriodicSendProfile) {
-                $currentPeriodicSendKey = "periodic::$currentPeriodicSendProfile"
-                if (-not $periodicSendMapping.ContainsKey($currentPeriodicSendKey)) {
-                    $displayName = if ($currentPeriodicSendPath) { "$currentPeriodicSendProfile (missing)" } else { $currentPeriodicSendProfile }
-                    $entry = [PSCustomObject]@{
-                        Display = $displayName
-                        Key     = $currentPeriodicSendKey
-                        Type    = "Profile"
-                        Name    = $currentPeriodicSendProfile
-                        Path    = $currentPeriodicSendPath
-                    }
-                    [void]$periodicSendItems.Add($entry)
-                    $periodicSendMapping[$currentPeriodicSendKey] = $entry
-                }
-            }
-
-            $periodicSendCell = New-Object System.Windows.Forms.DataGridViewComboBoxCell
-            $periodicSendCell.DisplayMember = "Display"
-            $periodicSendCell.ValueMember = "Key"
-            foreach ($item in $periodicSendItems) {
-                [void]$periodicSendCell.Items.Add($item)
-            }
-            $periodicSendCell.Value = $currentPeriodicSendKey
-            $periodicSendCell.Tag = @{
-                Mapping              = $periodicSendMapping
-                PeriodicSendProfileKey = $currentPeriodicSendKey
-            }
-            $row.Cells["PeriodicSend"] = $periodicSendCell
-
-            $dataBankEntries = @()
-            $dataBankPath = $null
-            if ($instancePath) {
-                try {
-                    $catalog = Get-QuickDataCatalog -InstancePath $instancePath
-                    if ($catalog) {
-                        $dataBankEntries = if ($catalog.Entries) { $catalog.Entries } else { @() }
-                        $dataBankPath = $catalog.Path
-                    }
-                } catch {
-                    $dataBankEntries = @()
-                }
-            }
-
-            $quickDataCell = New-Object System.Windows.Forms.DataGridViewComboBoxCell
-            $quickDataCell.DisplayMember = "Display"
-            $quickDataCell.ValueMember = "Key"
-            $quickDataCell.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
-
-            $dataSource = New-Object System.Collections.ArrayList
-            $dataPlaceholder = [PSCustomObject]@{
-                Display = "(Select)"
-                Key     = ""
-            }
-            [void]$dataSource.Add($dataPlaceholder)
-
-            if ($dataBankEntries -and $dataBankEntries.Count -gt 0) {
-                foreach ($item in $dataBankEntries) {
-                    if (-not $item.DataID) { continue }
-
-                    $displayText = if ([string]::IsNullOrWhiteSpace($item.Description)) {
-                        $item.DataID
-                    } else {
-                        "{0} - {1}" -f $item.DataID, $item.Description
-                    }
-
-                    $entry = [PSCustomObject]@{
-                        Display = $displayText
-                        Key     = [string]$item.DataID
-                    }
-                    [void]$dataSource.Add($entry)
-                }
-            }
-
-            foreach ($item in $dataSource) {
-                [void]$quickDataCell.Items.Add($item)
-            }
-            $quickDataCell.Value = ""
-            $quickDataCell.Tag = @{
-                DataBankCount = $dataBankEntries.Count
-                DataBankPath  = if ($dataBankPath -and (Test-Path -LiteralPath $dataBankPath)) { $dataBankPath } else { $null }
-            }
-            $row.Cells["QuickData"] = $quickDataCell
-
-            $quickActionCell = New-Object System.Windows.Forms.DataGridViewComboBoxCell
-            $quickActionCell.DisplayMember = "Display"
-            $quickActionCell.ValueMember = "Key"
-            $quickActionCell.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
-
-            $actionSource = New-Object System.Collections.ArrayList
-            $actionMapping = @{}
-            $actionPlaceholder = [PSCustomObject]@{
-                Display = "(Select)"
-                Key     = ""
-                Type    = ""
-                Path    = $null
-                Name    = $null
-            }
-            [void]$actionSource.Add($actionPlaceholder)
-            $actionMapping[$actionPlaceholder.Key] = $actionPlaceholder
-
-            foreach ($scenarioEntry in $availableScenarios) {
-                $actionEntry = [PSCustomObject]@{
-                    Display = $scenarioEntry.Display
-                    Key     = $scenarioEntry.Key
-                    Type    = $scenarioEntry.Type
-                    Path    = $scenarioEntry.Path
-                    Name    = $scenarioEntry.Name
-                }
-                [void]$actionSource.Add($actionEntry)
-                $actionMapping[$actionEntry.Key] = $actionEntry
-            }
-
-            foreach ($item in $actionSource) {
-                [void]$quickActionCell.Items.Add($item)
-            }
-            $quickActionCell.Value = ""
-            $quickActionCell.Tag = @{
-                Mapping = $actionMapping
-            }
-            $row.Cells["QuickAction"] = $quickActionCell
-        } catch {
-            $row.Cells["Scenario"].Value = ""
-        } finally {
-            $script:suppressScenarioEvent = $false
-            $script:suppressOnReceivedEvent = $false
-            $script:suppressPeriodicSendEvent = $false
-        }
-
-        switch ($conn.Status) {
-            "CONNECTED" {
-                $row.DefaultCellStyle.BackColor = [System.Drawing.Color]::LightGreen
-            }
-            "CONNECTING" {
-                $row.DefaultCellStyle.BackColor = [System.Drawing.Color]::LightYellow
-            }
-            "ERROR" {
-                $row.DefaultCellStyle.BackColor = [System.Drawing.Color]::LightCoral
-            }
-            "DISCONNECTED" {
-                $row.DefaultCellStyle.BackColor = [System.Drawing.Color]::LightGray
-            }
-            default {
-                $row.DefaultCellStyle.BackColor = [System.Drawing.Color]::White
-            }
-        }
-    }
-
-    if ($selectedId) {
+    # Restore selection
+    if ($State.SelectedId) {
         foreach ($row in $DataGridView.Rows) {
-            if ($row.Cells["Id"].Value -eq $selectedId) {
+            if ($row.Cells["Id"].Value -eq $State.SelectedId) {
                 $row.Selected = $true
                 if ($row.Cells.Count -gt 0) {
                     $DataGridView.CurrentCell = $row.Cells[0]
@@ -1334,8 +625,9 @@ function Update-InstanceList {
         }
     }
 
-    if ($firstDisplayedIndex -ne $null -and $DataGridView.RowCount -gt 0) {
-        $targetIndex = [Math]::Min([Math]::Max(0, $firstDisplayedIndex), $DataGridView.RowCount - 1)
+    # Restore scroll position
+    if ($State.FirstDisplayedIndex -ne $null -and $DataGridView.RowCount -gt 0) {
+        $targetIndex = [Math]::Min([Math]::Max(0, $State.FirstDisplayedIndex), $DataGridView.RowCount - 1)
         try {
             $DataGridView.FirstDisplayedScrollingRowIndex = $targetIndex
         } catch {
@@ -1344,56 +636,289 @@ function Update-InstanceList {
     }
 }
 
-function Update-LogDisplay {
+function Add-ConnectionRow {
     param(
-        [System.Windows.Forms.TextBox]$TextBox
+        [System.Windows.Forms.DataGridView]$DataGridView,
+        $Connection
     )
 
-    if (-not $TextBox) {
-        return
+    $endpoint = Get-ConnectionEndpoint -Connection $Connection
+
+    $rowIndex = $DataGridView.Rows.Add(
+        $Connection.DisplayName,
+        "$($Connection.Protocol) $($Connection.Mode)",
+        $endpoint,
+        $Connection.Status,
+        $null,
+        $null,
+        $null,
+        $null,
+        $null,
+        $null,
+        $null,
+        $Connection.Id
+    )
+
+    $row = $DataGridView.Rows[$rowIndex]
+
+    try {
+        $script:suppressScenarioEvent = $true
+        $script:suppressOnReceivedEvent = $true
+        $script:suppressPeriodicSendEvent = $true
+
+        $instancePath = if ($Connection.Variables.ContainsKey('InstancePath')) { $Connection.Variables['InstancePath'] } else { $null }
+
+        Configure-ScenarioColumn -Row $row -Connection $Connection -InstancePath $instancePath
+        Configure-OnReceivedColumn -Row $row -Connection $Connection -InstancePath $instancePath
+        Configure-PeriodicSendColumn -Row $row -Connection $Connection -InstancePath $instancePath
+        Configure-QuickDataColumn -Row $row -InstancePath $instancePath
+        Configure-QuickActionColumn -Row $row -InstancePath $instancePath
+
+    } catch {
+        $row.Cells["Scenario"].Value = ""
+    } finally {
+        $script:suppressScenarioEvent = $false
+        $script:suppressOnReceivedEvent = $false
+        $script:suppressPeriodicSendEvent = $false
     }
 
-    $logLines = @()
-
-    foreach ($conn in Get-UiConnections) {
-        $snapshot = @()
-
-        try {
-            if ($conn.RecvBuffer -and $conn.RecvBuffer.Count -gt 0) {
-                $syncRoot = $conn.RecvBuffer.SyncRoot
-                [System.Threading.Monitor]::Enter($syncRoot)
-                try {
-                    $snapshot = $conn.RecvBuffer.ToArray()
-                } finally {
-                    [System.Threading.Monitor]::Exit($syncRoot)
-                }
-            }
-        } catch {
-            continue
-        }
-
-        if (-not $snapshot -or $snapshot.Length -eq 0) {
-            continue
-        }
-
-        $count = $snapshot.Length
-        $startIndex = [Math]::Max(0, $count - 10)
-        for ($i = $startIndex; $i -lt $count; $i++) {
-            $recv = $snapshot[$i]
-            if (-not $recv) { continue }
-
-            $summary = Get-MessageSummary -Data $recv.Data -MaxLength 40
-            $timeStr = $recv.Timestamp.ToString("HH:mm:ss")
-            $logLines += "[$timeStr] $($conn.DisplayName) 竍? $summary ($($recv.Length) bytes)"
-        }
-    }
-
-    $logLines = $logLines | Select-Object -Last 100
-
-    $TextBox.Text = $logLines -join "`r`n"
-    $TextBox.SelectionStart = $TextBox.Text.Length
-    $TextBox.ScrollToCaret()
+    Set-RowColor -Row $row -Status $Connection.Status
 }
 
-# Export-ModuleMember -Function 'Show-MainForm'
+function Get-ConnectionEndpoint {
+    param($Connection)
 
+    if ($Connection.Mode -eq "Client" -or $Connection.Mode -eq "Sender") {
+        return "$($Connection.RemoteIP):$($Connection.RemotePort)"
+    } else {
+        return "$($Connection.LocalIP):$($Connection.LocalPort)"
+    }
+}
+
+function Configure-ScenarioColumn {
+    param(
+        $Row,
+        $Connection,
+        [string]$InstancePath
+    )
+
+    $items = New-Object System.Collections.ArrayList
+    $mapping = @{
+    }
+    $availableScenarios = @()
+
+    $noneEntry = [PSCustomObject]@{
+        Display = "(None)"
+        Key     = ""
+        Type    = "Profile"
+        Name    = $null
+        Path    = $null
+    }
+    [void]$items.Add($noneEntry)
+    $mapping[$noneEntry.Key] = $noneEntry
+
+    $currentProfile = ""
+    $currentPath = $null
+    if ($Connection.Variables.ContainsKey('AutoResponseProfile')) {
+        $currentProfile = $Connection.Variables['AutoResponseProfile']
+    }
+    if ($Connection.Variables.ContainsKey('AutoResponseProfilePath')) {
+        $currentPath = $Connection.Variables['AutoResponseProfilePath']
+    }
+
+    # Add profiles
+    $profiles = @()
+    if ($InstancePath) {
+        try {
+            $profiles = Get-InstanceAutoResponseProfiles -InstancePath $InstancePath
+        } catch {
+            $profiles = @()
+        }
+    }
+
+    foreach ($profile in $profiles) {
+        if ([string]::IsNullOrWhiteSpace($profile.Name)) {
+            continue
+        }
+
+        $key = "profile::$($profile.Name)"
+        $entry = [PSCustomObject]@{
+            Display = $profile.DisplayName
+            Key     = $key
+            Type    = "Profile"
+            Name    = $profile.Name
+            Path    = $profile.FilePath
+        }
+
+        [void]$items.Add($entry)
+        $mapping[$key] = $entry
+    }
+
+    # Add scenarios
+    if ($InstancePath) {
+        try {
+            $scenarioFiles = Get-InstanceScenarios -InstancePath $InstancePath
+        } catch {
+            $scenarioFiles = @()
+        }
+
+        if ($scenarioFiles -and $scenarioFiles.Count -gt 0) {
+            $scenarioRoot = Join-Path $InstancePath "scenarios"
+            foreach ($scenario in $scenarioFiles) {
+                $scenarioKey = "scenario::$scenario"
+                $scenarioPath = Join-Path $scenarioRoot $scenario
+                $entry = [PSCustomObject]@{
+                    Display = "? $scenario"
+                    Key     = $scenarioKey
+                    Type    = "Scenario"
+                    Name    = $scenario
+                    Path    = $scenarioPath
+                }
+                [void]$items.Add($entry)
+                $mapping[$scenarioKey] = $entry
+                $availableScenarios += $entry
+            }
+        }
+    }
+
+    $currentKey = ""
+    if ($currentProfile) {
+        $currentKey = "profile::$currentProfile"
+        if (-not $mapping.ContainsKey($currentKey)) {
+            $displayName = if ($currentPath) { "$currentProfile (missing)" } else { $currentProfile }
+            $entry = [PSCustomObject]@{
+                Display = $displayName
+                Key     = $currentKey
+                Type    = "Profile"
+                Name    = $currentProfile
+                Path    = $currentPath
+            }
+            [void]$items.Add($entry)
+            $mapping[$currentKey] = $entry
+        }
+    }
+
+    $scenarioCell = New-Object System.Windows.Forms.DataGridViewComboBoxCell
+    $scenarioCell.DisplayMember = "Display"
+    $scenarioCell.ValueMember = "Key"
+    foreach ($item in $items) {
+        [void]$scenarioCell.Items.Add($item)
+    }
+    $scenarioCell.Value = $currentKey
+    $scenarioCell.Tag = @{
+        Mapping    = $mapping
+        ProfileKey = $currentKey
+        AvailableScenarios = $availableScenarios
+    }
+    $Row.Cells["Scenario"] = $scenarioCell
+}
+
+function Configure-QuickDataColumn {
+    param(
+        $Row,
+        [string]$InstancePath
+    )
+
+    $dataBankEntries = @()
+    $dataBankPath = $null
+    if ($InstancePath) {
+        try {
+            $catalog = Get-QuickDataCatalog -InstancePath $InstancePath
+            if ($catalog) {
+                $dataBankEntries = if ($catalog.Entries) { $catalog.Entries } else { @() }
+                $dataBankPath = $catalog.Path
+            }
+        } catch {
+            $dataBankEntries = @()
+        }
+    }
+
+    $quickDataCell = New-Object System.Windows.Forms.DataGridViewComboBoxCell
+    $quickDataCell.DisplayMember = "Display"
+    $quickDataCell.ValueMember = "Key"
+    $quickDataCell.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
+
+    $dataSource = New-Object System.Collections.ArrayList
+    $dataPlaceholder = [PSCustomObject]@{
+        Display = "(Select)"
+        Key     = ""
+    }
+    [void]$dataSource.Add($dataPlaceholder)
+
+    if ($dataBankEntries -and $dataBankEntries.Count -gt 0) {
+        foreach ($item in $dataBankEntries) {
+            if (-not $item.DataID) { continue }
+
+            $displayText = if ([string]::IsNullOrWhiteSpace($item.Description)) {
+                $item.DataID
+            } else {
+                "{0} - {1}" -f $item.DataID, $item.Description
+            }
+
+            $entry = [PSCustomObject]@{
+                Display = $displayText
+                Key     = [string]$item.DataID
+            }
+            [void]$dataSource.Add($entry)
+        }
+    }
+
+    foreach ($item in $dataSource) {
+        [void]$quickDataCell.Items.Add($item)
+    }
+    $quickDataCell.Value = ""
+    $quickDataCell.Tag = @{
+        DataBankCount = $dataBankEntries.Count
+        DataBankPath  = if ($dataBankPath -and (Test-Path -LiteralPath $dataBankPath)) { $dataBankPath } else { $null }
+    }
+    $Row.Cells["QuickData"] = $quickDataCell
+}
+
+function Configure-QuickActionColumn {
+    param(
+        $Row,
+        [string]$InstancePath
+    )
+
+    $quickActionCell = New-Object System.Windows.Forms.DataGridViewComboBoxCell
+    $quickActionCell.DisplayMember = "Display"
+    $quickActionCell.ValueMember = "Key"
+    $quickActionCell.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
+
+    $actionSource = New-Object System.Collections.ArrayList
+    $actionMapping = @{
+    }
+    $actionPlaceholder = [PSCustomObject]@{
+        Display = "(Select)"
+        Key     = ""
+        Type    = ""
+        Path    = $null
+        Name    = $null
+    }
+    [void]$actionSource.Add($actionPlaceholder)
+    $actionMapping[$actionPlaceholder.Key] = $actionPlaceholder
+
+    # Get available scenarios from Scenario column
+    $scenarioCell = $Row.Cells["Scenario"]
+    $availableScenarios = @()
+    if ($scenarioCell.Tag -is [System.Collections.IDictionary] -and $scenarioCell.Tag.ContainsKey("AvailableScenarios")) {
+        $availableScenarios = $scenarioCell.Tag["AvailableScenarios"]
+    }
+
+    foreach ($scenarioEntry in $availableScenarios) {
+        $actionEntry = [PSCustomObject]@{
+            Display = $scenarioEntry.Display
+            Key     = $scenarioEntry.Key
+            Type    = $scenarioEntry.Type
+            Path    = $scenarioEntry.Path
+            Name    = $scenarioEntry.Name
+        }
+        [void]$actionSource.Add($actionEntry)
+        $actionMapping[$actionEntry.Key] = $actionEntry
+    }
+
+    foreach ($item in $actionSource) {
+        [void]$quickActionCell.Items.Add($item)
+    }
+    $Row.Cells["QuickAction"] = $quickActionCell
+}

@@ -140,6 +140,18 @@ Write-Host "[Init] Loading modules..." -ForegroundColor Cyan
 
 # UIモジュールをインポート
 $uiPath = Join-Path $script:RootPath "Presentation\UI"
+
+# ViewBuilderを先に読み込む
+$viewBuilderFile = Join-Path $uiPath "ViewBuilder.ps1"
+if (Test-Path $viewBuilderFile) {
+    . $viewBuilderFile
+    Write-Host "  [+] ViewBuilder.ps1" -ForegroundColor Green
+} else {
+    Write-Error "ViewBuilder module not found: $viewBuilderFile"
+    exit 1
+}
+
+# MainFormを読み込む
 $uiFile = Join-Path $uiPath "MainForm.ps1"
 if (Test-Path $uiFile) {
     . $uiFile
