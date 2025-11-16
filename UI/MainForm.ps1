@@ -195,6 +195,20 @@ function New-UiToolbarButton {
     return $button
 }
 
+function New-UiGroupFilter {
+    param(
+        [System.Drawing.Point]$Location,
+        [System.Drawing.Size]$Size
+    )
+
+    $comboBox = New-Object System.Windows.Forms.ComboBox
+    $comboBox.Location = $Location
+    $comboBox.Size = $Size
+    $comboBox.DropDownStyle = [System.Windows.Forms.ComboBoxStyle]::DropDownList
+
+    return $comboBox
+}
+
 function New-UiLabel {
     param(
         [string]$Text,
@@ -253,6 +267,18 @@ function Show-MainForm {
     $btnDisconnect = New-UiToolbarButton -Text "Disconnect" -Location (New-Object System.Drawing.Point(230, 10))
     $form.Controls.Add($btnDisconnect)
 
+    $btnConnectAll = New-UiToolbarButton -Text "Connect All" -Location (New-Object System.Drawing.Point(340, 10))
+    $form.Controls.Add($btnConnectAll)
+
+    $btnDisconnectAll = New-UiToolbarButton -Text "Disconnect All" -Location (New-Object System.Drawing.Point(450, 10))
+    $form.Controls.Add($btnDisconnectAll)
+
+    $lblGroupFilter = New-UiLabel -Text "Group:" -Location (New-Object System.Drawing.Point(570, 15)) -Size (New-Object System.Drawing.Size(50, 20))
+    $form.Controls.Add($lblGroupFilter)
+
+    $cmbGroupFilter = New-UiGroupFilter -Location (New-Object System.Drawing.Point(620, 12)) -Size (New-Object System.Drawing.Size(180, 24))
+    $form.Controls.Add($cmbGroupFilter)
+
     # Log area
     $lblLog = New-UiLabel -Text "Connection Log:" -Location (New-Object System.Drawing.Point(10, 290)) -Size (New-Object System.Drawing.Size(200, 20))
     $form.Controls.Add($lblLog)
@@ -266,6 +292,7 @@ function Show-MainForm {
     $pendingComboDropDownColumn = $null
     $script:suppressOnReceivedEvent = $false
     $script:suppressPeriodicSendEvent = $false
+    $script:currentGroupFilter = "(All)"
 
     $getSelectedConnection = {
         if ($dgvInstances.SelectedRows.Count -eq 0) {
@@ -302,7 +329,7 @@ function Show-MainForm {
     })
 
     $btnRefresh.Add_Click({
-        Update-InstanceList -DataGridView $dgvInstances
+        Update-InstanceList -DataGridView $dgvInstances -GroupFilterComboBox $cmbGroupFilter -GroupFilter $script:currentGroupFilter
     })
 
     $btnConnect.Add_Click({
@@ -333,7 +360,7 @@ function Show-MainForm {
             [System.Windows.Forms.MessageBox]::Show("Failed to start connection: $_", "Error") | Out-Null
         }
 
-        Update-InstanceList -DataGridView $dgvInstances
+        Update-InstanceList -DataGridView $dgvInstances -GroupFilterComboBox $cmbGroupFilter -GroupFilter $script:currentGroupFilter
     })
 
     $btnDisconnect.Add_Click({
@@ -364,7 +391,54 @@ function Show-MainForm {
             [System.Windows.Forms.MessageBox]::Show("Failed to stop connection: $_", "Error") | Out-Null
         }
 
-        Update-InstanceList -DataGridView $dgvInstances
+        Update-InstanceList -DataGridView $dgvInstances -GroupFilterComboBox $cmbGroupFilter -GroupFilter $script:currentGroupFilter
+    })
+
+    $btnConnectAll.Add_Click({
+        $connections = Get-UiConnections
+        if (-not $connections) { return }
+
+        $targetGroup = $script:currentGroupFilter
+        if ($targetGroup -and $targetGroup -ne "(All)") {
+            $connections = $connections | Where-Object { $_.Group -eq $targetGroup }
+        }
+
+        foreach ($conn in $connections) {
+            try {
+                Start-Connection -ConnectionId $conn.Id
+            } catch {
+                Write-Warning "[UI] Failed to start $($conn.DisplayName): $_"
+            }
+        }
+
+        Update-InstanceList -DataGridView $dgvInstances -GroupFilterComboBox $cmbGroupFilter -GroupFilter $script:currentGroupFilter
+    })
+
+    $btnDisconnectAll.Add_Click({
+        $connections = Get-UiConnections
+        if (-not $connections) { return }
+
+        $targetGroup = $script:currentGroupFilter
+        if ($targetGroup -and $targetGroup -ne "(All)") {
+            $connections = $connections | Where-Object { $_.Group -eq $targetGroup }
+        }
+
+        foreach ($conn in $connections) {
+            try {
+                Stop-Connection -ConnectionId $conn.Id
+            } catch {
+                Write-Warning "[UI] Failed to stop $($conn.DisplayName): $_"
+            }
+        }
+
+        Update-InstanceList -DataGridView $dgvInstances -GroupFilterComboBox $cmbGroupFilter -GroupFilter $script:currentGroupFilter
+    })
+
+    $cmbGroupFilter.Add_SelectedIndexChanged({
+        if ($cmbGroupFilter.SelectedItem) {
+            $script:currentGroupFilter = [string]$cmbGroupFilter.SelectedItem
+            Update-InstanceList -DataGridView $dgvInstances -GroupFilterComboBox $cmbGroupFilter -GroupFilter $script:currentGroupFilter
+        }
     })
 
     $dgvInstances.Add_CurrentCellDirtyStateChanged({
@@ -372,6 +446,26 @@ function Show-MainForm {
             $dgvInstances.CurrentCell.OwningColumn -and
             $dgvInstances.CurrentCell.OwningColumn.Name -eq "Scenario") {
             $dgvInstances.CommitEdit([System.Windows.Forms.DataGridViewDataErrorContexts]::Commit)
+        }
+    })
+
+    $dgvInstances.Add_CellFormatting({
+        param($sender, $eventArgs)
+
+        if ($eventArgs.RowIndex -lt 0 -or $eventArgs.ColumnIndex -lt 0) { return }
+
+        $column = $sender.Columns[$eventArgs.ColumnIndex]
+        if (-not $column -or $column.Name -ne "Status") { return }
+
+        $statusText = if ($eventArgs.Value) { [string]$eventArgs.Value } else { "" }
+        $upperStatus = $statusText.ToUpperInvariant()
+
+        switch ($upperStatus) {
+            "CONNECTED" { $eventArgs.CellStyle.BackColor = [System.Drawing.Color]::FromArgb(198, 239, 206); $eventArgs.CellStyle.ForeColor = [System.Drawing.Color]::FromArgb(0, 97, 0) }
+            "CONNECTING" { $eventArgs.CellStyle.BackColor = [System.Drawing.Color]::FromArgb(255, 235, 156); $eventArgs.CellStyle.ForeColor = [System.Drawing.Color]::FromArgb(156, 101, 0) }
+            "DISCONNECTED" { $eventArgs.CellStyle.BackColor = [System.Drawing.Color]::FromArgb(237, 237, 237); $eventArgs.CellStyle.ForeColor = [System.Drawing.Color]::FromArgb(102, 102, 102) }
+            "ERROR" { $eventArgs.CellStyle.BackColor = [System.Drawing.Color]::FromArgb(255, 199, 206); $eventArgs.CellStyle.ForeColor = [System.Drawing.Color]::FromArgb(156, 0, 6) }
+            Default { $eventArgs.CellStyle.BackColor = [System.Drawing.Color]::White; $eventArgs.CellStyle.ForeColor = [System.Drawing.Color]::FromArgb(50, 49, 48) }
         }
     })
 
@@ -836,7 +930,7 @@ function Show-MainForm {
     $timer.Interval = 1000
     $timer.Add_Tick({
         if (-not $gridEditingInProgress -and -not $dgvInstances.IsCurrentCellInEditMode) {
-            Update-InstanceList -DataGridView $dgvInstances
+            Update-InstanceList -DataGridView $dgvInstances -GroupFilterComboBox $cmbGroupFilter -GroupFilter $script:currentGroupFilter
         }
         Update-LogDisplay -TextBox $txtLog
     })
@@ -864,7 +958,7 @@ function Show-MainForm {
     })
 
     # Initial load
-    Update-InstanceList -DataGridView $dgvInstances
+    Update-InstanceList -DataGridView $dgvInstances -GroupFilterComboBox $cmbGroupFilter -GroupFilter $script:currentGroupFilter
 
     # Show form
     $form.Add_Shown({ $form.Activate() })
@@ -877,7 +971,9 @@ function Show-MainForm {
 
 function Update-InstanceList {
     param(
-        [System.Windows.Forms.DataGridView]$DataGridView
+        [System.Windows.Forms.DataGridView]$DataGridView,
+        [System.Windows.Forms.ComboBox]$GroupFilterComboBox,
+        [string]$GroupFilter
     )
 
     if (-not $DataGridView) {
@@ -901,6 +997,32 @@ function Update-InstanceList {
     $DataGridView.Rows.Clear()
 
     $connections = Get-UiConnections
+    if (-not $connections) { $connections = @() }
+
+    $groupValues = @("(All)") + ($connections | Where-Object { $_.Group } | Select-Object -ExpandProperty Group -Unique | Sort-Object)
+    if ($GroupFilterComboBox) {
+        $previousSelection = if ($GroupFilterComboBox.SelectedItem) { [string]$GroupFilterComboBox.SelectedItem } else { "" }
+        $GroupFilterComboBox.Items.Clear()
+        foreach ($group in $groupValues) {
+            [void]$GroupFilterComboBox.Items.Add($group)
+        }
+
+        $targetSelection = if ($GroupFilter) { $GroupFilter } elseif ($previousSelection) { $previousSelection } else { "(All)" }
+        if (-not $GroupFilterComboBox.Items.Contains($targetSelection)) {
+            $targetSelection = "(All)"
+        }
+
+        if ($GroupFilterComboBox.SelectedItem -ne $targetSelection) {
+            $GroupFilterComboBox.SelectedItem = $targetSelection
+        }
+        $script:currentGroupFilter = $targetSelection
+    }
+
+    $targetGroup = if ($GroupFilter) { $GroupFilter } else { "" }
+    if ($targetGroup -and $targetGroup -ne "(All)") {
+        $connections = $connections | Where-Object { $_.Group -eq $targetGroup }
+    }
+
     if (-not $connections -or $connections.Count -eq 0) {
         return
     }
