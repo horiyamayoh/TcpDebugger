@@ -185,12 +185,11 @@ function New-UiToolbarButton {
     param(
         [string]$Text,
         [int]$X,
-        [int]$Y,
-        [System.Drawing.Size]$Size
+        [System.Drawing.Point]$Location
     )
 
     $button = New-Object System.Windows.Forms.Button
-    $button.Location = New-Object System.Drawing.Point($X, $Y)
+    $button.Location = $Location
     $button.Size = $Size
     $button.Text = $Text
 
