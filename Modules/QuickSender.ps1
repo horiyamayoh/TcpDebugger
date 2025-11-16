@@ -1,5 +1,6 @@
-# QuickSender.ps1
-# ƒf[ƒ^ƒoƒ“ƒN & ƒƒ“ƒNƒŠƒbƒN‘—Mƒ‚ƒWƒ…[ƒ‹
+ï»¿# QuickSender.ps1
+# [DEPRECATED] ã“ã®ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã¯éæ¨å¥¨ã§ã™ã€‚MessageServiceã‚’ç›´æ¥ä½¿ç”¨ã—ã¦ãã ã•ã„ã€‚
+# ãƒ‡ãƒ¼ã‚¿ãƒãƒ³ã‚¯ & ãƒ¯ãƒ³ã‚¯ãƒªãƒƒã‚¯é€ä¿¡ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«
 
 if (-not $script:QuickSenderDataBankCache) {
     $script:QuickSenderDataBankCache = @{}
@@ -8,7 +9,7 @@ if (-not $script:QuickSenderDataBankCache) {
 function Read-DataBank {
     <#
     .SYNOPSIS
-    ƒf[ƒ^ƒoƒ“ƒNCSV‚ğ“Ç‚İ‚İ
+    ãƒ‡ãƒ¼ã‚¿ãƒãƒ³ã‚¯CSVã‚’èª­ã¿è¾¼ã¿
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -26,7 +27,7 @@ function Read-DataBank {
 function Get-DataBankRows {
     <#
     .SYNOPSIS
-    ƒf[ƒ^ƒoƒ“ƒNCSV‚ğƒLƒƒƒbƒVƒ…•t‚«‚Åæ“¾
+    ãƒ‡ãƒ¼ã‚¿ãƒãƒ³ã‚¯CSVã‚’ã‚­ãƒ£ãƒƒã‚·ãƒ¥ä»˜ãã§å–å¾—
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -65,7 +66,7 @@ function Get-DataBankRows {
 function Get-DataBankEntry {
     <#
     .SYNOPSIS
-    ƒf[ƒ^ƒoƒ“ƒNCSV‚©‚çw’èID‚Ìs‚ğæ“¾
+    ãƒ‡ãƒ¼ã‚¿ãƒãƒ³ã‚¯CSVã‹ã‚‰æŒ‡å®šIDã®è¡Œã‚’å–å¾—
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -92,7 +93,7 @@ function Get-DataBankEntry {
 function Send-QuickData {
     <#
     .SYNOPSIS
-    ƒf[ƒ^ƒoƒ“ƒN‚©‚çƒNƒCƒbƒN‘—M
+    ãƒ‡ãƒ¼ã‚¿ãƒãƒ³ã‚¯ã‹ã‚‰ã‚¯ã‚¤ãƒƒã‚¯é€ä¿¡
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -108,15 +109,13 @@ function Send-QuickData {
         [string]$DataBankPath
     )
     
-    if (-not $Global:Connections.ContainsKey($ConnectionId)) {
-        throw "Connection not found: $ConnectionId"
-    }
-    
+    $conn = Get-ManagedConnection -ConnectionId $ConnectionId
+
     if (-not $DataBank -and [string]::IsNullOrWhiteSpace($DataBankPath)) {
         throw "Either DataBank or DataBankPath must be provided."
     }
 
-    # ƒf[ƒ^ƒoƒ“ƒN‚©‚çDataID‚ÅŒŸõ
+    # ãƒ‡ãƒ¼ã‚¿ãƒãƒ³ã‚¯ã‹ã‚‰DataIDã§æ¤œç´¢
     if ($DataBank) {
         $dataItem = $DataBank | Where-Object { $_.DataID -eq $DataID } | Select-Object -First 1
     } else {
@@ -127,23 +126,21 @@ function Send-QuickData {
         throw "DataID not found in DataBank: $DataID"
     }
     
-    $conn = $Global:Connections[$ConnectionId]
-    
     Write-Verbose "[QuickSender] Sending '$DataID' to $($conn.DisplayName)..."
     
-    # ƒf[ƒ^ƒ^ƒCƒv‚É‰‚¶‚Äˆ—
+    # ãƒ‡ãƒ¼ã‚¿ã‚¿ã‚¤ãƒ—ã«å¿œã˜ã¦å‡¦ç†
     switch ($dataItem.Type) {
         "TEXT" {
-            # •Ï”“WŠJ
+            # å¤‰æ•°å±•é–‹
             $message = Expand-MessageVariables -Template $dataItem.Content -Variables $conn.Variables
             $bytes = ConvertTo-ByteArray -Data $message -Encoding "UTF-8"
         }
         "HEX" {
-            # HEX•ÏŠ·
+            # HEXå¤‰æ›
             $bytes = ConvertTo-ByteArray -Data $dataItem.Content -IsHex
         }
         "FILE" {
-            # ƒtƒ@ƒCƒ‹“Ç‚İ‚İ
+            # ãƒ•ã‚¡ã‚¤ãƒ«èª­ã¿è¾¼ã¿
             if (Test-Path $dataItem.Content) {
                 $bytes = [System.IO.File]::ReadAllBytes($dataItem.Content)
             } else {
@@ -151,18 +148,18 @@ function Send-QuickData {
             }
         }
         "TEMPLATE" {
-            # ƒeƒ“ƒvƒŒ[ƒg“WŠJ
+            # ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆå±•é–‹
             $message = Expand-MessageVariables -Template $dataItem.Content -Variables $conn.Variables
             $bytes = ConvertTo-ByteArray -Data $message -Encoding "UTF-8"
         }
         default {
-            # ƒfƒtƒHƒ‹ƒg‚ÍTEXTˆµ‚¢
+            # ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã¯TEXTæ‰±ã„
             $message = Expand-MessageVariables -Template $dataItem.Content -Variables $conn.Variables
             $bytes = ConvertTo-ByteArray -Data $message -Encoding "UTF-8"
         }
     }
     
-    # ‘—M
+    # é€ä¿¡
     Send-Data -ConnectionId $ConnectionId -Data $bytes
     
     Write-Verbose "[QuickSender] Sent '$DataID': $($bytes.Length) bytes"
@@ -171,7 +168,7 @@ function Send-QuickData {
 function Send-QuickDataToGroup {
     <#
     .SYNOPSIS
-    ƒOƒ‹[ƒv“à‚Ì‘SÚ‘±‚ÉƒNƒCƒbƒN‘—M
+    ã‚°ãƒ«ãƒ¼ãƒ—å†…ã®å…¨æ¥ç¶šã«ã‚¯ã‚¤ãƒƒã‚¯é€ä¿¡
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -187,7 +184,7 @@ function Send-QuickDataToGroup {
         [string]$DataBankPath
     )
     
-    # ƒOƒ‹[ƒv“à‚ÌÚ‘±‚ğæ“¾
+    # ã‚°ãƒ«ãƒ¼ãƒ—å†…ã®æ¥ç¶šã‚’å–å¾—
     $connections = Get-ConnectionsByGroup -GroupName $GroupName
     
     if ($connections.Count -eq 0) {
@@ -215,7 +212,7 @@ function Send-QuickDataToGroup {
 function Get-DataBankCategories {
     <#
     .SYNOPSIS
-    ƒf[ƒ^ƒoƒ“ƒN‚ÌƒJƒeƒSƒŠˆê——‚ğæ“¾
+    ãƒ‡ãƒ¼ã‚¿ãƒãƒ³ã‚¯ã®ã‚«ãƒ†ã‚´ãƒªä¸€è¦§ã‚’å–å¾—
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -230,7 +227,7 @@ function Get-DataBankCategories {
 function Get-DataBankByCategory {
     <#
     .SYNOPSIS
-    ƒJƒeƒSƒŠ‚Åƒf[ƒ^ƒoƒ“ƒN‚ğƒtƒBƒ‹ƒ^
+    ã‚«ãƒ†ã‚´ãƒªã§ãƒ‡ãƒ¼ã‚¿ãƒãƒ³ã‚¯ã‚’ãƒ•ã‚£ãƒ«ã‚¿
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -245,6 +242,42 @@ function Get-DataBankByCategory {
     return $filtered
 }
 
+function Get-QuickDataCatalog {
+    <#
+    .SYNOPSIS
+    ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹é…ä¸‹ã®ã‚¯ã‚¤ãƒƒã‚¯é€ä¿¡ãƒ‡ãƒ¼ã‚¿ä¸€è¦§ã‚’å–å¾—
+    #>
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$InstancePath
+    )
+
+    $catalog = [PSCustomObject]@{
+        Path    = $null
+        Entries = @()
+    }
+
+    if ([string]::IsNullOrWhiteSpace($InstancePath)) {
+        return $catalog
+    }
+
+    $databankPath = Join-Path $InstancePath "templates\databank.csv"
+    if (-not (Test-Path -LiteralPath $databankPath)) {
+        return $catalog
+    }
+
+    try {
+        $rows = Get-DataBankRows -FilePath $databankPath
+        $catalog.Path = $databankPath
+        $catalog.Entries = $rows
+    }
+    catch {
+        Write-Warning "[QuickSender] Failed to load quick data bank: $_"
+    }
+
+    return $catalog
+}
+
 # Export-ModuleMember -Function @(
 #     'Read-DataBank',
 #     'Send-QuickData',
@@ -252,3 +285,4 @@ function Get-DataBankByCategory {
 #     'Get-DataBankCategories',
 #     'Get-DataBankByCategory'
 # )
+

@@ -1,138 +1,44 @@
-# TcpServer.ps1
-# TCPƒT[ƒo[Ú‘±ˆ—
+ï»¿# TcpServer.ps1
+# TCPã‚µãƒ¼ãƒãƒ¼æ¥ç¶šç®¡ç† (æ–°ã‚¢ãƒ¼ã‚­ãƒ†ã‚¯ãƒãƒ£ã€ã‚¢ãƒ€ãƒ—ã‚¿ãƒ¼ã®ãƒ©ãƒƒãƒ‘ãƒ¼)
 
 function Start-TcpServerConnection {
     <#
     .SYNOPSIS
-    TCPƒT[ƒo[‚ğ‹N“®
+    TCPã‚µãƒ¼ãƒãƒ¼ã‚’èµ·å‹•
+    
+    .DESCRIPTION
+    æ–°ã‚¢ãƒ¼ã‚­ãƒ†ã‚¯ãƒãƒ£ã®ã‚¢ãƒ€ãƒ—ã‚¿ãƒ¼ã‚’ä½¿ç”¨ã—ã¦ã‚µãƒ¼ãƒãƒ¼ã‚’èµ·å‹•ã—ã¾ã™ã€‚
     #>
     param(
         [Parameter(Mandatory=$true)]
         [object]$Connection
     )
     
-    # ƒXƒŒƒbƒh‚Å”ñ“¯ŠúÀs
-    $scriptBlock = {
-        param($connId, $localIP, $localPort)
-        
-        try {
-            Write-Host "[TcpServer] Starting server on ${localIP}:${localPort}..." -ForegroundColor Cyan
-            
-            # Ú‘±ƒIƒuƒWƒFƒNƒg‚ğæ“¾
-            $conn = $Global:Connections[$connId]
-            
-            # TCPƒŠƒXƒi[ì¬
-            $ipAddress = [System.Net.IPAddress]::Parse($localIP)
-            $listener = New-Object System.Net.Sockets.TcpListener($ipAddress, $localPort)
-            $listener.Start()
-            
-            $conn.Socket = $listener
-            $conn.Status = "CONNECTED"
-            
-            Write-Host "[TcpServer] Server listening on ${localIP}:${localPort}" -ForegroundColor Green
-            
-            # ƒNƒ‰ƒCƒAƒ“ƒgÚ‘±‘Ò‹@i”ñƒuƒƒbƒLƒ“ƒOj
-            $client = $null
-            $stream = $null
-            
-            while (-not $conn.CancellationSource.Token.IsCancellationRequested) {
-                try {
-                    # Ú‘±‘Ò‹@iƒ|[ƒŠƒ“ƒO•û®j
-                    if ($listener.Pending()) {
-                        # Šù‘¶ƒNƒ‰ƒCƒAƒ“ƒg‚ª‚ ‚ê‚ÎƒNƒ[ƒY
-                        if ($client) {
-                            $client.Close()
-                        }
-                        
-                        $client = $listener.AcceptTcpClient()
-                        $stream = $client.GetStream()
-                        
-                        $remoteEndpoint = $client.Client.RemoteEndPoint
-                        Write-Host "[TcpServer] Client connected: $remoteEndpoint" -ForegroundColor Green
-                    }
-                    
-                    # ƒNƒ‰ƒCƒAƒ“ƒg‚ªÚ‘±’†‚Ìê‡A‘—óMˆ—
-                    if ($client -and $client.Connected) {
-                        # ‘—Mˆ—
-                        while ($conn.SendQueue.Count -gt 0) {
-                            $data = $conn.SendQueue[0]
-                            $conn.SendQueue.RemoveAt(0)
-                            
-                            $stream.Write($data, 0, $data.Length)
-                            $stream.Flush()
-                            
-                            Write-Host "[TcpServer] Sent $($data.Length) bytes" -ForegroundColor Blue
-                            $conn.LastActivity = Get-Date
-                        }
-                        
-                        # óMˆ—
-                        if ($stream.DataAvailable) {
-                            $buffer = New-Object byte[] 8192
-                            $bytesRead = $stream.Read($buffer, 0, $buffer.Length)
-                            
-                            if ($bytesRead -gt 0) {
-                                $receivedData = $buffer[0..($bytesRead-1)]
-                                
-                                # óMƒoƒbƒtƒ@‚É’Ç‰Á
-                                [void]$conn.RecvBuffer.Add([PSCustomObject]@{
-                                    Timestamp = Get-Date
-                                    Data = $receivedData
-                                    Length = $bytesRead
-                                })
-                                
-                                Write-Host "[TcpServer] Received $bytesRead bytes" -ForegroundColor Magenta
-                                $conn.LastActivity = Get-Date
-
-                                Invoke-ConnectionAutoResponse -ConnectionId $connId -ReceivedData $receivedData
-                            }
-                        }
-                    }
-                    
-                    # CPU•‰‰×ŒyŒ¸
-                    Start-Sleep -Milliseconds 10
-                    
-                } catch {
-                    if (-not $conn.CancellationSource.Token.IsCancellationRequested) {
-                        Write-Error "[TcpServer] Error in loop: $_"
-                    }
-                }
-            }
-            
-        } catch {
-            $conn = $Global:Connections[$connId]
-            $conn.Status = "ERROR"
-            $conn.ErrorMessage = $_.Exception.Message
-            Write-Error "[TcpServer] Server error: $_"
-            
-        } finally {
-            # ƒNƒŠ[ƒ“ƒAƒbƒv
-            if ($client) {
-                $client.Close()
-                $client.Dispose()
-            }
-            
-            if ($listener) {
-                $listener.Stop()
-            }
-            
-            $conn = $Global:Connections[$connId]
-            if ($conn.Status -ne "ERROR") {
-                $conn.Status = "DISCONNECTED"
-            }
-            $conn.Socket = $null
-            
-            Write-Host "[TcpServer] Server stopped" -ForegroundColor Yellow
+    # ServiceContainerãŒå¿…è¦
+    if (-not $Global:ServiceContainer) {
+        throw "ServiceContainer is not initialized. Please run TcpDebugger.ps1 first."
+    }
+    
+    # TcpServerAdapterã‚’å–å¾—
+    $adapter = $Global:ServiceContainer.Resolve('TcpServerAdapter')
+    
+    # ManagedConnectionã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®å ´åˆ
+    if ($Connection -is [ManagedConnection]) {
+        $adapter.Start($Connection.Id)
+        return
+    }
+    
+    # æ—§å‹æ¥ç¶šã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®å ´åˆã€ConnectionServiceã‹ã‚‰ç™»éŒ²ç¢ºèª
+    if ($Connection.Id -and $Global:ConnectionService) {
+        $managedConn = $Global:ConnectionService.GetConnection($Connection.Id)
+        if ($managedConn) {
+            $adapter.Start($Connection.Id)
+            return
         }
     }
     
-    # ƒXƒŒƒbƒhŠJn
-    $thread = New-Object System.Threading.Thread([System.Threading.ThreadStart]{
-        & $scriptBlock -connId $Connection.Id -localIP $Connection.LocalIP -localPort $Connection.LocalPort
-    })
-    
-    $Connection.Thread = $thread
-    $thread.IsBackground = $true
-    $thread.Start()
+    # æœªç™»éŒ²ã®å ´åˆã¯ã‚¨ãƒ©ãƒ¼
+    throw "Connection '$($Connection.Id)' is not registered in ConnectionService. Please use ConnectionService.AddConnection() first."
 }
 
-# Export-ModuleMember -Function 'Start-TcpServerConnection'
+

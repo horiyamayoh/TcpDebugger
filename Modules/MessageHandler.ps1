@@ -1,4 +1,5 @@
 # MessageHandler.ps1
+# [DEPRECATED] このモジュールは非推奨です。MessageServiceを直接使用してください。
 
 # メッセージテンプレート - エンコード/デコード/変数処理
 
@@ -14,6 +15,10 @@ function Register-CustomVariableHandler {
     <#
     .SYNOPSIS
     カスタム変数ハンドラーを登録
+    
+    .DESCRIPTION
+    [非推奨] この関数は後方互換性のために残されています。
+    新しいコードでは $Global:MessageService.RegisterCustomVariableHandler() を使用してください。
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -23,23 +28,35 @@ function Register-CustomVariableHandler {
         [scriptblock]$Handler
     )
 
-    $key = $Name.ToLowerInvariant()
-    $script:CustomVariableHandlers[$key] = $Handler
+    if ($Global:MessageService) {
+        $Global:MessageService.RegisterCustomVariableHandler($Name, $Handler)
+    } else {
+        $key = $Name.ToLowerInvariant()
+        $script:CustomVariableHandlers[$key] = $Handler
+    }
 }
 
 function Unregister-CustomVariableHandler {
     <#
     .SYNOPSIS
     カスタム変数ハンドラーを削除
+    
+    .DESCRIPTION
+    [非推奨] この関数は後方互換性のために残されています。
+    新しいコードでは $Global:MessageService.UnregisterCustomVariableHandler() を使用してください。
     #>
     param(
         [Parameter(Mandatory=$true)]
         [string]$Name
     )
 
-    $key = $Name.ToLowerInvariant()
-    if ($script:CustomVariableHandlers.ContainsKey($key)) {
-        $script:CustomVariableHandlers.Remove($key)
+    if ($Global:MessageService) {
+        $Global:MessageService.UnregisterCustomVariableHandler($Name)
+    } else {
+        $key = $Name.ToLowerInvariant()
+        if ($script:CustomVariableHandlers.ContainsKey($key)) {
+            $script:CustomVariableHandlers.Remove($key)
+        }
     }
 }
 
@@ -47,6 +64,9 @@ function Clear-CustomVariableHandlers {
     <#
     .SYNOPSIS
     全てのカスタムハンドラーをクリア
+    
+    .DESCRIPTION
+    [非推奨] この関数は後方互換性のために残されています。
     #>
     $script:CustomVariableHandlers.Clear()
 }

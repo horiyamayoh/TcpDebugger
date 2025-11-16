@@ -1,10 +1,18 @@
-# ReceivedRuleEngine.ps1
-# óM‚Ìƒ‹[ƒ‹ˆ—ƒGƒ“ƒWƒ“iAutoResponse/OnReceived‹¤’Êj
+ï»¿# ReceivedRuleEngine.ps1
+# å—ä¿¡æ™‚ã®ãƒ«ãƒ¼ãƒ«å‡¦ç†ã‚¨ãƒ³ã‚¸ãƒ³ï¼ˆAutoResponse/OnReceivedå…±é€šï¼‰
+
+# Helper accessor for the shared rule repository
+function Get-RuleRepository {
+    if ($Global:RuleRepository) {
+        return $Global:RuleRepository
+    }
+    throw "RuleRepository is not initialized."
+}
 
 function Read-ReceivedRules {
     <#
     .SYNOPSIS
-    óMƒ‹[ƒ‹‚ğ“Ç‚İ‚İiAutoResponse/OnReceived‹¤’Êj
+    å—ä¿¡ãƒ«ãƒ¼ãƒ«ã‚’èª­ã¿è¾¼ã¿ï¼ˆAutoResponse/OnReceivedå…±é€šï¼‰
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -19,7 +27,7 @@ function Read-ReceivedRules {
         return @()
     }
 
-    # Shift-JIS‚ÅCSV“Ç‚İ‚İ
+    # Shift-JISã§CSVèª­ã¿è¾¼ã¿
     $sjisEncoding = [System.Text.Encoding]::GetEncoding("Shift_JIS")
     $rules = Import-Csv -Path $FilePath -Encoding $sjisEncoding
 
@@ -27,27 +35,27 @@ function Read-ReceivedRules {
         return @()
     }
 
-    # ƒ‹[ƒ‹ƒ^ƒCƒv‚ğ”»’è
+    # ãƒ«ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ—ã‚’åˆ¤å®š
     $detectedType = $null
     $firstRule = $rules[0]
     $properties = $firstRule.PSObject.Properties.Name
 
-    # ResponseMessageFile‚ÆScriptFile‚Ì—¼•û‚ª‚ ‚éê‡‚Í“‡Œ`®
+    # ResponseMessageFileã¨ScriptFileã®ä¸¡æ–¹ãŒã‚ã‚‹å ´åˆã¯çµ±åˆå½¢å¼
     $hasResponseFile = $properties -contains 'ResponseMessageFile'
     $hasScriptFile = $properties -contains 'ScriptFile'
     
     if ($hasResponseFile -and $hasScriptFile) {
         $detectedType = 'Unified'
     }
-    # ResponseMessageFile‚Ì‚İ‚ª‚ ‚ê‚ÎAutoResponse
+    # ResponseMessageFileã®ã¿ãŒã‚ã‚Œã°AutoResponse
     elseif ($hasResponseFile) {
         $detectedType = 'AutoResponse'
     }
-    # ScriptFile‚Ì‚İ‚ª‚ ‚ê‚ÎOnReceived
+    # ScriptFileã®ã¿ãŒã‚ã‚Œã°OnReceived
     elseif ($hasScriptFile) {
         $detectedType = 'OnReceived'
     }
-    # TriggerPattern‚ª‚ ‚ê‚Î‹ŒŒ`®AutoResponse
+    # TriggerPatternãŒã‚ã‚Œã°æ—§å½¢å¼AutoResponse
     elseif ($properties -contains 'TriggerPattern') {
         $detectedType = 'AutoResponse_Legacy'
     }
@@ -56,17 +64,17 @@ function Read-ReceivedRules {
         return @()
     }
 
-    # Šeƒ‹[ƒ‹‚Éƒƒ^ƒf[ƒ^‚ğ’Ç‰Á
+    # å„ãƒ«ãƒ¼ãƒ«ã«ãƒ¡ã‚¿ãƒ‡ãƒ¼ã‚¿ã‚’è¿½åŠ 
     foreach ($rule in $rules) {
         $rule | Add-Member -NotePropertyName '__RuleType' -NotePropertyValue $detectedType -Force
         
-        # “‡Œ`®‚Ìê‡AŠeƒ‹[ƒ‹‚ÌÀÛ‚ÌƒAƒNƒVƒ‡ƒ“ƒ^ƒCƒv‚ğ”»’è
+        # çµ±åˆå½¢å¼ã®å ´åˆã€å„ãƒ«ãƒ¼ãƒ«ã®å®Ÿéš›ã®ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã‚¿ã‚¤ãƒ—ã‚’åˆ¤å®š
         if ($detectedType -eq 'Unified') {
             $hasResponse = -not [string]::IsNullOrWhiteSpace($rule.ResponseMessageFile)
             $hasScript = -not [string]::IsNullOrWhiteSpace($rule.ScriptFile)
             
             if ($hasResponse -and $hasScript) {
-                # —¼•ûw’è‚³‚ê‚Ä‚¢‚éê‡
+                # ä¸¡æ–¹æŒ‡å®šã•ã‚Œã¦ã„ã‚‹å ´åˆ
                 $rule | Add-Member -NotePropertyName '__ActionType' -NotePropertyValue 'Both' -Force
             } elseif ($hasResponse) {
                 $rule | Add-Member -NotePropertyName '__ActionType' -NotePropertyValue 'AutoResponse' -Force
@@ -76,7 +84,7 @@ function Read-ReceivedRules {
                 $rule | Add-Member -NotePropertyName '__ActionType' -NotePropertyValue 'None' -Force
             }
         } else {
-            # ”ñ“‡Œ`®‚Ìê‡
+            # éçµ±åˆå½¢å¼ã®å ´åˆ
             if ($detectedType -eq 'AutoResponse' -or $detectedType -eq 'AutoResponse_Legacy') {
                 $rule | Add-Member -NotePropertyName '__ActionType' -NotePropertyValue 'AutoResponse' -Force
             } elseif ($detectedType -eq 'OnReceived') {
@@ -84,7 +92,7 @@ function Read-ReceivedRules {
             }
         }
         
-        # ƒoƒCƒiƒŠƒ}ƒbƒ`ƒ“ƒOŒ`®‚©ƒeƒLƒXƒgƒ}ƒbƒ`ƒ“ƒOŒ`®‚©‚ğ”»’è
+        # ãƒã‚¤ãƒŠãƒªãƒãƒƒãƒãƒ³ã‚°å½¢å¼ã‹ãƒ†ã‚­ã‚¹ãƒˆãƒãƒƒãƒãƒ³ã‚°å½¢å¼ã‹ã‚’åˆ¤å®š
         if ($detectedType -eq 'AutoResponse_Legacy') {
             $rule | Add-Member -NotePropertyName '__MatchType' -NotePropertyValue 'Text' -Force
         } else {
@@ -100,7 +108,7 @@ function Read-ReceivedRules {
 function Test-ReceivedRuleMatch {
     <#
     .SYNOPSIS
-    óMƒf[ƒ^‚ªƒ‹[ƒ‹‚Éƒ}ƒbƒ`‚·‚é‚©ƒ`ƒFƒbƒNi‹¤’Êj
+    å—ä¿¡ãƒ‡ãƒ¼ã‚¿ãŒãƒ«ãƒ¼ãƒ«ã«ãƒãƒƒãƒã™ã‚‹ã‹ãƒã‚§ãƒƒã‚¯ï¼ˆå…±é€šï¼‰
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -117,19 +125,19 @@ function Test-ReceivedRuleMatch {
         return $false
     }
 
-    # ƒoƒCƒiƒŠƒ}ƒbƒ`ƒ“ƒO
+    # ãƒã‚¤ãƒŠãƒªãƒãƒƒãƒãƒ³ã‚°
     if ($Rule.__MatchType -eq 'Binary') {
         return Test-BinaryRuleMatch -ReceivedData $ReceivedData -Rule $Rule
     }
 
-    # ƒeƒLƒXƒgƒ}ƒbƒ`ƒ“ƒOi‹ŒŒ`®AutoResponsej
+    # ãƒ†ã‚­ã‚¹ãƒˆãƒãƒƒãƒãƒ³ã‚°ï¼ˆæ—§å½¢å¼AutoResponseï¼‰
     return Test-TextRuleMatch -ReceivedData $ReceivedData -Rule $Rule -DefaultEncoding $DefaultEncoding
 }
 
 function Test-BinaryRuleMatch {
     <#
     .SYNOPSIS
-    ƒoƒCƒiƒŠƒpƒ^[ƒ“ƒ}ƒbƒ`ƒ“ƒO
+    ãƒã‚¤ãƒŠãƒªãƒ‘ã‚¿ãƒ¼ãƒ³ãƒãƒƒãƒãƒ³ã‚°
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -139,20 +147,20 @@ function Test-BinaryRuleMatch {
         [object]$Rule
     )
 
-    # ƒ}ƒbƒ`ƒ“ƒOğŒ‚ªw’è‚³‚ê‚Ä‚¢‚È‚¢ê‡‚Íí‚Éƒ}ƒbƒ`
+    # ãƒãƒƒãƒãƒ³ã‚°æ¡ä»¶ãŒæŒ‡å®šã•ã‚Œã¦ã„ãªã„å ´åˆã¯å¸¸ã«ãƒãƒƒãƒ
     if (-not ($Rule.PSObject.Properties.Name -contains 'MatchOffset') -or
         [string]::IsNullOrWhiteSpace($Rule.MatchOffset)) {
         return $true
     }
 
-    # •K{ƒpƒ‰ƒ[ƒ^ƒ`ƒFƒbƒN
+    # å¿…é ˆãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯
     if ([string]::IsNullOrWhiteSpace($Rule.MatchLength) -or
         [string]::IsNullOrWhiteSpace($Rule.MatchValue)) {
         Write-Warning "[ReceivedRule] MatchLength or MatchValue is missing"
         return $false
     }
 
-    # ƒpƒ‰ƒ[ƒ^‰ğÍ
+    # ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿è§£æ
     try {
         $offset = [int]($Rule.MatchOffset)
         $length = [int]($Rule.MatchLength)
@@ -162,7 +170,7 @@ function Test-BinaryRuleMatch {
         return $false
     }
 
-    # ƒoƒŠƒf[ƒVƒ‡ƒ“
+    # ãƒãƒªãƒ‡ãƒ¼ã‚·ãƒ§ãƒ³
     if ($offset -lt 0 -or $length -le 0) {
         return $false
     }
@@ -187,14 +195,14 @@ function Test-BinaryRuleMatch {
         return $false
     }
 
-    # 16i”•¶š—ñ‚ğƒoƒCƒg”z—ñ‚É•ÏŠ·
+    # 16é€²æ•°æ–‡å­—åˆ—ã‚’ãƒã‚¤ãƒˆé…åˆ—ã«å¤‰æ›
     $matchBytes = @()
     for ($i = 0; $i -lt $hexValue.Length; $i += 2) {
         $hexByte = $hexValue.Substring($i, 2)
         $matchBytes += [Convert]::ToByte($hexByte, 16)
     }
 
-    # ”äŠr
+    # æ¯”è¼ƒ
     for ($i = 0; $i -lt $length; $i++) {
         if ($ReceivedData[$offset + $i] -ne $matchBytes[$i]) {
             return $false
@@ -207,7 +215,7 @@ function Test-BinaryRuleMatch {
 function Test-TextRuleMatch {
     <#
     .SYNOPSIS
-    ƒeƒLƒXƒgƒpƒ^[ƒ“ƒ}ƒbƒ`ƒ“ƒOi‹ŒŒ`®AutoResponse—pj
+    ãƒ†ã‚­ã‚¹ãƒˆãƒ‘ã‚¿ãƒ¼ãƒ³ãƒãƒƒãƒãƒ³ã‚°ï¼ˆæ—§å½¢å¼AutoResponseç”¨ï¼‰
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -264,4 +272,5 @@ function Test-TextRuleMatch {
         }
     }
 }
+
 

@@ -1,19 +1,10 @@
-# ReceivedEventHandler.ps1
-# óMƒCƒxƒ“ƒg“‡ƒnƒ“ƒhƒ‰iAutoResponse + OnReceivedj
-# [DEPRECATED] ‚±‚Ìƒ‚ƒWƒ…[ƒ‹‚Í”ñ„§‚Å‚·BReceivedEventPipeline‚ğ’¼Úg—p‚µ‚Ä‚­‚¾‚³‚¢B
+ï»¿# ReceivedEventHandler.ps1
+# å—ä¿¡ã‚¤ãƒ™ãƒ³ãƒˆçµ±åˆãƒãƒ³ãƒ‰ãƒ©ï¼ˆAutoResponse + OnReceivedï¼‰
 
 function Invoke-ReceivedEvent {
     <#
     .SYNOPSIS
-    óMƒCƒxƒ“ƒgˆ—iAutoResponse‚ÆOnReceived‚ğ“‡Àsj
-    
-    .DESCRIPTION
-    [”ñ„§] ‚±‚ÌŠÖ”‚ÍŒã•ûŒİŠ·«‚Ì‚½‚ß‚Éc‚³‚ê‚Ä‚¢‚Ü‚·B
-    V‚µ‚¢ƒR[ƒh‚Å‚ÍReceivedEventPipeline‚ğ’¼Úg—p‚µ‚Ä‚­‚¾‚³‚¢B
-    
-    .EXAMPLE
-    # V‚µ‚¢•û–@i„§j:
-    $Global:ReceivedEventPipeline.ProcessEvent($connectionId, $data, $metadata)
+    ï¿½ï¿½Mï¿½Cï¿½xï¿½ï¿½ï¿½gï¿½ï¿½ï¿½ï¿½ï¿½iAutoResponseï¿½ï¿½OnReceivedï¿½ğ“ï¿½ï¿½ï¿½ï¿½sï¿½j
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -22,22 +13,47 @@ function Invoke-ReceivedEvent {
         [Parameter(Mandatory=$true)]
         [byte[]]$ReceivedData
     )
-    
-    Write-Warning "[DEPRECATED] Invoke-ReceivedEvent is deprecated. Migrate to ReceivedEventPipeline."
-    
-    if ($Global:ReceivedEventPipeline) {
-        # V‚µ‚¢ƒA[ƒLƒeƒNƒ`ƒƒ‚ÉˆÏ÷
-        $metadata = @{}
-        $Global:ReceivedEventPipeline.ProcessEvent($ConnectionId, $ReceivedData, $metadata)
+
+    $conn = Get-ManagedConnection -ConnectionId $ConnectionId
+
+    $autoRules = @()
+    if ($conn.Variables.ContainsKey('AutoResponseProfilePath')) {
+        $autoPath = $conn.Variables['AutoResponseProfilePath']
+        if ($autoPath) {
+            try {
+                $repository = Get-RuleRepository
+                $autoRules = $repository.GetRules($autoPath)
+            } catch {
+                $autoRules = @()
+            }
+        }
+    }
+
+    $hasUnifiedRules = ($autoRules.Count -gt 0 -and $autoRules[0].__RuleType -eq 'Unified')
+
+    if ($hasUnifiedRules) {
+        # ï¿½ï¿½ï¿½ï¿½ï¿½`ï¿½ï¿½ï¿½Ìê‡: AutoResponseï¿½vï¿½ï¿½ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½Ì‚İ‚Å‘Sï¿½ï¿½ï¿½ï¿½
+        Invoke-ConnectionAutoResponse -ConnectionId $ConnectionId -ReceivedData $ReceivedData
     } else {
-        throw "ReceivedEventPipeline not initialized. Please update TcpDebugger.ps1."
+        # ï¿½Â•ÊŒ`ï¿½ï¿½ï¿½Ìê‡: AutoResponseï¿½ï¿½OnReceivedï¿½ï¿½ÊXï¿½Éï¿½ï¿½s
+        
+        # 1. AutoResponseï¿½ï¿½ï¿½ï¿½
+        if ($conn.Variables.ContainsKey('AutoResponseProfilePath') -and 
+            $conn.Variables['AutoResponseProfilePath']) {
+            Invoke-ConnectionAutoResponse -ConnectionId $ConnectionId -ReceivedData $ReceivedData
+        }
+
+        # 2. OnReceivedï¿½ï¿½ï¿½ï¿½
+        if ($conn.Variables.ContainsKey('OnReceivedProfilePath') -and 
+            $conn.Variables['OnReceivedProfilePath']) {
+            Invoke-ConnectionOnReceived -ConnectionId $ConnectionId -ReceivedData $ReceivedData
+        }
     }
 }
-
 function Set-ConnectionReceivedProfiles {
     <#
     .SYNOPSIS
-    Ú‘±‚É‘Î‚µ‚ÄAutoResponse‚ÆOnReceived‚Ìƒvƒƒtƒ@ƒCƒ‹‚ğİ’è
+    æ¥ç¶šã«å¯¾ã—ã¦AutoResponseã¨OnReceivedã®ãƒ—ãƒ­ãƒ•ã‚¡ã‚¤ãƒ«ã‚’è¨­å®š
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -58,7 +74,7 @@ function Set-ConnectionReceivedProfiles {
 
     $conn = Get-ManagedConnection -ConnectionId $ConnectionId
 
-    # AutoResponseƒvƒƒtƒ@ƒCƒ‹İ’è
+    # AutoResponseãƒ—ãƒ­ãƒ•ã‚¡ã‚¤ãƒ«è¨­å®š
     if (-not [string]::IsNullOrWhiteSpace($AutoResponseProfilePath)) {
         if (Test-Path -LiteralPath $AutoResponseProfilePath) {
             $resolved = (Resolve-Path -LiteralPath $AutoResponseProfilePath).Path
@@ -69,13 +85,13 @@ function Set-ConnectionReceivedProfiles {
             Write-Warning "[ReceivedEvent] AutoResponse profile not found: $AutoResponseProfilePath"
         }
     } elseif ([string]::IsNullOrWhiteSpace($AutoResponseProfileName)) {
-        # ƒNƒŠƒA
+        # ã‚¯ãƒªã‚¢
         $conn.Variables.Remove('AutoResponseProfile')
         $conn.Variables.Remove('AutoResponseProfilePath')
         Write-Host "[ReceivedEvent] AutoResponse profile cleared" -ForegroundColor Yellow
     }
 
-    # OnReceivedƒvƒƒtƒ@ƒCƒ‹İ’è
+    # OnReceivedãƒ—ãƒ­ãƒ•ã‚¡ã‚¤ãƒ«è¨­å®š
     if (-not [string]::IsNullOrWhiteSpace($OnReceivedProfilePath)) {
         if (Test-Path -LiteralPath $OnReceivedProfilePath) {
             $resolved = (Resolve-Path -LiteralPath $OnReceivedProfilePath).Path
@@ -86,7 +102,7 @@ function Set-ConnectionReceivedProfiles {
             Write-Warning "[ReceivedEvent] OnReceived profile not found: $OnReceivedProfilePath"
         }
     } elseif ([string]::IsNullOrWhiteSpace($OnReceivedProfileName)) {
-        # ƒNƒŠƒA
+        # ã‚¯ãƒªã‚¢
         $conn.Variables.Remove('OnReceivedProfile')
         $conn.Variables.Remove('OnReceivedProfilePath')
         Write-Host "[ReceivedEvent] OnReceived profile cleared" -ForegroundColor Yellow
@@ -96,7 +112,7 @@ function Set-ConnectionReceivedProfiles {
 function Get-ConnectionReceivedProfiles {
     <#
     .SYNOPSIS
-    Ú‘±‚ÌóMƒCƒxƒ“ƒgƒvƒƒtƒ@ƒCƒ‹î•ñ‚ğæ“¾
+    æ¥ç¶šã®å—ä¿¡ã‚¤ãƒ™ãƒ³ãƒˆãƒ—ãƒ­ãƒ•ã‚¡ã‚¤ãƒ«æƒ…å ±ã‚’å–å¾—
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -133,6 +149,7 @@ function Get-ConnectionReceivedProfiles {
         }
     }
 }
+
 
 
 

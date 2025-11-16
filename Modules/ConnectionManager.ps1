@@ -1,63 +1,44 @@
-# ConnectionManager.ps1
-# Ú‘±ŠÇ—ƒ‚ƒWƒ…[ƒ‹ - •¡”Ú‘±‚ÌˆêŒ³ŠÇ—
+ï»¿# ConnectionManager.ps1
+# ï¿½Ú‘ï¿½ï¿½Ç—ï¿½ï¿½ï¿½ï¿½Wï¿½ï¿½ï¿½[ï¿½ï¿½ - ï¿½ï¿½ï¿½ï¿½ï¿½Ú‘ï¿½ï¿½ÌˆêŒ³ï¿½Ç—ï¿½
 
-# ƒOƒ[ƒoƒ‹Ú‘±ƒXƒgƒAiƒXƒŒƒbƒhƒZ[ƒtj
-if (-not $Global:Connections) {
-    $Global:Connections = [System.Collections.Hashtable]::Synchronized(@{})
+function Get-ConnectionService {
+    if ($Global:ConnectionService) {
+        return $Global:ConnectionService
+    }
+    throw "ConnectionService is not initialized. Please run TcpDebugger.ps1 to bootstrap services."
 }
 
-class ConnectionContext {
-    [string]$Id
-    [string]$Name
-    [string]$DisplayName
-    [string]$Protocol  # TCP/UDP
-    [string]$Mode      # Client/Server/Sender/Receiver
-    [string]$LocalIP
-    [int]$LocalPort
-    [string]$RemoteIP
-    [int]$RemotePort
-    [string]$Status    # IDLE/CONNECTING/CONNECTED/ERROR/DISCONNECTED
-    [object]$Socket    # TcpClient/TcpListener/UdpClient
-    [System.Threading.Thread]$Thread
-    [System.Threading.CancellationTokenSource]$CancellationSource
-    [hashtable]$ScenarioTimers
-    [System.Collections.Generic.List[object]]$PeriodicTimers
-    [hashtable]$Variables  # ƒVƒiƒŠƒI•Ï”ƒXƒR[ƒv
-    [System.Collections.ArrayList]$SendQueue
-    [System.Collections.ArrayList]$RecvBuffer
-    [datetime]$LastActivity
-    [string]$ErrorMessage
-    [string]$Group
-    [string[]]$Tags
-    
-    ConnectionContext() {
-        $this.ScenarioTimers = [System.Collections.Hashtable]::Synchronized(@{})
-    $this.PeriodicTimers = New-Object System.Collections.Generic.List[object]
-        $this.Variables = [System.Collections.Hashtable]::Synchronized(@{})
-        $this.SendQueue = [System.Collections.ArrayList]::Synchronized((New-Object System.Collections.ArrayList))
-        $this.RecvBuffer = [System.Collections.ArrayList]::Synchronized((New-Object System.Collections.ArrayList))
-        $this.CancellationSource = New-Object System.Threading.CancellationTokenSource
-        $this.LastActivity = Get-Date
+function Get-ManagedConnection {
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$ConnectionId
+    )
+
+    $service = Get-ConnectionService
+    $conn = $service.GetConnection($ConnectionId)
+    if (-not $conn) {
+        throw "Connection not found: $ConnectionId"
     }
+    return $conn
 }
 
 function New-ConnectionManager {
     <#
     .SYNOPSIS
-    Ú‘±ƒ}ƒl[ƒWƒƒ[‚ğ‰Šú‰»
+    ï¿½Ú‘ï¿½ï¿½}ï¿½lï¿½[ï¿½Wï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     #>
     
     Write-Host "[ConnectionManager] Initializing..." -ForegroundColor Cyan
     
-    # Šù‘¶Ú‘±‚ÌƒNƒŠ[ƒ“ƒAƒbƒv
-    foreach ($key in $Global:Connections.Keys) {
+    $service = Get-ConnectionService
+    foreach ($conn in @($service.GetAllConnections())) {
         try {
-            Stop-Connection -ConnectionId $key -Force
+            Stop-Connection -ConnectionId $conn.Id -Force
         } catch {
-            Write-Warning "Failed to stop connection ${key}: $_"
+            Write-Warning "Failed to stop connection $($conn.Id): $_"
         }
     }
-    $Global:Connections.Clear()
+    $service.ClearConnections()
     
     Write-Host "[ConnectionManager] Initialized" -ForegroundColor Green
 }
@@ -65,31 +46,18 @@ function New-ConnectionManager {
 function Add-Connection {
     <#
     .SYNOPSIS
-    V‚µ‚¢Ú‘±‚ğ’Ç‰Á
+    ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½Ú‘ï¿½ï¿½ï¿½Ç‰ï¿½
     #>
     param(
         [Parameter(Mandatory=$true)]
         [hashtable]$Config
     )
     
-    $conn = [ConnectionContext]::new()
-    
-    # ID¶¬i–¢w’è‚Í©“®¶¬j
-    $conn.Id = if ($Config.Id) { $Config.Id } else { [guid]::NewGuid().ToString() }
-    $conn.Name = $Config.Name
-    $conn.DisplayName = if ($Config.DisplayName) { $Config.DisplayName } else { $Config.Name }
-    $conn.Protocol = $Config.Protocol
-    $conn.Mode = $Config.Mode
-    $conn.LocalIP = $Config.LocalIP
-    $conn.LocalPort = $Config.LocalPort
-    $conn.RemoteIP = $Config.RemoteIP
-    $conn.RemotePort = $Config.RemotePort
-    $conn.Status = "DISCONNECTED"
-    $conn.Group = $Config.Group
-    $conn.Tags = $Config.Tags
-    
-    # ƒOƒ[ƒoƒ‹ƒXƒgƒA‚É’Ç‰Á
-    $Global:Connections[$conn.Id] = $conn
+    $service = Get-ConnectionService
+    $conn = $service.AddConnection($Config)
+    if (-not $conn) {
+        throw "Failed to add connection."
+    }
     
     Write-Host "[ConnectionManager] Added connection: $($conn.DisplayName) [$($conn.Id)]" -ForegroundColor Green
     
@@ -99,41 +67,32 @@ function Add-Connection {
 function Remove-Connection {
     <#
     .SYNOPSIS
-    Ú‘±‚ğíœ
+    ï¿½Ú‘ï¿½ï¿½ï¿½ï¿½íœ
     #>
     param(
         [Parameter(Mandatory=$true)]
         [string]$ConnectionId
     )
     
-    if ($Global:Connections.ContainsKey($ConnectionId)) {
-        # Ú‘±’â~
-        Stop-Connection -ConnectionId $ConnectionId -Force
-        
-        # ƒXƒgƒA‚©‚çíœ
-        $Global:Connections.Remove($ConnectionId)
-        
-        Write-Host "[ConnectionManager] Removed connection: $ConnectionId" -ForegroundColor Yellow
-    }
+    $service = Get-ConnectionService
+    Stop-Connection -ConnectionId $ConnectionId -Force
+    $service.RemoveConnection($ConnectionId)
+    
+    Write-Host "[ConnectionManager] Removed connection: $ConnectionId" -ForegroundColor Yellow
 }
 
 function Start-Connection {
     <#
     .SYNOPSIS
-    Ú‘±‚ğŠJn
+    ï¿½Ú‘ï¿½ï¿½ï¿½ï¿½Jï¿½n
     #>
     param(
         [Parameter(Mandatory=$true)]
         [string]$ConnectionId
     )
     
-    if (-not $Global:Connections.ContainsKey($ConnectionId)) {
-        throw "Connection not found: $ConnectionId"
-    }
+    $conn = Get-ManagedConnection -ConnectionId $ConnectionId
     
-    $conn = $Global:Connections[$ConnectionId]
-    
-    # Šù‚ÉÚ‘±’†‚Ìê‡‚ÍƒXƒLƒbƒv
     if ($conn.Status -eq "CONNECTED" -or $conn.Status -eq "CONNECTING") {
         Write-Warning "[ConnectionManager] Connection already active: $($conn.DisplayName)"
         return
@@ -145,17 +104,25 @@ function Start-Connection {
     Write-Host "[ConnectionManager] Starting connection: $($conn.DisplayName)" -ForegroundColor Cyan
     
     try {
-        # ƒvƒƒgƒRƒ‹•Ê‚ÉÚ‘±ˆ—‚ğŒÄ‚Ño‚µ
+        # ServiceContainerï¿½ï¿½ï¿½Kï¿½v
+        if (-not $Global:ServiceContainer) {
+            throw "ServiceContainer is not initialized. Please run TcpDebugger.ps1 first."
+        }
+        
+        # ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½Aï¿½_ï¿½vï¿½^ï¿½[ï¿½Aï¿½[ï¿½Lï¿½eï¿½Nï¿½`ï¿½ï¿½ï¿½ï¿½ï¿½gï¿½p
         switch ($conn.Protocol) {
             "TCP" {
                 if ($conn.Mode -eq "Client") {
-                    Start-TcpClientConnection -Connection $conn
+                    $adapter = $Global:ServiceContainer.Resolve('TcpClientAdapter')
+                    $adapter.Start($ConnectionId)
                 } elseif ($conn.Mode -eq "Server") {
-                    Start-TcpServerConnection -Connection $conn
+                    $adapter = $Global:ServiceContainer.Resolve('TcpServerAdapter')
+                    $adapter.Start($ConnectionId)
                 }
             }
             "UDP" {
-                Start-UdpConnection -Connection $conn
+                $adapter = $Global:ServiceContainer.Resolve('UdpAdapter')
+                $adapter.Start($ConnectionId)
             }
             default {
                 throw "Unsupported protocol: $($conn.Protocol)"
@@ -165,7 +132,6 @@ function Start-Connection {
         $conn.Status = "CONNECTED"
         $conn.LastActivity = Get-Date
         
-        # ’èüŠú‘—M‚ğŠJn
         $periodicProfilePath = $null
         if ($conn.Variables.ContainsKey('PeriodicSendProfilePath')) {
             $periodicProfilePath = $conn.Variables['PeriodicSendProfilePath']
@@ -199,6 +165,26 @@ function Start-Connection {
 function Stop-Connection {
     <#
     .SYNOPSIS
+    ï¿½Ú‘ï¿½ï¿½ï¿½ï¿½~
+    #>
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$ConnectionId,
+        
+        [switch]$Force
+    )
+    
+    $conn = Get-ManagedConnection -ConnectionId $ConnectionId
+    
+    Write-Host "[ConnectionManager] Stopping connection: $($conn.DisplayName)" -ForegroundColor Yellow
+    
+    try {
+        try {
+            Stop-PeriodicSend -ConnectionId $ConnectionId
+        } catch {
+            Write-Verbose "[ConnectionManager] Failed to stop periodic send: $_"
+        }
+        
         if ($conn.ScenarioTimers -and $conn.ScenarioTimers.Count -gt 0) {
             foreach ($timerState in @($conn.ScenarioTimers.Values)) {
                 try {
@@ -209,7 +195,7 @@ function Stop-Connection {
                 } catch {
                     Write-Verbose "[ConnectionManager] Failed to dispose timer '$($timerState.Id)': $_"
                 }
-
+                
                 try {
                     if ($timerState -and $timerState.CancellationSource) {
                         $timerState.CancellationSource.Cancel()
@@ -219,41 +205,13 @@ function Stop-Connection {
                     Write-Verbose "[ConnectionManager] Failed to cancel timer '$($timerState.Id)': $_"
                 }
             }
-            
             $conn.ScenarioTimers.Clear()
         }
-
-    #>
-    param(
-        [Parameter(Mandatory=$true)]
-        [string]$ConnectionId,
         
-        [switch]$Force
-    )
-    
-    if (-not $Global:Connections.ContainsKey($ConnectionId)) {
-        Write-Warning "Connection not found: $ConnectionId"
-        return
-    }
-    
-    $conn = $Global:Connections[$ConnectionId]
-    
-    Write-Host "[ConnectionManager] Stopping connection: $($conn.DisplayName)" -ForegroundColor Yellow
-    
-    try {
-        # ’èüŠú‘—M‚ğ’â~
-        try {
-            Stop-PeriodicSend -ConnectionId $ConnectionId
-        } catch {
-            Write-Verbose "[ConnectionManager] Failed to stop periodic send: $_"
-        }
-        
-        # ƒLƒƒƒ“ƒZƒ‹ƒg[ƒNƒ“‚ğ”­s
         if ($conn.CancellationSource) {
             $conn.CancellationSource.Cancel()
         }
         
-        # ƒ\ƒPƒbƒg‚ğƒNƒ[ƒY
         if ($conn.Socket) {
             if ($conn.Socket -is [System.Net.Sockets.TcpClient]) {
                 $conn.Socket.Close()
@@ -266,10 +224,9 @@ function Stop-Connection {
             $conn.Socket = $null
         }
         
-        # ƒXƒŒƒbƒhI—¹‚ğ‘Ò‹@
         if ($conn.Thread -and $conn.Thread.IsAlive) {
             if (-not $Force) {
-                $conn.Thread.Join(5000)  # 5•b‘Ò‹@
+                $conn.Thread.Join(5000)
             }
             if ($conn.Thread.IsAlive) {
                 Write-Warning "Thread still alive, forcing abort"
@@ -290,53 +247,44 @@ function Stop-Connection {
 function Get-ConnectionsByGroup {
     <#
     .SYNOPSIS
-    ƒOƒ‹[ƒv–¼‚ÅÚ‘±‚ğ’Šo
+    ï¿½Oï¿½ï¿½ï¿½[ï¿½vï¿½ï¿½ï¿½ÅÚ‘ï¿½ï¿½ğ’Šo
     #>
     param(
         [Parameter(Mandatory=$true)]
         [string]$GroupName
     )
     
-    $result = @()
-    foreach ($conn in $Global:Connections.Values) {
-        if ($conn.Group -eq $GroupName) {
-            $result += $conn
-        }
-    }
-    return $result
+    $service = Get-ConnectionService
+    return $service.GetConnectionsByGroup($GroupName)
 }
 
 function Get-ConnectionsByTag {
     <#
     .SYNOPSIS
-    ƒ^ƒO‚ÅÚ‘±‚ğ’Šo
+    ï¿½^ï¿½Oï¿½ÅÚ‘ï¿½ï¿½ğ’Šo
     #>
     param(
         [Parameter(Mandatory=$true)]
         [string]$Tag
     )
     
-    $result = @()
-    foreach ($conn in $Global:Connections.Values) {
-        if ($conn.Tags -contains $Tag) {
-            $result += $conn
-        }
-    }
-    return $result
+    $service = Get-ConnectionService
+    return $service.GetConnectionsByTag($Tag)
 }
 
 function Get-AllConnections {
     <#
     .SYNOPSIS
-    ‘SÚ‘±‚ğæ“¾
+    ï¿½Sï¿½Ú‘ï¿½ï¿½ï¿½ï¿½æ“¾
     #>
-    return $Global:Connections.Values
+    $service = Get-ConnectionService
+    return $service.GetAllConnections()
 }
 
 function Send-Data {
     <#
     .SYNOPSIS
-    ƒf[ƒ^‘—Mi‘—MƒLƒ…[‚É“Š“üj
+    ï¿½fï¿½[ï¿½^ï¿½ï¿½ï¿½M
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -346,31 +294,13 @@ function Send-Data {
         [byte[]]$Data
     )
     
-    if (-not $Global:Connections.ContainsKey($ConnectionId)) {
-        throw "Connection not found: $ConnectionId"
-    }
-    
-    $conn = $Global:Connections[$ConnectionId]
+    $conn = Get-ManagedConnection -ConnectionId $ConnectionId
     
     if ($conn.Status -ne "CONNECTED") {
         throw "Connection not connected: $($conn.DisplayName)"
     }
     
-    # ‘—MƒLƒ…[‚É’Ç‰Á
     [void]$conn.SendQueue.Add($Data)
-    
     Write-Verbose "[ConnectionManager] Data queued for $($conn.DisplayName): $($Data.Length) bytes"
 }
 
-# Export-ModuleMember ‚Í Import-Module ‚Å‚Ì‚İ—LŒø‚È‚½‚ßAƒhƒbƒgƒ\[ƒX“Ç‚İ‚İ‚Å‚ÍƒRƒƒ“ƒgƒAƒEƒg
-# Export-ModuleMember -Function @(
-#     'New-ConnectionManager',
-#     'Add-Connection',
-#     'Remove-Connection',
-#     'Start-Connection',
-#     'Stop-Connection',
-#     'Get-ConnectionsByGroup',
-#     'Get-ConnectionsByTag',
-#     'Get-AllConnections',
-#     'Send-Data'
-# )

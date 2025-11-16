@@ -1,34 +1,139 @@
-# TcpDebugger.ps1
-# TCP/IP Œ±‘•’u ƒƒCƒ“ƒXƒNƒŠƒvƒg
+ï»¿# TcpDebugger.ps1
+# TCP/IP è©¦é¨“è£…ç½® ãƒ¡ã‚¤ãƒ³ã‚¹ã‚¯ãƒªãƒ—ãƒˆ
 
 <#
 .SYNOPSIS
-TCP/IP’ÊM‚ÌƒeƒXƒgEƒfƒoƒbƒO‚ğs‚¤‚½‚ß‚ÌŒ±‘•’u
+TCP/IPé€šä¿¡ã®ãƒ†ã‚¹ãƒˆãƒ»ãƒ‡ãƒãƒƒã‚°ã‚’è¡Œã†ãŸã‚ã®è©¦é¨“è£…ç½®
 
 .DESCRIPTION
-İ’èƒtƒ@ƒCƒ‹ƒx[ƒX‚ÅƒVƒiƒŠƒIÀs‚ª‰Â”\‚ÅA‹Šo“I‚ÉÚ‘±ó‘Ô‚ğŠm”F‚Å‚«‚éGUI‚ğ”õ‚¦‚½
-TCP/UDP’ÊMŒ±ƒc[ƒ‹
+è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«ãƒ™ãƒ¼ã‚¹ã§ã‚·ãƒŠãƒªã‚ªå®Ÿè¡ŒãŒå¯èƒ½ã§ã€è¦–è¦šçš„ã«æ¥ç¶šçŠ¶æ…‹ã‚’ç¢ºèªã§ãã‚‹GUIã‚’å‚™ãˆãŸ
+TCP/UDPé€šä¿¡è©¦é¨“ãƒ„ãƒ¼ãƒ«
 
 .NOTES
 Version: 1.0.0
 Author: TcpDebugger Project
-Requires: PowerShell 5.1+, .NET Framework (Windows•W€)
+Requires: PowerShell 5.1+, .NET Framework (Windowsæ¨™æº–)
 #>
 
-# ƒXƒNƒŠƒvƒg‚Ìƒ‹[ƒgƒpƒX‚ğæ“¾
+# ã‚¹ã‚¯ãƒªãƒ—ãƒˆã®ãƒ«ãƒ¼ãƒˆãƒ‘ã‚¹ã‚’å–å¾—
 $script:RootPath = $PSScriptRoot
 $script:CurrentMainForm = $null
 $script:ConsoleCancelHandler = $null
 
-# ƒ‚ƒWƒ…[ƒ‹‚ÌƒCƒ“ƒ|[ƒg
+# ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã®ã‚¤ãƒ³ãƒãƒ¼ãƒˆ
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host "  TCP Test Controller v1.0" -ForegroundColor Cyan
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host ""
 
+Write-Host "[Init] Loading core components..." -ForegroundColor Cyan
+
+$coreModules = @(
+    "Core\Common\Logger.ps1",
+    "Core\Common\ErrorHandler.ps1",
+    "Core\Common\ThreadSafeCollections.ps1",
+    "Core\Domain\VariableScope.ps1",
+    "Core\Domain\ConnectionModels.ps1",
+    "Core\Domain\ConnectionService.ps1",
+    "Core\Infrastructure\Repositories\RuleRepository.ps1",
+    "Core\Infrastructure\Repositories\InstanceRepository.ps1",
+    "Core\Domain\RuleProcessor.ps1",
+    "Core\Domain\ReceivedEventPipeline.ps1",
+    "Core\Domain\MessageService.ps1",
+    "Core\Infrastructure\ServiceContainer.ps1",
+    "Core\Infrastructure\Adapters\TcpClientAdapter.ps1",
+    "Core\Infrastructure\Adapters\TcpServerAdapter.ps1",
+    "Core\Infrastructure\Adapters\UdpAdapter.ps1"
+)
+
+foreach ($coreModule in $coreModules) {
+    $corePath = Join-Path $script:RootPath $coreModule
+    if (Test-Path -LiteralPath $corePath) {
+        . $corePath
+        Write-Host "  [+] $coreModule" -ForegroundColor Green
+    } else {
+        Write-Warning "  [!] Core module not found: $coreModule"
+    }
+}
+
+$logDirectory = Join-Path $script:RootPath "Logs"
+if (-not (Test-Path -LiteralPath $logDirectory)) {
+    New-Item -ItemType Directory -Path $logDirectory | Out-Null
+}
+
+$logPath = Join-Path $logDirectory "TcpDebugger.log"
+$script:Logger = New-FileLogger -Path $logPath -Name "TcpDebugger"
+$script:ErrorHandler = [ErrorHandler]::new($script:Logger)
+$Global:Connections = if ($Global:Connections) { $Global:Connections } else { [System.Collections.Hashtable]::Synchronized(@{}) }
+
+$script:ServiceContainer = New-ServiceContainer
+$script:ServiceContainer.RegisterSingleton('Logger', { param($c) $script:Logger })
+$script:ServiceContainer.RegisterSingleton('ConnectionService', {
+    param($c)
+    [ConnectionService]::new($script:Logger, $Global:Connections)
+})
+$script:ServiceContainer.RegisterSingleton('RuleRepository', {
+    param($c)
+    [RuleRepository]::new($script:Logger)
+})
+$script:ServiceContainer.RegisterSingleton('InstanceRepository', {
+    param($c)
+    [InstanceRepository]::new($script:Logger)
+})
+$script:ServiceContainer.RegisterSingleton('RuleProcessor', {
+    param($c)
+    $logger = $c.Resolve('Logger')
+    $ruleRepository = $c.Resolve('RuleRepository')
+    [RuleProcessor]::new($logger, $ruleRepository)
+})
+$script:ServiceContainer.RegisterSingleton('ReceivedEventPipeline', {
+    param($c)
+    $logger = $c.Resolve('Logger')
+    $connectionService = $c.Resolve('ConnectionService')
+    $ruleProcessor = $c.Resolve('RuleProcessor')
+    [ReceivedEventPipeline]::new($logger, $connectionService, $ruleProcessor)
+})
+$script:ServiceContainer.RegisterSingleton('MessageService', {
+    param($c)
+    $logger = $c.Resolve('Logger')
+    $connectionService = $c.Resolve('ConnectionService')
+    [MessageService]::new($logger, $connectionService)
+})
+
+# é€šä¿¡ã‚¢ãƒ€ãƒ—ã‚¿ãƒ¼ã®ç™»éŒ²ï¼ˆTransient: å¿…è¦æ™‚ã«æ–°è¦ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ç”Ÿæˆï¼‰
+$script:ServiceContainer.RegisterTransient('TcpClientAdapter', {
+    param($c)
+    $connectionService = $c.Resolve('ConnectionService')
+    $pipeline = $c.Resolve('ReceivedEventPipeline')
+    $logger = $c.Resolve('Logger')
+    [TcpClientAdapter]::new($connectionService, $pipeline, $logger)
+})
+
+$script:ServiceContainer.RegisterTransient('TcpServerAdapter', {
+    param($c)
+    $connectionService = $c.Resolve('ConnectionService')
+    $pipeline = $c.Resolve('ReceivedEventPipeline')
+    $logger = $c.Resolve('Logger')
+    [TcpServerAdapter]::new($connectionService, $pipeline, $logger)
+})
+
+$script:ServiceContainer.RegisterTransient('UdpAdapter', {
+    param($c)
+    $connectionService = $c.Resolve('ConnectionService')
+    $pipeline = $c.Resolve('ReceivedEventPipeline')
+    $logger = $c.Resolve('Logger')
+    [UdpAdapter]::new($connectionService, $pipeline, $logger)
+})
+
+$Global:ConnectionService = $script:ServiceContainer.Resolve('ConnectionService')
+$Global:RuleRepository = $script:ServiceContainer.Resolve('RuleRepository')
+$Global:InstanceRepository = $script:ServiceContainer.Resolve('InstanceRepository')
+$Global:ReceivedEventPipeline = $script:ServiceContainer.Resolve('ReceivedEventPipeline')
+$Global:MessageService = $script:ServiceContainer.Resolve('MessageService')
+
 Write-Host "[Init] Loading modules..." -ForegroundColor Cyan
 
-# ‘Sƒ‚ƒWƒ…[ƒ‹‚ğƒCƒ“ƒ|[ƒg
+# å…¨ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã‚’ã‚¤ãƒ³ãƒãƒ¼ãƒˆ
 $modulePath = Join-Path $script:RootPath "Modules"
 $modules = @(
     "ConnectionManager.ps1",
@@ -58,7 +163,7 @@ foreach ($module in $modules) {
     }
 }
 
-# UIƒ‚ƒWƒ…[ƒ‹‚ğƒCƒ“ƒ|[ƒg
+# UIãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã‚’ã‚¤ãƒ³ãƒãƒ¼ãƒˆ
 $uiPath = Join-Path $script:RootPath "UI"
 $uiFile = Join-Path $uiPath "MainForm.ps1"
 if (Test-Path $uiFile) {
@@ -71,10 +176,10 @@ if (Test-Path $uiFile) {
 
 Write-Host ""
 
-# Ú‘±ƒ}ƒl[ƒWƒƒ[‰Šú‰»
+# æ¥ç¶šãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼åˆæœŸåŒ–
 New-ConnectionManager
 
-# ƒCƒ“ƒXƒ^ƒ“ƒXƒtƒHƒ‹ƒ_‚ğƒXƒLƒƒƒ“
+# ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ãƒ•ã‚©ãƒ«ãƒ€ã‚’ã‚¹ã‚­ãƒ£ãƒ³
 $instancesPath = Join-Path $script:RootPath "Instances"
 Write-Host "[Init] Scanning instance folders..." -ForegroundColor Cyan
 
@@ -84,10 +189,10 @@ if ($instances.Count -eq 0) {
     Write-Warning "No instances found in $instancesPath"
     Write-Host "Please create instance folders with instance.psd1 configuration files." -ForegroundColor Yellow
 } else {
-    # ƒCƒ“ƒXƒ^ƒ“ƒX‚©‚çÚ‘±‚ğ‰Šú‰»
+    # ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‹ã‚‰æ¥ç¶šã‚’åˆæœŸåŒ–
     Initialize-InstanceConnections -Instances $instances
     
-    # AutoStartÚ‘±‚ğŠJn
+    # AutoStartæ¥ç¶šã‚’é–‹å§‹
     Start-AutoStartConnections -Instances $instances
 }
 
@@ -128,7 +233,7 @@ try {
     Write-Warning "Failed to register Ctrl+C handler: $_"
 }
 
-# GUI‚ğ•\¦
+# GUIã‚’è¡¨ç¤º
 Write-Host "[GUI] Starting GUI..." -ForegroundColor Cyan
 try {
     Show-MainForm
@@ -139,18 +244,39 @@ try {
     }
 }
 
-# I—¹‚ÌƒNƒŠ[ƒ“ƒAƒbƒv
+# çµ‚äº†æ™‚ã®ã‚¯ãƒªãƒ¼ãƒ³ã‚¢ãƒƒãƒ—
 Write-Host ""
 Write-Host "[Cleanup] Shutting down..." -ForegroundColor Yellow
 
-foreach ($connId in $Global:Connections.Keys) {
-    try {
-        Stop-Connection -ConnectionId $connId -Force
-    } catch {
-        # ƒGƒ‰[‚Í–³‹
+try {
+    $cleanupService = if ($Global:ConnectionService) { $Global:ConnectionService } elseif (Get-Command Get-ConnectionService -ErrorAction SilentlyContinue) { Get-ConnectionService } else { $null }
+    if ($cleanupService) {
+        foreach ($conn in $cleanupService.GetAllConnections()) {
+            try {
+                Stop-Connection -ConnectionId $conn.Id -Force
+            } catch {
+                # ignore errors
+            }
+        }
+    } else {
+        foreach ($connId in $Global:Connections.Keys) {
+            try {
+                Stop-Connection -ConnectionId $connId -Force
+            } catch {
+                # ignore errors
+            }
+        }
     }
+} catch {
+    # ignore cleanup errors
 }
+
 
 Write-Host "[Cleanup] Shutdown completed" -ForegroundColor Green
 Write-Host ""
 Write-Host "Thank you for using TCP Test Controller!" -ForegroundColor Cyan
+
+
+
+
+

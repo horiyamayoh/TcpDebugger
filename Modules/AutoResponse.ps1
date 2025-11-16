@@ -1,24 +1,28 @@
-# AutoResponse.ps1
-# ©“®‰“šˆ—ƒ‚ƒWƒ…[ƒ‹
+ï»¿# AutoResponse.ps1
+# ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Wï¿½ï¿½ï¿½[ï¿½ï¿½
+#
+# [DEPRECATED] ï¿½ï¿½ï¿½Ìƒï¿½ï¿½Wï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ÌAReceivedEventPipelineï¿½É‚ï¿½ï¿½è‹ï¿½Şƒï¿½ï¿½Wï¿½bï¿½Nï¿½ï¿½ï¿½ÏXï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½Ü‚ï¿½ï¿½B
+# ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½Rï¿½[ï¿½hï¿½Å‚ÌAReceivedEventPipelineï¿½ï¿½ï¿½gï¿½pï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½B
+# ï¿½ï¿½ï¿½ÌŠÖï¿½ï¿½ï¿½ï¿½ÍŒï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½İŠï¿½ï¿½ï¿½ï¿½Ì‚ï¿½ï¿½ß‚É‚Ì‚İcï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½Ü‚ï¿½ï¿½B
 
 function Read-AutoResponseRules {
     <#
     .SYNOPSIS
-    ©“®‰“šƒ‹[ƒ‹‚ğ“Ç‚İ‚İ
+    è‡ªå‹•å¿œç­”ãƒ«ãƒ¼ãƒ«ã‚’èª­ã¿è¾¼ã¿
     #>
     param(
         [Parameter(Mandatory=$true)]
         [string]$FilePath
     )
 
-    # ‹¤’ÊƒGƒ“ƒWƒ“‚ğg—p
+    # å…±é€šã‚¨ãƒ³ã‚¸ãƒ³ã‚’ä½¿ç”¨
     return Read-ReceivedRules -FilePath $FilePath -RuleType "AutoResponse"
 }
 
 function Test-AutoResponseMatch {
     <#
     .SYNOPSIS
-    óMƒf[ƒ^‚ª©“®‰“šƒ‹[ƒ‹‚Éƒ}ƒbƒ`‚·‚é‚©ƒ`ƒFƒbƒN
+    å—ä¿¡ãƒ‡ãƒ¼ã‚¿ãŒè‡ªå‹•å¿œç­”ãƒ«ãƒ¼ãƒ«ã«ãƒãƒƒãƒã™ã‚‹ã‹ãƒã‚§ãƒƒã‚¯
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -31,7 +35,7 @@ function Test-AutoResponseMatch {
         [string]$Encoding = "UTF-8"
     )
 
-    # ‹¤’ÊƒGƒ“ƒWƒ“‚ğg—p
+    # å…±é€šã‚¨ãƒ³ã‚¸ãƒ³ã‚’ä½¿ç”¨
     return Test-ReceivedRuleMatch -ReceivedData $ReceivedData -Rule $Rule -DefaultEncoding $Encoding
 }
 
@@ -50,38 +54,13 @@ function Get-ConnectionAutoResponseRules {
         return @()
     }
 
-    if (-not (Test-Path -LiteralPath $profilePath)) {
-        Write-Warning "[AutoResponse] Profile path not found: $profilePath"
-        $Connection.Variables['AutoResponseRulesCache'] = $null
-        return @()
-    }
-
-    $resolved = (Resolve-Path -LiteralPath $profilePath).Path
-    $fileInfo = Get-Item -LiteralPath $resolved
-    $lastWrite = $fileInfo.LastWriteTimeUtc
-
-    $cache = $null
-    if ($Connection.Variables.ContainsKey('AutoResponseRulesCache')) {
-        $cache = $Connection.Variables['AutoResponseRulesCache']
-        if ($cache -and $cache.LastWriteTimeUtc -eq $lastWrite) {
-            return $cache.Rules
-        }
-    }
-
     try {
-        $rules = Read-AutoResponseRules -FilePath $resolved
+        $repository = Get-RuleRepository
+        return $repository.GetRules($profilePath)
     } catch {
         Write-Warning "[AutoResponse] Failed to load rules: $_"
-        $Connection.Variables['AutoResponseRulesCache'] = $null
         return @()
     }
-
-    $Connection.Variables['AutoResponseRulesCache'] = @{
-        LastWriteTimeUtc = $lastWrite
-        Rules            = $rules
-    }
-
-    return $rules
 }
 
 function Set-ConnectionAutoResponseProfile {
@@ -96,16 +75,11 @@ function Set-ConnectionAutoResponseProfile {
         [string]$ProfilePath
     )
 
-    if (-not $Global:Connections.ContainsKey($ConnectionId)) {
-        throw "Connection not found: $ConnectionId"
-    }
-
-    $conn = $Global:Connections[$ConnectionId]
+    $conn = Get-ManagedConnection -ConnectionId $ConnectionId
 
     if ([string]::IsNullOrWhiteSpace($ProfileName) -or -not $ProfilePath) {
         $conn.Variables.Remove('AutoResponseProfile')
         $conn.Variables.Remove('AutoResponseProfilePath')
-        $conn.Variables.Remove('AutoResponseRulesCache')
         Write-Host "[AutoResponse] Cleared auto-response profile for $($conn.DisplayName)" -ForegroundColor Yellow
         return @()
     }
@@ -117,7 +91,6 @@ function Set-ConnectionAutoResponseProfile {
     $resolved = (Resolve-Path -LiteralPath $ProfilePath).Path
     $conn.Variables['AutoResponseProfile'] = $ProfileName
     $conn.Variables['AutoResponseProfilePath'] = $resolved
-    $conn.Variables.Remove('AutoResponseRulesCache')
 
     Write-Host "[AutoResponse] Profile '$ProfileName' applied to $($conn.DisplayName)" -ForegroundColor Green
 
@@ -133,11 +106,7 @@ function Invoke-ConnectionAutoResponse {
         [byte[]]$ReceivedData
     )
 
-    if (-not $Global:Connections.ContainsKey($ConnectionId)) {
-        return
-    }
-
-    $conn = $Global:Connections[$ConnectionId]
+    $conn = Get-ManagedConnection -ConnectionId $ConnectionId
     if (-not $conn.Variables.ContainsKey('AutoResponseProfilePath')) {
         return
     }
@@ -159,7 +128,7 @@ function Invoke-ConnectionAutoResponse {
 function Invoke-AutoResponse {
     <#
     .SYNOPSIS
-    óMƒf[ƒ^‚É‘Î‚µ‚Ä©“®‰“š‚ğÀs
+    å—ä¿¡ãƒ‡ãƒ¼ã‚¿ã«å¯¾ã—ã¦è‡ªå‹•å¿œç­”ã‚’å®Ÿè¡Œ
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -172,11 +141,7 @@ function Invoke-AutoResponse {
         [array]$Rules
     )
 
-    if (-not $Global:Connections.ContainsKey($ConnectionId)) {
-        return
-    }
-
-    $conn = $Global:Connections[$ConnectionId]
+    $conn = Get-ManagedConnection -ConnectionId $ConnectionId
 
     $defaultEncoding = "UTF-8"
     if ($conn.Variables.ContainsKey('DefaultEncoding') -and $conn.Variables['DefaultEncoding']) {
@@ -194,16 +159,16 @@ function Invoke-AutoResponse {
 
         $matchedCount++
 
-        # ƒ}ƒbƒ`‚µ‚½ê‡‚Ìˆ—
+        # ãƒãƒƒãƒã—ãŸå ´åˆã®å‡¦ç†
         $ruleName = if ($rule.RuleName) { $rule.RuleName } else { "Unknown" }
         Write-Host "[AutoResponse] Rule matched ($matchedCount): $ruleName" -ForegroundColor Cyan
 
-        # ’x‰„ˆ—
+        # é…å»¶å‡¦ç†
         if ($rule.Delay -and [int]$rule.Delay -gt 0) {
             Start-Sleep -Milliseconds ([int]$rule.Delay)
         }
 
-        # ƒAƒNƒVƒ‡ƒ“ƒ^ƒCƒv‚É‰‚¶‚Äˆ—
+        # ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã‚¿ã‚¤ãƒ—ã«å¿œã˜ã¦å‡¦ç†
         $actionType = if ($rule.PSObject.Properties.Name -contains '__ActionType') { 
             $rule.__ActionType 
         } else { 
@@ -212,15 +177,15 @@ function Invoke-AutoResponse {
 
         switch ($actionType) {
             'AutoResponse' {
-                # AutoResponseˆ—‚Ì‚İ
+                # AutoResponseå‡¦ç†ã®ã¿
                 Invoke-BinaryAutoResponse -ConnectionId $ConnectionId -Rule $rule -Connection $conn
             }
             'OnReceived' {
-                # OnReceivedƒXƒNƒŠƒvƒgÀs‚Ì‚İ
+                # OnReceivedã‚¹ã‚¯ãƒªãƒ—ãƒˆå®Ÿè¡Œã®ã¿
                 Invoke-OnReceivedScript -ConnectionId $ConnectionId -ReceivedData $ReceivedData -Rule $rule -Connection $conn
             }
             'Both' {
-                # —¼•ûÀsiAutoResponse ¨ OnReceived ‚Ì‡j
+                # ä¸¡æ–¹å®Ÿè¡Œï¼ˆAutoResponse â†’ OnReceived ã®é †ï¼‰
                 Invoke-BinaryAutoResponse -ConnectionId $ConnectionId -Rule $rule -Connection $conn
                 Invoke-OnReceivedScript -ConnectionId $ConnectionId -ReceivedData $ReceivedData -Rule $rule -Connection $conn
             }
@@ -228,7 +193,7 @@ function Invoke-AutoResponse {
                 Write-Warning "[AutoResponse] Rule has no action defined: $ruleName"
             }
             default {
-                # ‹ŒŒ`®‚Ìê‡
+                # æ—§å½¢å¼ã®å ´åˆ
                 if ($rule.__RuleType -eq 'AutoResponse_Legacy') {
                     Invoke-TextAutoResponse -ConnectionId $ConnectionId -Rule $rule -Connection $conn -DefaultEncoding $defaultEncoding
                 } else {
@@ -237,7 +202,7 @@ function Invoke-AutoResponse {
             }
         }
 
-        # •¡”ƒ‹[ƒ‹‘Î‰: break‚¹‚¸‚ÉŒp‘±
+        # è¤‡æ•°ãƒ«ãƒ¼ãƒ«å¯¾å¿œ: breakã›ãšã«ç¶™ç¶š
     }
 
     if ($matchedCount -gt 0) {
@@ -248,7 +213,7 @@ function Invoke-AutoResponse {
 function Invoke-BinaryAutoResponse {
     <#
     .SYNOPSIS
-    ƒoƒCƒiƒŠƒ}ƒbƒ`ƒ“ƒOƒ‹[ƒ‹‚ÉŠî‚Ã‚­©“®‰“ši“d•¶ƒtƒ@ƒCƒ‹QÆj
+    ãƒã‚¤ãƒŠãƒªãƒãƒƒãƒãƒ³ã‚°ãƒ«ãƒ¼ãƒ«ã«åŸºã¥ãè‡ªå‹•å¿œç­”ï¼ˆé›»æ–‡ãƒ•ã‚¡ã‚¤ãƒ«å‚ç…§ï¼‰
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -266,10 +231,10 @@ function Invoke-BinaryAutoResponse {
         return
     }
 
-    # “d•¶ƒtƒ@ƒCƒ‹‚ÌƒpƒX‚ğ‰ğŒˆ
+    # é›»æ–‡ãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒ‘ã‚¹ã‚’è§£æ±º
     $messageFilePath = $Rule.ResponseMessageFile
     
-    # ‘Š‘ÎƒpƒX‚Ìê‡AƒCƒ“ƒXƒ^ƒ“ƒX‚ÌtemplatesƒtƒHƒ‹ƒ_‚©‚ç‚Ì‘Š‘ÎƒpƒX‚Æ‚µ‚Ä‰ğß
+    # ç›¸å¯¾ãƒ‘ã‚¹ã®å ´åˆã€ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®templatesãƒ•ã‚©ãƒ«ãƒ€ã‹ã‚‰ã®ç›¸å¯¾ãƒ‘ã‚¹ã¨ã—ã¦è§£é‡ˆ
     if (-not [System.IO.Path]::IsPathRooted($messageFilePath)) {
         if ($Connection.Variables.ContainsKey('InstancePath')) {
             $instancePath = $Connection.Variables['InstancePath']
@@ -282,7 +247,7 @@ function Invoke-BinaryAutoResponse {
         return
     }
 
-    # “d•¶ƒtƒ@ƒCƒ‹‚ğ“Ç‚İ‚Ş
+    # é›»æ–‡ãƒ•ã‚¡ã‚¤ãƒ«ã‚’èª­ã¿è¾¼ã‚€
     try {
         $templates = Get-MessageTemplateCache -FilePath $messageFilePath -ThrowOnMissing
     } catch {
@@ -295,7 +260,7 @@ function Invoke-BinaryAutoResponse {
         return
     }
 
-    # DEFAULTƒeƒ“ƒvƒŒ[ƒg‚ğæ“¾iVŒ`®‚Ì“d•¶’è‹`‚Íí‚ÉDEFAULT–¼‚ÅŠi”[‚³‚ê‚éj
+    # DEFAULTãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆã‚’å–å¾—ï¼ˆæ–°å½¢å¼ã®é›»æ–‡å®šç¾©ã¯å¸¸ã«DEFAULTåã§æ ¼ç´ã•ã‚Œã‚‹ï¼‰
     if (-not $templates.ContainsKey('DEFAULT')) {
         Write-Warning "[AutoResponse] DEFAULT template not found in $messageFilePath"
         return
@@ -303,7 +268,7 @@ function Invoke-BinaryAutoResponse {
 
     $template = $templates['DEFAULT']
     
-    # 16i”ƒXƒgƒŠ[ƒ€‚ğƒoƒCƒg”z—ñ‚É•ÏŠ·
+    # 16é€²æ•°ã‚¹ãƒˆãƒªãƒ¼ãƒ ã‚’ãƒã‚¤ãƒˆé…åˆ—ã«å¤‰æ›
     try {
         $responseBytes = ConvertTo-ByteArray -Data $template.Format -Encoding 'HEX'
     } catch {
@@ -311,7 +276,7 @@ function Invoke-BinaryAutoResponse {
         return
     }
 
-    # ‘—M
+    # é€ä¿¡
     try {
         Send-Data -ConnectionId $ConnectionId -Data $responseBytes
         $hexPreview = $template.Format
@@ -327,7 +292,7 @@ function Invoke-BinaryAutoResponse {
 function Invoke-TextAutoResponse {
     <#
     .SYNOPSIS
-    ƒeƒLƒXƒgƒ}ƒbƒ`ƒ“ƒOƒ‹[ƒ‹‚ÉŠî‚Ã‚­©“®‰“ši‹ŒŒ`®j
+    ãƒ†ã‚­ã‚¹ãƒˆãƒãƒƒãƒãƒ³ã‚°ãƒ«ãƒ¼ãƒ«ã«åŸºã¥ãè‡ªå‹•å¿œç­”ï¼ˆæ—§å½¢å¼ï¼‰
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -368,3 +333,4 @@ function Invoke-TextAutoResponse {
 #     'Test-AutoResponseMatch',
 #     'Invoke-AutoResponse'
 # )
+

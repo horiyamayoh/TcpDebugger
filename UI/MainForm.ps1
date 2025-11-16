@@ -1,8 +1,37 @@
-# MainForm.ps1
+﻿# MainForm.ps1
 # WinForms main window definition
 
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
+
+function Get-UiConnectionService {
+    if ($Global:ConnectionService) {
+        return $Global:ConnectionService
+    }
+    if (Get-Command Get-ConnectionService -ErrorAction SilentlyContinue) {
+        return Get-ConnectionService
+    }
+    throw "ConnectionService is not available."
+}
+
+function Get-UiConnection {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$ConnectionId
+    )
+
+    if ([string]::IsNullOrWhiteSpace($ConnectionId)) {
+        return $null
+    }
+
+    $service = Get-UiConnectionService
+    return $service.GetConnection($ConnectionId)
+}
+
+function Get-UiConnections {
+    $service = Get-UiConnectionService
+    return $service.GetAllConnections()
+}
 
 function Show-MainForm {
     <#
@@ -193,11 +222,11 @@ function Show-MainForm {
             return $null
         }
 
-        if ($Global:Connections.ContainsKey($connId)) {
-            return $Global:Connections[$connId]
+        try {
+            return Get-UiConnection -ConnectionId $connId
+        } catch {
+            return $null
         }
-
-        return $null
     }
 
     # Events
@@ -227,17 +256,25 @@ function Show-MainForm {
             return
         }
 
-        if ($Global:Connections.ContainsKey($connId)) {
-            $conn = $Global:Connections[$connId]
-            try {
-                Start-Connection -ConnectionId $conn.Id
-                [System.Windows.Forms.MessageBox]::Show("Connection started: $($conn.DisplayName)", "Success") | Out-Null
-            } catch {
-                [System.Windows.Forms.MessageBox]::Show("Failed to start connection: $_", "Error") | Out-Null
-            }
-
-            Update-InstanceList -DataGridView $dgvInstances
+        try {
+            $conn = Get-UiConnection -ConnectionId $connId
+        } catch {
+            $conn = $null
         }
+
+        if (-not $conn) {
+            [System.Windows.Forms.MessageBox]::Show("Connection not found: $connId", "Error") | Out-Null
+            return
+        }
+
+        try {
+            Start-Connection -ConnectionId $conn.Id
+            [System.Windows.Forms.MessageBox]::Show("Connection started: $($conn.DisplayName)", "Success") | Out-Null
+        } catch {
+            [System.Windows.Forms.MessageBox]::Show("Failed to start connection: $_", "Error") | Out-Null
+        }
+
+        Update-InstanceList -DataGridView $dgvInstances
     })
 
     $btnDisconnect.Add_Click({
@@ -250,17 +287,25 @@ function Show-MainForm {
             return
         }
 
-        if ($Global:Connections.ContainsKey($connId)) {
-            $conn = $Global:Connections[$connId]
-            try {
-                Stop-Connection -ConnectionId $conn.Id
-                [System.Windows.Forms.MessageBox]::Show("Connection stopped: $($conn.DisplayName)", "Success") | Out-Null
-            } catch {
-                [System.Windows.Forms.MessageBox]::Show("Failed to stop connection: $_", "Error") | Out-Null
-            }
-
-            Update-InstanceList -DataGridView $dgvInstances
+        try {
+            $conn = Get-UiConnection -ConnectionId $connId
+        } catch {
+            $conn = $null
         }
+
+        if (-not $conn) {
+            [System.Windows.Forms.MessageBox]::Show("Connection not found: $connId", "Error") | Out-Null
+            return
+        }
+
+        try {
+            Stop-Connection -ConnectionId $conn.Id
+            [System.Windows.Forms.MessageBox]::Show("Connection stopped: $($conn.DisplayName)", "Success") | Out-Null
+        } catch {
+            [System.Windows.Forms.MessageBox]::Show("Failed to stop connection: $_", "Error") | Out-Null
+        }
+
+        Update-InstanceList -DataGridView $dgvInstances
     })
 
     $dgvInstances.Add_CurrentCellDirtyStateChanged({
@@ -402,7 +447,13 @@ function Show-MainForm {
         $cell = $row.Cells[$args.ColumnIndex]
         $connId = $row.Cells["Id"].Value
 
-        if (-not $connId -or -not $Global:Connections.ContainsKey($connId)) {
+        if (-not $connId) {
+            return
+        }
+
+        try {
+            $conn = Get-UiConnection -ConnectionId $connId
+        } catch {
             return
         }
 
@@ -423,7 +474,6 @@ function Show-MainForm {
             return
         }
 
-        $conn = $Global:Connections[$connId]
         $entry = $null
         if ($mapping -and $mapping.ContainsKey($selectedKey)) {
             $entry = $mapping[$selectedKey]
@@ -476,7 +526,13 @@ function Show-MainForm {
         $cell = $row.Cells[$args.ColumnIndex]
         $connId = $row.Cells["Id"].Value
 
-        if (-not $connId -or -not $Global:Connections.ContainsKey($connId)) {
+        if (-not $connId) {
+            return
+        }
+
+        try {
+            $conn = Get-UiConnection -ConnectionId $connId
+        } catch {
             return
         }
 
@@ -497,7 +553,6 @@ function Show-MainForm {
             return
         }
 
-        $conn = $Global:Connections[$connId]
         $entry = $null
         if ($mapping -and $mapping.ContainsKey($selectedKey)) {
             $entry = $mapping[$selectedKey]
@@ -559,8 +614,10 @@ function Show-MainForm {
         }
 
         $connection = $null
-        if ($Global:Connections.ContainsKey($connId)) {
-            $connection = $Global:Connections[$connId]
+        try {
+            $connection = Get-ManagedConnection -ConnectionId $connId
+        } catch {
+            # connection might have been removed; leave $connection = $null for display fallback
         }
 
         switch ($column.Name) {
@@ -730,9 +787,9 @@ function Show-MainForm {
     $form.Add_FormClosing({
         $timer.Stop()
 
-        foreach ($connId in $Global:Connections.Keys) {
+        foreach ($conn in Get-UiConnections) {
             try {
-                Stop-Connection -ConnectionId $connId -Force
+                Stop-Connection -ConnectionId $conn.Id -Force
             } catch {
                 # ignore errors
             }
@@ -784,11 +841,12 @@ function Update-InstanceList {
 
     $DataGridView.Rows.Clear()
 
-    if (-not $Global:Connections) {
+    $connections = Get-UiConnections
+    if (-not $connections -or $connections.Count -eq 0) {
         return
     }
 
-    foreach ($conn in $Global:Connections.Values | Sort-Object DisplayName) {
+    foreach ($conn in $connections | Sort-Object DisplayName) {
         $endpoint = ""
         if ($conn.Mode -eq "Client" -or $conn.Mode -eq "Sender") {
             $endpoint = "$($conn.RemoteIP):$($conn.RemotePort)"
@@ -902,7 +960,7 @@ function Update-InstanceList {
                         $scenarioKey = "scenario::$scenario"
                         $scenarioPath = Join-Path $scenarioRoot $scenario
                         $entry = [PSCustomObject]@{
-                            Display = "▶ $scenario"
+                            Display = "笆ｶ $scenario"
                             Key     = $scenarioKey
                             Type    = "Scenario"
                             Name    = $scenario
@@ -931,7 +989,7 @@ function Update-InstanceList {
             }
             $row.Cells["Scenario"] = $scenarioCell
 
-            # OnReceived��̐ݒ�
+            # OnReceived列の設定
             $onReceivedItems = New-Object System.Collections.ArrayList
             $onReceivedMapping = @{}
 
@@ -1090,9 +1148,12 @@ function Update-InstanceList {
             $dataBankEntries = @()
             $dataBankPath = $null
             if ($instancePath) {
-                $dataBankPath = Join-Path $instancePath "templates\databank.csv"
                 try {
-                    $dataBankEntries = Get-InstanceDataBank -InstancePath $instancePath
+                    $catalog = Get-QuickDataCatalog -InstancePath $instancePath
+                    if ($catalog) {
+                        $dataBankEntries = if ($catalog.Entries) { $catalog.Entries } else { @() }
+                        $dataBankPath = $catalog.Path
+                    }
                 } catch {
                     $dataBankEntries = @()
                 }
@@ -1235,7 +1296,7 @@ function Update-LogDisplay {
 
     $logLines = @()
 
-    foreach ($conn in $Global:Connections.Values) {
+    foreach ($conn in Get-UiConnections) {
         $snapshot = @()
 
         try {
@@ -1264,7 +1325,7 @@ function Update-LogDisplay {
 
             $summary = Get-MessageSummary -Data $recv.Data -MaxLength 40
             $timeStr = $recv.Timestamp.ToString("HH:mm:ss")
-            $logLines += "[$timeStr] $($conn.DisplayName) �? $summary ($($recv.Length) bytes)"
+            $logLines += "[$timeStr] $($conn.DisplayName) 竍? $summary ($($recv.Length) bytes)"
         }
     }
 
@@ -1276,3 +1337,4 @@ function Update-LogDisplay {
 }
 
 # Export-ModuleMember -Function 'Show-MainForm'
+

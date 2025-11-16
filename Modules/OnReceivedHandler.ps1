@@ -1,24 +1,28 @@
-# OnReceivedHandler.ps1
-# óMƒAƒNƒVƒ‡ƒ“ˆ—ƒ‚ƒWƒ…[ƒ‹
+ï»¿# OnReceivedHandler.ps1
+# ï¿½ï¿½Mï¿½ï¿½ï¿½Aï¿½Nï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Wï¿½ï¿½ï¿½[ï¿½ï¿½
+#
+# [DEPRECATED] ï¿½ï¿½ï¿½Ìƒï¿½ï¿½Wï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ÌAReceivedEventPipelineï¿½É‚ï¿½ï¿½è‹ï¿½Şƒï¿½ï¿½Wï¿½bï¿½Nï¿½ï¿½ï¿½ÏXï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½Ü‚ï¿½ï¿½B
+# ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½Rï¿½[ï¿½hï¿½Å‚ÌAReceivedEventPipelineï¿½ï¿½ï¿½gï¿½pï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½B
+# ï¿½ï¿½ï¿½ÌŠÖï¿½ï¿½ï¿½ï¿½ÍŒï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½İŠï¿½ï¿½ï¿½ï¿½Ì‚ï¿½ï¿½ß‚É‚Ì‚İcï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½Ü‚ï¿½ï¿½B
 
 function Read-OnReceivedRules {
     <#
     .SYNOPSIS
-    OnReceived ƒ‹[ƒ‹‚ğ“Ç‚İ‚İ
+    OnReceived ãƒ«ãƒ¼ãƒ«ã‚’èª­ã¿è¾¼ã¿
     #>
     param(
         [Parameter(Mandatory=$true)]
         [string]$FilePath
     )
 
-    # ‹¤’ÊƒGƒ“ƒWƒ“‚ğg—p
+    # å…±é€šã‚¨ãƒ³ã‚¸ãƒ³ã‚’ä½¿ç”¨
     return Read-ReceivedRules -FilePath $FilePath -RuleType "OnReceived"
 }
 
 function Get-ConnectionOnReceivedRules {
     <#
     .SYNOPSIS
-    ƒRƒlƒNƒVƒ‡ƒ“‚ÌOnReceivedƒ‹[ƒ‹‚ğæ“¾iƒLƒƒƒbƒVƒ…•t‚«j
+    ã‚³ãƒã‚¯ã‚·ãƒ§ãƒ³ã®OnReceivedãƒ«ãƒ¼ãƒ«ã‚’å–å¾—ï¼ˆã‚­ãƒ£ãƒƒã‚·ãƒ¥ä»˜ãï¼‰
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -34,44 +38,19 @@ function Get-ConnectionOnReceivedRules {
         return @()
     }
 
-    if (-not (Test-Path -LiteralPath $profilePath)) {
-        Write-Warning "[OnReceived] Profile path not found: $profilePath"
-        $Connection.Variables['OnReceivedRulesCache'] = $null
-        return @()
-    }
-
-    $resolved = (Resolve-Path -LiteralPath $profilePath).Path
-    $fileInfo = Get-Item -LiteralPath $resolved
-    $lastWrite = $fileInfo.LastWriteTimeUtc
-
-    $cache = $null
-    if ($Connection.Variables.ContainsKey('OnReceivedRulesCache')) {
-        $cache = $Connection.Variables['OnReceivedRulesCache']
-        if ($cache -and $cache.LastWriteTimeUtc -eq $lastWrite) {
-            return $cache.Rules
-        }
-    }
-
     try {
-        $rules = Read-OnReceivedRules -FilePath $resolved
+        $repository = Get-RuleRepository
+        return $repository.GetRules($profilePath)
     } catch {
         Write-Warning "[OnReceived] Failed to load rules: $_"
-        $Connection.Variables['OnReceivedRulesCache'] = $null
         return @()
     }
-
-    $Connection.Variables['OnReceivedRulesCache'] = @{
-        LastWriteTimeUtc = $lastWrite
-        Rules            = $rules
-    }
-
-    return $rules
 }
 
 function Set-ConnectionOnReceivedProfile {
     <#
     .SYNOPSIS
-    ƒRƒlƒNƒVƒ‡ƒ“‚ÉOnReceivedƒvƒƒtƒ@ƒCƒ‹‚ğİ’è
+    ã‚³ãƒã‚¯ã‚·ãƒ§ãƒ³ã«OnReceivedãƒ—ãƒ­ãƒ•ã‚¡ã‚¤ãƒ«ã‚’è¨­å®š
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -84,16 +63,11 @@ function Set-ConnectionOnReceivedProfile {
         [string]$ProfilePath
     )
 
-    if (-not $Global:Connections.ContainsKey($ConnectionId)) {
-        throw "Connection not found: $ConnectionId"
-    }
-
-    $conn = $Global:Connections[$ConnectionId]
+    $conn = Get-ManagedConnection -ConnectionId $ConnectionId
 
     if ([string]::IsNullOrWhiteSpace($ProfileName) -or -not $ProfilePath) {
         $conn.Variables.Remove('OnReceivedProfile')
         $conn.Variables.Remove('OnReceivedProfilePath')
-        $conn.Variables.Remove('OnReceivedRulesCache')
         Write-Host "[OnReceived] Cleared OnReceived profile for $($conn.DisplayName)" -ForegroundColor Yellow
         return @()
     }
@@ -105,7 +79,6 @@ function Set-ConnectionOnReceivedProfile {
     $resolved = (Resolve-Path -LiteralPath $ProfilePath).Path
     $conn.Variables['OnReceivedProfile'] = $ProfileName
     $conn.Variables['OnReceivedProfilePath'] = $resolved
-    $conn.Variables.Remove('OnReceivedRulesCache')
 
     Write-Host "[OnReceived] Profile '$ProfileName' applied to $($conn.DisplayName)" -ForegroundColor Green
 
@@ -115,7 +88,7 @@ function Set-ConnectionOnReceivedProfile {
 function Test-OnReceivedMatch {
     <#
     .SYNOPSIS
-    óMƒf[ƒ^‚ªOnReceivedƒ‹[ƒ‹‚Éƒ}ƒbƒ`‚·‚é‚©ƒ`ƒFƒbƒN
+    å—ä¿¡ãƒ‡ãƒ¼ã‚¿ãŒOnReceivedãƒ«ãƒ¼ãƒ«ã«ãƒãƒƒãƒã™ã‚‹ã‹ãƒã‚§ãƒƒã‚¯
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -125,14 +98,14 @@ function Test-OnReceivedMatch {
         [object]$Rule
     )
 
-    # ‹¤’ÊƒGƒ“ƒWƒ“‚ğg—p
+    # å…±é€šã‚¨ãƒ³ã‚¸ãƒ³ã‚’ä½¿ç”¨
     return Test-ReceivedRuleMatch -ReceivedData $ReceivedData -Rule $Rule -DefaultEncoding "UTF-8"
 }
 
 function Invoke-ConnectionOnReceived {
     <#
     .SYNOPSIS
-    óMƒf[ƒ^‚É‘Î‚µ‚ÄOnReceivedƒAƒNƒVƒ‡ƒ“‚ğÀs
+    å—ä¿¡ãƒ‡ãƒ¼ã‚¿ã«å¯¾ã—ã¦OnReceivedã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã‚’å®Ÿè¡Œ
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -142,11 +115,7 @@ function Invoke-ConnectionOnReceived {
         [byte[]]$ReceivedData
     )
 
-    if (-not $Global:Connections.ContainsKey($ConnectionId)) {
-        return
-    }
-
-    $conn = $Global:Connections[$ConnectionId]
+    $conn = Get-ManagedConnection -ConnectionId $ConnectionId
     if (-not $conn.Variables.ContainsKey('OnReceivedProfilePath')) {
         return
     }
@@ -174,14 +143,14 @@ function Invoke-ConnectionOnReceived {
         $ruleName = if ($rule.RuleName) { $rule.RuleName } else { "Unknown" }
         Write-Host "[OnReceived] Rule matched ($matchedCount): $ruleName" -ForegroundColor Cyan
 
-        # ’x‰„ˆ—
+        # é…å»¶å‡¦ç†
         if ($rule.Delay -and [int]$rule.Delay -gt 0) {
             Start-Sleep -Milliseconds ([int]$rule.Delay)
         }
 
         Invoke-OnReceivedScript -ConnectionId $ConnectionId -ReceivedData $ReceivedData -Rule $rule -Connection $conn
         
-        # •¡”ƒ‹[ƒ‹‘Î‰: break‚¹‚¸‚ÉŒp‘±
+        # è¤‡æ•°ãƒ«ãƒ¼ãƒ«å¯¾å¿œ: breakã›ãšã«ç¶™ç¶š
     }
 
     if ($matchedCount -gt 0) {
@@ -192,7 +161,7 @@ function Invoke-ConnectionOnReceived {
 function Invoke-OnReceivedScript {
     <#
     .SYNOPSIS
-    OnReceivedƒXƒNƒŠƒvƒg‚ğÀs
+    OnReceivedã‚¹ã‚¯ãƒªãƒ—ãƒˆã‚’å®Ÿè¡Œ
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -213,10 +182,10 @@ function Invoke-OnReceivedScript {
         return
     }
 
-    # ƒXƒNƒŠƒvƒgƒtƒ@ƒCƒ‹‚ÌƒpƒX‚ğ‰ğŒˆ
+    # ã‚¹ã‚¯ãƒªãƒ—ãƒˆãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒ‘ã‚¹ã‚’è§£æ±º
     $scriptPath = $Rule.ScriptFile
 
-    # ‘Š‘ÎƒpƒX‚Ìê‡AƒCƒ“ƒXƒ^ƒ“ƒX‚Ìscenarios/onreceivedƒtƒHƒ‹ƒ_‚©‚ç‚Ì‘Š‘ÎƒpƒX
+    # ç›¸å¯¾ãƒ‘ã‚¹ã®å ´åˆã€ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®scenarios/onreceivedãƒ•ã‚©ãƒ«ãƒ€ã‹ã‚‰ã®ç›¸å¯¾ãƒ‘ã‚¹
     if (-not [System.IO.Path]::IsPathRooted($scriptPath)) {
         if ($Connection.Variables.ContainsKey('InstancePath')) {
             $instancePath = $Connection.Variables['InstancePath']
@@ -229,7 +198,7 @@ function Invoke-OnReceivedScript {
         return
     }
 
-    # ƒXƒNƒŠƒvƒgÀs—p‚ÌƒRƒ“ƒeƒLƒXƒg‚ğ€”õ
+    # ã‚¹ã‚¯ãƒªãƒ—ãƒˆå®Ÿè¡Œç”¨ã®ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆã‚’æº–å‚™
     $scriptContext = @{
         ReceivedData = $ReceivedData
         Connection = $Connection
@@ -241,10 +210,10 @@ function Invoke-OnReceivedScript {
     try {
         Write-Host "[OnReceived] Executing script: $($Rule.ScriptFile)" -ForegroundColor Blue
         
-        # ƒXƒNƒŠƒvƒg‚ğÀs
+        # ã‚¹ã‚¯ãƒªãƒ—ãƒˆã‚’å®Ÿè¡Œ
         $scriptBlock = [scriptblock]::Create((Get-Content -LiteralPath $scriptPath -Raw -Encoding UTF8))
         
-        # ƒXƒNƒŠƒvƒg‚É•Ï”‚ğ“n‚µ‚ÄÀs
+        # ã‚¹ã‚¯ãƒªãƒ—ãƒˆã«å¤‰æ•°ã‚’æ¸¡ã—ã¦å®Ÿè¡Œ
         & $scriptBlock -Context $scriptContext
         
         Write-Host "[OnReceived] Script executed successfully" -ForegroundColor Green
@@ -253,4 +222,5 @@ function Invoke-OnReceivedScript {
         Write-Warning $_.ScriptStackTrace
     }
 }
+
 

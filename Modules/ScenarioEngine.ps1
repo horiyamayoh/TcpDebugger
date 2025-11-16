@@ -1,10 +1,15 @@
-# ScenarioEngine.ps1
-# ƒVƒiƒŠƒIÀsƒGƒ“ƒWƒ“ - CSVŒ`®ƒVƒiƒŠƒI‚Ì“Ç‚İ‚İ‚ÆÀs
+ï»¿# ScenarioEngine.ps1
+# [DEPRECATED] ã“ã®ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã¯éæ¨å¥¨ã§ã™ã€‚MessageServiceã‚’ç›´æ¥ä½¿ç”¨ã—ã¦ãã ã•ã„ã€‚
+# ã‚·ãƒŠãƒªã‚ªå®Ÿè¡Œã‚¨ãƒ³ã‚¸ãƒ³ - CSVå½¢å¼ã‚·ãƒŠãƒªã‚ªã®èª­ã¿è¾¼ã¿ã¨å®Ÿè¡Œ
 
 function Read-ScenarioFile {
     <#
     .SYNOPSIS
-    CSVƒVƒiƒŠƒIƒtƒ@ƒCƒ‹‚ğ“Ç‚İ‚İ
+    CSVã‚·ãƒŠãƒªã‚ªãƒ•ã‚¡ã‚¤ãƒ«ã‚’èª­ã¿è¾¼ã¿
+    
+    .DESCRIPTION
+    [éæ¨å¥¨] ã“ã®é–¢æ•°ã¯å¾Œæ–¹äº’æ›æ€§ã®ãŸã‚ã«æ®‹ã•ã‚Œã¦ã„ã¾ã™ã€‚
+    æ–°ã—ã„ã‚³ãƒ¼ãƒ‰ã§ã¯ $Global:MessageService.LoadScenario() ã‚’ä½¿ç”¨ã—ã¦ãã ã•ã„ã€‚
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -17,7 +22,7 @@ function Read-ScenarioFile {
     
     Write-Host "[ScenarioEngine] Loading scenario: $FilePath" -ForegroundColor Cyan
     
-    # CSV“Ç‚İ‚İ
+    # CSVèª­ã¿è¾¼ã¿
     $steps = Import-Csv -Path $FilePath -Encoding UTF8
     
     Write-Host "[ScenarioEngine] Loaded $($steps.Count) steps" -ForegroundColor Green
@@ -28,7 +33,11 @@ function Read-ScenarioFile {
 function Start-Scenario {
     <#
     .SYNOPSIS
-    ƒVƒiƒŠƒI‚ğÀs
+    ã‚·ãƒŠãƒªã‚ªã‚’å®Ÿè¡Œ
+    
+    .DESCRIPTION
+    [éæ¨å¥¨] ã“ã®é–¢æ•°ã¯å¾Œæ–¹äº’æ›æ€§ã®ãŸã‚ã«æ®‹ã•ã‚Œã¦ã„ã¾ã™ã€‚
+    æ–°ã—ã„ã‚³ãƒ¼ãƒ‰ã§ã¯ $Global:MessageService.StartScenario() ã‚’ä½¿ç”¨ã—ã¦ãã ã•ã„ã€‚
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -38,9 +47,15 @@ function Start-Scenario {
         [string]$ScenarioPath
     )
 
-    if (-not $Global:Connections.ContainsKey($ConnectionId)) {
-        throw "Connection not found: $ConnectionId"
+    # æ–°ã—ã„ã‚¢ãƒ¼ã‚­ãƒ†ã‚¯ãƒãƒ£ã«å§”è­²å¯èƒ½ãªå ´åˆã¯å§”è­²
+    if ($Global:MessageService) {
+        Write-Warning "[DEPRECATED] Start-Scenario is deprecated. Migrate to MessageService.StartScenario()."
+        $Global:MessageService.StartScenario($ConnectionId, $ScenarioPath)
+        return
     }
+
+    # ãƒ•ã‚©ãƒ¼ãƒ«ãƒãƒƒã‚¯: æ—§å®Ÿè£…
+    $null = Get-ManagedConnection -ConnectionId $ConnectionId
 
     # Load scenario file
     $scenarioSteps = Read-ScenarioFile -FilePath $ScenarioPath
@@ -51,12 +66,12 @@ function Start-Scenario {
             [object[]]$ScenarioSteps
         )
 
-        if (-not $Global:Connections.ContainsKey($ConnectionId)) {
+        try {
+            $connection = Get-ManagedConnection -ConnectionId $ConnectionId
+        } catch {
             Write-Error "[ScenarioEngine] Connection not found inside scenario thread: $ConnectionId"
             return
         }
-
-        $connection = $Global:Connections[$ConnectionId]
         $totalSteps = if ($ScenarioSteps) { $ScenarioSteps.Count } else { 0 }
         $loopStack = New-Object System.Collections.Generic.List[object]
 
@@ -158,7 +173,7 @@ function Start-Scenario {
         }
     }
 
-    # ƒXƒŒƒbƒhŠJn
+    # ã‚¹ãƒ¬ãƒƒãƒ‰é–‹å§‹
     $targetConnectionId = $ConnectionId
     $localScenarioSteps = @($scenarioSteps)
     $thread = New-Object System.Threading.Thread([System.Threading.ThreadStart]{
@@ -392,11 +407,11 @@ function Invoke-TimerStartAction {
                 return
             }
 
-            if (-not $Global:Connections.ContainsKey($timerContext.ConnectionId)) {
+            $service = Get-ConnectionService
+            $conn = $service.GetConnection($timerContext.ConnectionId)
+            if (-not $conn) {
                 return
             }
-
-            $conn = $Global:Connections[$timerContext.ConnectionId]
             if (-not $conn) {
                 return
             }
@@ -497,19 +512,19 @@ function Invoke-TimerStopAction {
     }
 }
 
-# ƒAƒNƒVƒ‡ƒ“À‘•
+# ã‚¢ã‚¯ã‚·ãƒ§ãƒ³å®Ÿè£…
 
 function Invoke-SendAction {
     param($Connection, $Step)
     
-    # ƒeƒ“ƒvƒŒ[ƒg“WŠJ
+    # ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆå±•é–‹
     $message = Expand-MessageVariables -Template $Step.Parameter1 -Variables $Connection.Variables
     
-    # ƒoƒCƒg”z—ñ‚É•ÏŠ·
+    # ãƒã‚¤ãƒˆé…åˆ—ã«å¤‰æ›
     $encoding = if ($Step.Parameter2) { $Step.Parameter2 } else { "UTF-8" }
     $bytes = ConvertTo-ByteArray -Data $message -Encoding $encoding
     
-    # ‘—MƒLƒ…[‚É’Ç‰Á
+    # é€ä¿¡ã‚­ãƒ¥ãƒ¼ã«è¿½åŠ 
     Send-Data -ConnectionId $Connection.Id -Data $bytes
     
     Write-Host "[ScenarioEngine] Sent: $message" -ForegroundColor Blue
@@ -518,10 +533,10 @@ function Invoke-SendAction {
 function Invoke-SendHexAction {
     param($Connection, $Step)
     
-    # HEX•¶š—ñ‚ğƒoƒCƒg”z—ñ‚É•ÏŠ·
+    # HEXæ–‡å­—åˆ—ã‚’ãƒã‚¤ãƒˆé…åˆ—ã«å¤‰æ›
     $bytes = ConvertTo-ByteArray -Data $Step.Parameter1 -IsHex
     
-    # ‘—MƒLƒ…[‚É’Ç‰Á
+    # é€ä¿¡ã‚­ãƒ¥ãƒ¼ã«è¿½åŠ 
     Send-Data -ConnectionId $Connection.Id -Data $bytes
     
     Write-Host "[ScenarioEngine] Sent HEX: $($Step.Parameter1)" -ForegroundColor Blue
@@ -537,10 +552,10 @@ function Invoke-SendFileAction {
         return
     }
     
-    # ƒtƒ@ƒCƒ‹“Ç‚İ‚İ
+    # ãƒ•ã‚¡ã‚¤ãƒ«èª­ã¿è¾¼ã¿
     $bytes = [System.IO.File]::ReadAllBytes($filePath)
     
-    # ‘—MƒLƒ…[‚É’Ç‰Á
+    # é€ä¿¡ã‚­ãƒ¥ãƒ¼ã«è¿½åŠ 
     Send-Data -ConnectionId $Connection.Id -Data $bytes
     
     Write-Host "[ScenarioEngine] Sent file: $filePath ($($bytes.Length) bytes)" -ForegroundColor Blue
@@ -549,8 +564,8 @@ function Invoke-SendFileAction {
 function Invoke-WaitRecvAction {
     param($Connection, $Step)
     
-    # ƒpƒ‰ƒ[ƒ^‰ğÍ
-    $timeout = 5000  # ƒfƒtƒHƒ‹ƒg5•b
+    # ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿è§£æ
+    $timeout = 5000  # ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆ5ç§’
     $pattern = $null
     
     if ($Step.Parameter1 -like "TIMEOUT=*") {
@@ -571,7 +586,7 @@ function Invoke-WaitRecvAction {
             $lastRecv = $Connection.RecvBuffer[-1]
             $recvText = ConvertFrom-ByteArray -Data $lastRecv.Data -Encoding "UTF-8"
             
-            # ƒpƒ^[ƒ“ƒ}ƒbƒ`ƒ“ƒO
+            # ãƒ‘ã‚¿ãƒ¼ãƒ³ãƒãƒƒãƒãƒ³ã‚°
             if ($pattern) {
                 if ($recvText -like "*$pattern*") {
                     $received = $true
@@ -605,7 +620,7 @@ function Invoke-SaveRecvAction {
         $lastRecv = $Connection.RecvBuffer[-1]
         $recvText = ConvertFrom-ByteArray -Data $lastRecv.Data -Encoding "UTF-8"
         
-        # •Ï”‚É•Û‘¶
+        # å¤‰æ•°ã«ä¿å­˜
         $Connection.Variables[$varName] = $recvText
         
         Write-Host "[ScenarioEngine] Saved to variable '$varName': $recvText" -ForegroundColor Green
@@ -917,7 +932,7 @@ function Get-StepIndexFromParameter {
 function Invoke-IfAction {
     param($Connection, $Step)
     
-    # ŠÈˆÕ“I‚ÈğŒ”»’èi«—ˆŠg’£j
+    # ç°¡æ˜“çš„ãªæ¡ä»¶åˆ¤å®šï¼ˆå°†æ¥æ‹¡å¼µï¼‰
     Write-Warning "[ScenarioEngine] IF action not fully implemented"
 }
 
@@ -932,7 +947,7 @@ function Invoke-CallScriptAction {
     }
     
     try {
-        # ƒXƒNƒŠƒvƒgÀs
+        # ã‚¹ã‚¯ãƒªãƒ—ãƒˆå®Ÿè¡Œ
         & $scriptPath -Connection $Connection | Out-Null
         
         Write-Host "[ScenarioEngine] Script executed: $scriptPath" -ForegroundColor Green
@@ -946,3 +961,4 @@ function Invoke-CallScriptAction {
 #     'Read-ScenarioFile',
 #     'Start-Scenario'
 # )
+

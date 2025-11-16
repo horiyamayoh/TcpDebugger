@@ -1,10 +1,35 @@
-# NetworkAnalyzer.ps1
-# ƒlƒbƒgƒ[ƒNf’fƒ‚ƒWƒ…[ƒ‹
+ï»¿# NetworkAnalyzer.ps1
+# ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯è¨ºæ–­ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«
 
+function Get-NetworkAnalyzerConnection {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$ConnectionId
+    )
+
+    if ([string]::IsNullOrWhiteSpace($ConnectionId)) {
+        return $null
+    }
+
+    if ($Global:ConnectionService) {
+        return $Global:ConnectionService.GetConnection($ConnectionId)
+    }
+
+    if (Get-Command Get-ConnectionService -ErrorAction SilentlyContinue) {
+        $service = Get-ConnectionService
+        return $service.GetConnection($ConnectionId)
+    }
+
+    if ($Global:Connections -and $Global:Connections.ContainsKey($ConnectionId)) {
+        return $Global:Connections[$ConnectionId]
+    }
+
+    return $null
+}
 function Test-NetworkConnectivity {
     <#
     .SYNOPSIS
-    ƒlƒbƒgƒ[ƒN‘a’ÊŠm”FiPingj
+    ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯ç–é€šç¢ºèªï¼ˆPingï¼‰
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -49,7 +74,7 @@ function Test-NetworkConnectivity {
 function Test-PortConnectivity {
     <#
     .SYNOPSIS
-    ƒ|[ƒg‘a’ÊŠm”F
+    ãƒãƒ¼ãƒˆç–é€šç¢ºèª
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -108,7 +133,7 @@ function Test-PortConnectivity {
 function Get-RouteInformation {
     <#
     .SYNOPSIS
-    ƒ‹[ƒeƒBƒ“ƒOî•ñ‚ğæ“¾
+    ãƒ«ãƒ¼ãƒ†ã‚£ãƒ³ã‚°æƒ…å ±ã‚’å–å¾—
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -118,7 +143,7 @@ function Get-RouteInformation {
     Write-Host "[NetworkAnalyzer] Getting route information for $TargetIP..." -ForegroundColor Cyan
     
     try {
-        # PowerShell 5.1ŒİŠ·‚Ìƒ‹[ƒgæ“¾•û–@
+        # PowerShell 5.1äº’æ›ã®ãƒ«ãƒ¼ãƒˆå–å¾—æ–¹æ³•
         $routeOutput = route print | Select-String $TargetIP
         
         if ($routeOutput) {
@@ -150,25 +175,24 @@ function Get-RouteInformation {
 function Invoke-ComprehensiveDiagnostics {
     <#
     .SYNOPSIS
-    •ïŠ‡“I‚Èf’f‚ğÀs
+    åŒ…æ‹¬çš„ãªè¨ºæ–­ã‚’å®Ÿè¡Œ
     #>
     param(
         [Parameter(Mandatory=$true)]
         [string]$ConnectionId
     )
     
-    if (-not $Global:Connections.ContainsKey($ConnectionId)) {
+    $conn = Get-NetworkAnalyzerConnection -ConnectionId $ConnectionId
+    if (-not $conn) {
         throw "Connection not found: $ConnectionId"
     }
-    
-    $conn = $Global:Connections[$ConnectionId]
     
     Write-Host "`n[NetworkAnalyzer] Running comprehensive diagnostics for $($conn.DisplayName)..." -ForegroundColor Cyan
     Write-Host "================================================" -ForegroundColor Cyan
     
     $results = @{}
     
-    # Ú‘±æî•ñ
+    # æ¥ç¶šå…ˆæƒ…å ±
     if ($conn.Mode -eq "Client" -or $conn.Mode -eq "Sender") {
         $targetIP = $conn.RemoteIP
         $targetPort = $conn.RemotePort
@@ -179,38 +203,38 @@ function Invoke-ComprehensiveDiagnostics {
         return [PSCustomObject]@{
             Mode = "Server"
             LocalBinding = "$($conn.LocalIP):$($conn.LocalPort)"
-            Recommendations = @("ƒT[ƒo[ƒ‚[ƒh‚Ìf’f‚ÍŒ»İ–¢‘Î‰")
+            Recommendations = @("ã‚µãƒ¼ãƒãƒ¼ãƒ¢ãƒ¼ãƒ‰ã®è¨ºæ–­ã¯ç¾åœ¨æœªå¯¾å¿œ")
         }
     }
     
-    # 1. Ping‘a’ÊŠm”F
+    # 1. Pingç–é€šç¢ºèª
     Write-Host "`n1. Ping Connectivity Test" -ForegroundColor Yellow
     $results['Ping'] = Test-NetworkConnectivity -TargetIP $targetIP
     
-    # 2. ƒ|[ƒg‘a’ÊŠm”F
+    # 2. ãƒãƒ¼ãƒˆç–é€šç¢ºèª
     Write-Host "`n2. Port Connectivity Test" -ForegroundColor Yellow
     $results['Port'] = Test-PortConnectivity -TargetIP $targetIP -Port $targetPort
     
-    # 3. ƒ‹[ƒeƒBƒ“ƒOŠm”F
+    # 3. ãƒ«ãƒ¼ãƒ†ã‚£ãƒ³ã‚°ç¢ºèª
     Write-Host "`n3. Route Information" -ForegroundColor Yellow
     $results['Route'] = Get-RouteInformation -TargetIP $targetIP
     
     Write-Host "`n================================================" -ForegroundColor Cyan
     
-    # „§ƒAƒNƒVƒ‡ƒ“‚Ì¶¬
+    # æ¨å¥¨ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã®ç”Ÿæˆ
     $recommendations = @()
     
     if (-not $results['Ping'].Success) {
-        $recommendations += "‘ÎÛ‘•’ui$targetIPj‚É“’B‚Å‚«‚Ü‚¹‚ñBƒlƒbƒgƒ[ƒNƒP[ƒuƒ‹A“dŒ¹AIPƒAƒhƒŒƒXİ’è‚ğŠm”F‚µ‚Ä‚­‚¾‚³‚¢B"
+        $recommendations += "å¯¾è±¡è£…ç½®ï¼ˆ$targetIPï¼‰ã«åˆ°é”ã§ãã¾ã›ã‚“ã€‚ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯ã‚±ãƒ¼ãƒ–ãƒ«ã€é›»æºã€IPã‚¢ãƒ‰ãƒ¬ã‚¹è¨­å®šã‚’ç¢ºèªã—ã¦ãã ã•ã„ã€‚"
     }
     
     if ($results['Ping'].Success -and -not $results['Port'].Success) {
-        $recommendations += "ƒ|[ƒg${targetPort}‚ª•Â‚¶‚Ä‚¢‚Ü‚·B‘ÎÛ‘•’u‚ÌƒT[ƒrƒX/ƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚ª‹N“®‚µ‚Ä‚¢‚é‚©Šm”F‚µ‚Ä‚­‚¾‚³‚¢B"
-        $recommendations += "ƒtƒ@ƒCƒAƒEƒH[ƒ‹İ’è‚Åƒ|[ƒg${targetPort}‚ª‹–‰Â‚³‚ê‚Ä‚¢‚é‚©Šm”F‚µ‚Ä‚­‚¾‚³‚¢B"
+        $recommendations += "ãƒãƒ¼ãƒˆ${targetPort}ãŒé–‰ã˜ã¦ã„ã¾ã™ã€‚å¯¾è±¡è£…ç½®ã®ã‚µãƒ¼ãƒ“ã‚¹/ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ãŒèµ·å‹•ã—ã¦ã„ã‚‹ã‹ç¢ºèªã—ã¦ãã ã•ã„ã€‚"
+        $recommendations += "ãƒ•ã‚¡ã‚¤ã‚¢ã‚¦ã‚©ãƒ¼ãƒ«è¨­å®šã§ãƒãƒ¼ãƒˆ${targetPort}ãŒè¨±å¯ã•ã‚Œã¦ã„ã‚‹ã‹ç¢ºèªã—ã¦ãã ã•ã„ã€‚"
     }
     
     if ($results['Ping'].Success -and $results['Port'].Success) {
-        $recommendations += "ƒlƒbƒgƒ[ƒN‘a’Ê‚Í³í‚Å‚·BÚ‘±ƒGƒ‰[‚ª”­¶‚·‚éê‡‚ÍAƒvƒƒgƒRƒ‹İ’è‚âƒ^ƒCƒ€ƒAƒEƒg’l‚ğŠm”F‚µ‚Ä‚­‚¾‚³‚¢B"
+        $recommendations += "ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯ç–é€šã¯æ­£å¸¸ã§ã™ã€‚æ¥ç¶šã‚¨ãƒ©ãƒ¼ãŒç™ºç”Ÿã™ã‚‹å ´åˆã¯ã€ãƒ—ãƒ­ãƒˆã‚³ãƒ«è¨­å®šã‚„ã‚¿ã‚¤ãƒ ã‚¢ã‚¦ãƒˆå€¤ã‚’ç¢ºèªã—ã¦ãã ã•ã„ã€‚"
     }
     
     Write-Host "`n[Recommendations]" -ForegroundColor Yellow
@@ -234,3 +258,5 @@ function Invoke-ComprehensiveDiagnostics {
 #     'Get-RouteInformation',
 #     'Invoke-ComprehensiveDiagnostics'
 # )
+
+

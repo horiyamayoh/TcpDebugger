@@ -1,15 +1,16 @@
-# PeriodicSender.ps1
-# ’èüŠú‘—Mƒ‚ƒWƒ…[ƒ‹
+ï»¿# PeriodicSender.ps1
+# [DEPRECATED] ã“ã®ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã¯éæ¨å¥¨ã§ã™ã€‚MessageServiceã‚’ç›´æ¥ä½¿ç”¨ã—ã¦ãã ã•ã„ã€‚
+# å®šå‘¨æœŸé€ä¿¡ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«
 
 function Read-PeriodicSendRules {
     <#
     .SYNOPSIS
-    ’èüŠú‘—Mƒ‹[ƒ‹CSV‚ğ“Ç‚İ‚İ
+    å®šå‘¨æœŸé€ä¿¡ãƒ«ãƒ¼ãƒ«CSVã‚’èª­ã¿è¾¼ã¿
     .DESCRIPTION
-    CSVŒ`®:
-    - RuleName: ƒ‹[ƒ‹–¼iÈ—ª‰Âj
-    - MessageFile: ‘—M‚·‚é“d•¶ƒeƒ“ƒvƒŒ[ƒgƒtƒ@ƒCƒ‹itemplates/“à‚Ì‘Š‘ÎƒpƒXj
-    - IntervalMs: ‘—MüŠúiƒ~ƒŠ•bA10i”j
+    CSVå½¢å¼:
+    - RuleName: ãƒ«ãƒ¼ãƒ«åï¼ˆçœç•¥å¯ï¼‰
+    - MessageFile: é€ä¿¡ã™ã‚‹é›»æ–‡ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆãƒ•ã‚¡ã‚¤ãƒ«ï¼ˆtemplates/å†…ã®ç›¸å¯¾ãƒ‘ã‚¹ï¼‰
+    - IntervalMs: é€ä¿¡å‘¨æœŸï¼ˆãƒŸãƒªç§’ã€10é€²æ•°ï¼‰
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -25,13 +26,13 @@ function Read-PeriodicSendRules {
     }
     
     try {
-        # Shift-JIS ‚Å“Ç‚İ‚İ
+        # Shift-JIS ã§èª­ã¿è¾¼ã¿
         $encoding = [System.Text.Encoding]::GetEncoding("Shift_JIS")
         $rules = Import-Csv -Path $FilePath -Encoding $encoding
         
         $validRules = @()
         foreach ($rule in $rules) {
-            # •K{ƒtƒB[ƒ‹ƒhƒ`ƒFƒbƒN
+            # å¿…é ˆãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ãƒã‚§ãƒƒã‚¯
             if ([string]::IsNullOrWhiteSpace($rule.MessageFile)) {
                 Write-Warning "[PeriodicSender] Skipping rule with empty MessageFile"
                 continue
@@ -42,14 +43,14 @@ function Read-PeriodicSendRules {
                 continue
             }
             
-            # IntervalMs ‚ğ”’l‚É•ÏŠ·
+            # IntervalMs ã‚’æ•°å€¤ã«å¤‰æ›
             $intervalMs = 0
             if (-not [int]::TryParse($rule.IntervalMs, [ref]$intervalMs) -or $intervalMs -le 0) {
                 Write-Warning "[PeriodicSender] Invalid IntervalMs for rule '$($rule.RuleName)': $($rule.IntervalMs)"
                 continue
             }
             
-            # MessageFile ‚Ìâ‘ÎƒpƒX‚ğ‰ğŒˆ
+            # MessageFile ã®çµ¶å¯¾ãƒ‘ã‚¹ã‚’è§£æ±º
             $templatesPath = Join-Path $InstancePath "templates"
             $messageFilePath = Join-Path $templatesPath $rule.MessageFile
             
@@ -77,7 +78,7 @@ function Read-PeriodicSendRules {
 function Start-PeriodicSend {
     <#
     .SYNOPSIS
-    w’è‚³‚ê‚½Ú‘±‚Å’èüŠú‘—M‚ğŠJn
+    æŒ‡å®šã•ã‚ŒãŸæ¥ç¶šã§å®šå‘¨æœŸé€ä¿¡ã‚’é–‹å§‹
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -90,17 +91,17 @@ function Start-PeriodicSend {
         [string]$InstancePath
     )
     
-    if (-not $Global:Connections.ContainsKey($ConnectionId)) {
+    try {
+        $connection = Get-ManagedConnection -ConnectionId $ConnectionId
+    } catch {
         Write-Warning "[PeriodicSender] Connection not found: $ConnectionId"
         return
     }
     
-    $connection = $Global:Connections[$ConnectionId]
-    
-    # Šù‘¶‚Ìƒ^ƒCƒ}[‚ğ’â~
+    # æ—¢å­˜ã®ã‚¿ã‚¤ãƒãƒ¼ã‚’åœæ­¢
     Stop-PeriodicSend -ConnectionId $ConnectionId
     
-    # ƒ‹[ƒ‹‚ğ“Ç‚İ‚İ
+    # ãƒ«ãƒ¼ãƒ«ã‚’èª­ã¿è¾¼ã¿
     $rules = Read-PeriodicSendRules -FilePath $RuleFilePath -InstancePath $InstancePath
     
     if ($rules.Count -eq 0) {
@@ -108,18 +109,18 @@ function Start-PeriodicSend {
         return
     }
     
-    # Ú‘±‚Éƒ^ƒCƒ}[ƒŠƒXƒg‚ğŠi”[
+    # æ¥ç¶šã«ã‚¿ã‚¤ãƒãƒ¼ãƒªã‚¹ãƒˆã‚’æ ¼ç´
     if (-not $connection.PeriodicTimers) {
         $connection.PeriodicTimers = New-Object System.Collections.Generic.List[object]
     }
     
-    # Šeƒ‹[ƒ‹‚É‘Î‚µ‚Äƒ^ƒCƒ}[‚ğì¬
+    # å„ãƒ«ãƒ¼ãƒ«ã«å¯¾ã—ã¦ã‚¿ã‚¤ãƒãƒ¼ã‚’ä½œæˆ
     foreach ($rule in $rules) {
         $timer = New-Object System.Timers.Timer
         $timer.Interval = $rule.IntervalMs
         $timer.AutoReset = $true
         
-        # ƒ^ƒCƒ}[ƒCƒxƒ“ƒgİ’è
+        # ã‚¿ã‚¤ãƒãƒ¼ã‚¤ãƒ™ãƒ³ãƒˆè¨­å®š
         $timerEvent = Register-ObjectEvent -InputObject $timer -EventName Elapsed -Action {
             param($sender, $eventArgs)
             
@@ -127,13 +128,13 @@ function Start-PeriodicSend {
             $messageFile = $Event.MessageData.MessageFile
             $ruleName = $Event.MessageData.RuleName
             
-            if (-not $Global:Connections.ContainsKey($connId)) {
+            $service = Get-ConnectionService
+            $conn = $service.GetConnection($connId)
+            if (-not $conn) {
                 return
             }
             
-            $conn = $Global:Connections[$connId]
-            
-            # Ú‘±‚ªØ’f‚³‚ê‚Ä‚¢‚éê‡‚ÍƒXƒLƒbƒv
+            # æ¥ç¶šãŒåˆ‡æ–­ã•ã‚Œã¦ã„ã‚‹å ´åˆã¯ã‚¹ã‚­ãƒƒãƒ—
             if ($conn.Status -ne "CONNECTED") {
                 return
             }
@@ -165,10 +166,10 @@ function Start-PeriodicSend {
             RuleName = $rule.RuleName
         }
         
-        # ƒ^ƒCƒ}[ŠJn
+        # ã‚¿ã‚¤ãƒãƒ¼é–‹å§‹
         $timer.Start()
         
-        # ƒ^ƒCƒ}[î•ñ‚ğ•Û‘¶
+        # ã‚¿ã‚¤ãƒãƒ¼æƒ…å ±ã‚’ä¿å­˜
         $connection.PeriodicTimers.Add(@{
             Timer = $timer
             Event = $timerEvent
@@ -185,18 +186,18 @@ function Start-PeriodicSend {
 function Stop-PeriodicSend {
     <#
     .SYNOPSIS
-    w’è‚³‚ê‚½Ú‘±‚Ì’èüŠú‘—M‚ğ’â~
+    æŒ‡å®šã•ã‚ŒãŸæ¥ç¶šã®å®šå‘¨æœŸé€ä¿¡ã‚’åœæ­¢
     #>
     param(
         [Parameter(Mandatory=$true)]
         [string]$ConnectionId
     )
     
-    if (-not $Global:Connections.ContainsKey($ConnectionId)) {
+    try {
+        $connection = Get-ManagedConnection -ConnectionId $ConnectionId
+    } catch {
         return
     }
-    
-    $connection = $Global:Connections[$ConnectionId]
     
     if (-not $connection.PeriodicTimers -or $connection.PeriodicTimers.Count -eq 0) {
         return
@@ -204,13 +205,13 @@ function Stop-PeriodicSend {
     
     foreach ($timerInfo in $connection.PeriodicTimers) {
         try {
-            # ƒ^ƒCƒ}[’â~
+            # ã‚¿ã‚¤ãƒãƒ¼åœæ­¢
             if ($timerInfo.Timer) {
                 $timerInfo.Timer.Stop()
                 $timerInfo.Timer.Dispose()
             }
             
-            # ƒCƒxƒ“ƒg“o˜^‰ğœ
+            # ã‚¤ãƒ™ãƒ³ãƒˆç™»éŒ²è§£é™¤
             if ($timerInfo.Event) {
                 Unregister-Event -SourceIdentifier $timerInfo.Event.Name -ErrorAction SilentlyContinue
             }
@@ -228,7 +229,7 @@ function Stop-PeriodicSend {
 function Set-ConnectionPeriodicSendProfile {
     <#
     .SYNOPSIS
-    Ú‘±‚É’èüŠú‘—Mƒvƒƒtƒ@ƒCƒ‹‚ğİ’è
+    æ¥ç¶šã«å®šå‘¨æœŸé€ä¿¡ãƒ—ãƒ­ãƒ•ã‚¡ã‚¤ãƒ«ã‚’è¨­å®š
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -241,17 +242,17 @@ function Set-ConnectionPeriodicSendProfile {
         [string]$InstancePath
     )
     
-    if (-not $Global:Connections.ContainsKey($ConnectionId)) {
+    try {
+        $connection = Get-ManagedConnection -ConnectionId $ConnectionId
+    } catch {
         Write-Warning "[PeriodicSender] Connection not found: $ConnectionId"
         return
     }
     
-    $connection = $Global:Connections[$ConnectionId]
-    
-    # Šù‘¶‚Ìƒ^ƒCƒ}[‚ğ’â~
+    # æ—¢å­˜ã®ã‚¿ã‚¤ãƒãƒ¼ã‚’åœæ­¢
     Stop-PeriodicSend -ConnectionId $ConnectionId
     
-    # ƒvƒƒtƒ@ƒCƒ‹î•ñ‚ğƒNƒŠƒA‚Ü‚½‚Íİ’è
+    # ãƒ—ãƒ­ãƒ•ã‚¡ã‚¤ãƒ«æƒ…å ±ã‚’ã‚¯ãƒªã‚¢ã¾ãŸã¯è¨­å®š
     if ([string]::IsNullOrWhiteSpace($ProfilePath)) {
         $connection.Variables.Remove('PeriodicSendProfile')
         $connection.Variables.Remove('PeriodicSendProfilePath')
@@ -263,17 +264,17 @@ function Set-ConnectionPeriodicSendProfile {
         throw "Periodic send profile not found: $ProfilePath"
     }
     
-    # ƒvƒƒtƒ@ƒCƒ‹–¼‚ğ’Šoiƒtƒ@ƒCƒ‹–¼‚©‚çƒx[ƒX–¼‚ğæ“¾j
+    # ãƒ—ãƒ­ãƒ•ã‚¡ã‚¤ãƒ«åã‚’æŠ½å‡ºï¼ˆãƒ•ã‚¡ã‚¤ãƒ«åã‹ã‚‰ãƒ™ãƒ¼ã‚¹åã‚’å–å¾—ï¼‰
     $profileName = [System.IO.Path]::GetFileNameWithoutExtension($ProfilePath)
     $resolved = (Resolve-Path -LiteralPath $ProfilePath).Path
     
-    # Variables ‚É•Û‘¶
+    # Variables ã«ä¿å­˜
     $connection.Variables['PeriodicSendProfile'] = $profileName
     $connection.Variables['PeriodicSendProfilePath'] = $resolved
     
     Write-Host "[PeriodicSender] Profile '$profileName' set for $($connection.DisplayName)" -ForegroundColor Green
     
-    # ƒvƒƒtƒ@ƒCƒ‹‚ªw’è‚³‚ê‚Ä‚¢‚éê‡‚ÍŠJn
+    # ãƒ—ãƒ­ãƒ•ã‚¡ã‚¤ãƒ«ãŒæŒ‡å®šã•ã‚Œã¦ã„ã‚‹å ´åˆã¯é–‹å§‹
     if ($connection.Status -eq "CONNECTED") {
         Start-PeriodicSend -ConnectionId $ConnectionId -RuleFilePath $resolved -InstancePath $InstancePath
     }
@@ -282,17 +283,20 @@ function Set-ConnectionPeriodicSendProfile {
 function Get-ConnectionPeriodicSendProfile {
     <#
     .SYNOPSIS
-    Ú‘±‚Ì’èüŠú‘—Mƒvƒƒtƒ@ƒCƒ‹‚ğæ“¾
+    æ¥ç¶šã®å®šå‘¨æœŸé€ä¿¡ãƒ—ãƒ­ãƒ•ã‚¡ã‚¤ãƒ«ã‚’å–å¾—
     #>
     param(
         [Parameter(Mandatory=$true)]
         [string]$ConnectionId
     )
     
-    if (-not $Global:Connections.ContainsKey($ConnectionId)) {
+    try {
+        $connection = Get-ManagedConnection -ConnectionId $ConnectionId
+    } catch {
         return $null
     }
-    
-    $connection = $Global:Connections[$ConnectionId]
+
     return $connection.PeriodicSendProfile
 }
+
+
