@@ -6,11 +6,26 @@ TCP/UDP’ÊM‚ÌƒeƒXƒgEƒfƒoƒbƒO‚ğs‚¤‚½‚ß‚ÌŒ±‘•’u‚Å‚·Bİ’èƒtƒ@ƒCƒ‹ƒx[ƒX‚ÅƒVƒiƒ
 –{ƒAƒvƒŠ‚Í Windows ã‚Ì Powershell ‚ÅÀs‚·‚é‚½‚ßƒeƒLƒXƒgƒGƒ“ƒR[ƒfƒBƒ“ƒO‚Í UTF8 ‚Å‚Í‚È‚­ Shift-JIS ‚ğ—˜—p‚µ‚Ä‚­‚¾‚³‚¢B
 
 ## ƒA[ƒLƒeƒNƒ`ƒƒŠT—v
-- `TcpDebugger.ps1` ‚Å Modules/ ˆÈ‰º‚Ì’ÊME©“®‰“šƒ‚ƒWƒ…[ƒ‹‚Æ UI/MainForm.ps1 ‚ğ dot-source ‚µAWinForms ã‚ÅÚ‘±‘€ìEƒVƒiƒŠƒIÀsEóMƒ‹[ƒ‹İ’è‚ğˆêŒ³‰»‚µ‚Ä‚¢‚éB
-- `ConnectionManager.ps1` ‚Ì ConnectionContext ‚ª‘—MƒLƒ…[/óMƒoƒbƒtƒ@/•Ï”ƒXƒR[ƒv/ƒ^ƒCƒ}[‚ğ“¯Šú•t‚«‚Å•Û‚µA`TcpClient.ps1` `TcpServer.ps1` `UdpCommunication.ps1` ‚ÌŠeƒXƒŒƒbƒh‚ª‚±‚ê‚ğÁ”ï‚·‚éB
-- `ScenarioEngine.ps1` ‚Í CSV ƒx[ƒX‚Ì SEND/WAIT/LOOP/TIMER ƒAƒNƒVƒ‡ƒ“‚ğ‰ğß‚µA`QuickSender.ps1` ‚Í `templates/databank.csv` ‚ğ“Ç‚İo‚µ‚Ä’èŒ^ƒƒbƒZ[ƒW‚ğ¶¬‚·‚éB
-- `AutoResponse.ps1` + `ReceivedRuleEngine.ps1` ‚ª AutoResponse/OnReceived/Unified ƒ‹[ƒ‹‚ğ”»•Ê‚µ‚Äƒeƒ“ƒvƒŒ[ƒg‚âƒXƒNƒŠƒvƒg‚ğ“WŠJ‚µA`MessageHandler.ps1`/`OnReceivedLibrary.ps1` ‚ªƒeƒ“ƒvƒŒ[ƒg“WŠJ‚âƒoƒCƒg‘€ì API ‚ğ’ñ‹Ÿ‚·‚éB
-- `UI/MainForm.ps1` ‚Ì DataGridView ‚Í Auto Response / On Received / Periodic Send / Quick Action —ñ‚ğ’Ê‚¶‚Ä `Set-ConnectionAutoResponseProfile` ‚È‚Ç‚Ì API ‚ğ’¼ÚŒÄ‚ÑAƒvƒƒtƒ@ƒCƒ‹Ø‘Ö‚âƒVƒiƒŠƒIÀs‚ğ‘¦”½‰f‚Å‚«‚éB
+
+–{ƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚ÍAƒNƒŠ[ƒ“ƒA[ƒLƒeƒNƒ`ƒƒ‚ÌŒ´‘¥‚ÉŠî‚Ã‚¢‚ÄİŒv‚³‚ê‚Ä‚¢‚Ü‚·B
+
+### ƒŒƒCƒ„[\¬
+- **Core‘w**: ƒrƒWƒlƒXƒƒWƒbƒN‚ÆƒhƒƒCƒ“ƒ‚ƒfƒ‹‚ğŠÜ‚Ş’†Šj•”•ª
+  - `Common/`: LoggerAErrorHandlerAThreadSafeCollections‚È‚Ç‚Ì‹¤’Êƒ†[ƒeƒBƒŠƒeƒB
+  - `Domain/`: ConnectionServiceAMessageServiceAReceivedEventPipeline‚È‚Ç‚ÌƒhƒƒCƒ“ƒƒWƒbƒN
+  - `Application/`: InstanceManagerANetworkAnalyzer‚È‚Ç‚ÌƒAƒvƒŠƒP[ƒVƒ‡ƒ“ƒT[ƒrƒX
+  - `Infrastructure/`: TcpClientAdapterATcpServerAdapterAUdpAdapter‚È‚Ç‚ÌƒCƒ“ƒtƒ‰ƒXƒgƒ‰ƒNƒ`ƒƒÀ‘•
+    - `Adapters/`: ’ÊMƒvƒƒgƒRƒ‹‚ÌÀ‘•
+    - `Repositories/`: ƒf[ƒ^ƒAƒNƒZƒX‘wiRuleRepositoryAInstanceRepositoryj
+- **Presentation‘w**: UI/MainForm.ps1‚É‚æ‚éWinFormsƒx[ƒX‚Ìƒ†[ƒU[ƒCƒ“ƒ^[ƒtƒF[ƒX
+- **ServiceContainer**: ˆË‘¶«’“üiDIjƒRƒ“ƒeƒi‚É‚æ‚é‘aŒ‹‡‚ÈİŒv
+
+### å—vƒRƒ“ƒ|[ƒlƒ“ƒg
+- `ConnectionService`: Ú‘±‚Ìì¬AŠÇ—Aó‘ÔŠÄ‹‚ğ“Š‡
+- `MessageService`: ƒeƒ“ƒvƒŒ[ƒg“WŠJA•Ï”ˆ—AƒVƒiƒŠƒIÀs‚ğ“‡
+- `ReceivedEventPipeline`: óMƒf[ƒ^‚Ìˆ—ƒpƒCƒvƒ‰ƒCƒ“iAutoResponseAOnReceivedAUnifiedƒ‹[ƒ‹‘Î‰j
+- `RuleProcessor`: ƒ‹[ƒ‹ƒ}ƒbƒ`ƒ“ƒO‚ÆƒAƒNƒVƒ‡ƒ“Às
+- ’ÊMƒAƒ_ƒvƒ^[iTcpClient/ServerAUDPj: ƒvƒƒgƒRƒ‹ŒÅ—L‚ÌÀ‘•‚ğ•ª—£
 
 ## “Á’¥
 
@@ -49,40 +64,75 @@ Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
 ```
 TcpDebugger/
 „¥„Ÿ„Ÿ TcpDebugger.ps1              # ƒƒCƒ“ƒXƒNƒŠƒvƒgi‹N“®ƒtƒ@ƒCƒ‹j
-„¥„Ÿ„Ÿ DESIGN.md                    # İŒv‘
 „¥„Ÿ„Ÿ README.md                    # –{ƒtƒ@ƒCƒ‹
-„¥„Ÿ„Ÿ Modules/                     # ‹@”\ƒ‚ƒWƒ…[ƒ‹ŒQ
-„    „¥„Ÿ„Ÿ ConnectionManager.ps1        # Ú‘±ŠÇ—
-„    „¥„Ÿ„Ÿ TcpClient.ps1               # TCPƒNƒ‰ƒCƒAƒ“ƒg
-„    „¥„Ÿ„Ÿ TcpServer.ps1               # TCPƒT[ƒo[
-„    „¥„Ÿ„Ÿ UdpCommunication.ps1        # UDP’ÊM
-„    „¥„Ÿ„Ÿ ScenarioEngine.ps1          # ƒVƒiƒŠƒIÀs
-„    „¥„Ÿ„Ÿ MessageHandler.ps1          # ƒƒbƒZ[ƒWˆ—
-„    „¥„Ÿ„Ÿ AutoResponse.ps1            # ©“®‰“š
-„    „¥„Ÿ„Ÿ QuickSender.ps1             # ƒNƒCƒbƒN‘—M
-„    „¥„Ÿ„Ÿ InstanceManager.ps1         # ƒCƒ“ƒXƒ^ƒ“ƒXŠÇ—
-„    „¤„Ÿ„Ÿ NetworkAnalyzer.ps1         # ƒlƒbƒgƒ[ƒNf’f
-„¥„Ÿ„Ÿ Config/                      # ‹¤’Êİ’è
-„    „¤„Ÿ„Ÿ defaults.psd1                # ƒfƒtƒHƒ‹ƒgİ’è
+„¥„Ÿ„Ÿ DESIGN.md                    # İŒv‘
+„¥„Ÿ„Ÿ ARCHITECTURE_REFACTORING.md  # ƒA[ƒLƒeƒNƒ`ƒƒ‰ü‘PİŒv‘
+„¥„Ÿ„Ÿ REFACTORING_PROGRESS.md      # ƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒOi’»ƒŒƒ|[ƒg
+„¥„Ÿ„Ÿ Core/                        # ƒRƒA‘wiƒrƒWƒlƒXƒƒWƒbƒNj
+„    „¥„Ÿ„Ÿ Common/                      # ‹¤’Êƒ†[ƒeƒBƒŠƒeƒB
+„    „    „¥„Ÿ„Ÿ Logger.ps1
+„    „    „¥„Ÿ„Ÿ ErrorHandler.ps1
+„    „    „¤„Ÿ„Ÿ ThreadSafeCollections.ps1
+„    „¥„Ÿ„Ÿ Domain/                      # ƒhƒƒCƒ“ƒƒWƒbƒN
+„    „    „¥„Ÿ„Ÿ ConnectionModels.ps1
+„    „    „¥„Ÿ„Ÿ ConnectionService.ps1
+„    „    „¥„Ÿ„Ÿ ConnectionManager.ps1
+„    „    „¥„Ÿ„Ÿ MessageService.ps1
+„    „    „¥„Ÿ„Ÿ ReceivedEventPipeline.ps1
+„    „    „¥„Ÿ„Ÿ RuleProcessor.ps1
+„    „    „¥„Ÿ„Ÿ VariableScope.ps1
+„    „    „¥„Ÿ„Ÿ ReceivedRuleEngine.ps1
+„    „    „¤„Ÿ„Ÿ OnReceivedLibrary.ps1
+„    „¥„Ÿ„Ÿ Application/                 # ƒAƒvƒŠƒP[ƒVƒ‡ƒ“ƒT[ƒrƒX
+„    „    „¥„Ÿ„Ÿ InstanceManager.ps1
+„    „    „¤„Ÿ„Ÿ NetworkAnalyzer.ps1
+„    „¤„Ÿ„Ÿ Infrastructure/              # ƒCƒ“ƒtƒ‰ƒXƒgƒ‰ƒNƒ`ƒƒ‘w
+„        „¥„Ÿ„Ÿ ServiceContainer.ps1
+„        „¥„Ÿ„Ÿ Adapters/                    # ’ÊMƒAƒ_ƒvƒ^[
+„        „    „¥„Ÿ„Ÿ TcpClientAdapter.ps1
+„        „    „¥„Ÿ„Ÿ TcpServerAdapter.ps1
+„        „    „¤„Ÿ„Ÿ UdpAdapter.ps1
+„        „¤„Ÿ„Ÿ Repositories/                # ƒf[ƒ^ƒAƒNƒZƒX
+„            „¥„Ÿ„Ÿ RuleRepository.ps1
+„            „¤„Ÿ„Ÿ InstanceRepository.ps1
+„¥„Ÿ„Ÿ Presentation/                # ƒvƒŒƒ[ƒ“ƒe[ƒVƒ‡ƒ“‘w
+„    „¤„Ÿ„Ÿ UI/
+„        „¤„Ÿ„Ÿ MainForm.ps1             # ƒƒCƒ“ƒtƒH[ƒ€iWinForms UIj
+„¥„Ÿ„Ÿ Config/                      # İ’èƒtƒ@ƒCƒ‹
+„    „¤„Ÿ„Ÿ defaults.psd1
 „¥„Ÿ„Ÿ Instances/                   # ’ÊMƒCƒ“ƒXƒ^ƒ“ƒXƒtƒHƒ‹ƒ_ŒQ
 „    „¤„Ÿ„Ÿ Example/                     # ƒTƒ“ƒvƒ‹ƒCƒ“ƒXƒ^ƒ“ƒX
 „        „¥„Ÿ„Ÿ instance.psd1            # ƒCƒ“ƒXƒ^ƒ“ƒXİ’è
 „        „¥„Ÿ„Ÿ scenarios/               # ƒVƒiƒŠƒIƒtƒ@ƒCƒ‹
-„        „    „¤„Ÿ„Ÿ echo_test.csv
+„        „    „¥„Ÿ„Ÿ auto/                    # Auto Response—pƒ‹[ƒ‹
+„        „    „¥„Ÿ„Ÿ onreceived/              # OnReceived—pƒ‹[ƒ‹•ƒXƒNƒŠƒvƒg
+„        „    „¤„Ÿ„Ÿ periodic/                # Periodic Send—pİ’è
 „        „¤„Ÿ„Ÿ templates/               # “d•¶ƒeƒ“ƒvƒŒ[ƒg
 „            „¥„Ÿ„Ÿ databank.csv
 „            „¤„Ÿ„Ÿ messages.csv
-„¥„Ÿ„Ÿ Scripts/                     # ƒJƒXƒ^ƒ€ƒXƒNƒŠƒvƒgiŠg’£—pj
-„¤„Ÿ„Ÿ UI/                          # UI’è‹`
-    „¤„Ÿ„Ÿ MainForm.ps1                # ƒƒCƒ“ƒtƒH[ƒ€
+„¥„Ÿ„Ÿ Docs/                        # ƒhƒLƒ…ƒƒ“ƒg
+„¥„Ÿ„Ÿ Tests/                       # ƒeƒXƒgƒR[ƒh
+„    „¤„Ÿ„Ÿ Unit/
+„¤„Ÿ„Ÿ Logs/                        # ƒƒOƒtƒ@ƒCƒ‹o—Íæ
 ```
 
-## Šù’m‚Ì§ŒÀ
-- `TcpClient.ps1` ‚Æ `UdpCommunication.ps1` ‚Å‚Í `Invoke-ConnectionAutoResponse` ‚ÌŒÄ‚Ño‚µˆÊ’u‚ªóMˆ—‚æ‚è‘O‚É‚ ‚èA`receivedData` ‚ª–¢’è‹`‚Ì‚Ü‚Ü•]‰¿‚³‚ê‚é‹°‚ê‚ª‚ ‚éB
-- óMƒpƒCƒvƒ‰ƒCƒ“‚Í `ReceivedEventHandler.ps1` ‚ğŒo—R‚·‚é‘z’è‚¾‚ªA’ÊMƒ‹[ƒv‚©‚ç `Invoke-ReceivedEvent` ‚ªŒÄ‚Î‚ê‚Ä‚¨‚ç‚¸AOnReceived ƒvƒƒtƒ@ƒCƒ‹’P‘Ì‚Å‚Í”­‰Î‚µ‚È‚¢B
-- `UI/MainForm.ps1` ‚Ì Periodic Send İ’è‚Å–¢’è‹`‚Ì `Get-InstancePath` ‚ğQÆ‚µ‚Ä‚¨‚èA`Connection.Variables['InstancePath']` ‚È‚Ç‚ğg‚¤C³‚ª•K—vB
-- `ScenarioEngine.ps1` ‚Ì IF ƒAƒNƒVƒ‡ƒ“ (`Invoke-IfAction`) ‚Í–¢À‘•‚ÌŒx‚¾‚¯‚ğo‚·‚½‚ßAğŒ•ªŠò•t‚«ƒVƒiƒŠƒI‚Í‚Ü‚¾Às‚Å‚«‚È‚¢B
-- OnReceived ƒvƒƒtƒ@ƒCƒ‹Ø‘Ö‚Í Unified ƒ‹[ƒ‹Œo—R‚Å‚Ì‚İŒø‰Ê‚ª‚ ‚èAƒˆ‚È OnReceived CSV ‚ğ¶‚©‚·‚É‚ÍóMƒ‹[ƒv‚Ö `Invoke-ConnectionOnReceived` ‚ğ‘g‚İ‚Ş•K—v‚ª‚ ‚éB
+## ŠJ”­‚Ì—ğj‚ÆŒ»ó
+
+### ƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒOŠ®—¹i2025-11-17“_j
+–{ƒvƒƒWƒFƒNƒg‚Í•ïŠ‡“I‚ÈƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒO‚ğŒo‚ÄAˆÈ‰º‚Ì‰ü‘P‚ªÀ{‚³‚ê‚Ü‚µ‚½F
+
+- **ƒŒƒKƒV[ƒR[ƒh‚ÌŠ®‘Síœ**: ‹Œ—ˆ‚Ì’ÊMƒ‚ƒWƒ…[ƒ‹iTcpClient.ps1ATcpServer.ps1AUdpCommunication.ps1j‚â”ñ„§ƒ‚ƒWƒ…[ƒ‹iAutoResponse.ps1AOnReceivedHandler.ps1AMessageHandler.ps1AScenarioEngine.ps1AQuickSender.ps1APeriodicSender.ps1j‚ğíœ
+- **ƒA[ƒLƒeƒNƒ`ƒƒ‚Ì–¾Šm‰»**: ƒNƒŠ[ƒ“ƒA[ƒLƒeƒNƒ`ƒƒ‚ÉŠî‚Ã‚¢‚½‘w•ª—£‚ğÀŒ»‚µA‚·‚×‚Ä‚ÌƒRƒ“ƒ|[ƒlƒ“ƒg‚ğ“KØ‚È‘w‚É”z’u
+- **ˆË‘¶«’“ü‚Ì“±“ü**: ServiceContainer‚É‚æ‚éDIƒpƒ^[ƒ“‚ÅƒeƒXƒ^ƒrƒŠƒeƒB‚Æ•Ûç«‚ğŒüã
+- **óMƒCƒxƒ“ƒgƒpƒCƒvƒ‰ƒCƒ“‚Ì“‡**: ReceivedEventPipeline‚ÅˆêŒ³‰»‚³‚ê‚½óMˆ—
+- **ƒƒbƒZ[ƒWˆ—‚Ì“ˆê**: MessageService‚É‚æ‚éƒeƒ“ƒvƒŒ[ƒg“WŠJA•Ï”ˆ—AƒVƒiƒŠƒIÀs‚Ì“‡
+
+Ú×‚Í `REFACTORING_PROGRESS.md` ‚¨‚æ‚Ñ `ARCHITECTURE_REFACTORING.md` ‚ğQÆ‚µ‚Ä‚­‚¾‚³‚¢B
+
+## Šù’m‚Ì¡Œã‚Ì‰Û‘è
+- UI‘w‚ÌƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒOiƒtƒF[ƒY4j: MainForm.ps1‚ÌÓ–±•ª—£‚ÆViewModelƒpƒ^[ƒ“‚Ì“±“ü
+- ƒeƒXƒgƒJƒoƒŒƒbƒW‚ÌŠg[: Œ»İ40%’ö“x‚Ìƒ†ƒjƒbƒgƒeƒXƒg–Ô—…—¦‚ğŒüã
+- CI/CDƒpƒCƒvƒ‰ƒCƒ“‚Ì\’z
 
 ## g—p•û–@
 

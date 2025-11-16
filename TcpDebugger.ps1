@@ -35,6 +35,9 @@ $coreModules = @(
     "Core\Domain\VariableScope.ps1",
     "Core\Domain\ConnectionModels.ps1",
     "Core\Domain\ConnectionService.ps1",
+    "Core\Domain\ConnectionManager.ps1",
+    "Core\Domain\ReceivedRuleEngine.ps1",
+    "Core\Domain\OnReceivedLibrary.ps1",
     "Core\Infrastructure\Repositories\RuleRepository.ps1",
     "Core\Infrastructure\Repositories\InstanceRepository.ps1",
     "Core\Domain\RuleProcessor.ps1",
@@ -43,7 +46,9 @@ $coreModules = @(
     "Core\Infrastructure\ServiceContainer.ps1",
     "Core\Infrastructure\Adapters\TcpClientAdapter.ps1",
     "Core\Infrastructure\Adapters\TcpServerAdapter.ps1",
-    "Core\Infrastructure\Adapters\UdpAdapter.ps1"
+    "Core\Infrastructure\Adapters\UdpAdapter.ps1",
+    "Core\Application\InstanceManager.ps1",
+    "Core\Application\NetworkAnalyzer.ps1"
 )
 
 foreach ($coreModule in $coreModules) {
@@ -133,38 +138,8 @@ $Global:MessageService = $script:ServiceContainer.Resolve('MessageService')
 
 Write-Host "[Init] Loading modules..." -ForegroundColor Cyan
 
-# 全モジュールをインポート
-$modulePath = Join-Path $script:RootPath "Modules"
-$modules = @(
-    "ConnectionManager.ps1",
-    "TcpClient.ps1",
-    "TcpServer.ps1",
-    "UdpCommunication.ps1",
-    "MessageHandler.ps1",
-    "ScenarioEngine.ps1",
-    "AutoResponse.ps1",
-    "ReceivedRuleEngine.ps1",
-    "OnReceivedHandler.ps1",
-    "OnReceivedLibrary.ps1",
-    "ReceivedEventHandler.ps1",
-    "PeriodicSender.ps1",
-    "QuickSender.ps1",
-    "InstanceManager.ps1",
-    "NetworkAnalyzer.ps1"
-)
-
-foreach ($module in $modules) {
-    $moduleFile = Join-Path $modulePath $module
-    if (Test-Path $moduleFile) {
-        . $moduleFile
-        Write-Host "  [+] $module" -ForegroundColor Green
-    } else {
-        Write-Warning "  [!] Module not found: $module"
-    }
-}
-
 # UIモジュールをインポート
-$uiPath = Join-Path $script:RootPath "UI"
+$uiPath = Join-Path $script:RootPath "Presentation\UI"
 $uiFile = Join-Path $uiPath "MainForm.ps1"
 if (Test-Path $uiFile) {
     . $uiFile

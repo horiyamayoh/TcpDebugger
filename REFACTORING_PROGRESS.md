@@ -1,19 +1,20 @@
 # TcpDebugger ƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒOi’»ƒŒƒ|[ƒg
 
 **ì¬“ú:** 2025-01-16  
-**ÅIXV:** 2025-11-16
+**ÅIXV:** 2025-11-17
 
 ---
 
 ## ƒGƒOƒ[ƒNƒeƒBƒuƒTƒ}ƒŠ[
 
-ARCHITECTURE_REFACTORING.md‚Å’ñˆÄ‚³‚ê‚½•ïŠ‡“I‚ÈƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒOŒv‰æ‚É‘Î‚µ‚ÄAÀ‘•‚Í**–ñ95%‚Ìi’»**ó‹µ‚Å‚·B
+ARCHITECTURE_REFACTORING.md‚Å’ñˆÄ‚³‚ê‚½•ïŠ‡“I‚ÈƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒOŒv‰æ‚É‘Î‚µ‚ÄAÀ‘•‚Í**–ñ98%‚Ìi’»**ó‹µ‚Å‚·B
 
 ### å‚È¬‰Ê
 ? **ƒtƒF[ƒY0i€”õ’iŠKj**: Š®—¹i100%j  
 ? **ƒtƒF[ƒY1ióMƒCƒxƒ“ƒgC³j**: Š®—¹i100%j  
 ? **ƒtƒF[ƒY2iÚ‘±ŠÇ—‰ü‘Pj**: Š®—¹i100%j  
-? **ƒtƒF[ƒY3iƒƒbƒZ[ƒWˆ—“‡j**: Š®—¹i100%j © **XV**  
+? **ƒtƒF[ƒY3iƒƒbƒZ[ƒWˆ—“‡j**: Š®—¹i100%j  
+? **ƒŒƒKƒV[ƒR[ƒhíœEƒA[ƒLƒeƒNƒ`ƒƒ®—**: Š®—¹i100%j © **NEW**  
 ? **ƒtƒF[ƒY4iUI‰ü‘Pj**: –¢’…èi0%j
 
 ### d—v‚È”­Œ©
@@ -22,30 +23,51 @@ ARCHITECTURE_REFACTORING.md‚Å’ñˆÄ‚³‚ê‚½•ïŠ‡“I‚ÈƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒOŒv‰æ‚É‘Î‚µ‚ÄAÀ‘
 - **’ÊMƒ‚ƒWƒ…[ƒ‹iTcpClient/TcpServer/UDPj‚ªVƒAƒ_ƒvƒ^[‚ÉŠ®‘SˆÚsŠ®—¹**
 - **‹ŒÀ‘•‚ÌƒtƒH[ƒ‹ƒoƒbƒNƒR[ƒh‚ğŠ®‘Síœ**
 - ƒAƒ_ƒvƒ^[ƒNƒ‰ƒX‚ÍŠù‚ÉÀ‘•‚³‚êAServiceContainer‚É“o˜^Ï‚İ
-- ModulesƒfƒBƒŒƒNƒgƒŠ‚ÌŠÖ”‚ªVƒA[ƒLƒeƒNƒ`ƒƒ‚Ì‚İ‚ğg—p
 - **ErrorHandler‚ªÀ‘•‚³‚êAƒGƒ‰[ˆ—‚Ì“ˆê‰»‚ªŠ®—¹**
-- **AutoResponse/OnReceivedHandler‚É”ñ„§ƒ}[ƒN‚ğ’Ç‰Á**
 - **MessageService‚ªÀ‘•‚³‚êAƒeƒ“ƒvƒŒ[ƒg/ƒVƒiƒŠƒIˆ—‚ğ“‡**
-- **MessageHandler/ScenarioEngine/QuickSender/PeriodicSender‚É”ñ„§ƒ}[ƒN‚ğ’Ç‰Á‚µAVAPI‚ÖˆÏ÷** © **NEW**
-- **ƒƒbƒZ[ƒW‘—MAPI‚Ì“ˆê‰»Š®—¹iSendTemplate/SendBytes/SendHex/SendTextj** © **NEW**
+- **ƒƒbƒZ[ƒW‘—MAPI‚Ì“ˆê‰»Š®—¹iSendTemplate/SendBytes/SendHex/SendTextj**
+- **‚·‚×‚Ä‚ÌƒŒƒKƒV[ƒ‚ƒWƒ…[ƒ‹‚ğíœ‚µAƒNƒŠ[ƒ“‚ÈƒA[ƒLƒeƒNƒ`ƒƒ‚ÉˆÚs** © **NEW**
+- **ƒtƒHƒ‹ƒ_\¬‚ğ®—‚µA–¾Šm‚ÈÓ–±•ª—£‚ğÀŒ»** © **NEW**
 
-### ÅV‚Ì•ÏXi2025-11-16 - ‘æ4‰ñj
-? **MessageService‘—MAPIÀ‘•**: “ˆê‚³‚ê‚½ƒƒbƒZ[ƒW‘—MƒCƒ“ƒ^[ƒtƒF[ƒX
-- SendTemplate: ƒeƒ“ƒvƒŒ[ƒgƒtƒ@ƒCƒ‹‚©‚ç•Ï”“WŠJ‚µ‚Ä‘—M
-- SendBytes: ƒoƒCƒg”z—ñ‚ğ’¼Ú‘—M
-- SendHex: HEX•¶š—ñ‚ğ•ÏŠ·‚µ‚Ä‘—M
-- SendText: ƒeƒLƒXƒg‚ğƒGƒ“ƒR[ƒfƒBƒ“ƒOw’è‚µ‚Ä‘—M
+### ÅV‚Ì•ÏXi2025-11-17 - ‘æ5‰ñj
+? **ƒŒƒKƒV[ƒR[ƒh‚ÌŠ®‘Síœ**:
+- `Modules/TcpClient.ps1` - íœiTcpClientAdapter‚É’u‚«Š·‚¦Ï‚İj
+- `Modules/TcpServer.ps1` - íœiTcpServerAdapter‚É’u‚«Š·‚¦Ï‚İj
+- `Modules/UdpCommunication.ps1` - íœiUdpAdapter‚É’u‚«Š·‚¦Ï‚İj
+- `Modules/AutoResponse.ps1` - íœiReceivedEventPipeline‚É“‡Ï‚İj
+- `Modules/OnReceivedHandler.ps1` - íœiReceivedEventPipeline‚É“‡Ï‚İj
+- `Modules/MessageHandler.ps1` - íœiMessageService‚É’u‚«Š·‚¦Ï‚İj
+- `Modules/ScenarioEngine.ps1` - íœiMessageService‚É’u‚«Š·‚¦Ï‚İj
+- `Modules/QuickSender.ps1` - íœiMessageService‚É’u‚«Š·‚¦Ï‚İj
+- `Modules/PeriodicSender.ps1` - íœiMessageService‚É’u‚«Š·‚¦Ï‚İj
+- `Modules/ReceivedEventHandler.ps1` - íœiReceivedEventPipeline‚É’u‚«Š·‚¦Ï‚İj
 
-? **‚·‚×‚Ä‚ÌƒƒbƒZ[ƒWŠÖ˜Aƒ‚ƒWƒ…[ƒ‹‚Ì”ñ„§‰»Š®—¹**:
-- `Modules/MessageHandler.ps1` - •Ï”ƒnƒ“ƒhƒ‰[ŠÖ”‚ğMessageService‚ÖˆÏ÷
-- `Modules/ScenarioEngine.ps1` - ƒVƒiƒŠƒIÀs‚ğMessageService‚ÖˆÏ÷
-- `Modules/QuickSender.ps1` - ”ñ„§ƒ}[ƒN’Ç‰Á
-- `Modules/PeriodicSender.ps1` - ”ñ„§ƒ}[ƒN’Ç‰Á
+? **ƒtƒHƒ‹ƒ_\¬‚Ì®—**:
+- `Modules/` ƒtƒHƒ‹ƒ_‚ğíœ‚µA‚·‚×‚Ä‚Ìƒ‚ƒWƒ…[ƒ‹‚ğ“KØ‚È‘w‚ÉˆÚ“®
+- `ConnectionManager.ps1` ¨ `Core/Domain/`
+- `ReceivedRuleEngine.ps1` ¨ `Core/Domain/`
+- `OnReceivedLibrary.ps1` ¨ `Core/Domain/`
+- `InstanceManager.ps1` ¨ `Core/Application/`
+- `NetworkAnalyzer.ps1` ¨ `Core/Application/`
+- `MainForm.ps1` ¨ `Presentation/UI/`
+- ‹óƒtƒHƒ‹ƒ_‚ÌíœiFormsAScriptsAServicesACore/Infrastructure/CommonAPresentation/ServicesAPresentation/ViewModelsj
 
-? **ƒtƒF[ƒY3Š®—¹**: ƒƒbƒZ[ƒWˆ—‚Ì“‡‚ªŠ®—¹
-- d•¡ƒR[ƒhíœ’B¬
-- ƒLƒƒƒbƒVƒ…ŠÇ—‚Ì“ˆê‰»’B¬
-- VAPI‚Ö‚ÌˆÚsƒpƒXŠm—§
+? **V‚µ‚¢ƒtƒHƒ‹ƒ_\¬**:
+```
+TcpDebugger/
+„¥„Ÿ„Ÿ Core/
+„    „¥„Ÿ„Ÿ Common/           # ‹¤’Êƒ†[ƒeƒBƒŠƒeƒB
+„    „¥„Ÿ„Ÿ Domain/           # ƒhƒƒCƒ“ƒƒWƒbƒNiƒrƒWƒlƒXƒ‹[ƒ‹j
+„    „¥„Ÿ„Ÿ Application/      # ƒAƒvƒŠƒP[ƒVƒ‡ƒ“ƒT[ƒrƒX
+„    „¤„Ÿ„Ÿ Infrastructure/   # ƒCƒ“ƒtƒ‰ƒXƒgƒ‰ƒNƒ`ƒƒiAdapters, Repositoriesj
+„¥„Ÿ„Ÿ Presentation/
+„    „¤„Ÿ„Ÿ UI/              # UIƒRƒ“ƒ|[ƒlƒ“ƒg
+„¥„Ÿ„Ÿ Config/              # İ’èƒtƒ@ƒCƒ‹
+„¥„Ÿ„Ÿ Docs/                # ƒhƒLƒ…ƒƒ“ƒg
+„¥„Ÿ„Ÿ Instances/           # ƒCƒ“ƒXƒ^ƒ“ƒX’è‹`
+„¥„Ÿ„Ÿ Logs/                # ƒƒOƒtƒ@ƒCƒ‹
+„¤„Ÿ„Ÿ Tests/               # ƒeƒXƒgƒR[ƒh
+```
 
 ---
 
