@@ -238,7 +238,6 @@ function Show-MainForm {
     $form = New-UiMainForm -Title "TCP Test Controller v1.0" -Size (New-Object System.Drawing.Size(1200, 700)) -Font (New-Object System.Drawing.Font("Segoe UI", 9))
     $script:CurrentMainForm = $form
 
-
     # DataGridView (connection list)
     $dgvInstances = New-InstanceGrid
 
