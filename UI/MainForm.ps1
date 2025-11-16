@@ -33,21 +33,23 @@ function Get-UiConnections {
     return $service.GetAllConnections()
 }
 
-function Show-MainForm {
-    <#
-    .SYNOPSIS
-    Show the main WinForms UI.
-    #>
+function New-UiMainForm {
+    param(
+        [string]$Title,
+        [System.Drawing.Size]$Size,
+        [System.Drawing.Font]$Font
+    )
 
-    # Create main form
     $form = New-Object System.Windows.Forms.Form
-    $form.Text = "TCP Test Controller v1.0"
-    $form.Size = New-Object System.Drawing.Size(1200, 700)
+    $form.Text = $Title
+    $form.Size = $Size
     $form.StartPosition = "CenterScreen"
-    $form.Font = New-Object System.Drawing.Font("Segoe UI", 9)
-    $script:CurrentMainForm = $form
+    $form.Font = $Font
 
-    # DataGridView (connection list)
+    return $form
+}
+
+function New-InstanceGrid {
     $dgvInstances = New-Object System.Windows.Forms.DataGridView
     $dgvInstances.Location = New-Object System.Drawing.Point(10, 50)
     $dgvInstances.Size = New-Object System.Drawing.Size(1165, 230)
@@ -62,34 +64,44 @@ function Show-MainForm {
     $dgvInstances.AutoGenerateColumns = $false
     $dgvInstances.EditMode = [System.Windows.Forms.DataGridViewEditMode]::EditOnEnter
 
-    # Columns
+    Add-InstanceGridColumns -DataGridView $dgvInstances
+
+    return $dgvInstances
+}
+
+function Add-InstanceGridColumns {
+    param(
+        [Parameter(Mandatory = $true)]
+        [System.Windows.Forms.DataGridView]$DataGridView
+    )
+
     $colName = New-Object System.Windows.Forms.DataGridViewTextBoxColumn
     $colName.HeaderText = "Name"
     $colName.Name = "Name"
     $colName.ReadOnly = $true
     $colName.FillWeight = 150
-    $dgvInstances.Columns.Add($colName) | Out-Null
+    $DataGridView.Columns.Add($colName) | Out-Null
 
     $colProtocol = New-Object System.Windows.Forms.DataGridViewTextBoxColumn
     $colProtocol.HeaderText = "Protocol"
     $colProtocol.Name = "Protocol"
     $colProtocol.ReadOnly = $true
     $colProtocol.FillWeight = 110
-    $dgvInstances.Columns.Add($colProtocol) | Out-Null
+    $DataGridView.Columns.Add($colProtocol) | Out-Null
 
     $colEndpoint = New-Object System.Windows.Forms.DataGridViewTextBoxColumn
     $colEndpoint.HeaderText = "Endpoint"
     $colEndpoint.Name = "Endpoint"
     $colEndpoint.ReadOnly = $true
     $colEndpoint.FillWeight = 160
-    $dgvInstances.Columns.Add($colEndpoint) | Out-Null
+    $DataGridView.Columns.Add($colEndpoint) | Out-Null
 
     $colStatus = New-Object System.Windows.Forms.DataGridViewTextBoxColumn
     $colStatus.HeaderText = "Status"
     $colStatus.Name = "Status"
     $colStatus.ReadOnly = $true
     $colStatus.FillWeight = 100
-    $dgvInstances.Columns.Add($colStatus) | Out-Null
+    $DataGridView.Columns.Add($colStatus) | Out-Null
 
     $colAutoResponse = New-Object System.Windows.Forms.DataGridViewComboBoxColumn
     $colAutoResponse.HeaderText = "Auto Response"
@@ -99,7 +111,7 @@ function Show-MainForm {
     $colAutoResponse.ValueType = [string]
     $colAutoResponse.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
     $colAutoResponse.FillWeight = 140
-    $dgvInstances.Columns.Add($colAutoResponse) | Out-Null
+    $DataGridView.Columns.Add($colAutoResponse) | Out-Null
 
     $colOnReceived = New-Object System.Windows.Forms.DataGridViewComboBoxColumn
     $colOnReceived.HeaderText = "On Received"
@@ -109,7 +121,7 @@ function Show-MainForm {
     $colOnReceived.ValueType = [string]
     $colOnReceived.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
     $colOnReceived.FillWeight = 140
-    $dgvInstances.Columns.Add($colOnReceived) | Out-Null
+    $DataGridView.Columns.Add($colOnReceived) | Out-Null
 
     $colPeriodicSend = New-Object System.Windows.Forms.DataGridViewComboBoxColumn
     $colPeriodicSend.HeaderText = "Periodic Send"
@@ -119,7 +131,7 @@ function Show-MainForm {
     $colPeriodicSend.ValueType = [string]
     $colPeriodicSend.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
     $colPeriodicSend.FillWeight = 140
-    $dgvInstances.Columns.Add($colPeriodicSend) | Out-Null
+    $DataGridView.Columns.Add($colPeriodicSend) | Out-Null
 
     $colQuickData = New-Object System.Windows.Forms.DataGridViewComboBoxColumn
     $colQuickData.HeaderText = "Quick Data"
@@ -129,7 +141,7 @@ function Show-MainForm {
     $colQuickData.ValueType = [string]
     $colQuickData.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
     $colQuickData.FillWeight = 170
-    $dgvInstances.Columns.Add($colQuickData) | Out-Null
+    $DataGridView.Columns.Add($colQuickData) | Out-Null
 
     $colQuickSend = New-Object System.Windows.Forms.DataGridViewButtonColumn
     $colQuickSend.HeaderText = "Send"
@@ -137,7 +149,7 @@ function Show-MainForm {
     $colQuickSend.Text = "Send"
     $colQuickSend.UseColumnTextForButtonValue = $true
     $colQuickSend.FillWeight = 70
-    $dgvInstances.Columns.Add($colQuickSend) | Out-Null
+    $DataGridView.Columns.Add($colQuickSend) | Out-Null
 
     $colQuickAction = New-Object System.Windows.Forms.DataGridViewComboBoxColumn
     $colQuickAction.HeaderText = "Quick Action"
@@ -147,7 +159,7 @@ function Show-MainForm {
     $colQuickAction.ValueType = [string]
     $colQuickAction.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
     $colQuickAction.FillWeight = 170
-    $dgvInstances.Columns.Add($colQuickAction) | Out-Null
+    $DataGridView.Columns.Add($colQuickAction) | Out-Null
 
     $colActionSend = New-Object System.Windows.Forms.DataGridViewButtonColumn
     $colActionSend.HeaderText = "Run"
@@ -155,50 +167,94 @@ function Show-MainForm {
     $colActionSend.Text = "Run"
     $colActionSend.UseColumnTextForButtonValue = $true
     $colActionSend.FillWeight = 70
-    $dgvInstances.Columns.Add($colActionSend) | Out-Null
+    $DataGridView.Columns.Add($colActionSend) | Out-Null
 
     $colId = New-Object System.Windows.Forms.DataGridViewTextBoxColumn
     $colId.HeaderText = "Id"
     $colId.Name = "Id"
     $colId.ReadOnly = $true
     $colId.Visible = $false
-    $dgvInstances.Columns.Add($colId) | Out-Null
+    $DataGridView.Columns.Add($colId) | Out-Null
+}
+
+function New-ToolbarButton {
+    param(
+        [string]$Text,
+        [int]$X,
+        [int]$Y
+    )
+
+    $button = New-Object System.Windows.Forms.Button
+    $button.Location = New-Object System.Drawing.Point($X, $Y)
+    $button.Size = New-Object System.Drawing.Size(100, 30)
+    $button.Text = $Text
+
+    return $button
+}
+
+function New-UiLabel {
+    param(
+        [string]$Text,
+        [System.Drawing.Point]$Location,
+        [System.Drawing.Size]$Size
+    )
+
+    $label = New-Object System.Windows.Forms.Label
+    $label.Location = $Location
+    $label.Size = $Size
+    $label.Text = $Text
+
+    return $label
+}
+
+function New-LogTextBox {
+    param(
+        [System.Drawing.Point]$Location,
+        [System.Drawing.Size]$Size
+    )
+
+    $textBox = New-Object System.Windows.Forms.TextBox
+    $textBox.Location = $Location
+    $textBox.Size = $Size
+    $textBox.Multiline = $true
+    $textBox.ScrollBars = "Vertical"
+    $textBox.ReadOnly = $true
+    $textBox.Font = New-Object System.Drawing.Font("Consolas", 9)
+
+    return $textBox
+}
+
+function Show-MainForm {
+    <#
+    .SYNOPSIS
+    Show the main WinForms UI.
+    #>
+
+    # Create main form
+    $form = New-UiMainForm -Title "TCP Test Controller v1.0" -Size (New-Object System.Drawing.Size(1200, 700)) -Font (New-Object System.Drawing.Font("Segoe UI", 9))
+    $script:CurrentMainForm = $form
+
+
+    # DataGridView (connection list)
+    $dgvInstances = New-InstanceGrid
 
     $form.Controls.Add($dgvInstances)
 
     # Toolbar buttons
-    $btnRefresh = New-Object System.Windows.Forms.Button
-    $btnRefresh.Location = New-Object System.Drawing.Point(10, 10)
-    $btnRefresh.Size = New-Object System.Drawing.Size(100, 30)
-    $btnRefresh.Text = "Refresh"
+    $btnRefresh = New-ToolbarButton -Text "Refresh" -X 10 -Y 10
     $form.Controls.Add($btnRefresh)
 
-    $btnConnect = New-Object System.Windows.Forms.Button
-    $btnConnect.Location = New-Object System.Drawing.Point(120, 10)
-    $btnConnect.Size = New-Object System.Drawing.Size(100, 30)
-    $btnConnect.Text = "Connect"
+    $btnConnect = New-ToolbarButton -Text "Connect" -X 120 -Y 10
     $form.Controls.Add($btnConnect)
 
-    $btnDisconnect = New-Object System.Windows.Forms.Button
-    $btnDisconnect.Location = New-Object System.Drawing.Point(230, 10)
-    $btnDisconnect.Size = New-Object System.Drawing.Size(100, 30)
-    $btnDisconnect.Text = "Disconnect"
+    $btnDisconnect = New-ToolbarButton -Text "Disconnect" -X 230 -Y 10
     $form.Controls.Add($btnDisconnect)
 
     # Log area
-    $lblLog = New-Object System.Windows.Forms.Label
-    $lblLog.Location = New-Object System.Drawing.Point(10, 290)
-    $lblLog.Size = New-Object System.Drawing.Size(200, 20)
-    $lblLog.Text = "Connection Log:"
+    $lblLog = New-UiLabel -Text "Connection Log:" -Location (New-Object System.Drawing.Point(10, 290)) -Size (New-Object System.Drawing.Size(200, 20))
     $form.Controls.Add($lblLog)
 
-    $txtLog = New-Object System.Windows.Forms.TextBox
-    $txtLog.Location = New-Object System.Drawing.Point(10, 315)
-    $txtLog.Size = New-Object System.Drawing.Size(1165, 335)
-    $txtLog.Multiline = $true
-    $txtLog.ScrollBars = "Vertical"
-    $txtLog.ReadOnly = $true
-    $txtLog.Font = New-Object System.Drawing.Font("Consolas", 9)
+    $txtLog = New-LogTextBox -Location (New-Object System.Drawing.Point(10, 315)) -Size (New-Object System.Drawing.Size(1165, 335))
     $form.Controls.Add($txtLog)
 
     # State holders
