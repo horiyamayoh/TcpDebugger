@@ -1,41 +1,41 @@
-# TcpDebugger ƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒOì‹Æƒ^ƒXƒNˆê——
+# TcpDebugger t@N^OÆƒ^XNê——
 
-**ÅIXV:** 2025-01-16
+**ÅIXV:** 2025-01-16
 
-‚±‚ÌƒhƒLƒ…ƒƒ“ƒg‚ÍAARCHITECTURE_REFACTORING.md‚Å’ñˆÄ‚³‚ê‚½ƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒOŒv‰æ‚Ì‹ï‘Ì“I‚Èì‹Æƒ^ƒXƒN‚ğAi’»ŠÇ—‰Â”\‚ÈŒ`®‚Å®—‚µ‚½‚à‚Ì‚Å‚·B
-
----
-
-## ƒ^ƒXƒNŠÇ—‚Ì–}—á
-
-- ? **Š®—¹** - À‘•EƒeƒXƒgŠ®—¹
-- ? **is’†** - ì‹Æ’†
-- ?? **•Û—¯’†** - ‘¼ƒ^ƒXƒN‚ÌŠ®—¹‘Ò‚¿
-- ? **–¢’…è** - ‚Ü‚¾ŠJn‚µ‚Ä‚¢‚È‚¢
-- ?? **ƒuƒƒbƒN** - –â‘è‚É‚æ‚èis•s‰Â
+ÌƒhLgÍAARCHITECTURE_REFACTORING.mdÅ’Ä‚ê‚½t@N^OvÌ‹Ì“IÈÆƒ^XNAiÇ—Â”\ÈŒ`ÅÌ‚Å‚B
 
 ---
 
-## ? Phase 1: ‹Ù‹}‘Î‰iCritical Pathj
+## ^XNÇ—Ì–}
 
-### ? Epic 1.1: ’ÊMƒ‚ƒWƒ…[ƒ‹‚ÌƒA[ƒLƒeƒNƒ`ƒƒˆÚs
+- ? **** - EeXg
+- ? **is** - Æ’
+- ?? **Û—** - ^XNÌŠÒ‚
+- ? **** - Ü‚JnÄ‚È‚
+- ?? **ubN** - É‚iss
 
-**–Ú“I:** $Global:Connections‚Ö‚Ì’¼ÚƒAƒNƒZƒX‚ğ”rœ‚µAVƒA[ƒLƒeƒNƒ`ƒƒ‚ÉŠ®‘SˆÚs
+---
 
-#### Task 1.1.1: TcpClient ‚ÌƒAƒ_ƒvƒ^[‰» ?
+## ? Phase 1: Ù‹}Î‰iCritical Pathj
 
-**—Dæ“x:** P0 (Å—Dæ)  
-**H”Œ©Ï:** 8-12ŠÔ  
-**’S“–Ò:** _–¢Š„‚è“–‚Ä_
+### ? Epic 1.1: ÊMW[ÌƒA[LeN`Ús
 
-**À‘•“à—e:**
-1. [ ] `Core/Infrastructure/Adapters/TcpClientAdapter.ps1` ‚ğV‹Kì¬
-2. [ ] `Modules/TcpClient.ps1` ‚ÌƒƒWƒbƒN‚ğƒNƒ‰ƒX‰»‚µ‚ÄˆÚA
-3. [ ] ƒRƒ“ƒXƒgƒ‰ƒNƒ^‚Å ConnectionService ‚Æ ReceivedEventPipeline ‚ğ’“ü
-4. [ ] ServiceContainer ‚Ö‚Ì“o˜^‚ğ’Ç‰Á
-5. [ ] Šù‘¶‚Ì Start-TcpClient ŠÖ”‚ğVƒAƒ_ƒvƒ^[‚Ìƒ‰ƒbƒp[‚É•ÏX
+**Ú“I:** $Global:ConnectionsÖ‚Ì’ÚƒANZXrAVA[LeN`ÉŠSÚs
 
-**À‘•—á:**
+#### Task 1.1.1: TcpClient ÌƒA_v^[ ?
+
+**Dx:** P0 (Å—D)  
+**H:** 8-12  
+**S:** _è“–_
+
+**e:**
+1. [ ] `Core/Infrastructure/Adapters/TcpClientAdapter.ps1` VKì¬
+2. [ ] `Modules/TcpClient.ps1` ÌƒWbNNXÄˆÚA
+3. [ ] RXgN^ ConnectionService  ReceivedEventPipeline ğ’“
+4. [ ] ServiceContainer Ö‚Ì“o^Ç‰
+5. [ ]  Start-TcpClient ÖVA_v^[Ìƒbp[É•ÏX
+
+**:**
 ```powershell
 # Core/Infrastructure/Adapters/TcpClientAdapter.ps1
 class TcpClientAdapter {
@@ -55,79 +55,79 @@ class TcpClientAdapter {
     
     [void] Start([string]$connectionId) {
         $conn = $this._connectionService.GetConnection($connectionId)
-        # ... Ú‘±ˆ— ...
+        # ... Ú‘ ...
         
-        # óM
+        # M
         $this._pipeline.ProcessEvent($connectionId, $receivedData, $metadata)
     }
 }
 ```
 
-**Š®—¹Šî€:**
-- [ ] TcpClientAdapter ƒNƒ‰ƒX‚ª³í‚É“®ì
-- [ ] $Global:Connections ‚Ö‚ÌQÆ‚ªƒ[ƒ
-- [ ] Šù‘¶‚ÌƒVƒiƒŠƒIƒeƒXƒg‚ª‘S‚Ä’Ê‰ß
+**î€:**
+- [ ] TcpClientAdapter NXÉ“
+- [ ] $Global:Connections Ö‚ÌQÆ‚[
+- [ ] ÌƒViIeXgSÄ’Ê‰
 
-**ˆË‘¶ŠÖŒW:** ‚È‚µ
-
----
-
-#### Task 1.1.2: TcpServer ‚ÌƒAƒ_ƒvƒ^[‰» ?
-
-**—Dæ“x:** P0 (Å—Dæ)  
-**H”Œ©Ï:** 8-12ŠÔ  
-**’S“–Ò:** _–¢Š„‚è“–‚Ä_
-
-**À‘•“à—e:**
-1. [ ] `Core/Infrastructure/Adapters/TcpServerAdapter.ps1` ‚ğV‹Kì¬
-2. [ ] `Modules/TcpServer.ps1` ‚ÌƒƒWƒbƒN‚ğƒNƒ‰ƒX‰»‚µ‚ÄˆÚA
-3. [ ] Task 1.1.1 ‚Æ“¯—l‚Ìƒpƒ^[ƒ“‚ÅÀ‘•
-4. [ ] ServiceContainer ‚Ö‚Ì“o˜^‚ğ’Ç‰Á
-5. [ ] Šù‘¶‚Ì Start-TcpServer ŠÖ”‚ğVƒAƒ_ƒvƒ^[‚Ìƒ‰ƒbƒp[‚É•ÏX
-
-**Š®—¹Šî€:**
-- [ ] TcpServerAdapter ƒNƒ‰ƒX‚ª³í‚É“®ì
-- [ ] $Global:Connections ‚Ö‚ÌQÆ‚ªƒ[ƒ
-- [ ] Šù‘¶‚ÌƒVƒiƒŠƒIƒeƒXƒg‚ª‘S‚Ä’Ê‰ß
-
-**ˆË‘¶ŠÖŒW:** Task 1.1.1 (ƒpƒ^[ƒ“Šm—§Œã‚É’…è„§)
+**Ë‘ÖŒW:** È‚
 
 ---
 
-#### Task 1.1.3: UDP ‚ÌƒAƒ_ƒvƒ^[‰» ?
+#### Task 1.1.2: TcpServer ÌƒA_v^[ ?
 
-**—Dæ“x:** P0 (Å—Dæ)  
-**H”Œ©Ï:** 8-12ŠÔ  
-**’S“–Ò:** _–¢Š„‚è“–‚Ä_
+**Dx:** P0 (Å—D)  
+**H:** 8-12  
+**S:** _è“–_
 
-**À‘•“à—e:**
-1. [ ] `Core/Infrastructure/Adapters/UdpAdapter.ps1` ‚ğV‹Kì¬
-2. [ ] `Modules/UdpCommunication.ps1` ‚ÌƒƒWƒbƒN‚ğƒNƒ‰ƒX‰»‚µ‚ÄˆÚA
-3. [ ] Task 1.1.1 ‚Æ“¯—l‚Ìƒpƒ^[ƒ“‚ÅÀ‘•
-4. [ ] ServiceContainer ‚Ö‚Ì“o˜^‚ğ’Ç‰Á
-5. [ ] Šù‘¶‚Ì Start-UdpCommunication ŠÖ”‚ğVƒAƒ_ƒvƒ^[‚Ìƒ‰ƒbƒp[‚É•ÏX
+**e:**
+1. [ ] `Core/Infrastructure/Adapters/TcpServerAdapter.ps1` VKì¬
+2. [ ] `Modules/TcpServer.ps1` ÌƒWbNNXÄˆÚA
+3. [ ] Task 1.1.1 Æ“lÌƒp^[Å
+4. [ ] ServiceContainer Ö‚Ì“o^Ç‰
+5. [ ]  Start-TcpServer ÖVA_v^[Ìƒbp[É•ÏX
 
-**Š®—¹Šî€:**
-- [ ] UdpAdapter ƒNƒ‰ƒX‚ª³í‚É“®ì
-- [ ] $Global:Connections ‚Ö‚ÌQÆ‚ªƒ[ƒ
-- [ ] Šù‘¶‚ÌƒVƒiƒŠƒIƒeƒXƒg‚ª‘S‚Ä’Ê‰ß
+**î€:**
+- [ ] TcpServerAdapter NXÉ“
+- [ ] $Global:Connections Ö‚ÌQÆ‚[
+- [ ] ÌƒViIeXgSÄ’Ê‰
 
-**ˆË‘¶ŠÖŒW:** Task 1.1.1 (ƒpƒ^[ƒ“Šm—§Œã‚É’…è„§)
+**Ë‘ÖŒW:** Task 1.1.1 (p^[mÉ’è„)
 
 ---
 
-#### Task 1.1.4: ServiceContainer ‚Ö‚Ì’ÊMƒAƒ_ƒvƒ^[“o˜^ ?
+#### Task 1.1.3: UDP ÌƒA_v^[ ?
 
-**—Dæ“x:** P0 (Å—Dæ)  
-**H”Œ©Ï:** 2-4ŠÔ  
-**’S“–Ò:** _–¢Š„‚è“–‚Ä_
+**Dx:** P0 (Å—D)  
+**H:** 8-12  
+**S:** _è“–_
 
-**À‘•“à—e:**
-1. [ ] TcpDebugger.ps1 ‚Ì ServiceContainer ‰Šú‰»•”•ª‚ğXV
-2. [ ] ŠeƒAƒ_ƒvƒ^[‚ğ Transient ‚Ü‚½‚Í Singleton ‚Å“o˜^
-3. [ ] ƒtƒ@ƒNƒgƒŠŠÖ”‚Å‚ÌˆË‘¶«’“ü‚ğÀ‘•
+**e:**
+1. [ ] `Core/Infrastructure/Adapters/UdpAdapter.ps1` VKì¬
+2. [ ] `Modules/UdpCommunication.ps1` ÌƒWbNNXÄˆÚA
+3. [ ] Task 1.1.1 Æ“lÌƒp^[Å
+4. [ ] ServiceContainer Ö‚Ì“o^Ç‰
+5. [ ]  Start-UdpCommunication ÖVA_v^[Ìƒbp[É•ÏX
 
-**À‘•—á:**
+**î€:**
+- [ ] UdpAdapter NXÉ“
+- [ ] $Global:Connections Ö‚ÌQÆ‚[
+- [ ] ÌƒViIeXgSÄ’Ê‰
+
+**Ë‘ÖŒW:** Task 1.1.1 (p^[mÉ’è„)
+
+---
+
+#### Task 1.1.4: ServiceContainer Ö‚Ì’ÊMA_v^[o^ ?
+
+**Dx:** P0 (Å—D)  
+**H:** 2-4  
+**S:** _è“–_
+
+**e:**
+1. [ ] TcpDebugger.ps1  ServiceContainer XV
+2. [ ] eA_v^[ Transient Ü‚ Singleton Å“o^
+3. [ ] t@NgÖÅ‚ÌˆË‘
+
+**:**
 ```powershell
 # TcpDebugger.ps1
 $container.RegisterTransient('TcpClientAdapter', {
@@ -139,71 +139,34 @@ $container.RegisterTransient('TcpClientAdapter', {
 })
 ```
 
-**Š®—¹Šî€:**
-- [ ] ‚·‚×‚Ä‚Ì’ÊMƒAƒ_ƒvƒ^[‚ª ServiceContainer ‚©‚çæ“¾‰Â”\
-- [ ] ˆË‘¶«‚ª³‚µ‚­’“ü‚³‚ê‚Ä‚¢‚é
+**î€:**
+- [ ] ×‚Ä‚Ì’ÊMA_v^[ ServiceContainer æ“¾Â”\
+- [ ] Ë‘Ä‚
 
-**ˆË‘¶ŠÖŒW:** Task 1.1.1, 1.1.2, 1.1.3
-
----
-
-### ? Epic 1.2: ‹Œƒ‚ƒWƒ…[ƒ‹‚Ì”ñ„§‰»‚Æƒ‰ƒbƒp[‰»
-
-**–Ú“I:** V‹Œ‚Ì“ñdƒA[ƒLƒeƒNƒ`ƒƒ‚ğ‰ğÁ‚µA’iŠK“I‚ÈˆÚs‚ğ‘£i
-
-#### Task 1.2.1: ReceivedEventHandler ‚Ìƒ‰ƒbƒp[‰» ?
-
-**—Dæ“x:** P1 (‚)  
-**H”Œ©Ï:** 4-6ŠÔ  
-**’S“–Ò:** _–¢Š„‚è“–‚Ä_
-
-**À‘•“à—e:**
-1. [ ] `Modules/ReceivedEventHandler.ps1` ‚Ì `Invoke-ReceivedEvent` ‚ğ ReceivedEventPipeline ‚Ìƒ‰ƒbƒp[‚É•ÏX
-2. [ ] ”ñ„§ŒxƒƒbƒZ[ƒW‚ğ’Ç‰Á
-3. [ ] ƒhƒLƒ…ƒƒ“ƒgƒRƒƒ“ƒg‚ÉˆÚsƒKƒCƒh‚ğ‹LÚ
-
-**À‘•—á:**
-```powershell
-function Invoke-ReceivedEvent {
-    [Obsolete("This function is deprecated. Use ReceivedEventPipeline directly via ServiceContainer.")]
-    param(
-        [Parameter(Mandatory=$true)]
-        [string]$ConnectionId,
-        [Parameter(Mandatory=$true)]
-        [byte[]]$ReceivedData
-    )
-    
-    Write-Warning "[DEPRECATED] Invoke-ReceivedEvent is deprecated. Migrate to ReceivedEventPipeline."
-    
-    if ($Global:ReceivedEventPipeline) {
-        $Global:ReceivedEventPipeline.ProcessEvent($ConnectionId, $ReceivedData, @{})
-    } else {
-        throw "ReceivedEventPipeline not initialized. Please update TcpDebugger.ps1."
-    }
-}
-```
-
-**Š®—¹Šî€:**
-- [ ] ŠÖ”‚ª ReceivedEventPipeline ‚Ö‚Ì”–‚¢ƒ‰ƒbƒp[‚É‚È‚Á‚Ä‚¢‚é
-- [ ] ”ñ„§Œx‚ª•\¦‚³‚ê‚é
-- [ ] Šù‘¶‚ÌŒÄ‚Ño‚µŒ³‚ª“®ì‚·‚é
-
-**ˆË‘¶ŠÖŒW:** ‚È‚µ
+**Ë‘ÖŒW:** Task 1.1.1, 1.1.2, 1.1.3
 
 ---
 
-#### Task 1.2.2: AutoResponse ‚Ìƒ‰ƒbƒp[‰» ?
+### ? Epic 1.2: W[Ì”ñ„Æƒbp[
 
-**—Dæ“x:** P1 (‚)  
-**H”Œ©Ï:** 4-6ŠÔ  
-**’S“–Ò:** _–¢Š„‚è“–‚Ä_
+**Ú“I:** VÌ“dA[LeN`AiKIÈˆÚsğ‘£i
 
-**À‘•“à—e:**
-1. [ ] `Modules/AutoResponse.ps1` ‚ÌŠeŠÖ”‚ğ RuleProcessor ‚Ìƒ‰ƒbƒp[‚É•ÏX
-2. [ ] ”ñ„§ŒxƒƒbƒZ[ƒW‚ğ’Ç‰Á
-3. [ ] Read-AutoResponseRules ‚ğ RuleRepository ‚Ìƒ‰ƒbƒp[‚É•ÏX
+**Status:** ReceivedEventPipeline É‚lÄ‚æ—§ãƒãƒ³ãƒ‰ãƒ©ãƒ¼ã‚’å‰Šé™¤æ¸ˆã¿ã€‚
 
-**À‘•—á:**
+---
+
+#### Task 1.2.2: AutoResponse Ìƒbp[ ?
+
+**Dx:** P1 ()  
+**H:** 4-6  
+**S:** _è“–_
+
+**e:**
+1. [ ] `Modules/AutoResponse.ps1` ÌŠeÖ RuleProcessor Ìƒbp[É•ÏX
+2. [ ] ñ„xbZ[WÇ‰
+3. [ ] Read-AutoResponseRules  RuleRepository Ìƒbp[É•ÏX
+
+**:**
 ```powershell
 function Invoke-ConnectionAutoResponse {
     [Obsolete("Use RuleProcessor via ReceivedEventPipeline instead.")]
@@ -216,60 +179,60 @@ function Invoke-ConnectionAutoResponse {
     
     Write-Warning "[DEPRECATED] Invoke-ConnectionAutoResponse is deprecated. Use RuleProcessor."
     
-    # RuleRepository Œo—R‚Åƒ‹[ƒ‹æ“¾
+    # RuleRepository oRÅƒ[æ“¾
     $repository = Get-RuleRepository
     $conn = Get-ManagedConnection -ConnectionId $ConnectionId
-    # ... ˆÈ‰ºARuleProcessor ŒÄ‚Ño‚µ‚ÉƒŠƒ_ƒCƒŒƒNƒg
+    # ... È‰ARuleProcessor Ä‚ÑoÉƒ_CNg
 }
 ```
 
-**Š®—¹Šî€:**
-- [ ] ŠÖ”‚ª RuleProcessor ‚Ö‚Ì”–‚¢ƒ‰ƒbƒp[‚É‚È‚Á‚Ä‚¢‚é
-- [ ] ”ñ„§Œx‚ª•\¦‚³‚ê‚é
-- [ ] Šù‘¶‚ÌŒÄ‚Ño‚µŒ³‚ª“®ì‚·‚é
+**î€:**
+- [ ] Ö RuleProcessor Ö‚Ì”bp[É‚È‚Ä‚
+- [ ] ñ„x\
+- [ ] ÌŒÄ‚Ñoì‚·
 
-**ˆË‘¶ŠÖŒW:** ‚È‚µ
-
----
-
-#### Task 1.2.3: OnReceivedHandler ‚Ìƒ‰ƒbƒp[‰» ?
-
-**—Dæ“x:** P1 (‚)  
-**H”Œ©Ï:** 4-6ŠÔ  
-**’S“–Ò:** _–¢Š„‚è“–‚Ä_
-
-**À‘•“à—e:**
-1. [ ] `Modules/OnReceivedHandler.ps1` ‚ÌŠeŠÖ”‚ğ RuleProcessor ‚Ìƒ‰ƒbƒp[‚É•ÏX
-2. [ ] ”ñ„§ŒxƒƒbƒZ[ƒW‚ğ’Ç‰Á
-3. [ ] Read-OnReceivedRules ‚ğ RuleRepository ‚Ìƒ‰ƒbƒp[‚É•ÏX
-
-**Š®—¹Šî€:**
-- [ ] ŠÖ”‚ª RuleProcessor ‚Ö‚Ì”–‚¢ƒ‰ƒbƒp[‚É‚È‚Á‚Ä‚¢‚é
-- [ ] ”ñ„§Œx‚ª•\¦‚³‚ê‚é
-- [ ] Šù‘¶‚ÌŒÄ‚Ño‚µŒ³‚ª“®ì‚·‚é
-
-**ˆË‘¶ŠÖŒW:** ‚È‚µ
+**Ë‘ÖŒW:** È‚
 
 ---
 
-### ? Epic 1.3: MessageProcessor ‚ÌÀ‘•
+#### Task 1.2.3: OnReceivedHandler Ìƒbp[ ?
 
-**–Ú“I:** ƒeƒ“ƒvƒŒ[ƒgˆ—‚Ì“‡‚Æd•¡ƒR[ƒh‚ÌíŒ¸
+**Dx:** P1 ()  
+**H:** 4-6  
+**S:** _è“–_
 
-#### Task 1.3.1: MessageProcessor ƒNƒ‰ƒX‚ÌÀ‘• ?
+**e:**
+1. [ ] `Modules/OnReceivedHandler.ps1` ÌŠeÖ RuleProcessor Ìƒbp[É•ÏX
+2. [ ] ñ„xbZ[WÇ‰
+3. [ ] Read-OnReceivedRules  RuleRepository Ìƒbp[É•ÏX
 
-**—Dæ“x:** P0 (Å—Dæ)  
-**H”Œ©Ï:** 12-16ŠÔ  
-**’S“–Ò:** _–¢Š„‚è“–‚Ä_
+**î€:**
+- [ ] Ö RuleProcessor Ö‚Ì”bp[É‚È‚Ä‚
+- [ ] ñ„x\
+- [ ] ÌŒÄ‚Ñoì‚·
 
-**À‘•“à—e:**
-1. [ ] `Core/Domain/MessageProcessor.ps1` ‚ğì¬
-2. [ ] ARCHITECTURE_REFACTORING.md •t˜^A.3 ‚Ìd—l‚É]‚Á‚ÄÀ‘•
-3. [ ] •Ï”“WŠJƒƒWƒbƒN‚ÌÀ‘•
-4. [ ] ƒGƒ“ƒR[ƒfƒBƒ“ƒO•ÏŠ·‚ÌÀ‘•
-5. [ ] ƒ†ƒjƒbƒgƒeƒXƒg‚Ìì¬
+**Ë‘ÖŒW:** È‚
 
-**À‘•‚·‚×‚«ƒƒ\ƒbƒh:**
+---
+
+### ? Epic 1.3: MessageProcessor Ì
+
+**Ú“I:** ev[gÌ“ÆdR[hÌíŒ¸
+
+#### Task 1.3.1: MessageProcessor NXÌ ?
+
+**Dx:** P0 (Å—D)  
+**H:** 12-16  
+**S:** _è“–_
+
+**e:**
+1. [ ] `Core/Domain/MessageProcessor.ps1` ì¬
+2. [ ] ARCHITECTURE_REFACTORING.md t^A.3 ÌdlÉ]Ä
+3. [ ] ÏWJWbNÌ
+4. [ ] GR[fBOÏŠÌ
+5. [ ] jbgeXgÌì¬
+
+**×‚\bh:**
 ```powershell
 class MessageProcessor {
     [byte[]] ProcessTemplate([string]$templatePath, [hashtable]$variables)
@@ -279,28 +242,28 @@ class MessageProcessor {
 }
 ```
 
-**Š®—¹Šî€:**
-- [ ] MessageProcessor ƒNƒ‰ƒX‚ªİŒv‘’Ê‚è‚É“®ì
-- [ ] ƒ†ƒjƒbƒgƒeƒXƒg‚ª‚·‚×‚Ä’Ê‰ß
-- [ ] Šù‘¶‚Ìƒeƒ“ƒvƒŒ[ƒgˆ—‚Æ“¯“™‚Ì‹@”\‚ğ’ñ‹Ÿ
+**î€:**
+- [ ] MessageProcessor NXİŒvÊ‚É“
+- [ ] jbgeXg×‚Ä’Ê‰
+- [ ] Ìƒev[gÆ“Ì‹@\
 
-**ˆË‘¶ŠÖŒW:** Task 1.3.2 (•Àsì‹Æ‰Â”\)
+**Ë‘ÖŒW:** Task 1.3.2 (sÆ‰Â”\)
 
 ---
 
-#### Task 1.3.2: TemplateRepository ‚ÌÀ‘• ?
+#### Task 1.3.2: TemplateRepository Ì ?
 
-**—Dæ“x:** P0 (Å—Dæ)  
-**H”Œ©Ï:** 8-12ŠÔ  
-**’S“–Ò:** _–¢Š„‚è“–‚Ä_
+**Dx:** P0 (Å—D)  
+**H:** 8-12  
+**S:** _è“–_
 
-**À‘•“à—e:**
-1. [ ] `Core/Infrastructure/Repositories/TemplateRepository.ps1` ‚ğì¬
-2. [ ] RuleRepository ‚Æ“¯—l‚ÌƒLƒƒƒbƒVƒ…‹@\‚ğÀ‘•
-3. [ ] CSVŒ`®‚Ìƒeƒ“ƒvƒŒ[ƒg“Ç‚İ‚İ
-4. [ ] ƒtƒ@ƒCƒ‹•ÏXŒŸ’m‚ÆƒLƒƒƒbƒVƒ…–³Œø‰»
+**e:**
+1. [ ] `Core/Infrastructure/Repositories/TemplateRepository.ps1` ì¬
+2. [ ] RuleRepository Æ“lÌƒLbV@\
+3. [ ] CSV`Ìƒev[gÇ‚İ
+4. [ ] t@CÏXmÆƒLbV
 
-**À‘•‚·‚×‚«ƒƒ\ƒbƒh:**
+**×‚\bh:**
 ```powershell
 class TemplateRepository {
     [TemplateDefinition] GetTemplate([string]$filePath)
@@ -316,27 +279,27 @@ class TemplateDefinition {
 }
 ```
 
-**Š®—¹Šî€:**
-- [ ] TemplateRepository ‚ª RuleRepository ‚Æ“¯—l‚É“®ì
-- [ ] ƒLƒƒƒbƒVƒ…‹@”\‚ª³‚µ‚­“®ì
-- [ ] ƒ†ƒjƒbƒgƒeƒXƒg‚ª‚·‚×‚Ä’Ê‰ß
+**î€:**
+- [ ] TemplateRepository  RuleRepository Æ“lÉ“
+- [ ] LbV@\
+- [ ] jbgeXg×‚Ä’Ê‰
 
-**ˆË‘¶ŠÖŒW:** ‚È‚µ
+**Ë‘ÖŒW:** È‚
 
 ---
 
-#### Task 1.3.3: MessageProcessor ‚Ì ServiceContainer “o˜^ ?
+#### Task 1.3.3: MessageProcessor  ServiceContainer o^ ?
 
-**—Dæ“x:** P1 (‚)  
-**H”Œ©Ï:** 2-4ŠÔ  
-**’S“–Ò:** _–¢Š„‚è“–‚Ä_
+**Dx:** P1 ()  
+**H:** 2-4  
+**S:** _è“–_
 
-**À‘•“à—e:**
-1. [ ] TcpDebugger.ps1 ‚Ì ServiceContainer ‰Šú‰»•”•ª‚ğXV
-2. [ ] MessageProcessor ‚ğ Singleton ‚Å“o˜^
-3. [ ] TemplateRepository ‚ğ Singleton ‚Å“o˜^
+**e:**
+1. [ ] TcpDebugger.ps1  ServiceContainer XV
+2. [ ] MessageProcessor  Singleton Å“o^
+3. [ ] TemplateRepository  Singleton Å“o^
 
-**À‘•—á:**
+**:**
 ```powershell
 $container.RegisterSingleton('TemplateRepository', {
     param($c)
@@ -352,57 +315,57 @@ $container.RegisterSingleton('MessageProcessor', {
 })
 ```
 
-**Š®—¹Šî€:**
-- [ ] MessageProcessor ‚ª ServiceContainer ‚©‚çæ“¾‰Â”\
-- [ ] ˆË‘¶«‚ª³‚µ‚­’“ü‚³‚ê‚Ä‚¢‚é
+**î€:**
+- [ ] MessageProcessor  ServiceContainer æ“¾Â”\
+- [ ] Ë‘Ä‚
 
-**ˆË‘¶ŠÖŒW:** Task 1.3.1, 1.3.2
-
----
-
-#### Task 1.3.4: Šù‘¶‚Ìƒeƒ“ƒvƒŒ[ƒgˆ—‚ğ MessageProcessor ‚ÉˆÚs ?
-
-**—Dæ“x:** P1 (‚)  
-**H”Œ©Ï:** 8-12ŠÔ  
-**’S“–Ò:** _–¢Š„‚è“–‚Ä_
-
-**À‘•“à—e:**
-1. [ ] `Modules/MessageHandler.ps1` ‚Ìƒeƒ“ƒvƒŒ[ƒgˆ—‚ğ MessageProcessor ŒÄ‚Ño‚µ‚É•ÏX
-2. [ ] `Modules/QuickSender.ps1` ‚Ìƒeƒ“ƒvƒŒ[ƒgˆ—‚ğ MessageProcessor ŒÄ‚Ño‚µ‚É•ÏX
-3. [ ] `Modules/ScenarioEngine.ps1` ‚Ìƒeƒ“ƒvƒŒ[ƒgˆ—‚ğ MessageProcessor ŒÄ‚Ño‚µ‚É•ÏX
-4. [ ] Šeƒ‚ƒWƒ…[ƒ‹‚Åd•¡‚µ‚Ä‚¢‚½ƒƒWƒbƒN‚ğíœ
-
-**Š®—¹Šî€:**
-- [ ] ‚·‚×‚Ä‚Ìƒeƒ“ƒvƒŒ[ƒgˆ—‚ª MessageProcessor Œo—R‚É‚È‚Á‚Ä‚¢‚é
-- [ ] d•¡ƒR[ƒh‚ªíœ‚³‚ê‚Ä‚¢‚é
-- [ ] Šù‘¶‚ÌƒVƒiƒŠƒIƒeƒXƒg‚ª‘S‚Ä’Ê‰ß
-
-**ˆË‘¶ŠÖŒW:** Task 1.3.1, 1.3.2, 1.3.3
+**Ë‘ÖŒW:** Task 1.3.1, 1.3.2
 
 ---
 
-## ? Phase 2: d—v‰ü‘PiImportant but not Urgentj
+#### Task 1.3.4: Ìƒev[g MessageProcessor ÉˆÚs ?
 
-### ? Epic 2.1: ƒGƒ‰[ƒnƒ“ƒhƒŠƒ“ƒO‚Ì“ˆê
+**Dx:** P1 ()  
+**H:** 8-12  
+**S:** _è“–_
 
-#### Task 2.1.1: ErrorHandler ƒNƒ‰ƒX‚ÌÀ‘• ?
+**e:**
+1. [ ] `Modules/MessageHandler.ps1` Ìƒev[g MessageProcessor Ä‚ÑoÉ•ÏX
+2. [ ] `Modules/QuickSender.ps1` Ìƒev[g MessageProcessor Ä‚ÑoÉ•ÏX
+3. [ ] `Modules/ScenarioEngine.ps1` Ìƒev[g MessageProcessor Ä‚ÑoÉ•ÏX
+4. [ ] eW[ÅdÄ‚WbNíœ
 
-**—Dæ“x:** P2 (’†)  
-**H”Œ©Ï:** 8-12ŠÔ  
-**’S“–Ò:** _–¢Š„‚è“–‚Ä_
+**î€:**
+- [ ] ×‚Ä‚Ìƒev[g MessageProcessor oRÉ‚È‚Ä‚
+- [ ] dR[híœÄ‚
+- [ ] ÌƒViIeXgSÄ’Ê‰
 
-**À‘•“à—e:**
-1. [ ] `Core/Common/ErrorHandler.ps1` ‚ğì¬
-2. [ ] ƒJƒXƒ^ƒ€—áŠOƒNƒ‰ƒX‚Ì’è‹`
+**Ë‘ÖŒW:** Task 1.3.1, 1.3.2, 1.3.3
+
+---
+
+## ? Phase 2: dvPiImportant but not Urgentj
+
+### ? Epic 2.1: G[nhOÌ“
+
+#### Task 2.1.1: ErrorHandler NXÌ ?
+
+**Dx:** P2 ()  
+**H:** 8-12  
+**S:** _è“–_
+
+**e:**
+1. [ ] `Core/Common/ErrorHandler.ps1` ì¬
+2. [ ] JX^ONXÌ’`
    - CommunicationException
    - InvalidOperationException
    - ConfigurationException
-3. [ ] 3‘wƒGƒ‰[ƒnƒ“ƒhƒŠƒ“ƒOí—ª‚ÌÀ‘•
-4. [ ] ƒGƒ‰[ƒƒO‚Ì\‘¢‰»
+3. [ ] 3wG[nhOí—ªÌ
+4. [ ] G[OÌ\
 
-**À‘•—á:**
+**:**
 ```powershell
-# ƒJƒXƒ^ƒ€—áŠO
+# JX^O
 class CommunicationException : System.Exception {
     CommunicationException([string]$message) : base($message) {}
     CommunicationException([string]$message, [Exception]$inner) : base($message, $inner) {}
@@ -418,51 +381,51 @@ class ErrorHandler {
 }
 ```
 
-**Š®—¹Šî€:**
-- [ ] ErrorHandler ƒNƒ‰ƒX‚ª³í‚É“®ì
-- [ ] ƒJƒXƒ^ƒ€—áŠO‚ª’è‹`‚³‚ê‚Ä‚¢‚é
-- [ ] ƒ†ƒjƒbƒgƒeƒXƒg‚ª‚·‚×‚Ä’Ê‰ß
+**î€:**
+- [ ] ErrorHandler NXÉ“
+- [ ] JX^O`Ä‚
+- [ ] jbgeXg×‚Ä’Ê‰
 
-**ˆË‘¶ŠÖŒW:** ‚È‚µ
-
----
-
-#### Task 2.1.2: Šù‘¶‚ÌƒGƒ‰[ˆ—‚ğ ErrorHandler ‚ÉˆÚs ?
-
-**—Dæ“x:** P2 (’†)  
-**H”Œ©Ï:** 12-16ŠÔ  
-**’S“–Ò:** _–¢Š„‚è“–‚Ä_
-
-**À‘•“à—e:**
-1. [ ] Še’ÊMƒAƒ_ƒvƒ^[‚ÌƒGƒ‰[ˆ—‚ğ ErrorHandler Œo—R‚É•ÏX
-2. [ ] Domain‘w‚ÌƒGƒ‰[ˆ—‚ğ ErrorHandler Œo—R‚É•ÏX
-3. [ ] Application‘w‚ÌƒGƒ‰[ˆ—‚ğ ErrorHandler Œo—R‚É•ÏX
-4. [ ] “ˆê“I‚ÈƒGƒ‰[ƒnƒ“ƒhƒŠƒ“ƒOƒpƒ^[ƒ“‚ğ“K—p
-
-**Š®—¹Šî€:**
-- [ ] ‚·‚×‚Ä‚ÌƒGƒ‰[ˆ—‚ª ErrorHandler Œo—R‚É‚È‚Á‚Ä‚¢‚é
-- [ ] ƒGƒ‰[ƒƒO‚ª\‘¢‰»‚³‚ê‚Ä‚¢‚é
-- [ ] try-catch ‚Ìƒpƒ^[ƒ“‚ª“ˆê‚³‚ê‚Ä‚¢‚é
-
-**ˆË‘¶ŠÖŒW:** Task 2.1.1
+**Ë‘ÖŒW:** È‚
 
 ---
 
-### ? Epic 2.2: Repository ‚ÌŠg[
+#### Task 2.1.2: ÌƒG[ ErrorHandler ÉˆÚs ?
 
-#### Task 2.2.1: ScenarioRepository ‚ÌÀ‘• ?
+**Dx:** P2 ()  
+**H:** 12-16  
+**S:** _è“–_
 
-**—Dæ“x:** P2 (’†)  
-**H”Œ©Ï:** 8-12ŠÔ  
-**’S“–Ò:** _–¢Š„‚è“–‚Ä_
+**e:**
+1. [ ] eÊMA_v^[ÌƒG[ ErrorHandler oRÉ•ÏX
+2. [ ] DomainwÌƒG[ ErrorHandler oRÉ•ÏX
+3. [ ] ApplicationwÌƒG[ ErrorHandler oRÉ•ÏX
+4. [ ] IÈƒG[nhOp^[Kp
 
-**À‘•“à—e:**
-1. [ ] `Core/Infrastructure/Repositories/ScenarioRepository.ps1` ‚ğì¬
-2. [ ] ƒVƒiƒŠƒICSVƒtƒ@ƒCƒ‹‚Ì“Ç‚İ‚İ
-3. [ ] ƒLƒƒƒbƒVƒ…‹@\‚ÌÀ‘•
-4. [ ] ƒtƒ@ƒCƒ‹•ÏXŒŸ’m
+**î€:**
+- [ ] ×‚Ä‚ÌƒG[ ErrorHandler oRÉ‚È‚Ä‚
+- [ ] G[O\Ä‚
+- [ ] try-catch Ìƒp^[ê‚³Ä‚
 
-**À‘•‚·‚×‚«ƒƒ\ƒbƒh:**
+**Ë‘ÖŒW:** Task 2.1.1
+
+---
+
+### ? Epic 2.2: Repository ÌŠg[
+
+#### Task 2.2.1: ScenarioRepository Ì ?
+
+**Dx:** P2 ()  
+**H:** 8-12  
+**S:** _è“–_
+
+**e:**
+1. [ ] `Core/Infrastructure/Repositories/ScenarioRepository.ps1` ì¬
+2. [ ] ViICSVt@CÌ“Ç‚İ
+3. [ ] LbV@\Ì
+4. [ ] t@CÏXm
+
+**×‚\bh:**
 ```powershell
 class ScenarioRepository {
     [ScenarioStep[]] GetScenario([string]$filePath)
@@ -470,372 +433,372 @@ class ScenarioRepository {
 }
 ```
 
-**Š®—¹Šî€:**
-- [ ] ScenarioRepository ‚ª³í‚É“®ì
-- [ ] ƒLƒƒƒbƒVƒ…‹@”\‚ª³‚µ‚­“®ì
-- [ ] ƒ†ƒjƒbƒgƒeƒXƒg‚ª‚·‚×‚Ä’Ê‰ß
+**î€:**
+- [ ] ScenarioRepository É“
+- [ ] LbV@\
+- [ ] jbgeXg×‚Ä’Ê‰
 
-**ˆË‘¶ŠÖŒW:** ‚È‚µ
-
----
-
-#### Task 2.2.2: ConfigurationRepository ‚ÌÀ‘• ?
-
-**—Dæ“x:** P3 (’á)  
-**H”Œ©Ï:** 6-8ŠÔ  
-**’S“–Ò:** _–¢Š„‚è“–‚Ä_
-
-**À‘•“à—e:**
-1. [ ] `Core/Infrastructure/Repositories/ConfigurationRepository.ps1` ‚ğì¬
-2. [ ] .psd1 Œ`®‚Ìİ’èƒtƒ@ƒCƒ‹“Ç‚İ‚İ
-3. [ ] İ’è‚ÌƒoƒŠƒf[ƒVƒ‡ƒ“
-
-**Š®—¹Šî€:**
-- [ ] ConfigurationRepository ‚ª³í‚É“®ì
-- [ ] İ’è‚ÌƒoƒŠƒf[ƒVƒ‡ƒ“‚ª‹@”\‚·‚é
-
-**ˆË‘¶ŠÖŒW:** ‚È‚µ
+**Ë‘ÖŒW:** È‚
 
 ---
 
-### ? Epic 2.3: ƒ†ƒjƒbƒgƒeƒXƒg‚ÌŠg[
+#### Task 2.2.2: ConfigurationRepository Ì ?
 
-#### Task 2.3.1: ConnectionService ‚ÌƒeƒXƒgì¬ ?
+**Dx:** P3 ()  
+**H:** 6-8  
+**S:** _è“–_
 
-**—Dæ“x:** P2 (’†)  
-**H”Œ©Ï:** 6-8ŠÔ  
-**’S“–Ò:** _–¢Š„‚è“–‚Ä_
+**e:**
+1. [ ] `Core/Infrastructure/Repositories/ConfigurationRepository.ps1` ì¬
+2. [ ] .psd1 `Ìİ’t@CÇ‚İ
+3. [ ] İ’Ìƒof[V
 
-**À‘•“à—e:**
-1. [ ] `Tests/Unit/Core/Domain/ConnectionService.Tests.ps1` ‚ğì¬
-2. [ ] Ú‘±‚Ì’Ç‰ÁEæ“¾Eíœ‚ÌƒeƒXƒg
-3. [ ] ƒXƒŒƒbƒhˆÀ‘S«‚ÌƒeƒXƒg
-4. [ ] ƒGƒ‰[ƒP[ƒX‚ÌƒeƒXƒg
+**î€:**
+- [ ] ConfigurationRepository É“
+- [ ] İ’Ìƒof[V@\
 
-**Š®—¹Šî€:**
-- [ ] ƒR[ƒhƒJƒoƒŒƒbƒW 80% ˆÈã
-- [ ] ‚·‚×‚Ä‚ÌƒeƒXƒg‚ª’Ê‰ß
-
-**ˆË‘¶ŠÖŒW:** ‚È‚µ
+**Ë‘ÖŒW:** È‚
 
 ---
 
-#### Task 2.3.2: ReceivedEventPipeline ‚ÌƒeƒXƒgì¬ ?
+### ? Epic 2.3: jbgeXgÌŠg[
 
-**—Dæ“x:** P2 (’†)  
-**H”Œ©Ï:** 6-8ŠÔ  
-**’S“–Ò:** _–¢Š„‚è“–‚Ä_
+#### Task 2.3.1: ConnectionService ÌƒeXgì¬ ?
 
-**À‘•“à—e:**
-1. [ ] `Tests/Unit/Core/Domain/ReceivedEventPipeline.Tests.ps1` ‚ğì¬
-2. [ ] ƒCƒxƒ“ƒgˆ—ƒtƒ[‚ÌƒeƒXƒg
-3. [ ] RuleProcessor ˜AŒg‚ÌƒeƒXƒg
-4. [ ] ƒGƒ‰[ƒP[ƒX‚ÌƒeƒXƒg
+**Dx:** P2 ()  
+**H:** 6-8  
+**S:** _è“–_
 
-**Š®—¹Šî€:**
-- [ ] ƒR[ƒhƒJƒoƒŒƒbƒW 80% ˆÈã
-- [ ] ‚·‚×‚Ä‚ÌƒeƒXƒg‚ª’Ê‰ß
+**e:**
+1. [ ] `Tests/Unit/Core/Domain/ConnectionService.Tests.ps1` ì¬
+2. [ ] Ú‘Ì’Ç‰Eæ“¾EíœÌƒeXg
+3. [ ] XbhSÌƒeXg
+4. [ ] G[P[XÌƒeXg
 
-**ˆË‘¶ŠÖŒW:** ‚È‚µ
+**î€:**
+- [ ] R[hJobW 80% È
+- [ ] ×‚Ä‚ÌƒeXgÊ‰
 
----
-
-#### Task 2.3.3: RuleProcessor ‚ÌƒeƒXƒgì¬ ?
-
-**—Dæ“x:** P2 (’†)  
-**H”Œ©Ï:** 8-12ŠÔ  
-**’S“–Ò:** _–¢Š„‚è“–‚Ä_
-
-**À‘•“à—e:**
-1. [ ] `Tests/Unit/Core/Domain/RuleProcessor.Tests.ps1` ‚ğì¬
-2. [ ] ƒ‹[ƒ‹ƒ}ƒbƒ`ƒ“ƒO‚ÌƒeƒXƒg
-3. [ ] AutoResponse / OnReceived ˆ—‚ÌƒeƒXƒg
-4. [ ] UnifiedŒ`®‚ÌƒeƒXƒg
-5. [ ] ƒGƒ‰[ƒP[ƒX‚ÌƒeƒXƒg
-
-**Š®—¹Šî€:**
-- [ ] ƒR[ƒhƒJƒoƒŒƒbƒW 80% ˆÈã
-- [ ] ‚·‚×‚Ä‚ÌƒeƒXƒg‚ª’Ê‰ß
-
-**ˆË‘¶ŠÖŒW:** ‚È‚µ
+**Ë‘ÖŒW:** È‚
 
 ---
 
-#### Task 2.3.4: MessageProcessor ‚ÌƒeƒXƒgì¬ ?
+#### Task 2.3.2: ReceivedEventPipeline ÌƒeXgì¬ ?
 
-**—Dæ“x:** P2 (’†)  
-**H”Œ©Ï:** 8-12ŠÔ  
-**’S“–Ò:** _–¢Š„‚è“–‚Ä_
+**Dx:** P2 ()  
+**H:** 6-8  
+**S:** _è“–_
 
-**À‘•“à—e:**
-1. [ ] `Tests/Unit/Core/Domain/MessageProcessor.Tests.ps1` ‚ğì¬
-2. [ ] ƒeƒ“ƒvƒŒ[ƒg“WŠJ‚ÌƒeƒXƒg
-3. [ ] •Ï”’uŠ·‚ÌƒeƒXƒg
-4. [ ] ƒGƒ“ƒR[ƒfƒBƒ“ƒO•ÏŠ·‚ÌƒeƒXƒg
-5. [ ] ƒGƒ‰[ƒP[ƒX‚ÌƒeƒXƒg
+**e:**
+1. [ ] `Tests/Unit/Core/Domain/ReceivedEventPipeline.Tests.ps1` ì¬
+2. [ ] Cxgt[ÌƒeXg
+3. [ ] RuleProcessor AgÌƒeXg
+4. [ ] G[P[XÌƒeXg
 
-**Š®—¹Šî€:**
-- [ ] ƒR[ƒhƒJƒoƒŒƒbƒW 80% ˆÈã
-- [ ] ‚·‚×‚Ä‚ÌƒeƒXƒg‚ª’Ê‰ß
+**î€:**
+- [ ] R[hJobW 80% È
+- [ ] ×‚Ä‚ÌƒeXgÊ‰
 
-**ˆË‘¶ŠÖŒW:** Task 1.3.1 (MessageProcessor À‘•Œã)
-
----
-
-#### Task 2.3.5: “‡ƒeƒXƒg‚Ìì¬ ?
-
-**—Dæ“x:** P2 (’†)  
-**H”Œ©Ï:** 12-16ŠÔ  
-**’S“–Ò:** _–¢Š„‚è“–‚Ä_
-
-**À‘•“à—e:**
-1. [ ] `Tests/Integration/` ƒtƒHƒ‹ƒ_‚ğì¬
-2. [ ] ’ÊMƒtƒ[‚Ì“‡ƒeƒXƒgiTCP Client/Server, UDPj
-3. [ ] ƒVƒiƒŠƒIÀs‚Ì“‡ƒeƒXƒg
-4. [ ] óMƒCƒxƒ“ƒgˆ—‚Ì“‡ƒeƒXƒg
-
-**Š®—¹Šî€:**
-- [ ] å—v‚Èƒ†[ƒXƒP[ƒX‚ª“‡ƒeƒXƒg‚ÅƒJƒo[‚³‚ê‚Ä‚¢‚é
-- [ ] ‚·‚×‚Ä‚ÌƒeƒXƒg‚ª’Ê‰ß
-
-**ˆË‘¶ŠÖŒW:** Task 1.1.1, 1.1.2, 1.1.3
+**Ë‘ÖŒW:** È‚
 
 ---
 
-## ? Phase 3: ’·Šú‰ü‘PiNice to havej
+#### Task 2.3.3: RuleProcessor ÌƒeXgì¬ ?
 
-### ? Epic 3.1: UI‘w‚ÌMVVM‰»
+**Dx:** P2 ()  
+**H:** 8-12  
+**S:** _è“–_
 
-#### Task 3.1.1: ConnectionViewModel ‚ÌÀ‘• ?
+**e:**
+1. [ ] `Tests/Unit/Core/Domain/RuleProcessor.Tests.ps1` ì¬
+2. [ ] [}b`OÌƒeXg
+3. [ ] AutoResponse / OnReceived ÌƒeXg
+4. [ ] Unified`ÌƒeXg
+5. [ ] G[P[XÌƒeXg
 
-**—Dæ“x:** P3 (’á)  
-**H”Œ©Ï:** 12-16ŠÔ  
-**’S“–Ò:** _–¢Š„‚è“–‚Ä_
+**î€:**
+- [ ] R[hJobW 80% È
+- [ ] ×‚Ä‚ÌƒeXgÊ‰
 
-**À‘•“à—e:**
-1. [ ] `Presentation/UI/ConnectionViewModel.ps1` ‚ğì¬
-2. [ ] INotifyPropertyChanged ‘Š“–‚ÌÀ‘•
-3. [ ] ƒf[ƒ^ƒoƒCƒ“ƒfƒBƒ“ƒO—pƒvƒƒpƒeƒB‚Ì’è‹`
-4. [ ] ƒRƒ}ƒ“ƒhƒnƒ“ƒhƒ‰[‚ÌÀ‘•
-
-**Š®—¹Šî€:**
-- [ ] ConnectionViewModel ‚ª³í‚É“®ì
-- [ ] ƒf[ƒ^ƒoƒCƒ“ƒfƒBƒ“ƒO‚ª‹@”\‚·‚é
-
-**ˆË‘¶ŠÖŒW:** ‚È‚µ
+**Ë‘ÖŒW:** È‚
 
 ---
 
-#### Task 3.1.2: UIUpdateService ‚ÌÀ‘• ?
+#### Task 2.3.4: MessageProcessor ÌƒeXgì¬ ?
 
-**—Dæ“x:** P3 (’á)  
-**H”Œ©Ï:** 8-12ŠÔ  
-**’S“–Ò:** _–¢Š„‚è“–‚Ä_
+**Dx:** P2 ()  
+**H:** 8-12  
+**S:** _è“–_
 
-**À‘•“à—e:**
-1. [ ] `Presentation/UI/UIUpdateService.ps1` ‚ğì¬
-2. [ ] UIƒXƒŒƒbƒh‚Å‚ÌˆÀ‘S‚ÈXVˆ—
-3. [ ] Invoke ƒpƒ^[ƒ“‚Ì“ˆê‰»
+**e:**
+1. [ ] `Tests/Unit/Core/Domain/MessageProcessor.Tests.ps1` ì¬
+2. [ ] ev[gWJÌƒeXg
+3. [ ] ÏuÌƒeXg
+4. [ ] GR[fBOÏŠÌƒeXg
+5. [ ] G[P[XÌƒeXg
 
-**Š®—¹Šî€:**
-- [ ] UIXV‚ª”ñ“¯Šú‚ÅˆÀ‘S‚És‚í‚ê‚é
-- [ ] UI‚ªƒtƒŠ[ƒY‚µ‚È‚¢
+**î€:**
+- [ ] R[hJobW 80% È
+- [ ] ×‚Ä‚ÌƒeXgÊ‰
 
-**ˆË‘¶ŠÖŒW:** ‚È‚µ
-
----
-
-#### Task 3.1.3: MainForm ‚ÌƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒO ?
-
-**—Dæ“x:** P3 (’á)  
-**H”Œ©Ï:** 16-24ŠÔ  
-**’S“–Ò:** _–¢Š„‚è“–‚Ä_
-
-**À‘•“à—e:**
-1. [ ] `UI/MainForm.ps1` ‚ğMVVMƒpƒ^[ƒ“‚ÉˆÚs
-2. [ ] ViewModel ‚Æ‚Ìƒf[ƒ^ƒoƒCƒ“ƒfƒBƒ“ƒO
-3. [ ] ƒCƒxƒ“ƒgƒnƒ“ƒhƒ‰[‚Ì®—
-4. [ ] UIXVƒƒWƒbƒN‚Ì UIUpdateService ‚Ö‚ÌˆÚs
-
-**Š®—¹Šî€:**
-- [ ] MainForm ‚ª MVVM ƒpƒ^[ƒ“‚É]‚Á‚Ä‚¢‚é
-- [ ] ƒrƒWƒlƒXƒƒWƒbƒN‚ª ViewModel ‚ÉˆÚ“®‚µ‚Ä‚¢‚é
-- [ ] UI ‚Ì‰“š«‚ªŒüã‚µ‚Ä‚¢‚é
-
-**ˆË‘¶ŠÖŒW:** Task 3.1.1, 3.1.2
+**Ë‘ÖŒW:** Task 1.3.1 (MessageProcessor )
 
 ---
 
-### ? Epic 3.2: ƒCƒ“ƒtƒ‰ƒXƒgƒ‰ƒNƒ`ƒƒ‚Ì®”õ
+#### Task 2.3.5: eXgÌì¬ ?
 
-#### Task 3.2.1: CI/CDƒpƒCƒvƒ‰ƒCƒ“‚Ì\’z ?
+**Dx:** P2 ()  
+**H:** 12-16  
+**S:** _è“–_
 
-**—Dæ“x:** P3 (’á)  
-**H”Œ©Ï:** 8-12ŠÔ  
-**’S“–Ò:** _–¢Š„‚è“–‚Ä_
+**e:**
+1. [ ] `Tests/Integration/` tH_ì¬
+2. [ ] ÊMt[Ì“eXgiTCP Client/Server, UDPj
+3. [ ] ViIsÌ“eXg
+4. [ ] MCxgÌ“eXg
 
-**À‘•“à—e:**
-1. [ ] GitHub Actions ‚Ü‚½‚Í Azure DevOps ƒpƒCƒvƒ‰ƒCƒ“‚Ìİ’è
-2. [ ] ©“®ƒeƒXƒgÀs‚Ìİ’è
-3. [ ] ƒR[ƒhƒJƒoƒŒƒbƒWƒŒƒ|[ƒg‚Ì¶¬
-4. [ ] Ã“I‰ğÍƒc[ƒ‹‚Ì“‡
+**î€:**
+- [ ] vÈƒ[XP[XeXgÅƒJo[Ä‚
+- [ ] ×‚Ä‚ÌƒeXgÊ‰
 
-**Š®—¹Šî€:**
-- [ ] ƒRƒ~ƒbƒg‚É©“®ƒeƒXƒg‚ªÀs‚³‚ê‚é
-- [ ] ƒJƒoƒŒƒbƒWƒŒƒ|[ƒg‚ª¶¬‚³‚ê‚é
-- [ ] Ã“I‰ğÍŒ‹‰Ê‚ª•\¦‚³‚ê‚é
-
-**ˆË‘¶ŠÖŒW:** Task 2.3.x (ƒeƒXƒgì¬Œã)
+**Ë‘ÖŒW:** Task 1.1.1, 1.1.2, 1.1.3
 
 ---
 
-#### Task 3.2.2: ƒhƒLƒ…ƒƒ“ƒg©“®¶¬ ?
+## ? Phase 3: PiNice to havej
 
-**—Dæ“x:** P3 (’á)  
-**H”Œ©Ï:** 6-8ŠÔ  
-**’S“–Ò:** _–¢Š„‚è“–‚Ä_
+### ? Epic 3.1: UIwMVVM
 
-**À‘•“à—e:**
-1. [ ] platyPS ‚ğg—p‚µ‚½ API ƒŠƒtƒ@ƒŒƒ“ƒX¶¬
-2. [ ] ƒ‚ƒWƒ…[ƒ‹Ó–±ƒ}ƒgƒŠƒNƒX‚Ìì¬
-3. [ ] ˆÚsƒKƒCƒh‚Ìì¬
+#### Task 3.1.1: ConnectionViewModel Ì ?
 
-**Š®—¹Šî€:**
-- [ ] APIƒŠƒtƒ@ƒŒƒ“ƒX‚ª©“®¶¬‚³‚ê‚é
-- [ ] ƒhƒLƒ…ƒƒ“ƒg‚ªÅV‚Ìó‘Ô‚É•Û‚½‚ê‚é
+**Dx:** P3 ()  
+**H:** 12-16  
+**S:** _è“–_
 
-**ˆË‘¶ŠÖŒW:** ‚È‚µ
+**e:**
+1. [ ] `Presentation/UI/ConnectionViewModel.ps1` ì¬
+2. [ ] INotifyPropertyChanged Ì
+3. [ ] f[^oCfBOpvpeBÌ’`
+4. [ ] R}hnh[Ì
 
----
+**î€:**
+- [ ] ConnectionViewModel É“
+- [ ] f[^oCfBO@\
 
-### ? Epic 3.3: ‹Œƒ‚ƒWƒ…[ƒ‹‚Ìíœ
-
-#### Task 3.3.1: ”ñ„§ƒ‚ƒWƒ…[ƒ‹‚ÌíœŒv‰æ ?
-
-**—Dæ“x:** P3 (’á)  
-**H”Œ©Ï:** 4-6ŠÔ  
-**’S“–Ò:** _–¢Š„‚è“–‚Ä_
-
-**À‘•“à—e:**
-1. [ ] íœ‘ÎÛƒ‚ƒWƒ…[ƒ‹‚ÌƒŠƒXƒgƒAƒbƒv
-2. [ ] ˆË‘¶ŠÖŒW‚ÌŠm”F
-3. [ ] íœƒXƒPƒWƒ…[ƒ‹‚Ìô’è
-4. [ ] ƒ†[ƒU[‚Ö‚Ì’m
-
-**Š®—¹Šî€:**
-- [ ] íœŒv‰æ‚ª•¶‘‰»‚³‚ê‚Ä‚¢‚é
-- [ ] ŠÖŒWÒ‚Éü’m‚³‚ê‚Ä‚¢‚é
-
-**ˆË‘¶ŠÖŒW:** Task 1.2.x (ƒ‰ƒbƒp[‰»Š®—¹Œã)
+**Ë‘ÖŒW:** È‚
 
 ---
 
-#### Task 3.3.2: ‹ŒModulesƒtƒHƒ‹ƒ_‚Ì’iŠK“Iíœ ?
+#### Task 3.1.2: UIUpdateService Ì ?
 
-**—Dæ“x:** P3 (’á)  
-**H”Œ©Ï:** 8-12ŠÔ  
-**’S“–Ò:** _–¢Š„‚è“–‚Ä_
+**Dx:** P3 ()  
+**H:** 8-12  
+**S:** _è“–_
 
-**À‘•“à—e:**
-1. [ ] g—p‚³‚ê‚Ä‚¢‚È‚¢ƒ‚ƒWƒ…[ƒ‹‚©‚ç‡Ÿíœ
-2. [ ] ŠeíœŒã‚Ì“®ìŠm”F
-3. [ ] ÅI“I‚É Modules/ ƒtƒHƒ‹ƒ_‚ğ Core/ ‚É“‡
+**e:**
+1. [ ] `Presentation/UI/UIUpdateService.ps1` ì¬
+2. [ ] UIXbhÅ‚ÌˆSÈXV
+3. [ ] Invoke p^[Ì“ê‰»
 
-**Š®—¹Šî€:**
-- [ ] ‚·‚×‚Ä‚Ì‹Œƒ‚ƒWƒ…[ƒ‹‚ªíœ‚³‚ê‚Ä‚¢‚é
-- [ ] VƒA[ƒLƒeƒNƒ`ƒƒ‚Ì‚İ‚ªg—p‚³‚ê‚Ä‚¢‚é
-- [ ] ‚·‚×‚Ä‚ÌƒeƒXƒg‚ª’Ê‰ß‚µ‚Ä‚¢‚é
+**î€:**
+- [ ] UIXVñ“¯ŠÅˆSÉs
+- [ ] UIt[YÈ‚
 
-**ˆË‘¶ŠÖŒW:** Task 3.3.1, ‚¨‚æ‚Ñ Phase 1, 2 ‚Ì‚·‚×‚Ä‚Ìƒ^ƒXƒN
+**Ë‘ÖŒW:** È‚
 
 ---
 
-## ? i’»ƒgƒ‰ƒbƒLƒ“ƒO
+#### Task 3.1.3: MainForm Ìƒt@N^O ?
 
-### ‘S‘Ìi’»
+**Dx:** P3 ()  
+**H:** 16-24  
+**S:** _è“–_
 
-| Phase | ‘ƒ^ƒXƒN” | Š®—¹ | is’† | –¢’…è | i’»—¦ |
+**e:**
+1. [ ] `UI/MainForm.ps1` MVVMp^[ÉˆÚs
+2. [ ] ViewModel Æ‚Ìƒf[^oCfBO
+3. [ ] Cxgnh[Ì
+4. [ ] UIXVWbN UIUpdateService Ö‚ÌˆÚs
+
+**î€:**
+- [ ] MainForm  MVVM p^[É]Ä‚
+- [ ] rWlXWbN ViewModel ÉˆÚ“Ä‚
+- [ ] UI Ì‰ã‚µÄ‚
+
+**Ë‘ÖŒW:** Task 3.1.1, 3.1.2
+
+---
+
+### ? Epic 3.2: CtXgN`Ì
+
+#### Task 3.2.1: CI/CDpCvCÌ\z ?
+
+**Dx:** P3 ()  
+**H:** 8-12  
+**S:** _è“–_
+
+**e:**
+1. [ ] GitHub Actions Ü‚ Azure DevOps pCvCÌİ’
+2. [ ] eXgsÌİ’
+3. [ ] R[hJobW|[gÌ
+4. [ ] Ã“IÍƒc[Ì“
+
+**î€:**
+- [ ] R~bgÉeXgs
+- [ ] JobW|[g
+- [ ] Ã“IÍŒÊ‚\
+
+**Ë‘ÖŒW:** Task 2.3.x (eXgì¬)
+
+---
+
+#### Task 3.2.2: hLg ?
+
+**Dx:** P3 ()  
+**H:** 6-8  
+**S:** _è“–_
+
+**e:**
+1. [ ] platyPS gp API t@X
+2. [ ] W[Ó–}gNXÌì¬
+3. [ ] ÚsKChÌì¬
+
+**î€:**
+- [ ] APIt@X
+- [ ] hLgÅVÌÔ‚É•Û‚
+
+**Ë‘ÖŒW:** È‚
+
+---
+
+### ? Epic 3.3: W[Ìíœ
+
+#### Task 3.3.1: ñ„W[Ìíœv ?
+
+**Dx:** P3 ()  
+**H:** 4-6  
+**S:** _è“–_
+
+**e:**
+1. [ ] íœÎÛƒW[ÌƒXgAbv
+2. [ ] Ë‘ÖŒWÌŠmF
+3. [ ] íœXPW[Ì
+4. [ ] [U[Ö‚Ìm
+
+**î€:**
+- [ ] íœvæ‚ªÄ‚
+- [ ] ÖŒWÒ‚ÉmÄ‚
+
+**Ë‘ÖŒW:** Task 1.2.x (bp[)
+
+---
+
+#### Task 3.3.2: ModulestH_Ì’iKIíœ ?
+
+**Dx:** P3 ()  
+**H:** 8-12  
+**S:** _è“–_
+
+**e:**
+1. [ ] gpÄ‚È‚W[ç‡íœ
+2. [ ] eíœÌ“mF
+3. [ ] ÅII Modules/ tH_ Core/ É“
+
+**î€:**
+- [ ] ×‚Ä‚Ì‹W[íœÄ‚
+- [ ] VA[LeN`Ì‚İ‚gpÄ‚
+- [ ] ×‚Ä‚ÌƒeXgÊ‰ß‚Ä‚
+
+**Ë‘ÖŒW:** Task 3.3.1,  Phase 1, 2 Ì‚×‚Ä‚Ìƒ^XN
+
+---
+
+## ? igbLO
+
+### SÌi
+
+| Phase | ^XN |  | is |  | i |
 |-------|-----------|------|--------|--------|--------|
-| Phase 1 (‹Ù‹}) | 13 | 0 | 0 | 13 | 0% |
-| Phase 2 (d—v) | 12 | 0 | 0 | 12 | 0% |
-| Phase 3 (’·Šú) | 7 | 0 | 0 | 7 | 0% |
-| **‡Œv** | **32** | **0** | **0** | **32** | **0%** |
+| Phase 1 (Ù‹}) | 13 | 0 | 0 | 13 | 0% |
+| Phase 2 (dv) | 12 | 0 | 0 | 12 | 0% |
+| Phase 3 () | 7 | 0 | 0 | 7 | 0% |
+| **v** | **32** | **0** | **0** | **32** | **0%** |
 
-### Epic•Êi’»
+### EpicÊi
 
-| Epic | ‘ƒ^ƒXƒN” | Š®—¹ | is’† | –¢’…è | i’»—¦ |
+| Epic | ^XN |  | is |  | i |
 |------|-----------|------|--------|--------|--------|
-| 1.1 ’ÊMƒ‚ƒWƒ…[ƒ‹ˆÚs | 4 | 0 | 0 | 4 | 0% |
-| 1.2 ‹Œƒ‚ƒWƒ…[ƒ‹”ñ„§‰» | 3 | 0 | 0 | 3 | 0% |
-| 1.3 MessageProcessorÀ‘• | 4 | 0 | 0 | 4 | 0% |
-| 2.1 ƒGƒ‰[ƒnƒ“ƒhƒŠƒ“ƒO“ˆê | 2 | 0 | 0 | 2 | 0% |
-| 2.2 RepositoryŠg[ | 2 | 0 | 0 | 2 | 0% |
-| 2.3 ƒ†ƒjƒbƒgƒeƒXƒgŠg[ | 5 | 0 | 0 | 5 | 0% |
-| 3.1 UI‘wMVVM‰» | 3 | 0 | 0 | 3 | 0% |
-| 3.2 ƒCƒ“ƒtƒ‰®”õ | 2 | 0 | 0 | 2 | 0% |
-| 3.3 ‹Œƒ‚ƒWƒ…[ƒ‹íœ | 2 | 0 | 0 | 2 | 0% |
+| 1.1 ÊMW[Ús | 4 | 0 | 0 | 4 | 0% |
+| 1.2 W[ñ„ | 3 | 0 | 0 | 3 | 0% |
+| 1.3 MessageProcessor | 4 | 0 | 0 | 4 | 0% |
+| 2.1 G[nhO | 2 | 0 | 0 | 2 | 0% |
+| 2.2 Repositoryg[ | 2 | 0 | 0 | 2 | 0% |
+| 2.3 jbgeXgg[ | 5 | 0 | 0 | 5 | 0% |
+| 3.1 UIwMVVM | 3 | 0 | 0 | 3 | 0% |
+| 3.2 Ct | 2 | 0 | 0 | 2 | 0% |
+| 3.3 W[íœ | 2 | 0 | 0 | 2 | 0% |
 
 ---
 
-## ? „§‚³‚ê‚é’…è‡˜
+## ? é’…è‡
 
 ### Week 1-2
-1. Task 1.1.1: TcpClient ‚ÌƒAƒ_ƒvƒ^[‰»
-2. Task 1.3.1: MessageProcessor ƒNƒ‰ƒX‚ÌÀ‘•
-3. Task 1.3.2: TemplateRepository ‚ÌÀ‘•
+1. Task 1.1.1: TcpClient ÌƒA_v^[
+2. Task 1.3.1: MessageProcessor NXÌ
+3. Task 1.3.2: TemplateRepository Ì
 
 ### Week 3-4
-4. Task 1.1.2: TcpServer ‚ÌƒAƒ_ƒvƒ^[‰»
-5. Task 1.1.3: UDP ‚ÌƒAƒ_ƒvƒ^[‰»
-6. Task 1.1.4: ServiceContainer ‚Ö‚Ì’ÊMƒAƒ_ƒvƒ^[“o˜^
-7. Task 1.3.3: MessageProcessor ‚Ì ServiceContainer “o˜^
+4. Task 1.1.2: TcpServer ÌƒA_v^[
+5. Task 1.1.3: UDP ÌƒA_v^[
+6. Task 1.1.4: ServiceContainer Ö‚Ì’ÊMA_v^[o^
+7. Task 1.3.3: MessageProcessor  ServiceContainer o^
 
 ### Week 5-6
-8. Task 1.3.4: Šù‘¶‚Ìƒeƒ“ƒvƒŒ[ƒgˆ—‚ğ MessageProcessor ‚ÉˆÚs
-9. Task 1.2.1, 1.2.2, 1.2.3: ‹Œƒ‚ƒWƒ…[ƒ‹‚Ìƒ‰ƒbƒp[‰»
-10. Task 2.1.1: ErrorHandler ƒNƒ‰ƒX‚ÌÀ‘•
+8. Task 1.3.4: Ìƒev[g MessageProcessor ÉˆÚs
+9. Task 1.2.1, 1.2.2, 1.2.3: W[Ìƒbp[
+10. Task 2.1.1: ErrorHandler NXÌ
 
 ### Week 7-8
-11. Task 2.3.1-2.3.4: ƒ†ƒjƒbƒgƒeƒXƒg‚ÌŠg[
-12. Task 2.1.2: Šù‘¶‚ÌƒGƒ‰[ˆ—‚ğ ErrorHandler ‚ÉˆÚs
-13. Task 2.2.1: ScenarioRepository ‚ÌÀ‘•
+11. Task 2.3.1-2.3.4: jbgeXgÌŠg[
+12. Task 2.1.2: ÌƒG[ ErrorHandler ÉˆÚs
+13. Task 2.2.1: ScenarioRepository Ì
 
-### Week 9 ˆÈ~
-14. Phase 3 ‚Ìƒ^ƒXƒN‚É’…è
-
----
-
-## ? ƒ^ƒXƒNŠÇ—‚ÌƒxƒXƒgƒvƒ‰ƒNƒeƒBƒX
-
-### ƒ^ƒXƒN‚ÌŠJn
-- [ ] ƒ^ƒXƒN‚ÌÀ‘•“à—e‚ÆŠ®—¹Šî€‚ğÄŠm”F
-- [ ] ˆË‘¶ŠÖŒW‚ª‚ ‚éƒ^ƒXƒN‚ªŠ®—¹‚µ‚Ä‚¢‚é‚©Šm”F
-- [ ] ƒuƒ‰ƒ“ƒ`‚ğì¬i—á: `feature/task-1.1.1-tcpclient-adapter`j
-- [ ] ƒ^ƒXƒNƒXƒe[ƒ^ƒX‚ğuis’†?v‚ÉXV
-
-### ƒ^ƒXƒN‚ÌŠ®—¹
-- [ ] Š®—¹Šî€‚ª‚·‚×‚Ä–‚½‚³‚ê‚Ä‚¢‚é‚©Šm”F
-- [ ] ƒ†ƒjƒbƒgƒeƒXƒg‚ğì¬EÀs
-- [ ] ƒR[ƒhƒŒƒrƒ…[‚ğˆË—Š
-- [ ] ƒ}[ƒWŒãAƒ^ƒXƒNƒXƒe[ƒ^ƒX‚ğuŠ®—¹?v‚ÉXV
-- [ ] i’»ƒgƒ‰ƒbƒLƒ“ƒOƒe[ƒuƒ‹‚ğXV
-
-### TŸƒŒƒrƒ…[
-- [ ] Š®—¹‚µ‚½ƒ^ƒXƒN‚ÌU‚è•Ô‚è
-- [ ] ƒuƒƒbƒN‚³‚ê‚Ä‚¢‚éƒ^ƒXƒN‚ÌŠm”F
-- [ ] ŸT‚ÌŒv‰æ—§ˆÄ
-- [ ] i’»—¦‚ÌXV
+### Week 9 È~
+14. Phase 3 Ìƒ^XNÉ’
 
 ---
 
-## ? ŠÖ˜AƒhƒLƒ…ƒƒ“ƒg
+## ? ^XNÇ—ÌƒxXgvNeBX
 
-- [ARCHITECTURE_REFACTORING.md](./ARCHITECTURE_REFACTORING.md) - ƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒOİŒv‘
-- [REFACTORING_PROGRESS.md](./REFACTORING_PROGRESS.md) - i’»ƒŒƒ|[ƒg
-- [DESIGN.md](./DESIGN.md) - ‘S‘ÌİŒv‘
-- [README.md](./README.md) - ƒvƒƒWƒFƒNƒgŠT—v
+### ^XNÌŠJn
+- [ ] ^XNÌeÆŠî€ÄŠmF
+- [ ] Ë‘ÖŒW^XNÄ‚é‚©mF
+- [ ] u`ì¬i: `feature/task-1.1.1-tcpclient-adapter`j
+- [ ] ^XNXe[^Xuis?vÉXV
+
+### ^XNÌŠ
+- [ ] î€×‚Ä–Ä‚é‚©mF
+- [ ] jbgeXgì¬Es
+- [ ] R[hr[Ë—
+- [ ] }[WA^XNXe[^Xu?vÉXV
+- [ ] igbLOe[uXV
+
+### Tr[
+- [ ] ^XNÌUÔ‚
+- [ ] ubNÄ‚^XNÌŠmF
+- [ ] TÌŒvæ—§
+- [ ] iÌXV
 
 ---
 
-**ÅIXVÒ:** GitHub Copilot  
-**ƒŒƒrƒ…[ó‘Ô:** Draft - ƒŒƒrƒ…[‘Ò‚¿
+## ? Ö˜AhLg
+
+- [ARCHITECTURE_REFACTORING.md](./ARCHITECTURE_REFACTORING.md) - t@N^OİŒv
+- [REFACTORING_PROGRESS.md](./REFACTORING_PROGRESS.md) - i|[g
+- [DESIGN.md](./DESIGN.md) - SÌİŒv
+- [README.md](./README.md) - vWFNgTv
+
+---
+
+**ÅIXV:** GitHub Copilot  
+**r[:** Draft - r[Ò‚
