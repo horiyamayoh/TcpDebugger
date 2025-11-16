@@ -49,7 +49,7 @@ function New-UiMainForm {
     return $form
 }
 
-function New-InstanceGrid {
+function New-UiInstanceGrid {
     param(
         [System.Drawing.Point]$Location,
         [System.Drawing.Size]$Size
