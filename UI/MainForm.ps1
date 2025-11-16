@@ -31,6 +31,7 @@ function Show-MainForm {
     $dgvInstances.MultiSelect = $false
     $dgvInstances.AutoSizeColumnsMode = "Fill"
     $dgvInstances.AutoGenerateColumns = $false
+    $dgvInstances.EditMode = [System.Windows.Forms.DataGridViewEditMode]::EditOnEnter
 
     # Columns
     $colName = New-Object System.Windows.Forms.DataGridViewTextBoxColumn
@@ -169,6 +170,7 @@ function Show-MainForm {
     # State holders
     $suppressScenarioEvent = $false
     $gridEditingInProgress = $false
+    $pendingComboDropDownColumn = $null
 
     $getSelectedConnection = {
         if ($dgvInstances.SelectedRows.Count -eq 0) {
@@ -599,6 +601,62 @@ function Show-MainForm {
                 }
             }
         }
+    })
+
+    $dgvInstances.Add_CellClick({
+        param($sender, $args)
+
+        if ($args.RowIndex -lt 0 -or $args.ColumnIndex -lt 0) {
+            return
+        }
+
+        $row = $sender.Rows[$args.RowIndex]
+        $cell = $row.Cells[$args.ColumnIndex]
+        $column = $cell.OwningColumn
+
+        if (-not $column -or ($column -isnot [System.Windows.Forms.DataGridViewComboBoxColumn])) {
+            return
+        }
+
+        $pendingComboDropDownColumn = $column.Name
+        if ($sender.CurrentCell -ne $cell) {
+            $sender.CurrentCell = $cell
+        }
+
+        if (-not $sender.IsCurrentCellInEditMode) {
+            [void]$sender.BeginEdit($true)
+        }
+
+        $combo = $sender.EditingControl
+        if ($combo -is [System.Windows.Forms.ComboBox]) {
+            $combo.DroppedDown = $true
+            $pendingComboDropDownColumn = $null
+        }
+    })
+
+    $dgvInstances.Add_EditingControlShowing({
+        param($sender, $eventArgs)
+
+        $control = $eventArgs.Control
+        if ($control -isnot [System.Windows.Forms.ComboBox]) {
+            return
+        }
+
+        if (-not $pendingComboDropDownColumn) {
+            return
+        }
+
+        $currentCell = $sender.CurrentCell
+        if (-not $currentCell -or -not $currentCell.OwningColumn) {
+            $pendingComboDropDownColumn = $null
+            return
+        }
+
+        if ($currentCell.OwningColumn.Name -eq $pendingComboDropDownColumn) {
+            $control.DroppedDown = $true
+        }
+
+        $pendingComboDropDownColumn = $null
     })
 
     # Timer for periodic refresh
