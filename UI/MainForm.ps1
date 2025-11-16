@@ -214,7 +214,8 @@ function New-UiLabel {
 function New-UiLogTextBox {
     param(
         [System.Drawing.Point]$Location,
-        [System.Drawing.Size]$Size
+        [System.Drawing.Size]$Size,
+        [System.Drawing.Font]$Font
     )
 
     $textBox = New-Object System.Windows.Forms.TextBox
@@ -223,7 +224,7 @@ function New-UiLogTextBox {
     $textBox.Multiline = $true
     $textBox.ScrollBars = "Vertical"
     $textBox.ReadOnly = $true
-    $textBox.Font = New-Object System.Drawing.Font("Consolas", 9)
+    $textBox.Font = $Font
 
     return $textBox
 }
@@ -257,7 +258,7 @@ function Show-MainForm {
     $lblLog = New-UiLabel -Text "Connection Log:" -Location (New-Object System.Drawing.Point(10, 290)) -Size (New-Object System.Drawing.Size(200, 20))
     $form.Controls.Add($lblLog)
 
-    $txtLog = New-LogTextBox -Location (New-Object System.Drawing.Point(10, 315)) -Size (New-Object System.Drawing.Size(1165, 335))
+    $txtLog = New-LogTextBox -Location (New-Object System.Drawing.Point(10, 315)) -Size (New-Object System.Drawing.Size(1165, 335)) -Font (New-Object System.Drawing.Font("Consolas", 9))
     $form.Controls.Add($txtLog)
 
     # State holders
