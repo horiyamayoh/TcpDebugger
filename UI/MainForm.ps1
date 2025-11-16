@@ -212,7 +212,7 @@ function New-UiLabel {
     return $label
 }
 
-function New-LogTextBox {
+function New-UiLogTextBox {
     param(
         [System.Drawing.Point]$Location,
         [System.Drawing.Size]$Size
