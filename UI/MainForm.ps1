@@ -834,6 +834,7 @@ function Update-InstanceList {
             $currentPath = $null
             if ($conn.Variables.ContainsKey('AutoResponseProfile')) {
                 $currentProfile = $conn.Variables['AutoResponseProfile']
+                Write-Verbose "[UI] Auto Response: $currentProfile"
             }
             if ($conn.Variables.ContainsKey('AutoResponseProfilePath')) {
                 $currentPath = $conn.Variables['AutoResponseProfilePath']
@@ -919,6 +920,9 @@ function Update-InstanceList {
             $scenarioCell.ValueMember = "Key"
             foreach ($item in $items) {
                 [void]$scenarioCell.Items.Add($item)
+            }
+            if ($currentKey) {
+                Write-Host "[UI] Setting Auto Response: $currentKey for $($conn.DisplayName)" -ForegroundColor Magenta
             }
             $scenarioCell.Value = $currentKey
             $scenarioCell.Tag = @{

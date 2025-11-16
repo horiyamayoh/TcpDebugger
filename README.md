@@ -5,6 +5,13 @@ TCP/UDP’ÊM‚ÌƒeƒXƒgEƒfƒoƒbƒO‚ğs‚¤‚½‚ß‚ÌŒ±‘•’u‚Å‚·Bİ’èƒtƒ@ƒCƒ‹ƒx[ƒX‚ÅƒVƒiƒ
 ## d—v‚È’ˆÓ
 –{ƒAƒvƒŠ‚Í Windows ã‚Ì Powershell ‚ÅÀs‚·‚é‚½‚ßƒeƒLƒXƒgƒGƒ“ƒR[ƒfƒBƒ“ƒO‚Í UTF8 ‚Å‚Í‚È‚­ Shift-JIS ‚ğ—˜—p‚µ‚Ä‚­‚¾‚³‚¢B
 
+## ƒA[ƒLƒeƒNƒ`ƒƒŠT—v
+- `TcpDebugger.ps1` ‚Å Modules/ ˆÈ‰º‚Ì’ÊME©“®‰“šƒ‚ƒWƒ…[ƒ‹‚Æ UI/MainForm.ps1 ‚ğ dot-source ‚µAWinForms ã‚ÅÚ‘±‘€ìEƒVƒiƒŠƒIÀsEóMƒ‹[ƒ‹İ’è‚ğˆêŒ³‰»‚µ‚Ä‚¢‚éB
+- `ConnectionManager.ps1` ‚Ì ConnectionContext ‚ª‘—MƒLƒ…[/óMƒoƒbƒtƒ@/•Ï”ƒXƒR[ƒv/ƒ^ƒCƒ}[‚ğ“¯Šú•t‚«‚Å•Û‚µA`TcpClient.ps1` `TcpServer.ps1` `UdpCommunication.ps1` ‚ÌŠeƒXƒŒƒbƒh‚ª‚±‚ê‚ğÁ”ï‚·‚éB
+- `ScenarioEngine.ps1` ‚Í CSV ƒx[ƒX‚Ì SEND/WAIT/LOOP/TIMER ƒAƒNƒVƒ‡ƒ“‚ğ‰ğß‚µA`QuickSender.ps1` ‚Í `templates/databank.csv` ‚ğ“Ç‚İo‚µ‚Ä’èŒ^ƒƒbƒZ[ƒW‚ğ¶¬‚·‚éB
+- `AutoResponse.ps1` + `ReceivedRuleEngine.ps1` ‚ª AutoResponse/OnReceived/Unified ƒ‹[ƒ‹‚ğ”»•Ê‚µ‚Äƒeƒ“ƒvƒŒ[ƒg‚âƒXƒNƒŠƒvƒg‚ğ“WŠJ‚µA`MessageHandler.ps1`/`OnReceivedLibrary.ps1` ‚ªƒeƒ“ƒvƒŒ[ƒg“WŠJ‚âƒoƒCƒg‘€ì API ‚ğ’ñ‹Ÿ‚·‚éB
+- `UI/MainForm.ps1` ‚Ì DataGridView ‚Í Auto Response / On Received / Periodic Send / Quick Action —ñ‚ğ’Ê‚¶‚Ä `Set-ConnectionAutoResponseProfile` ‚È‚Ç‚Ì API ‚ğ’¼ÚŒÄ‚ÑAƒvƒƒtƒ@ƒCƒ‹Ø‘Ö‚âƒVƒiƒŠƒIÀs‚ğ‘¦”½‰f‚Å‚«‚éB
+
 ## “Á’¥
 
 - **•¡”Ú‘±‚Ì“¯ŠÇ—**: TCP/UDP‚Ì•¡”Ú‘±‚ğ“¯‚Éˆµ‚¢AˆêŒ³ŠÇ—
@@ -69,6 +76,13 @@ TcpDebugger/
 „¤„Ÿ„Ÿ UI/                          # UI’è‹`
     „¤„Ÿ„Ÿ MainForm.ps1                # ƒƒCƒ“ƒtƒH[ƒ€
 ```
+
+## Šù’m‚Ì§ŒÀ
+- `TcpClient.ps1` ‚Æ `UdpCommunication.ps1` ‚Å‚Í `Invoke-ConnectionAutoResponse` ‚ÌŒÄ‚Ño‚µˆÊ’u‚ªóMˆ—‚æ‚è‘O‚É‚ ‚èA`receivedData` ‚ª–¢’è‹`‚Ì‚Ü‚Ü•]‰¿‚³‚ê‚é‹°‚ê‚ª‚ ‚éB
+- óMƒpƒCƒvƒ‰ƒCƒ“‚Í `ReceivedEventHandler.ps1` ‚ğŒo—R‚·‚é‘z’è‚¾‚ªA’ÊMƒ‹[ƒv‚©‚ç `Invoke-ReceivedEvent` ‚ªŒÄ‚Î‚ê‚Ä‚¨‚ç‚¸AOnReceived ƒvƒƒtƒ@ƒCƒ‹’P‘Ì‚Å‚Í”­‰Î‚µ‚È‚¢B
+- `UI/MainForm.ps1` ‚Ì Periodic Send İ’è‚Å–¢’è‹`‚Ì `Get-InstancePath` ‚ğQÆ‚µ‚Ä‚¨‚èA`Connection.Variables['InstancePath']` ‚È‚Ç‚ğg‚¤C³‚ª•K—vB
+- `ScenarioEngine.ps1` ‚Ì IF ƒAƒNƒVƒ‡ƒ“ (`Invoke-IfAction`) ‚Í–¢À‘•‚ÌŒx‚¾‚¯‚ğo‚·‚½‚ßAğŒ•ªŠò•t‚«ƒVƒiƒŠƒI‚Í‚Ü‚¾Às‚Å‚«‚È‚¢B
+- OnReceived ƒvƒƒtƒ@ƒCƒ‹Ø‘Ö‚Í Unified ƒ‹[ƒ‹Œo—R‚Å‚Ì‚İŒø‰Ê‚ª‚ ‚èAƒˆ‚È OnReceived CSV ‚ğ¶‚©‚·‚É‚ÍóMƒ‹[ƒv‚Ö `Invoke-ConnectionOnReceived` ‚ğ‘g‚İ‚Ş•K—v‚ª‚ ‚éB
 
 ## g—p•û–@
 
@@ -161,6 +175,18 @@ Start-Scenario -ConnectionId $connectionId -ScenarioPath $scenarioPath
 - ŠeƒCƒ“ƒXƒ^ƒ“ƒXƒtƒHƒ‹ƒ_‚Ì `scenarios/auto/` ”z‰º‚ÉAóMƒgƒŠƒK[‚Æ‰“š“à—e‚ğ’è‹`‚µ‚½CSVƒtƒ@ƒCƒ‹‚ğ”z’u‚µ‚Ü‚·B
 - ˆê——‰æ–Ê‚Ì **Auto Response** —ñ‚©‚çƒvƒƒtƒ@ƒCƒ‹‚ğ‘I‘ğ‚·‚é‚ÆA‘I‘ğ’†‚ÌÚ‘±‚É‘¦À‚É“K—p‚³‚ê‚Ü‚·B
 - ƒvƒƒtƒ@ƒCƒ‹‚ğu(None)v‚É–ß‚·‚Æ©“®‰“š‚ğ–³Œø‰»‚Å‚«‚Ü‚·B
+
+#### Auto Response—ñ‚Å‚ÌƒVƒiƒŠƒIÀs
+
+- Auto Response‚Ìƒhƒƒbƒvƒ_ƒEƒ“‚É‚ÍAÀs—pƒVƒiƒŠƒI‚à `? ƒtƒ@ƒCƒ‹–¼` Œ`®‚Å•\¦‚³‚ê‚Ü‚·B
+- ƒVƒiƒŠƒIs‚ğ‘I‘ğ‚·‚é‚Æ‘¦À‚É `Start-Scenario` ‚ªŒÄ‚Ño‚³‚êAƒZƒ‹‚Ì‘I‘ğó‘Ô‚Í’¼‘O‚Ìƒvƒƒtƒ@ƒCƒ‹‚É–ß‚è‚Ü‚·iİ’è‚ª•Ï‚í‚é‚±‚Æ‚Í‚ ‚è‚Ü‚¹‚ñjB
+- UI‘¤‚Å DataGridView ‚ÌƒGƒ‰[‚ªo‚È‚¢‚æ‚¤‚ÉƒoƒŠƒf[ƒVƒ‡ƒ“‚ğ‹­‰»‚µ‚Ä‚¢‚é‚½‚ßAˆÀ‘S‚ÉƒVƒiƒŠƒI‚ğƒgƒŠƒK[‚Å‚«‚Ü‚·B¸”s‚µ‚½ê‡‚Í]—ˆ’Ê‚èƒƒbƒZ[ƒWƒ{ƒbƒNƒX‚Å’Ê’m‚³‚ê‚Ü‚·B
+
+#### •¡”‹@”\‚Ì“¯—˜—p
+
+- **Auto Response**A**On Received**A**Periodic Send** ‚ÌŠe—ñ‚ÍŠ®‘S‚É“Æ—§‚µ‚Ä‚¢‚Ü‚·B”CˆÓ‚Ì‘g‚İ‡‚í‚¹‚Åƒvƒƒtƒ@ƒCƒ‹‚ğ‘I‘ğ‚µ‚Ä‚àA‚Ù‚©‚Ì—ñ‚Ìİ’è‚ªã‘‚«‚³‚ê‚é‚±‚Æ‚Í‚ ‚è‚Ü‚¹‚ñB
+- Auto Response‚Å©“®‰“š‚ğİ’è‚µ‚Â‚ÂAOn Received‚ÅƒXƒNƒŠƒvƒg‚ğƒgƒŠƒK[‚µA‚³‚ç‚É Periodic Send ‚Å’èüŠú“d•¶‚ğ—¬‚·‚±‚Æ‚ª‚Å‚«‚Ü‚·B
+- ‚±‚ê‚ç‚Ìİ’è‚ÍÚ‘±‚²‚Æ‚É•Û‚³‚êAGUI‚ğXV‚µ‚Ä‚àˆÛ‚³‚ê‚Ü‚·B“K—p‚É¸”s‚µ‚½ê‡‚Ì‚İŒxƒ_ƒCƒAƒƒO‚ª•\¦‚³‚êAŒ³‚Ìİ’è‚Ö©“®“I‚Éƒ[ƒ‹ƒoƒbƒN‚³‚ê‚Ü‚·B
 
 **—á: Instances/Example/scenarios/auto/normal.csv**
 

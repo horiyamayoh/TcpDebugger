@@ -359,6 +359,14 @@ Write-Host "$removed connections removed"
 
 ---
 
+
+### 3.10 受信イベントパイプライン
+- TcpClient/TcpServer/UdpCommunication の受信ループでは、受信済みバイト列を ConnectionContext.RecvBuffer に追記しつつ、接続ごとの Invoke-ConnectionAutoResponse を呼び出すことで即時に応答を試みる。
+- AutoResponse.ps1 と ReceivedRuleEngine.ps1 は CSV から AutoResponse/OnReceived/Unified/Legacy を自動判別し、ResponseMessageFile (templates/) や ScriptFile (scenarios/onreceived/) を必要に応じて展開する。
+- ReceivedEventHandler.ps1 は Unified ルールでは AutoResponse のみ、従来ルールでは AutoResponse → OnReceived の順で Invoke-ConnectionAutoResponse / Invoke-ConnectionOnReceived を呼び出す設計で、GUI からのプロファイル選択をハブ化する。
+- OnReceivedHandler.ps1 と OnReceivedLibrary.ps1 は PowerShell スクリプトが受信データを加工しやすいように、テンプレート読み込み・バイト切り出し・変数管理・Send-MessageData などのヘルパーを提供している。
+- WinForms UI の DataGridView からは AutoResponse/OnReceived/Periodic Send 列を介して Set-ConnectionAutoResponseProfile / Set-ConnectionOnReceivedProfile / Set-ConnectionPeriodicSendProfile を呼び出し、受信パイプラインの設定を都度更新できる。
+
 ## 4. データフォーマット
 
 ### 4.1 インスタンス設定ファイル（instance.psd1）
@@ -900,6 +908,14 @@ ECHO_BACK,Dynamic,受信データ返送,TEXT,${response}
 
 ---
 
+
+### 7.9 既知の技術的課題
+- TcpClient.ps1 と UdpCommunication.ps1 では Invoke-ConnectionAutoResponse の呼び出し位置が受信処理より前にあり、receivedData 変数が未定義のまま実行される恐れがある (TcpServer.ps1 は正しい位置に配置済み)。
+- 受信パイプラインは ReceivedEventHandler.ps1 を経由する設計だが、通信ループから Invoke-ReceivedEvent が呼ばれておらず、OnReceived プロファイルのみを指定した場合は実行されない。
+- UI/MainForm.ps1 の Periodic Send 設定では未実装の Get-InstancePath を参照しており、実行時に例外が発生する。Connection.Variables[InstancePath] を再利用する方向で改修が必要。
+- ScenarioEngine.ps1 の IF アクション (Invoke-IfAction) は警告を出すだけのスタブで、条件分岐を伴うシナリオをまだ実行できない。
+- OnReceived プロファイルを GUI から切り替えても実行フックが存在しないため、Unified ルール経由で Invoke-OnReceivedScript が呼ばれるケース以外では効果が出ない。
+
 ## 8. 拡張性
 
 ### 8.1 カスタムスクリプト
