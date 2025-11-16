@@ -184,13 +184,12 @@ function Add-InstanceGridColumns {
 function New-UiToolbarButton {
     param(
         [string]$Text,
-        [int]$X,
         [System.Drawing.Point]$Location
     )
 
     $button = New-Object System.Windows.Forms.Button
     $button.Location = $Location
-    $button.Size = $Size
+    $button.Size = New-Object System.Drawing.Size(100, 30)
     $button.Text = $Text
 
     return $button
@@ -240,25 +239,25 @@ function Show-MainForm {
     $script:CurrentMainForm = $form
 
     # DataGridView (connection list)
-    $dgvInstances = New-InstanceGrid
+    $dgvInstances = New-UiInstanceGrid -Location (New-Object System.Drawing.Point(10, 50)) -Size (New-Object System.Drawing.Size(1160, 230))
 
     $form.Controls.Add($dgvInstances)
 
     # Toolbar buttons
-    $btnRefresh = New-ToolbarButton -Text "Refresh" -X 10 -Y 10
+    $btnRefresh = New-UiToolbarButton -Text "Refresh" -Location (New-Object System.Drawing.Point(10, 10))
     $form.Controls.Add($btnRefresh)
 
-    $btnConnect = New-ToolbarButton -Text "Connect" -X 120 -Y 10
+    $btnConnect = New-UiToolbarButton -Text "Connect" -Location (New-Object System.Drawing.Point(120, 10))
     $form.Controls.Add($btnConnect)
 
-    $btnDisconnect = New-ToolbarButton -Text "Disconnect" -X 230 -Y 10
+    $btnDisconnect = New-UiToolbarButton -Text "Disconnect" -Location (New-Object System.Drawing.Point(230, 10))
     $form.Controls.Add($btnDisconnect)
 
     # Log area
     $lblLog = New-UiLabel -Text "Connection Log:" -Location (New-Object System.Drawing.Point(10, 290)) -Size (New-Object System.Drawing.Size(200, 20))
     $form.Controls.Add($lblLog)
 
-    $txtLog = New-LogTextBox -Location (New-Object System.Drawing.Point(10, 315)) -Size (New-Object System.Drawing.Size(1165, 335)) -Font (New-Object System.Drawing.Font("Consolas", 9))
+    $txtLog = New-UiLogTextBox -Location (New-Object System.Drawing.Point(10, 315)) -Size (New-Object System.Drawing.Size(1165, 335)) -Font (New-Object System.Drawing.Font("Consolas", 9))
     $form.Controls.Add($txtLog)
 
     # State holders
