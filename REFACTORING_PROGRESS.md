@@ -7,14 +7,14 @@
 
 ## ƒGƒOƒ[ƒNƒeƒBƒuƒTƒ}ƒŠ[
 
-ARCHITECTURE_REFACTORING.md‚Å’ñˆÄ‚³‚ê‚½•ïŠ‡“I‚ÈƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒOŒv‰æ‚É‘Î‚µ‚ÄAÀ‘•‚Í**–ñ98%‚Ìi’»**ó‹µ‚Å‚·B
+ARCHITECTURE_REFACTORING.md‚Å’ñˆÄ‚³‚ê‚½•ïŠ‡“I‚ÈƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒOŒv‰æ‚É‘Î‚µ‚ÄAÀ‘•‚Í**98%‚Ìi’»**ó‹µ‚Å‚·B
 
 ### å‚È¬‰Ê
 ? **ƒtƒF[ƒY0i€”õ’iŠKj**: Š®—¹i100%j  
 ? **ƒtƒF[ƒY1ióMƒCƒxƒ“ƒgC³j**: Š®—¹i100%j  
 ? **ƒtƒF[ƒY2iÚ‘±ŠÇ—‰ü‘Pj**: Š®—¹i100%j  
 ? **ƒtƒF[ƒY3iƒƒbƒZ[ƒWˆ—“‡j**: Š®—¹i100%j  
-? **ƒŒƒKƒV[ƒR[ƒhíœEƒA[ƒLƒeƒNƒ`ƒƒ®—**: Š®—¹i100%j © **NEW**  
+? **ƒŒƒKƒV[ƒR[ƒhíœEƒA[ƒLƒeƒNƒ`ƒƒ®—**: Š®—¹i100%j  
 ? **ƒtƒF[ƒY4iUI‰ü‘Pj**: –¢’…èi0%j
 
 ### d—v‚È”­Œ©
@@ -26,21 +26,22 @@ ARCHITECTURE_REFACTORING.md‚Å’ñˆÄ‚³‚ê‚½•ïŠ‡“I‚ÈƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒOŒv‰æ‚É‘Î‚µ‚ÄAÀ‘
 - **ErrorHandler‚ªÀ‘•‚³‚êAƒGƒ‰[ˆ—‚Ì“ˆê‰»‚ªŠ®—¹**
 - **MessageService‚ªÀ‘•‚³‚êAƒeƒ“ƒvƒŒ[ƒg/ƒVƒiƒŠƒIˆ—‚ğ“‡**
 - **ƒƒbƒZ[ƒW‘—MAPI‚Ì“ˆê‰»Š®—¹iSendTemplate/SendBytes/SendHex/SendTextj**
-- **‚·‚×‚Ä‚ÌƒŒƒKƒV[ƒ‚ƒWƒ…[ƒ‹‚ğíœ‚µAƒNƒŠ[ƒ“‚ÈƒA[ƒLƒeƒNƒ`ƒƒ‚ÉˆÚs** © **NEW**
-- **ƒtƒHƒ‹ƒ_\¬‚ğ®—‚µA–¾Šm‚ÈÓ–±•ª—£‚ğÀŒ»** © **NEW**
+- **‚·‚×‚Ä‚ÌƒŒƒKƒV[ƒ‚ƒWƒ…[ƒ‹‚ğíœ‚µAƒNƒŠ[ƒ“‚ÈƒA[ƒLƒeƒNƒ`ƒƒ‚ÉˆÚs**
+- **ƒtƒHƒ‹ƒ_\¬‚ğ®—‚µA–¾Šm‚ÈÓ–±•ª—£‚ğÀŒ»**
+- **‚·‚×‚Ä‚Ìd—v‚ÈŠÖ”‚ªVƒA[ƒLƒeƒNƒ`ƒƒ‚ÉˆÚAÏ‚İ**
 
 ### ÅV‚Ì•ÏXi2025-11-17 - ‘æ5‰ñj
-? **ƒŒƒKƒV[ƒR[ƒh‚ÌŠ®‘Síœ**:
-- `Modules/TcpClient.ps1` - íœiTcpClientAdapter‚É’u‚«Š·‚¦Ï‚İj
-- `Modules/TcpServer.ps1` - íœiTcpServerAdapter‚É’u‚«Š·‚¦Ï‚İj
-- `Modules/UdpCommunication.ps1` - íœiUdpAdapter‚É’u‚«Š·‚¦Ï‚İj
-- `Modules/AutoResponse.ps1` - íœiReceivedEventPipeline‚É“‡Ï‚İj
-- `Modules/OnReceivedHandler.ps1` - íœiReceivedEventPipeline‚É“‡Ï‚İj
-- `Modules/MessageHandler.ps1` - íœiMessageService‚É’u‚«Š·‚¦Ï‚İj
-- `Modules/ScenarioEngine.ps1` - íœiMessageService‚É’u‚«Š·‚¦Ï‚İj
-- `Modules/QuickSender.ps1` - íœiMessageService‚É’u‚«Š·‚¦Ï‚İj
-- `Modules/PeriodicSender.ps1` - íœiMessageService‚É’u‚«Š·‚¦Ï‚İj
-- `Modules/ReceivedEventHandler.ps1` - íœiReceivedEventPipeline‚É’u‚«Š·‚¦Ï‚İj
+? **ƒŒƒKƒV[ƒR[ƒh‚ÌŠ®‘Síœ‚ÆŠÖ”ˆÚA**:
+- `Modules/TcpClient.ps1` ¨ `Core/Infrastructure/Adapters/TcpClientAdapter.ps1`
+- `Modules/TcpServer.ps1` ¨ `Core/Infrastructure/Adapters/TcpServerAdapter.ps1`
+- `Modules/UdpCommunication.ps1` ¨ `Core/Infrastructure/Adapters/UdpAdapter.ps1`
+- `Modules/AutoResponse.ps1` ¨ `Core/Domain/ReceivedEventPipeline.ps1`
+- `Modules/OnReceivedHandler.ps1` ¨ `Core/Domain/ConnectionManager.ps1` (ŠÖ”ˆÚA)
+- `Modules/MessageHandler.ps1` ¨ `Core/Domain/MessageService.ps1`
+- `Modules/ScenarioEngine.ps1` ¨ `Core/Domain/MessageService.ps1`
+- `Modules/QuickSender.ps1` ¨ `Core/Application/InstanceManager.ps1` (ŠÖ”ˆÚA)
+- `Modules/PeriodicSender.ps1` ¨ `Core/Domain/ConnectionManager.ps1` (ŠÖ”ˆÚA)
+- `Modules/ReceivedEventHandler.ps1` ¨ `Core/Domain/ReceivedEventPipeline.ps1`
 
 ? **ƒtƒHƒ‹ƒ_\¬‚Ì®—**:
 - `Modules/` ƒtƒHƒ‹ƒ_‚ğíœ‚µA‚·‚×‚Ä‚Ìƒ‚ƒWƒ…[ƒ‹‚ğ“KØ‚È‘w‚ÉˆÚ“®
