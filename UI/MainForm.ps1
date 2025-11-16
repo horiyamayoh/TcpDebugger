@@ -50,9 +50,13 @@ function New-UiMainForm {
 }
 
 function New-InstanceGrid {
+    param(
+        [System.Drawing.Point]$Location,
+        [System.Drawing.Size]$Size
+    )
     $dgvInstances = New-Object System.Windows.Forms.DataGridView
-    $dgvInstances.Location = New-Object System.Drawing.Point(10, 50)
-    $dgvInstances.Size = New-Object System.Drawing.Size(1165, 230)
+    $dgvInstances.Location = $Location
+    $dgvInstances.Size = $Size
     $dgvInstances.AllowUserToAddRows = $false
     $dgvInstances.AllowUserToDeleteRows = $false
     $dgvInstances.AllowUserToResizeRows = $false
