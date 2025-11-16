@@ -181,7 +181,7 @@ function Add-InstanceGridColumns {
     $DataGridView.Columns.Add($colId) | Out-Null
 }
 
-function New-ToolbarButton {
+function New-UiToolbarButton {
     param(
         [string]$Text,
         [int]$X,
