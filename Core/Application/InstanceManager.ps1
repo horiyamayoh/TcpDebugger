@@ -347,3 +347,51 @@ function Get-InstancePeriodicSendProfiles {
 
 
 
+
+function Get-QuickDataCatalog {
+    <#
+    .SYNOPSIS
+    インスタンスのQuick Dataカタログを取得（UI用）
+    
+    .DESCRIPTION
+    templates/databank.csvを読み込み、UIのドロップダウンで使用できる形式で返す
+    
+    .PARAMETER InstancePath
+    インスタンスのルートパス
+    
+    .OUTPUTS
+    Path: データバンクファイルのパス
+    Entries: DataIDとDescriptionのリスト
+    #>
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$InstancePath
+    )
+
+    $databankPath = Join-Path $InstancePath "templates\databank.csv"
+
+    if (-not (Test-Path -LiteralPath $databankPath)) {
+        return [PSCustomObject]@{
+            Path = $null
+            Entries = @()
+        }
+    }
+
+    # Get-InstanceDataBankを使用してキャッシュ付きで取得
+    $items = Get-InstanceDataBank -InstancePath $InstancePath
+
+    # UI用の形式に変換
+    $entries = @()
+    foreach ($item in $items) {
+        $entries += [PSCustomObject]@{
+            DataID = $item.DataID
+            Description = if ($item.Description) { $item.Description } else { $item.DataID }
+            Display = if ($item.Description) { "$($item.DataID) - $($item.Description)" } else { $item.DataID }
+        }
+    }
+
+    return [PSCustomObject]@{
+        Path = $databankPath
+        Entries = $entries
+    }
+}
