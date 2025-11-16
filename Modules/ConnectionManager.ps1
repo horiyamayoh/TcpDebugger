@@ -21,6 +21,7 @@ class ConnectionContext {
     [System.Threading.Thread]$Thread
     [System.Threading.CancellationTokenSource]$CancellationSource
     [hashtable]$ScenarioTimers
+    [System.Collections.Generic.List[object]]$PeriodicTimers
     [hashtable]$Variables  # シナリオ変数スコープ
     [System.Collections.ArrayList]$SendQueue
     [System.Collections.ArrayList]$RecvBuffer
@@ -31,6 +32,7 @@ class ConnectionContext {
     
     ConnectionContext() {
         $this.ScenarioTimers = [System.Collections.Hashtable]::Synchronized(@{})
+    $this.PeriodicTimers = New-Object System.Collections.Generic.List[object]
         $this.Variables = [System.Collections.Hashtable]::Synchronized(@{})
         $this.SendQueue = [System.Collections.ArrayList]::Synchronized((New-Object System.Collections.ArrayList))
         $this.RecvBuffer = [System.Collections.ArrayList]::Synchronized((New-Object System.Collections.ArrayList))
@@ -164,7 +166,12 @@ function Start-Connection {
         $conn.LastActivity = Get-Date
         
         # 定周期送信を開始
-        if ($conn.PeriodicSendProfile -and (Test-Path -LiteralPath $conn.PeriodicSendProfile)) {
+        $periodicProfilePath = $null
+        if ($conn.Variables.ContainsKey('PeriodicSendProfilePath')) {
+            $periodicProfilePath = $conn.Variables['PeriodicSendProfilePath']
+        }
+        
+        if ($periodicProfilePath -and (Test-Path -LiteralPath $periodicProfilePath)) {
             try {
                 $instancePath = if ($conn.Variables -and $conn.Variables.ContainsKey('InstancePath')) {
                     $conn.Variables['InstancePath']
@@ -173,7 +180,7 @@ function Start-Connection {
                 }
                 
                 if ($instancePath) {
-                    Start-PeriodicSend -ConnectionId $ConnectionId -RuleFilePath $conn.PeriodicSendProfile -InstancePath $instancePath
+                    Start-PeriodicSend -ConnectionId $ConnectionId -RuleFilePath $periodicProfilePath -InstancePath $instancePath
                 }
             } catch {
                 Write-Warning "[ConnectionManager] Failed to start periodic send: $_"

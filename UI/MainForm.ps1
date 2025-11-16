@@ -173,9 +173,11 @@ function Show-MainForm {
     $form.Controls.Add($txtLog)
 
     # State holders
-    $suppressScenarioEvent = $false
+    $script:suppressScenarioEvent = $false
     $gridEditingInProgress = $false
     $pendingComboDropDownColumn = $null
+    $script:suppressOnReceivedEvent = $false
+    $script:suppressPeriodicSendEvent = $false
 
     $getSelectedConnection = {
         if ($dgvInstances.SelectedRows.Count -eq 0) {
@@ -272,7 +274,7 @@ function Show-MainForm {
     $dgvInstances.Add_CellValueChanged({
         param($sender, $args)
 
-        if ($suppressScenarioEvent) {
+        if ($script:suppressScenarioEvent) {
             return
         }
 
@@ -333,11 +335,11 @@ function Show-MainForm {
             }
 
             if ($currentProfileKey -ne $selectedKey) {
-                $suppressScenarioEvent = $true
+                $script:suppressScenarioEvent = $true
                 try {
                     $cell.Value = $currentProfileKey
                 } finally {
-                    $suppressScenarioEvent = $false
+                    $script:suppressScenarioEvent = $false
                 }
                 $sender.InvalidateCell($cell)
 
@@ -368,11 +370,11 @@ function Show-MainForm {
             }
         } catch {
             if ($currentProfileKey -ne $selectedKey) {
-                $suppressScenarioEvent = $true
+                $script:suppressScenarioEvent = $true
                 try {
                     $cell.Value = $currentProfileKey
                 } finally {
-                    $suppressScenarioEvent = $false
+                    $script:suppressScenarioEvent = $false
                 }
                 $sender.InvalidateCell($cell)
             }
@@ -404,21 +406,28 @@ function Show-MainForm {
             return
         }
 
-        $tagData = $row.Tag
-        $currentProfileKey = if ($tagData -is [System.Collections.IDictionary] -and $tagData.ContainsKey("OnReceivedProfileKey")) {
-            $tagData["OnReceivedProfileKey"]
-        } else {
-            $null
+        $tagData = $cell.Tag
+        $mapping = $null
+        $currentProfileKey = ""
+        if ($tagData -is [System.Collections.IDictionary]) {
+            if ($tagData.ContainsKey("Mapping")) {
+                $mapping = $tagData["Mapping"]
+            }
+            if ($tagData.ContainsKey("OnReceivedProfileKey")) {
+                $currentProfileKey = [string]$tagData["OnReceivedProfileKey"]
+            }
         }
 
-        $selectedKey = $cell.Value
+        $selectedKey = if ($cell.Value) { [string]$cell.Value } else { "" }
         if ($selectedKey -eq $currentProfileKey) {
             return
         }
 
         $conn = $Global:Connections[$connId]
-        $dataSource = $cell.OwningColumn.DataSource
-        $entry = $dataSource | Where-Object { $_.Key -eq $selectedKey } | Select-Object -First 1
+        $entry = $null
+        if ($mapping -and $mapping.ContainsKey($selectedKey)) {
+            $entry = $mapping[$selectedKey]
+        }
 
         $profileName = $null
         $profilePath = $null
@@ -429,16 +438,16 @@ function Show-MainForm {
 
         try {
             Set-ConnectionOnReceivedProfile -ConnectionId $connId -ProfileName $profileName -ProfilePath $profilePath | Out-Null
-            if ($tagData -is [System.Collections.IDictionary] -and $tagData.ContainsKey("OnReceivedProfileKey")) {
+            if ($tagData -is [System.Collections.IDictionary]) {
                 $tagData["OnReceivedProfileKey"] = $selectedKey
             }
         } catch {
             if ($currentProfileKey -ne $selectedKey) {
-                $suppressOnReceivedEvent = $true
+                $script:suppressOnReceivedEvent = $true
                 try {
                     $cell.Value = $currentProfileKey
                 } finally {
-                    $suppressOnReceivedEvent = $false
+                    $script:suppressOnReceivedEvent = $false
                 }
                 $sender.InvalidateCell($cell)
             }
@@ -471,21 +480,28 @@ function Show-MainForm {
             return
         }
 
-        $tagData = $row.Tag
-        $currentProfileKey = if ($tagData -is [System.Collections.IDictionary] -and $tagData.ContainsKey("PeriodicSendProfileKey")) {
-            $tagData["PeriodicSendProfileKey"]
-        } else {
-            $null
+        $tagData = $cell.Tag
+        $mapping = $null
+        $currentProfileKey = ""
+        if ($tagData -is [System.Collections.IDictionary]) {
+            if ($tagData.ContainsKey("Mapping")) {
+                $mapping = $tagData["Mapping"]
+            }
+            if ($tagData.ContainsKey("PeriodicSendProfileKey")) {
+                $currentProfileKey = [string]$tagData["PeriodicSendProfileKey"]
+            }
         }
 
-        $selectedKey = $cell.Value
+        $selectedKey = if ($cell.Value) { [string]$cell.Value } else { "" }
         if ($selectedKey -eq $currentProfileKey) {
             return
         }
 
         $conn = $Global:Connections[$connId]
-        $dataSource = $cell.OwningColumn.DataSource
-        $entry = $dataSource | Where-Object { $_.Key -eq $selectedKey } | Select-Object -First 1
+        $entry = $null
+        if ($mapping -and $mapping.ContainsKey($selectedKey)) {
+            $entry = $mapping[$selectedKey]
+        }
 
         $profilePath = $null
         if ($entry -and $entry.Type -eq "Profile") {
@@ -493,18 +509,26 @@ function Show-MainForm {
         }
 
         try {
-            $instancePath = Get-InstancePath -InstanceName $conn.InstanceName
+            $instancePath = $null
+            if ($conn.Variables.ContainsKey('InstancePath')) {
+                $instancePath = $conn.Variables['InstancePath']
+            }
+
+            if (-not $instancePath) {
+                throw "Instance path is not available for this connection."
+            }
+
             Set-ConnectionPeriodicSendProfile -ConnectionId $connId -ProfilePath $profilePath -InstancePath $instancePath | Out-Null
-            if ($tagData -is [System.Collections.IDictionary] -and $tagData.ContainsKey("PeriodicSendProfileKey")) {
+            if ($tagData -is [System.Collections.IDictionary]) {
                 $tagData["PeriodicSendProfileKey"] = $selectedKey
             }
         } catch {
             if ($currentProfileKey -ne $selectedKey) {
-                $suppressPeriodicSendEvent = $true
+                $script:suppressPeriodicSendEvent = $true
                 try {
                     $cell.Value = $currentProfileKey
                 } finally {
-                    $suppressPeriodicSendEvent = $false
+                    $script:suppressPeriodicSendEvent = $false
                 }
                 $sender.InvalidateCell($cell)
             }
@@ -788,7 +812,9 @@ function Update-InstanceList {
         $row = $DataGridView.Rows[$rowIndex]
 
         try {
-            $suppressScenarioEvent = $true
+            $script:suppressScenarioEvent = $true
+            $script:suppressOnReceivedEvent = $true
+            $script:suppressPeriodicSendEvent = $true
 
             $items = New-Object System.Collections.ArrayList
             $mapping = @{}
@@ -891,7 +917,9 @@ function Update-InstanceList {
             $scenarioCell = New-Object System.Windows.Forms.DataGridViewComboBoxCell
             $scenarioCell.DisplayMember = "Display"
             $scenarioCell.ValueMember = "Key"
-            $scenarioCell.DataSource = $items
+            foreach ($item in $items) {
+                [void]$scenarioCell.Items.Add($item)
+            }
             $scenarioCell.Value = $currentKey
             $scenarioCell.Tag = @{
                 Mapping    = $mapping
@@ -969,7 +997,9 @@ function Update-InstanceList {
             $onReceivedCell = New-Object System.Windows.Forms.DataGridViewComboBoxCell
             $onReceivedCell.DisplayMember = "Display"
             $onReceivedCell.ValueMember = "Key"
-            $onReceivedCell.DataSource = $onReceivedItems
+            foreach ($item in $onReceivedItems) {
+                [void]$onReceivedCell.Items.Add($item)
+            }
             $onReceivedCell.Value = $currentOnReceivedKey
             $onReceivedCell.Tag = @{
                 Mapping              = $onReceivedMapping
@@ -978,6 +1008,15 @@ function Update-InstanceList {
             $row.Cells["OnReceived"] = $onReceivedCell
 
             # Periodic Send profiles
+            $currentPeriodicSendProfile = ""
+            $currentPeriodicSendPath = $null
+            if ($conn.Variables.ContainsKey('PeriodicSendProfile')) {
+                $currentPeriodicSendProfile = $conn.Variables['PeriodicSendProfile']
+            }
+            if ($conn.Variables.ContainsKey('PeriodicSendProfilePath')) {
+                $currentPeriodicSendPath = $conn.Variables['PeriodicSendProfilePath']
+            }
+
             $periodicSendProfiles = @()
             if ($instancePath) {
                 try {
@@ -1014,14 +1053,33 @@ function Update-InstanceList {
                 $periodicSendMapping[$key] = $entry
             }
 
+            $currentPeriodicSendKey = ""
+            if ($currentPeriodicSendProfile) {
+                $currentPeriodicSendKey = "periodic::$currentPeriodicSendProfile"
+                if (-not $periodicSendMapping.ContainsKey($currentPeriodicSendKey)) {
+                    $displayName = if ($currentPeriodicSendPath) { "$currentPeriodicSendProfile (missing)" } else { $currentPeriodicSendProfile }
+                    $entry = [PSCustomObject]@{
+                        Display = $displayName
+                        Key     = $currentPeriodicSendKey
+                        Type    = "Profile"
+                        Name    = $currentPeriodicSendProfile
+                        Path    = $currentPeriodicSendPath
+                    }
+                    [void]$periodicSendItems.Add($entry)
+                    $periodicSendMapping[$currentPeriodicSendKey] = $entry
+                }
+            }
+
             $periodicSendCell = New-Object System.Windows.Forms.DataGridViewComboBoxCell
             $periodicSendCell.DisplayMember = "Display"
             $periodicSendCell.ValueMember = "Key"
-            $periodicSendCell.DataSource = $periodicSendItems
-            $periodicSendCell.Value = ""
+            foreach ($item in $periodicSendItems) {
+                [void]$periodicSendCell.Items.Add($item)
+            }
+            $periodicSendCell.Value = $currentPeriodicSendKey
             $periodicSendCell.Tag = @{
                 Mapping              = $periodicSendMapping
-                PeriodicSendProfileKey = ""
+                PeriodicSendProfileKey = $currentPeriodicSendKey
             }
             $row.Cells["PeriodicSend"] = $periodicSendCell
 
@@ -1066,7 +1124,9 @@ function Update-InstanceList {
                 }
             }
 
-            $quickDataCell.DataSource = $dataSource
+            foreach ($item in $dataSource) {
+                [void]$quickDataCell.Items.Add($item)
+            }
             $quickDataCell.Value = ""
             $quickDataCell.Tag = @{
                 DataBankCount = $dataBankEntries.Count
@@ -1103,7 +1163,9 @@ function Update-InstanceList {
                 $actionMapping[$actionEntry.Key] = $actionEntry
             }
 
-            $quickActionCell.DataSource = $actionSource
+            foreach ($item in $actionSource) {
+                [void]$quickActionCell.Items.Add($item)
+            }
             $quickActionCell.Value = ""
             $quickActionCell.Tag = @{
                 Mapping = $actionMapping
@@ -1112,7 +1174,9 @@ function Update-InstanceList {
         } catch {
             $row.Cells["Scenario"].Value = ""
         } finally {
-            $suppressScenarioEvent = $false
+            $script:suppressScenarioEvent = $false
+            $script:suppressOnReceivedEvent = $false
+            $script:suppressPeriodicSendEvent = $false
         }
 
         switch ($conn.Status) {

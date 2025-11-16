@@ -134,32 +134,24 @@ function Start-PeriodicSend {
             $conn = $Global:Connections[$connId]
             
             # 接続が切断されている場合はスキップ
-            if (-not $conn.Connected) {
+            if ($conn.Status -ne "CONNECTED") {
                 return
             }
             
             try {
-                # メッセージテンプレートを読み込み
-                $template = Get-MessageTemplate -FilePath $messageFile
-                
-                if (-not $template) {
-                    Write-Warning "[PeriodicSender] Failed to load template: $messageFile"
+                $templates = Get-MessageTemplateCache -FilePath $messageFile -ThrowOnMissing
+                if (-not $templates -or -not $templates.ContainsKey('DEFAULT')) {
+                    Write-Warning "[PeriodicSender] DEFAULT template not found in: $messageFile"
                     return
                 }
-                
-                # HEX文字列をバイト配列に変換
-                $hexString = $template -replace '\s', ''
-                $bytes = New-Object System.Collections.Generic.List[byte]
-                
-                for ($i = 0; $i -lt $hexString.Length; $i += 2) {
-                    if ($i + 1 -lt $hexString.Length) {
-                        $hexByte = $hexString.Substring($i, 2)
-                        $bytes.Add([Convert]::ToByte($hexByte, 16))
-                    }
+
+                $template = $templates['DEFAULT']
+                if (-not $template -or -not $template.Format) {
+                    Write-Warning "[PeriodicSender] Template format is empty: $messageFile"
+                    return
                 }
-                
-                # 送信
-                $byteArray = $bytes.ToArray()
+
+                $byteArray = ConvertTo-ByteArray -Data $template.Format -Encoding 'HEX'
                 Send-Data -ConnectionId $connId -Data $byteArray
                 
                 Write-Host "[PeriodicSender] [$($conn.DisplayName)] Sent periodic message '$ruleName': $($byteArray.Length) bytes" -ForegroundColor Cyan
@@ -259,12 +251,31 @@ function Set-ConnectionPeriodicSendProfile {
     # 既存のタイマーを停止
     Stop-PeriodicSend -ConnectionId $ConnectionId
     
-    # プロファイルパスを保存
-    $connection.PeriodicSendProfile = $ProfilePath
+    # プロファイル情報をクリアまたは設定
+    if ([string]::IsNullOrWhiteSpace($ProfilePath)) {
+        $connection.Variables.Remove('PeriodicSendProfile')
+        $connection.Variables.Remove('PeriodicSendProfilePath')
+        Write-Host "[PeriodicSender] Cleared periodic send profile for $($connection.DisplayName)" -ForegroundColor Yellow
+        return
+    }
+    
+    if (-not (Test-Path -LiteralPath $ProfilePath)) {
+        throw "Periodic send profile not found: $ProfilePath"
+    }
+    
+    # プロファイル名を抽出（ファイル名からベース名を取得）
+    $profileName = [System.IO.Path]::GetFileNameWithoutExtension($ProfilePath)
+    $resolved = (Resolve-Path -LiteralPath $ProfilePath).Path
+    
+    # Variables に保存
+    $connection.Variables['PeriodicSendProfile'] = $profileName
+    $connection.Variables['PeriodicSendProfilePath'] = $resolved
+    
+    Write-Host "[PeriodicSender] Profile '$profileName' set for $($connection.DisplayName)" -ForegroundColor Green
     
     # プロファイルが指定されている場合は開始
-    if (-not [string]::IsNullOrWhiteSpace($ProfilePath) -and $connection.Connected) {
-        Start-PeriodicSend -ConnectionId $ConnectionId -RuleFilePath $ProfilePath -InstancePath $InstancePath
+    if ($connection.Status -eq "CONNECTED") {
+        Start-PeriodicSend -ConnectionId $ConnectionId -RuleFilePath $resolved -InstancePath $InstancePath
     }
 }
 
