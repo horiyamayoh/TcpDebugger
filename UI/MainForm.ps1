@@ -168,6 +168,7 @@ function Show-MainForm {
 
     # State holders
     $suppressScenarioEvent = $false
+    $gridEditingInProgress = $false
 
     $getSelectedConnection = {
         if ($dgvInstances.SelectedRows.Count -eq 0) {
@@ -191,6 +192,18 @@ function Show-MainForm {
     }
 
     # Events
+    $dgvInstances.Add_CellBeginEdit({
+        $gridEditingInProgress = $true
+    })
+
+    $dgvInstances.Add_CellEndEdit({
+        $gridEditingInProgress = $false
+    })
+
+    $dgvInstances.Add_Leave({
+        $gridEditingInProgress = $false
+    })
+
     $btnRefresh.Add_Click({
         Update-InstanceList -DataGridView $dgvInstances
     })
@@ -592,7 +605,9 @@ function Show-MainForm {
     $timer = New-Object System.Windows.Forms.Timer
     $timer.Interval = 1000
     $timer.Add_Tick({
-        Update-InstanceList -DataGridView $dgvInstances
+        if (-not $gridEditingInProgress -and -not $dgvInstances.IsCurrentCellInEditMode) {
+            Update-InstanceList -DataGridView $dgvInstances
+        }
         Update-LogDisplay -TextBox $txtLog
     })
     $timer.Start()
