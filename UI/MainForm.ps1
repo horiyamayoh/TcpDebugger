@@ -67,6 +67,7 @@ function Show-MainForm {
     $colAutoResponse.Name = "Scenario"
     $colAutoResponse.DisplayMember = "Display"
     $colAutoResponse.ValueMember = "Key"
+    $colAutoResponse.ValueType = [string]
     $colAutoResponse.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
     $colAutoResponse.FillWeight = 140
     $dgvInstances.Columns.Add($colAutoResponse) | Out-Null
@@ -76,6 +77,7 @@ function Show-MainForm {
     $colOnReceived.Name = "OnReceived"
     $colOnReceived.DisplayMember = "Display"
     $colOnReceived.ValueMember = "Key"
+    $colOnReceived.ValueType = [string]
     $colOnReceived.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
     $colOnReceived.FillWeight = 140
     $dgvInstances.Columns.Add($colOnReceived) | Out-Null
@@ -85,6 +87,7 @@ function Show-MainForm {
     $colPeriodicSend.Name = "PeriodicSend"
     $colPeriodicSend.DisplayMember = "Display"
     $colPeriodicSend.ValueMember = "Key"
+    $colPeriodicSend.ValueType = [string]
     $colPeriodicSend.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
     $colPeriodicSend.FillWeight = 140
     $dgvInstances.Columns.Add($colPeriodicSend) | Out-Null
@@ -94,6 +97,7 @@ function Show-MainForm {
     $colQuickData.Name = "QuickData"
     $colQuickData.DisplayMember = "Display"
     $colQuickData.ValueMember = "Key"
+    $colQuickData.ValueType = [string]
     $colQuickData.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
     $colQuickData.FillWeight = 170
     $dgvInstances.Columns.Add($colQuickData) | Out-Null
@@ -111,6 +115,7 @@ function Show-MainForm {
     $colQuickAction.Name = "QuickAction"
     $colQuickAction.DisplayMember = "Display"
     $colQuickAction.ValueMember = "Key"
+    $colQuickAction.ValueType = [string]
     $colQuickAction.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
     $colQuickAction.FillWeight = 170
     $dgvInstances.Columns.Add($colQuickAction) | Out-Null
@@ -302,6 +307,12 @@ function Show-MainForm {
             $mapping = $tagData
         }
 
+        if (-not $currentProfileKey) {
+            $currentProfileKey = ""
+        } else {
+            $currentProfileKey = [string]$currentProfileKey
+        }
+
         $selectedKey = if ($cell.Value) { [string]$cell.Value } else { "" }
         $entry = $null
         if ($mapping -and $mapping.ContainsKey($selectedKey)) {
@@ -329,6 +340,15 @@ function Show-MainForm {
                     $suppressScenarioEvent = $false
                 }
                 $sender.InvalidateCell($cell)
+
+                if ($sender.IsCurrentCellInEditMode) {
+                    try {
+                        $sender.CancelEdit()
+                        $sender.EndEdit()
+                    } catch {
+                        # ignore edit cancellation failures
+                    }
+                }
             }
 
             return
@@ -657,6 +677,18 @@ function Show-MainForm {
         }
 
         $pendingComboDropDownColumn = $null
+    })
+
+    $dgvInstances.Add_DataError({
+        param($sender, $eventArgs)
+
+        if ($eventArgs) {
+            $eventArgs.ThrowException = $false
+            $eventArgs.Cancel = $true
+        }
+
+        $context = if ($eventArgs) { $eventArgs.Context } else { "Unknown" }
+        Write-Verbose ("[UI] DataGridView error suppressed: {0}" -f $context)
     })
 
     # Timer for periodic refresh
