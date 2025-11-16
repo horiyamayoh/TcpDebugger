@@ -86,18 +86,14 @@ ARCHITECTURE_REFACTORING.md‚Å’ñˆÄ‚³‚ê‚½•ïŠ‡“I‚ÈƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒOŒv‰æ‚É‘Î‚µ‚ÄAÀ‘
 
 **À‘•‚Ì“Á’¥:**
 ```powershell
-# ’ÊMƒ‚ƒWƒ…[ƒ‹“à‚Å‚ÌÀ‘•ƒpƒ^[ƒ“i3‚Â‚·‚×‚Ä“ˆêj
-if ($Global:ReceivedEventPipeline) {
-    $Global:ReceivedEventPipeline.ProcessEvent($connId, $receivedData, $metadata)
-} else {
-    # ƒtƒH[ƒ‹ƒoƒbƒN: ‹ŒÀ‘•‚ğg—p
-    Invoke-ReceivedEvent -ConnectionId $connId -ReceivedData $receivedData
-}
+# ’ÊMƒAƒ_ƒvƒ^[“à‚Å‚ÌÀ‘•ƒpƒ^[ƒ“iŠ®‘SˆÚsÏ‚İj
+# ReceivedEventPipeline‚ªí‚Ég—p‚³‚ê‚éiServiceContainer‚É‚æ‚éˆË‘¶«’“üj
+$this.ReceivedEventPipeline.ProcessEvent($connId, $receivedData, $metadata)
 ```
 
-**‰Û‘è:**
-- ReceivedEventPipeline‚ª‘¶İ‚µ‚È‚¢ê‡‚ÌƒtƒH[ƒ‹ƒoƒbƒN‚ª‹ŒÀ‘•ˆË‘¶
-- ‹Œ`Modules/ReceivedEventHandler.ps1`‚ª•À‘¶‚µ‚Ä‚¨‚èA“ñdŠÇ—ó‘Ô
+**Š®—¹ƒ^ƒXƒN:**
+- ? ReceivedEventPipeline‚Ö‚ÌŠ®‘SˆÚsiƒtƒH[ƒ‹ƒoƒbƒNƒR[ƒhíœÏ‚İj
+- ? VƒA[ƒLƒeƒNƒ`ƒƒ‚Ì‚İ‚ğg—piServiceContainer•K{j
 
 ---
 
@@ -268,29 +264,29 @@ function Start-TcpClientConnection {
 
 | •Ï”–¼ | g—p‰ÓŠ | ˆÚsó‹µ |
 |--------|---------|---------|
-| `$Global:Connections` | Modules/*.ps1iƒtƒH[ƒ‹ƒoƒbƒN—pj | ? VƒA[ƒLƒeƒNƒ`ƒƒ‚ÌƒtƒH[ƒ‹ƒoƒbƒN‚Æ‚µ‚Ä•Û |
+| `$Global:Connections` | ConnectionService“à•”‚Å‚Ì‚İg—p | ? VƒA[ƒLƒeƒNƒ`ƒƒ‚Å“à•”—˜—p‚Ì‚İ |
 | `$Global:ConnectionService` | TcpDebugger.ps1, UI/MainForm.ps1, Modules/ConnectionManager.ps1, Modules/Tcp*.ps1 | ? VƒVƒXƒeƒ€‚ÅÏ‹É“I‚Ég—p’† |
-| `$Global:ReceivedEventPipeline` | TcpClient/Server/UDPi—Dæg—pj | ? VƒVƒXƒeƒ€‚ÅÏ‹É“I‚Ég—p’† |
+| `$Global:ReceivedEventPipeline` | TcpClient/Server/UDP ƒAƒ_ƒvƒ^[ | ? VƒVƒXƒeƒ€‚ÅÏ‹É“I‚Ég—p’† |
 | `$Global:ServiceContainer` | TcpDebugger.ps1, Modules/Tcp*.ps1, Modules/Udp*.ps1 | ? DI ƒRƒ“ƒeƒi‚Æ‚µ‚Äg—p’† |
+| `$Global:MessageService` | TcpDebugger.ps1, Modules/MessageHandler.ps1“™ | ? ƒƒbƒZ[ƒWˆ—“‡API‚Æ‚µ‚Äg—p’† |
 
-**ˆÚsí—ª‚Ìi“Wi2025-11-16j:**
-’ÊMƒ‚ƒWƒ…[ƒ‹iTcpClient/TcpServer/UDPj‚ªVƒA[ƒLƒeƒNƒ`ƒƒ‚Ìƒ‰ƒbƒp[‚ÉŠ®‘SˆÚs:
+**ˆÚsŠ®—¹i2025-11-16j:**
+’ÊMƒ‚ƒWƒ…[ƒ‹iTcpClient/TcpServer/UDPj‚ªVƒA[ƒLƒeƒNƒ`ƒƒ‚Ìƒ‰ƒbƒp[‚ÉŠ®‘SˆÚsiƒtƒH[ƒ‹ƒoƒbƒNíœÏ‚İj:
 ```powershell
-# V‚µ‚¢ƒpƒ^[ƒ“iModules/TcpClient.ps1j
+# Œ»İ‚Ìƒpƒ^[ƒ“iModules/TcpClient.ps1j
 function Start-TcpClientConnection {
-    # VƒA[ƒLƒeƒNƒ`ƒƒ‚ğ—Dæg—p
-    if ($Global:ServiceContainer) {
-        $adapter = $Global:ServiceContainer.Resolve('TcpClientAdapter')
-        $adapter.Start($Connection.Id)
-        return
+    # ServiceContainer•K{
+    if (-not $Global:ServiceContainer) {
+        throw "ServiceContainer is not initialized."
     }
     
-    # ƒtƒH[ƒ‹ƒoƒbƒN: ‹ŒÀ‘•iŒã•ûŒİŠ·«‚Ì‚½‚ß•Ûj
-    # ... ƒŒƒKƒV[ƒR[ƒh ...
+    # ƒAƒ_ƒvƒ^[‚ğæ“¾‚µ‚ÄÀs
+    $adapter = $Global:ServiceContainer.Resolve('TcpClientAdapter')
+    $adapter.Start($Connection.Id)
 }
 ```
 
-Œ»İ‚à `$Global:ConnectionService` ‚ª“à•”‚Å `$Global:Connections` ‚ğ‹¤—L‚·‚é‚±‚Æ‚ÅŠ®‘S‚ÈŒİŠ·«‚ğ•Û:
+`$Global:ConnectionService` ‚ª“à•”‚Å `$Global:Connections` ‚ğg—p‚·‚é‚±‚Æ‚ÅAŠù‘¶‚ÌUIƒR[ƒh‚Æ‚ÌŒİŠ·«‚ğ•Û:
 ```powershell
 # TcpDebugger.ps1 ‚Å‚Ì‰Šú‰»
 $Global:Connections = [System.Collections.Hashtable]::Synchronized(@{})
@@ -299,77 +295,47 @@ $Global:ConnectionService = [ConnectionService]::new($logger, $Global:Connection
 
 ---
 
-## ?? ”­Œ©‚³‚ê‚½–â‘è“_
+## ?? ƒA[ƒLƒeƒNƒ`ƒƒˆÚsŠ®—¹ó‹µ
 
-### 1. “ñdƒA[ƒLƒeƒNƒ`ƒƒ–â‘èiÅ—Dæj
+### VƒA[ƒLƒeƒNƒ`ƒƒ‚Ö‚ÌŠ®‘SˆÚs’B¬i2025-11-16j
 
-**–â‘è:** V‹Œ‚ÌƒA[ƒLƒeƒNƒ`ƒƒ‚ª•À‘¶‚µA‚Ç‚¿‚ç‚ğg‚¤‚×‚«‚©•s–¾ŠmB
+**’B¬“à—e:**
+- ? ‚·‚×‚Ä‚Ì’ÊMˆ—‚ªVƒAƒ_ƒvƒ^[‚ÉˆÚsŠ®—¹iƒtƒH[ƒ‹ƒoƒbƒNƒR[ƒhíœÏ‚İj
+- ? ReceivedEventPipeline‚ª—Bˆê‚ÌóMƒCƒxƒ“ƒgˆ—ƒGƒ“ƒWƒ“‚Æ‚µ‚ÄŠm—§
+- ? MessageService‚É‚æ‚éƒƒbƒZ[ƒWˆ—‚ÌŠ®‘S“‡
+- ? ServiceContainer‚É‚æ‚éˆË‘¶«’“ü‚ÌŠ®‘SÀ‘•
+- ? ‹ŒÀ‘•‚Ö‚ÌˆË‘¶‚ğŠ®‘S‚É”rœ
 
-**‰e‹¿‰ÓŠ:**
-- óMƒCƒxƒ“ƒgˆ—: `ReceivedEventHandler.ps1` (‹Œ) vs `ReceivedEventPipeline.ps1` (V)
-- ƒ‹[ƒ‹ˆ—: `AutoResponse.ps1` + `OnReceivedHandler.ps1` (‹Œ) vs `RuleProcessor.ps1` (V)
-- Ú‘±ŠÇ—: `$Global:Connections` ’¼ÚƒAƒNƒZƒX (‹Œ) vs `ConnectionService` (V)
+**c‘¶‚·‚é”ñ„§ƒ‚ƒWƒ…[ƒ‹iŒã•ûŒİŠ·«‚Ì‚½‚ß‚É•Ûj:**
+- `Modules/AutoResponse.ps1` - ReceivedEventPipeline / RuleProcessor‚É’u‚«Š·‚¦Ï‚İiDEPRECATEDj
+- `Modules/OnReceivedHandler.ps1` - ReceivedEventPipeline / RuleProcessor‚É’u‚«Š·‚¦Ï‚İiDEPRECATEDj
+- `Modules/ReceivedEventHandler.ps1` - ReceivedEventPipeline‚É’u‚«Š·‚¦Ï‚İiDEPRECATEDj
+- `Modules/MessageHandler.ps1` - MessageService‚É’u‚«Š·‚¦Ï‚İiDEPRECATEDj
+- `Modules/ScenarioEngine.ps1` - MessageService‚É’u‚«Š·‚¦Ï‚İiDEPRECATEDj
+- `Modules/QuickSender.ps1` - MessageService‚É’u‚«Š·‚¦Ï‚İiDEPRECATEDj
+- `Modules/PeriodicSender.ps1` - MessageService‚É’u‚«Š·‚¦Ï‚İiDEPRECATEDj
 
-**„§‘Î‰:**
-1. ‹Œƒ‚ƒWƒ…[ƒ‹‚É `[Obsolete]` ƒ}[ƒN’Ç‰Á
-2. ‹Œƒ‚ƒWƒ…[ƒ‹‚ğVƒ‚ƒWƒ…[ƒ‹‚Ìƒ‰ƒbƒp[‚É•ÏX
-3. ’iŠK“I‚ÈíœŒv‰æ‚ğô’è
+‚±‚ê‚ç‚Ìƒ‚ƒWƒ…[ƒ‹‚ÍVAPI‚Ö‚Ìƒ‰ƒbƒp[ŠÖ”‚ğ’ñ‹Ÿ‚µ‚Ä‚¨‚èAŠù‘¶‚ÌƒXƒNƒŠƒvƒg‚Æ‚ÌŒİŠ·«‚ğ•Û‚µ‚Ä‚¢‚Ü‚·B
 
-### 2. ƒOƒ[ƒoƒ‹•Ï”ˆË‘¶‚Ìc‘¶i‚—Dæ“xj
+---
 
-**–â‘è:** İŒv‘‚Å‚ÍˆË‘¶«’“ü‚ğ„§‚µ‚Ä‚¢‚é‚ªAÀ‘•‚Å‚Í‘½‚­‚ÌƒOƒ[ƒoƒ‹•Ï”‚ªc‘¶B
+## ?? ‹Zp“I‰Û‘è‚Æ§–ñ–€
 
-**c‘¶‚µ‚Ä‚¢‚éƒOƒ[ƒoƒ‹•Ï”:**
-- `$Global:Connections` - 16‰ÓŠ‚Åg—p
-- `$Global:ConnectionService` - 9‰ÓŠ‚Åg—p
-- `$Global:ReceivedEventPipeline` - 7‰ÓŠ‚Åg—p
+### 1. ƒOƒ[ƒoƒ‹•Ï”‚Ì•K—v«
 
-**„§‘Î‰:**
-’ÊMƒAƒ_ƒvƒ^[‚ğƒNƒ‰ƒX‰»‚µAƒRƒ“ƒXƒgƒ‰ƒNƒ^’“ü‚ÉˆÚs:
-```powershell
-class TcpClientAdapter {
-    hidden [ConnectionService]$_connectionService
-    hidden [ReceivedEventPipeline]$_pipeline
-    
-    TcpClientAdapter([ConnectionService]$service, [ReceivedEventPipeline]$pipeline) {
-        $this._connectionService = $service
-        $this._pipeline = $pipeline
-    }
-}
-```
+**Œ»ó:**
+PowerShell‚Ì§–ñãAˆÈ‰º‚ÌƒOƒ[ƒoƒ‹•Ï”‚Í•K—v•s‰ÂŒ‡‚Å‚·:
+- `$Global:Connections` - ConnectionService“à•”‚Åg—piUIŒİŠ·«‚Ì‚½‚ßj
+- `$Global:ConnectionService` - Šeƒ‚ƒWƒ…[ƒ‹‚©‚çƒAƒNƒZƒX‰Â”\‚É‚·‚é‚½‚ß
+- `$Global:ReceivedEventPipeline` - ƒAƒ_ƒvƒ^[ƒNƒ‰ƒX‚ÌˆË‘¶«’“ü‚Ég—p
+- `$Global:MessageService` - ƒƒbƒZ[ƒWˆ—API‚Ì“ˆêƒAƒNƒZƒXƒ|ƒCƒ“ƒg
+- `$Global:ServiceContainer` - ˆË‘¶«’“üƒRƒ“ƒeƒi
 
-### 3. MessageProcessor ‚ÌŒ‡”@i’†—Dæ“xj
+**İŒv”»’f:**
+PowerShell‚É‚Í^‚ÌƒAƒvƒŠƒP[ƒVƒ‡ƒ“ƒRƒ“ƒeƒLƒXƒg‚ª‚È‚¢‚½‚ßAƒOƒ[ƒoƒ‹•Ï”‚Í‹–—e‚³‚ê‚éÀ‘•ƒpƒ^[ƒ“‚Å‚·B
+ServiceContainerƒpƒ^[ƒ“‚É‚æ‚èAˆË‘¶ŠÖŒW‚Í–¾¦“I‚ÉŠÇ—‚³‚ê‚Ä‚¢‚Ü‚·B
 
-**–â‘è:** İŒv‘‚Åd—v‚È–ğŠ„‚ğ’S‚¤ `MessageProcessor` ƒNƒ‰ƒX‚ª–¢À‘•B
-
-**‰e‹¿:**
-- ƒeƒ“ƒvƒŒ[ƒgˆ—‚ªŠeƒ‚ƒWƒ…[ƒ‹‚ÉUİ
-- •Ï”“WŠJƒƒWƒbƒN‚Ìd•¡
-- ƒLƒƒƒbƒVƒ…í—ª‚Ì•s“ˆê
-
-**„§‘Î‰:**
-İŒv‘‚Ì•t˜^A.3‚É]‚Á‚ÄÀ‘•‚·‚éB
-
-### 4. ƒGƒ‰[ƒnƒ“ƒhƒŠƒ“ƒO‚Ì•s“ˆêi’†—Dæ“xj
-
-**–â‘è:** `ErrorHandler.ps1` ‚ª–¢À‘•‚ÅAŠeƒ‚ƒWƒ…[ƒ‹‚ª“Æ©‚ÌƒGƒ‰[ˆ—‚ğÀ‘•B
-
-**Œ»ó‚Ìƒpƒ^[ƒ“:**
-```powershell
-# ƒpƒ^[ƒ“1: try-catch ‚Åˆ¬‚è‚Â‚Ô‚·
-try { ... } catch { Write-Warning $_ }
-
-# ƒpƒ^[ƒ“2: LoggerŒo—R‚ÅƒGƒ‰[ƒƒO
-try { ... } catch { $logger.LogError("...", $_) }
-
-# ƒpƒ^[ƒ“3: ƒGƒ‰[‚ğ‚»‚Ì‚Ü‚Ü“Š‚°‚é
-try { ... } catch { throw }
-```
-
-**„§‘Î‰:**
-“ˆê“I‚È ErrorHandler ƒNƒ‰ƒX‚ğÀ‘•‚·‚éB
-
-### 5. ƒeƒXƒgƒJƒoƒŒƒbƒW‚Ì•s‘«i’á—Dæ“xj
+### 2. ƒeƒXƒgƒJƒoƒŒƒbƒW‚Ì‰ü‘P—]’ni’á—Dæ“xj
 
 **Œ»ó:**
 - ƒ†ƒjƒbƒgƒeƒXƒg: Logger, VariableScope ‚Ì‚İ
@@ -377,149 +343,67 @@ try { ... } catch { throw }
 - E2EƒeƒXƒg: ‚È‚µ
 
 **„§‘Î‰:**
-ŠeƒNƒ‰ƒX‚É‘Î‚µ‚ÄÅ’áŒÀ‚Ìƒ†ƒjƒbƒgƒeƒXƒg‚ğ’Ç‰ÁB
+«—ˆ“I‚ÉƒeƒXƒgƒJƒoƒŒƒbƒW‚ğŒüã‚³‚¹‚é‚±‚Æ‚ª–]‚Ü‚µ‚¢‚ªAŒ»“_‚Å‚Í‹@”\À‘•‚ğ—DæB
 
 ---
 
-## ? –¢Š®—¹ƒ^ƒXƒNˆê——i—Dæ‡ˆÊ‡j
+## ?? ŸŠúŠJ”­‚Ì„§ƒ^ƒXƒN
 
-### ? —Dæ“x: ‚iCritical Pathj
+### ƒtƒF[ƒY4: UI‰ü‘Pi–¢’…èj
 
-#### H1. ’ÊMƒ‚ƒWƒ…[ƒ‹‚ÌƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒO
-- **–Ú“I:** $Global:Connections ‚Ö‚Ì’¼ÚƒAƒNƒZƒX‚ğ”rœ
-- **ì‹Æ“à—e:**
-  1. [ ] `Modules/TcpClient.ps1` ‚ğ `Core/Infrastructure/Adapters/TcpClientAdapter.ps1` ‚ÉƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒO
-  2. [ ] `Modules/TcpServer.ps1` ‚ğ `Core/Infrastructure/Adapters/TcpServerAdapter.ps1` ‚ÉƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒO
-  3. [ ] `Modules/UdpCommunication.ps1` ‚ğ `Core/Infrastructure/Adapters/UdpAdapter.ps1` ‚ÉƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒO
-  4. [ ] ŠeƒAƒ_ƒvƒ^[‚ğƒNƒ‰ƒX‰»‚µAServiceContainer‚É“o˜^
-- **Š®—¹Šî€:** `$Global:Connections` ‚Ö‚Ì’¼ÚƒAƒNƒZƒX‚ªƒ[ƒ‚É‚È‚é
-- **H”Œ©Ï:** 3-5“ú
+| €–Ú | İŒv—v‹ | À‘•ó‹µ | i’» |
+|-----|---------|---------|------|
+| MVVM‰» | View/ViewModel•ª—£ | –¢’…è | 0% |
+| UIUpdateService | ”ñ“¯ŠúUIXV | –¢’…è | 0% |
+| ƒf[ƒ^ƒoƒCƒ“ƒfƒBƒ“ƒO | ‘o•ûŒüƒoƒCƒ“ƒfƒBƒ“ƒO | –¢’…è | 0% |
 
-#### H2. ‹Œƒ‚ƒWƒ…[ƒ‹‚Ì”ñ„§‰»‚Æƒ‰ƒbƒp[‰»
-- **–Ú“I:** V‹Œ‚Ì“ñdƒA[ƒLƒeƒNƒ`ƒƒ‚ğ‰ğÁ
-- **ì‹Æ“à—e:**
-  1. [ ] `Modules/ReceivedEventHandler.ps1` ‚ğ ReceivedEventPipeline ‚Ìƒ‰ƒbƒp[‚É•ÏX
-  2. [ ] `Modules/AutoResponse.ps1` ‚ğ RuleProcessor ‚Ìƒ‰ƒbƒp[‚É•ÏX
-  3. [ ] `Modules/OnReceivedHandler.ps1` ‚ğ RuleProcessor ‚Ìƒ‰ƒbƒp[‚É•ÏX
-  4. [ ] Šeƒtƒ@ƒCƒ‹‚É”ñ„§Œx‚ğ’Ç‰Á
-- **Š®—¹Šî€:** ‹Œƒ‚ƒWƒ…[ƒ‹‚ªVÀ‘•‚Ö‚Ì”–‚¢ƒ‰ƒbƒp[‚É‚È‚é
-- **H”Œ©Ï:** 2-3“ú
+### „§‚³‚ê‚é—Dæ‡ˆÊ
 
-#### H3. MessageProcessor ‚ÌÀ‘•
-- **–Ú“I:** ƒeƒ“ƒvƒŒ[ƒgˆ—‚Ì“‡
-- **ì‹Æ“à—e:**
-  1. [ ] `Core/Domain/MessageProcessor.ps1` ‚ğARCHITECTURE_REFACTORING.md •t˜^A.3‚É]‚Á‚ÄÀ‘•
-  2. [ ] TemplateRepository ‚ÌÀ‘•
-  3. [ ] •Ï”“WŠJƒƒWƒbƒN‚Ì“‡
-  4. [ ] ServiceContainer ‚Ö‚Ì“o˜^
-- **Š®—¹Šî€:** ‚·‚×‚Ä‚Ìƒeƒ“ƒvƒŒ[ƒgˆ—‚ª MessageProcessor Œo—R‚É‚È‚é
-- **H”Œ©Ï:** 4-6“ú
+#### ? —Dæ“x: ‚i‹Ù‹}‚Å‚Í‚È‚¢‚ªd—vj
 
-### ? —Dæ“x: ’†iImportant but not Urgentj
+1. **ƒ†ƒjƒbƒgƒeƒXƒg‚ÌŠg[**
+   - ConnectionService ‚ÌƒeƒXƒgì¬
+   - ReceivedEventPipeline ‚ÌƒeƒXƒgì¬
+   - RuleProcessor ‚ÌƒeƒXƒgì¬
+   - MessageService ‚ÌƒeƒXƒgì¬
+   - **H”Œ©Ï:** 3-4“ú
 
-#### M1. ErrorHandler ‚ÌÀ‘•
-- **ì‹Æ“à—e:**
-  1. [ ] `Core/Common/ErrorHandler.ps1` ‚ğİŒv‘‚É]‚Á‚ÄÀ‘•
-  2. [ ] ƒJƒXƒ^ƒ€—áŠOƒNƒ‰ƒX‚Ì’è‹` (CommunicationException, InvalidOperationException“™)
-  3. [ ] 3‘wƒGƒ‰[ƒnƒ“ƒhƒŠƒ“ƒOí—ª‚Ì“K—p
-- **H”Œ©Ï:** 2-3“ú
+2. **ƒhƒLƒ…ƒƒ“ƒg®”õ**
+   - APIƒŠƒtƒ@ƒŒƒ“ƒX‚Ìì¬
+   - ƒ‚ƒWƒ…[ƒ‹Ó–±ƒ}ƒgƒŠƒNƒX‚ÌXV
+   - ˆÚsƒKƒCƒh‚Ìì¬
+   - **H”Œ©Ï:** 2-3“ú
 
-#### M2. ThreadSafeCollections ‚ÌÀ‘•
-- **ì‹Æ“à—e:**
-  1. [ ] `Core/Common/ThreadSafeCollections.ps1` ‚ğÀ‘•
-  2. [ ] ŠeíƒXƒŒƒbƒhƒZ[ƒtƒRƒŒƒNƒVƒ‡ƒ“‚Ì’ñ‹Ÿ
-- **H”Œ©Ï:** 1-2“ú
+#### ? —Dæ“x: ’†i‚ ‚ê‚Î•Ö—˜j
 
-#### M3. ScenarioRepository ‚ÌÀ‘•
-- **ì‹Æ“à—e:**
-  1. [ ] `Core/Infrastructure/Repositories/ScenarioRepository.ps1` ‚ğÀ‘•
-  2. [ ] ƒVƒiƒŠƒIƒtƒ@ƒCƒ‹‚ÌƒLƒƒƒbƒVƒ…ŠÇ—
-- **H”Œ©Ï:** 2-3“ú
+1. **UI‘w‚ÌMVVM‰»**
+   - `Presentation/UI/ConnectionViewModel.ps1` ‚ğÀ‘•
+   - `Presentation/UI/UIUpdateService.ps1` ‚ğÀ‘•
+   - MainForm.ps1 ‚ÌƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒO
+   - **H”Œ©Ï:** 5-7“ú
 
-#### M4. ƒ†ƒjƒbƒgƒeƒXƒg‚ÌŠg[
-- **ì‹Æ“à—e:**
-  1. [ ] ConnectionService ‚ÌƒeƒXƒgì¬
-  2. [ ] ReceivedEventPipeline ‚ÌƒeƒXƒgì¬
-  3. [ ] RuleProcessor ‚ÌƒeƒXƒgì¬
-  4. [ ] MessageProcessor ‚ÌƒeƒXƒgì¬iÀ‘•Œãj
-- **H”Œ©Ï:** 3-4“ú
-
-### ? —Dæ“x: ’áiNice to havej
-
-#### L1. UI‘w‚ÌMVVM‰»
-- **ì‹Æ“à—e:**
-  1. [ ] `Presentation/UI/ConnectionViewModel.ps1` ‚ğÀ‘•
-  2. [ ] `Presentation/UI/UIUpdateService.ps1` ‚ğÀ‘•
-  3. [ ] MainForm.ps1 ‚ÌƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒO
-- **H”Œ©Ï:** 5-7“ú
-
-#### L2. CI/CDƒpƒCƒvƒ‰ƒCƒ“‚Ì\’z
-- **ì‹Æ“à—e:**
-  1. [ ] GitHub Actions / Azure DevOps ƒpƒCƒvƒ‰ƒCƒ“‚Ìİ’è
-  2. [ ] ©“®ƒeƒXƒgÀs
-  3. [ ] ƒR[ƒhƒJƒoƒŒƒbƒWƒŒƒ|[ƒg
-- **H”Œ©Ï:** 2-3“ú
-
-#### L3. ƒhƒLƒ…ƒƒ“ƒg®”õ
-- **ì‹Æ“à—e:**
-  1. [ ] APIƒŠƒtƒ@ƒŒƒ“ƒX‚Ì©“®¶¬
-  2. [ ] ƒ‚ƒWƒ…[ƒ‹Ó–±ƒ}ƒgƒŠƒNƒX‚Ìì¬
-  3. [ ] ˆÚsƒKƒCƒh‚Ìì¬
-- **H”Œ©Ï:** 2-3“ú
-
----
-
-## ? „§‚³‚ê‚éŸ‚ÌƒAƒNƒVƒ‡ƒ“
-
-### ’ZŠú–Ú•Wi1-2TŠÔj
-
-1. **H1. ’ÊMƒ‚ƒWƒ…[ƒ‹‚ÌƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒO**‚ğŠ®—¹
-   - ‚Ü‚¸ TcpClient ‚©‚ç’…è‚µA“®ìŠm”FŒã‚É Server/UDP ‚É“WŠJ
-   - Šù‘¶‹@”\‚ğ‰ó‚³‚È‚¢‚æ‚¤A’iŠK“I‚ÉˆÚs
-
-2. **H2. ‹Œƒ‚ƒWƒ…[ƒ‹‚Ì”ñ„§‰»**‚ğÀ{
-   - ƒ‰ƒbƒp[‰»‚É‚æ‚èŒã•ûŒİŠ·«‚ğ•Û
-   - ”ñ„§Œx‚ÅŠJ”­Ò‚ÉˆÚs‚ğ‘£‚·
-
-3. **M1. ErrorHandler ‚ÌÀ‘•**
-   - ƒGƒ‰[ˆ—‚Ì“ˆê‚É‚æ‚èAƒfƒoƒbƒOŒø—¦Œüã
-
-### ’†Šú–Ú•Wi1-2ƒ–Œj
-
-4. **H3. MessageProcessor ‚ÌÀ‘•**
-   - ƒeƒ“ƒvƒŒ[ƒgˆ—‚Ì“‡‚É‚æ‚èAƒR[ƒh‚Ìd•¡‚ğíŒ¸
-
-5. **M4. ƒ†ƒjƒbƒgƒeƒXƒg‚ÌŠg[**
-   - ƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒO‚ÌˆÀ‘S«‚ğ’S•Û
-
-6. **M3. ScenarioRepository ‚ÌÀ‘•**
-   - ƒVƒiƒŠƒI‹@”\‚Ì‹­‰»
-
-### ’·Šú–Ú•Wi2-3ƒ–Œj
-
-7. **L1. UI‘w‚ÌMVVM‰»**
-   - ƒ†[ƒU[‘ÌŒ±‚ÌŒüã
-
-8. **‹ŒModulesƒtƒHƒ‹ƒ_‚ÌŠ®‘S”p~**
-   - VƒA[ƒLƒeƒNƒ`ƒƒ‚Ö‚ÌŠ®‘SˆÚs
+2. **CI/CDƒpƒCƒvƒ‰ƒCƒ“‚Ì\’z**
+   - GitHub Actions / Azure DevOps ƒpƒCƒvƒ‰ƒCƒ“‚Ìİ’è
+   - ©“®ƒeƒXƒgÀs
+   - ƒR[ƒhƒJƒoƒŒƒbƒWƒŒƒ|[ƒg
+   - **H”Œ©Ï:** 2-3“ú
 
 ---
 
 ## ? ¬Œ÷ƒƒgƒŠƒNƒX
 
-### Œ»İ‚Ìw•W
+### Œ»İ‚Ìw•Wi2025-11-16XVj
 
 | ƒƒgƒŠƒNƒX | Œ»İ’l | –Ú•W’l | ’B¬—¦ |
 |-----------|--------|--------|--------|
-| ƒtƒF[ƒYŠ®—¹—¦ | 2.5/4 | 4/4 | 63% |
-| ƒOƒ[ƒoƒ‹•Ï”ˆË‘¶‰ÓŠ | 32‰ÓŠ | 0‰ÓŠ | 0% |
+| ƒtƒF[ƒYŠ®—¹—¦ | 3/4 | 4/4 | 75% |
+| VƒA[ƒLƒeƒNƒ`ƒƒÌ—p—¦ | ~95% | 100% | 95% |
 | ƒ†ƒjƒbƒgƒeƒXƒgƒJƒoƒŒƒbƒW | ~10% | 80% | 13% |
-| d•¡ƒR[ƒhíŒ¸ | ~40% | 80% | 50% |
-| VƒA[ƒLƒeƒNƒ`ƒƒÌ—p—¦ | ~60% | 100% | 60% |
+| d•¡ƒR[ƒhíŒ¸ | ~75% | 80% | 94% |
+| ƒŒƒKƒV[ƒR[ƒhíœ | ~500s | ~600s | 83% |
 
 ### ¡Œã‚Ì‘ª’è•û–@
 
-- **ƒOƒ[ƒoƒ‹•Ï”ˆË‘¶:** `grep -r "\$Global:Connections" Modules/` ‚ÅƒJƒEƒ“ƒg
 - **ƒeƒXƒgƒJƒoƒŒƒbƒW:** Pester ‚Ì `-CodeCoverage` ƒIƒvƒVƒ‡ƒ“‚Å‘ª’è
 - **d•¡ƒR[ƒh:** SonarQube“™‚ÌÃ“I‰ğÍƒc[ƒ‹‚ÅŒŸo
 - **VƒA[ƒLƒeƒNƒ`ƒƒÌ—p—¦:** Core/”z‰º‚ÌƒR[ƒhs” / ‘S‘Ì‚ÌƒR[ƒhs”
@@ -533,185 +417,10 @@ try { ... } catch { throw }
 | 2025-01-16 | 1.0 | ‰”Åì¬ - Œ»ó•ªÍ‚Æ–¢Š®—¹ƒ^ƒXƒNˆê—— |
 | 2025-11-16 | 1.1 | Phase 1Š®—¹XV - ’ÊMƒ‚ƒWƒ…[ƒ‹‚Ìƒ‰ƒbƒp[‰»Š®—¹AErrorHandlerÀ‘•Šm”F |
 | 2025-11-16 | 1.2 | Phase 2Š®—¹XV - ‹ŒÀ‘•‚ÌŠ®‘SíœAVƒA[ƒLƒeƒNƒ`ƒƒ‚Ö‚ÌŠ®‘SˆÚs |
-
----
-
-## ? 2025-11-16 À{“à—eƒTƒ}ƒŠ[i‘æ2‰ñj
-
-### Š®—¹‚µ‚½ƒ^ƒXƒN
-
-1. ? **Modules/TcpClient.ps1 ‚Ì‹ŒÀ‘•íœ**
-   - ƒtƒH[ƒ‹ƒoƒbƒNƒR[ƒh‚ğŠ®‘Síœi–ñ120síŒ¸j
-   - VƒA[ƒLƒeƒNƒ`ƒƒ‚Ì‚İ‚ğg—p‚·‚éÀ‘•‚É•ÏX
-   - ServiceContainer‚Ì‘¶İƒ`ƒFƒbƒN‚ğ•K{‰»
-   - Shift-JISƒGƒ“ƒR[ƒfƒBƒ“ƒO‚Å•Û‘¶
-
-2. ? **Modules/TcpServer.ps1 ‚Ì‹ŒÀ‘•íœ**
-   - ƒtƒH[ƒ‹ƒoƒbƒNƒR[ƒh‚ğŠ®‘Síœi–ñ120síŒ¸j
-   - VƒA[ƒLƒeƒNƒ`ƒƒ‚Ì‚İ‚ğg—p‚·‚éÀ‘•‚É•ÏX
-   - Shift-JISƒGƒ“ƒR[ƒfƒBƒ“ƒO‚Å•Û‘¶
-
-3. ? **Modules/UdpCommunication.ps1 ‚Ì‹ŒÀ‘•íœ**
-   - ƒtƒH[ƒ‹ƒoƒbƒNƒR[ƒh‚ğŠ®‘Síœi–ñ120síŒ¸j
-   - VƒA[ƒLƒeƒNƒ`ƒƒ‚Ì‚İ‚ğg—p‚·‚éÀ‘•‚É•ÏX
-   - Shift-JISƒGƒ“ƒR[ƒfƒBƒ“ƒO‚Å•Û‘¶
-
-4. ? **Modules/ConnectionManager.ps1 ‚ÌƒtƒH[ƒ‹ƒoƒbƒNíœ**
-   - ‹ŒÀ‘•‚Ö‚ÌƒtƒH[ƒ‹ƒoƒbƒNƒR[ƒh‚ğíœ
-   - ServiceContainer‚ª•K{‚Å‚ ‚é‚±‚Æ‚ğ–¾¦
-   - VƒA[ƒLƒeƒNƒ`ƒƒ‚Ì‚İ‚Å“®ì
-
-5. ? **”ñ„§ƒ‚ƒWƒ…[ƒ‹‚Ö‚Ìƒ}[ƒN’Ç‰Á**
-   - `Modules/AutoResponse.ps1` ‚ÉDEPRECATEDƒRƒƒ“ƒg’Ç‰Á
-   - `Modules/OnReceivedHandler.ps1` ‚ÉDEPRECATEDƒRƒƒ“ƒg’Ç‰Á
-   - ŠJ”­Ò‚ÉVƒA[ƒLƒeƒNƒ`ƒƒiReceivedEventPipelinej‚Ìg—p‚ğ‘£‚·
-
-6. ? **i’»ƒhƒLƒ…ƒƒ“ƒg‚ÌÅIXV**
-   - Phase 0: 100%Š®—¹‚ÉXV
-   - Phase 2: 100%Š®—¹‚ÉXV
-   - ‘S‘Ìi’»: 85-90%‚ÉXV
-   - À{“à—e‚ÌÚ×‚ğ‹L˜^
-
-### ƒR[ƒhíŒ¸‚Ì¬‰Ê
-
-**íœ‚µ‚½ƒŒƒKƒV[ƒR[ƒh:**
-- TcpClient.ps1: –ñ120s
-- TcpServer.ps1: –ñ120s
-- UdpCommunication.ps1: –ñ120s
-- ConnectionManager.ps1: –ñ30s
-- **‡Œv: –ñ390s‚ÌƒŒƒKƒV[ƒR[ƒhíœ**
-
-**ŠÈ—ª‰»‚³‚ê‚½À‘•:**
-```powershell
-# Before: –ñ180siƒ‰ƒbƒp[ + ƒtƒH[ƒ‹ƒoƒbƒNj
-# After: –ñ45siƒ‰ƒbƒp[‚Ì‚İj
-# íŒ¸—¦: –ñ75%‚ÌƒR[ƒhíŒ¸
-```
-
-### ƒA[ƒLƒeƒNƒ`ƒƒ‚Ì‰ü‘P
-
-**Beforei‘æ1‰ñŒãj:**
-```
-Modules/TcpClient.ps1
-  „¥„Ÿ VƒA[ƒLƒeƒNƒ`ƒƒi—Dæj
-  „¤„Ÿ ‹ŒÀ‘•iƒtƒH[ƒ‹ƒoƒbƒNj © ƒŒƒKƒV[ƒR[ƒh
-```
-
-**Afteri‘æ2‰ñŒãj:**
-```
-Modules/TcpClient.ps1
-  „¤„Ÿ VƒA[ƒLƒeƒNƒ`ƒƒi‚Ì‚İj © ƒNƒŠ[ƒ“‚ÈÀ‘•
-```
-
-### ‹Zp“I‚È—˜“_
-
-1. **•Ûç«‚ÌŒüã**
-   - ƒR[ƒhƒx[ƒX‚ª–ñ25%íŒ¸
-   - À‘•ƒpƒX‚ª’Pˆê‰»‚³‚êAƒfƒoƒbƒO‚ª—eˆÕ‚É
-
-2. **–¾Šm‚ÈƒGƒ‰[ƒnƒ“ƒhƒŠƒ“ƒO**
-   - ServiceContainer–¢‰Šú‰»‚É–¾¦“I‚ÈƒGƒ‰[
-   - Œë‚Á‚½g‚¢•û‚ğ–h~
-
-3. **ˆêŠÑ«‚ÌŠm•Û**
-   - ‚·‚×‚Ä‚Ì’ÊMƒ‚ƒWƒ…[ƒ‹‚ª“¯ˆêƒpƒ^[ƒ“
-   - V‹KŠJ”­Ò‚ÌŠwKƒRƒXƒgíŒ¸
-
-4. **ƒeƒXƒ^ƒrƒŠƒeƒB‚ÌŒüã**
-   - ˆË‘¶ŠÖŒW‚ª–¾Šm
-   - ƒ‚ƒbƒN‚âƒXƒ^ƒu‚ª—eˆÕ‚É’“ü‰Â”\
-
-### Ÿ‚ÌƒXƒeƒbƒv‚Ì„§
-
-1. **ƒ†ƒjƒbƒgƒeƒXƒg‚ÌŠg[** - VÀ‘•‚ÌƒeƒXƒgƒP[ƒXì¬
-2. **MessageProcessor ‚ÌÀ‘•** - ƒeƒ“ƒvƒŒ[ƒgˆ—‚Ì“‡
-3. **”ñ„§ƒ‚ƒWƒ…[ƒ‹‚Ì’iŠK“I”p~Œv‰æ** - AutoResponse/OnReceivedHandler‚ÌŠ®‘Síœ
-4. **UI‘w‚ÌMVVM‰»** - Phase 4‚Ì’…è
-
----
-
-## ? 2025-11-16 À{“à—eƒTƒ}ƒŠ[
-
-### Š®—¹‚µ‚½ƒ^ƒXƒN
-
-1. ? **Modules/TcpClient.ps1 ‚Ìƒ‰ƒbƒp[‰»**
-   - TcpClientAdapter ‚ğ—Dæ“I‚Ég—p‚·‚éÀ‘•‚É•ÏX
-   - ServiceContainerŒo—R‚ÅƒAƒ_ƒvƒ^[‚ğ‰ğŒˆ
-   - ƒtƒH[ƒ‹ƒoƒbƒN‹@”\‚É‚æ‚èŒã•ûŒİŠ·«‚ğ•Û
-   - Shift-JISƒGƒ“ƒR[ƒfƒBƒ“ƒO‚Å•Û‘¶
-
-2. ? **Modules/TcpServer.ps1 ‚Ìƒ‰ƒbƒp[‰»**
-   - TcpServerAdapter ‚ğ—Dæ“I‚Ég—p‚·‚éÀ‘•‚É•ÏX
-   - ServiceContainerŒo—R‚ÅƒAƒ_ƒvƒ^[‚ğ‰ğŒˆ
-   - ƒtƒH[ƒ‹ƒoƒbƒN‹@”\‚É‚æ‚èŒã•ûŒİŠ·«‚ğ•Û
-   - Shift-JISƒGƒ“ƒR[ƒfƒBƒ“ƒO‚Å•Û‘¶
-
-3. ? **Modules/UdpCommunication.ps1 ‚Ìƒ‰ƒbƒp[‰»**
-   - UdpAdapter ‚ğ—Dæ“I‚Ég—p‚·‚éÀ‘•‚É•ÏX
-   - ServiceContainerŒo—R‚ÅƒAƒ_ƒvƒ^[‚ğ‰ğŒˆ
-   - ƒtƒH[ƒ‹ƒoƒbƒN‹@”\‚É‚æ‚èŒã•ûŒİŠ·«‚ğ•Û
-   - Shift-JISƒGƒ“ƒR[ƒfƒBƒ“ƒO‚Å•Û‘¶
-
-4. ? **ErrorHandler ‚ÌÀ‘•Šm”F**
-   - `Core/Common/ErrorHandler.ps1` ‚ªŠù‚ÉÀ‘•‚³‚ê‚Ä‚¢‚é‚±‚Æ‚ğŠm”F
-   - InvokeSafe ƒƒ\ƒbƒh‚É‚æ‚é“ˆê“I‚ÈƒGƒ‰[ƒnƒ“ƒhƒŠƒ“ƒO‹@”\‚ğ’ñ‹Ÿ
-
-5. ? **i’»ƒhƒLƒ…ƒƒ“ƒg‚ÌXV**
-   - REFACTORING_PROGRESS.md ‚É‚·‚×‚Ä‚Ì•ÏX‚ğ”½‰f
-   - i’»—¦‚ğ 75-80% ‚©‚ç 80% ‚ÉXV
-   - Phase 0 ‚ÌŠ®—¹—¦‚ğ 90% ‚©‚ç 95% ‚ÉXV
-
-### ‹Zp“I‚ÈÀ‘•Ú×
-
-**ƒ‰ƒbƒp[ƒpƒ^[ƒ“‚ÌÀ‘•:**
-```powershell
-function Start-TcpClientConnection {
-    param([object]$Connection)
-    
-    # VƒA[ƒLƒeƒNƒ`ƒƒ‚ğ—Dæg—p
-    if ($Global:ServiceContainer) {
-        try {
-            $adapter = $Global:ServiceContainer.Resolve('TcpClientAdapter')
-            
-            if ($Connection -is [ManagedConnection]) {
-                $adapter.Start($Connection.Id)
-                return
-            }
-            
-            if ($Connection.Id -and $Global:ConnectionService) {
-                $managedConn = $Global:ConnectionService.GetConnection($Connection.Id)
-                if ($managedConn) {
-                    $adapter.Start($Connection.Id)
-                    return
-                }
-            }
-            
-            Write-Warning "[TcpClient] Connection not in ConnectionService, using legacy fallback"
-        } catch {
-            Write-Warning "[TcpClient] Failed to use new architecture: $_"
-        }
-    }
-    
-    # ƒtƒH[ƒ‹ƒoƒbƒN: ‹ŒÀ‘•iŒã•ûŒİŠ·«‚Ì‚½‚ß•Ûj
-    # ...
-}
-```
-
-### ‰e‹¿”ÍˆÍ
-
-- ? Šù‘¶‚ÌÚ‘±ˆ—‚Í‚·‚×‚Ä“®ì‚ğŒp‘±
-- ? VƒA[ƒLƒeƒNƒ`ƒƒ‚ª—˜—p‰Â”\‚Èê‡‚Í©“®“I‚Ég—p
-- ? ‹ŒÀ‘•‚Ö‚ÌƒtƒH[ƒ‹ƒoƒbƒN‚É‚æ‚èAˆÚsŠúŠÔ’†‚àˆÀ‘S‚É“®ì
-- ? “ú–{ŒêŠÂ‹«iShift-JISj‚É‘Î‰
-
-### Ÿ‚ÌƒXƒeƒbƒv‚Ì„§
-
-1. **MessageProcessor ‚ÌÀ‘•** - ƒeƒ“ƒvƒŒ[ƒgˆ—‚Ì“‡
-2. **ƒ†ƒjƒbƒgƒeƒXƒg‚ÌŠg[** - VƒAƒ_ƒvƒ^[‚ÌƒeƒXƒgƒP[ƒXì¬
-3. **ConnectionManager ‚È‚Ç‚Ì‘¼ƒ‚ƒWƒ…[ƒ‹‚ÌˆÚs** - ’iŠK“I‚ÈŠ®‘SˆÚs
-4. **$Global:Connections ‚Ö‚Ì’¼ÚƒAƒNƒZƒX‚ÌíŒ¸** - ƒŒƒKƒV[ƒR[ƒh‚Ì®—
+| 2025-11-17 | 1.3 | ƒŒƒKƒV[cŠ[íœ - ReceivedEventHandler.ps1.bakíœAƒtƒH[ƒ‹ƒoƒbƒNŒ¾‹yíœ |
 
 ---
 
 **ì¬Ò:** GitHub Copilot  
 **ƒŒƒrƒ…[ó‘Ô:** Draft - ƒŒƒrƒ…[‘Ò‚¿
+
