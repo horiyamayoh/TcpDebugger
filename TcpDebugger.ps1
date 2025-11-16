@@ -146,7 +146,6 @@ $modules = @(
     "ReceivedRuleEngine.ps1",
     "OnReceivedHandler.ps1",
     "OnReceivedLibrary.ps1",
-    "ReceivedEventHandler.ps1",
     "PeriodicSender.ps1",
     "QuickSender.ps1",
     "InstanceManager.ps1",

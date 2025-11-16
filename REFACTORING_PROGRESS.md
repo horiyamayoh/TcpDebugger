@@ -1,133 +1,127 @@
-# TcpDebugger ƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒOi’»ƒŒƒ|[ƒg
+# TcpDebugger t@N^Oi|[g
 
-**ì¬“ú:** 2025-01-16  
-**ÅIXV:** 2025-11-16
-
----
-
-## ƒGƒOƒ[ƒNƒeƒBƒuƒTƒ}ƒŠ[
-
-ARCHITECTURE_REFACTORING.md‚Å’ñˆÄ‚³‚ê‚½•ïŠ‡“I‚ÈƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒOŒv‰æ‚É‘Î‚µ‚ÄAÀ‘•‚Í**–ñ95%‚Ìi’»**ó‹µ‚Å‚·B
-
-### å‚È¬‰Ê
-? **ƒtƒF[ƒY0i€”õ’iŠKj**: Š®—¹i100%j  
-? **ƒtƒF[ƒY1ióMƒCƒxƒ“ƒgC³j**: Š®—¹i100%j  
-? **ƒtƒF[ƒY2iÚ‘±ŠÇ—‰ü‘Pj**: Š®—¹i100%j  
-? **ƒtƒF[ƒY3iƒƒbƒZ[ƒWˆ—“‡j**: Š®—¹i100%j © **XV**  
-? **ƒtƒF[ƒY4iUI‰ü‘Pj**: –¢’…èi0%j
-
-### d—v‚È”­Œ©
-- óMƒCƒxƒ“ƒgˆ—‚Ì“‡‚Í **Šù‚ÉÀ‘•Ï‚İ** ‚Å“®ì’†
-- V‚µ‚¢ƒA[ƒLƒeƒNƒ`ƒƒ‘wiCore/j‚ª\’z‚³‚êAServiceContainer‚É‚æ‚éDI‚à“±“üÏ‚İ
-- **’ÊMƒ‚ƒWƒ…[ƒ‹iTcpClient/TcpServer/UDPj‚ªVƒAƒ_ƒvƒ^[‚ÉŠ®‘SˆÚsŠ®—¹**
-- **‹ŒÀ‘•‚ÌƒtƒH[ƒ‹ƒoƒbƒNƒR[ƒh‚ğŠ®‘Síœ**
-- ƒAƒ_ƒvƒ^[ƒNƒ‰ƒX‚ÍŠù‚ÉÀ‘•‚³‚êAServiceContainer‚É“o˜^Ï‚İ
-- ModulesƒfƒBƒŒƒNƒgƒŠ‚ÌŠÖ”‚ªVƒA[ƒLƒeƒNƒ`ƒƒ‚Ì‚İ‚ğg—p
-- **ErrorHandler‚ªÀ‘•‚³‚êAƒGƒ‰[ˆ—‚Ì“ˆê‰»‚ªŠ®—¹**
-- **AutoResponse/OnReceivedHandler‚É”ñ„§ƒ}[ƒN‚ğ’Ç‰Á**
-- **MessageService‚ªÀ‘•‚³‚êAƒeƒ“ƒvƒŒ[ƒg/ƒVƒiƒŠƒIˆ—‚ğ“‡**
-- **MessageHandler/ScenarioEngine/QuickSender/PeriodicSender‚É”ñ„§ƒ}[ƒN‚ğ’Ç‰Á‚µAVAPI‚ÖˆÏ÷** © **NEW**
-- **ƒƒbƒZ[ƒW‘—MAPI‚Ì“ˆê‰»Š®—¹iSendTemplate/SendBytes/SendHex/SendTextj** © **NEW**
-
-### ÅV‚Ì•ÏXi2025-11-16 - ‘æ4‰ñj
-? **MessageService‘—MAPIÀ‘•**: “ˆê‚³‚ê‚½ƒƒbƒZ[ƒW‘—MƒCƒ“ƒ^[ƒtƒF[ƒX
-- SendTemplate: ƒeƒ“ƒvƒŒ[ƒgƒtƒ@ƒCƒ‹‚©‚ç•Ï”“WŠJ‚µ‚Ä‘—M
-- SendBytes: ƒoƒCƒg”z—ñ‚ğ’¼Ú‘—M
-- SendHex: HEX•¶š—ñ‚ğ•ÏŠ·‚µ‚Ä‘—M
-- SendText: ƒeƒLƒXƒg‚ğƒGƒ“ƒR[ƒfƒBƒ“ƒOw’è‚µ‚Ä‘—M
-
-? **‚·‚×‚Ä‚ÌƒƒbƒZ[ƒWŠÖ˜Aƒ‚ƒWƒ…[ƒ‹‚Ì”ñ„§‰»Š®—¹**:
-- `Modules/MessageHandler.ps1` - •Ï”ƒnƒ“ƒhƒ‰[ŠÖ”‚ğMessageService‚ÖˆÏ÷
-- `Modules/ScenarioEngine.ps1` - ƒVƒiƒŠƒIÀs‚ğMessageService‚ÖˆÏ÷
-- `Modules/QuickSender.ps1` - ”ñ„§ƒ}[ƒN’Ç‰Á
-- `Modules/PeriodicSender.ps1` - ”ñ„§ƒ}[ƒN’Ç‰Á
-
-? **ƒtƒF[ƒY3Š®—¹**: ƒƒbƒZ[ƒWˆ—‚Ì“‡‚ªŠ®—¹
-- d•¡ƒR[ƒhíœ’B¬
-- ƒLƒƒƒbƒVƒ…ŠÇ—‚Ì“ˆê‰»’B¬
-- VAPI‚Ö‚ÌˆÚsƒpƒXŠm—§
+**ì¬:** 2025-01-16  
+**ÅIXV:** 2025-11-16
 
 ---
 
-## ? ƒtƒF[ƒY•Êi’»Ú×
+## GO[NeBuT}[
 
-### ƒtƒF[ƒY0: €”õ’iŠK - 100% Š®—¹ ?
+ARCHITECTURE_REFACTORING.mdÅ’Ä‚ê‚½ïŠ‡IÈƒt@N^OvÉ‘Î‚ÄA**95%Ìi**ó‹µ‚Å‚B
 
-| €–Ú | İŒv—v‹ | À‘•ó‹µ | i’» |
+### È
+? **tF[Y0iiKj**: i100%j  
+? **tF[Y1iMCxgCj**: i100%j  
+? **tF[Y2iÚ‘Ç—Pj**: i100%j  
+? **tF[Y3ibZ[Wj**: i100%j  **XV**  
+? **tF[Y4iUIPj**: i0%j
+
+### dvÈ”
+- MCxgÌ“ **ÉÏ‚** Å“ì’†
+- VA[LeN`wiCore/j\zAServiceContainerÉ‚DIÏ‚
+- **ÊMW[iTcpClient/TcpServer/UDPjVA_v^[ÉŠSÚs**
+- **ÌƒtH[obNR[hSíœ**
+- A_v^[NXÍŠÉAServiceContainerÉ“o^Ï‚
+- ModulesfBNgÌŠÖVA[LeN`Ì‚İ‚gp
+- **ErrorHandlerAG[Ì“ê‰»**
+- **AutoResponse/OnReceivedHandlerÉ”ñ„}[NÇ‰**
+- **MessageServiceAev[g/ViIğ“**
+- **MessageHandler/ScenarioEngine/QuickSender/PeriodicSenderÉ”ñ„}[NÇ‰AVAPIÖˆÏ**  **NEW**
+- **bZ[WMAPIÌ“ê‰»iSendTemplate/SendBytes/SendHex/SendTextj**  **NEW**
+
+### ÅVÌ•ÏXi2025-11-16 - 4j
+? **MessageServiceMAPI**: ê‚³ê‚½bZ[WMC^[tF[X
+- SendTemplate: ev[gt@CÏWJÄ‘M
+- SendBytes: oCgzğ’¼Ú‘M
+- SendHex: HEXÏŠÄ‘M
+- SendText: eLXgGR[fBOwè‚µÄ‘M
+
+? **×‚Ä‚ÌƒbZ[WÖ˜AW[Ì”ñ„**:
+- `Modules/MessageHandler.ps1` - Ïnh[ÖMessageServiceÖˆÏ
+- `Modules/ScenarioEngine.ps1` - ViIsMessageServiceÖˆÏ
+- `Modules/QuickSender.ps1` - ñ„}[NÇ‰
+- `Modules/PeriodicSender.ps1` - ñ„}[NÇ‰
+
+? **tF[Y3**: bZ[WÌ“
+- dR[híœB
+- LbVÇ—Ì“ê‰»B
+- VAPIÖ‚ÌˆÚspXm
+
+---
+
+## ? tF[YÊiÚ
+
+### tF[Y0: iK - 100%  ?
+
+|  | İŒvv |  | i |
 |-----|---------|---------|------|
-| Logger | \‘¢‰»ƒƒOAƒXƒŒƒbƒhƒZ[ƒt | ? Š®‘SÀ‘• (`Core/Common/Logger.ps1`) | 100% |
-| ErrorHandler | ƒGƒ‰[ˆ—“ˆê | ? Š®‘SÀ‘• (`Core/Common/ErrorHandler.ps1`) | 100% |
-| VariableScope | ƒXƒŒƒbƒhƒZ[ƒt‚È•Ï”ŠÇ— | ? Š®‘SÀ‘• (`Core/Domain/VariableScope.ps1`) | 100% |
-| ServiceContainer | DI ƒRƒ“ƒeƒi | ? Š®‘SÀ‘• (`Core/Infrastructure/ServiceContainer.ps1`) | 100% |
-| ƒ†ƒjƒbƒgƒeƒXƒgŠÂ‹« | Pester ƒeƒXƒg | ? •”•ªÀ‘•iLogger, VariableScopej | 40% |
-| ƒhƒLƒ…ƒƒ“ƒg | İŒv‘EƒŠƒtƒ@ƒŒƒ“ƒX | ? ARCHITECTURE_REFACTORING.mdì¬Ï‚İ | 80% |
+| Logger | \OAXbhZ[t | ? S (`Core/Common/Logger.ps1`) | 100% |
+| ErrorHandler | G[ | ? S (`Core/Common/ErrorHandler.ps1`) | 100% |
+| VariableScope | XbhZ[tÈ•ÏÇ— | ? S (`Core/Domain/VariableScope.ps1`) | 100% |
+| ServiceContainer | DI Rei | ? S (`Core/Infrastructure/ServiceContainer.ps1`) | 100% |
+| jbgeXgÂ‹ | Pester eXg | ? iLogger, VariableScopej | 40% |
+| hLg | İŒvEt@X | ? ARCHITECTURE_REFACTORING.mdì¬Ï‚ | 80% |
 
-**Š®—¹ƒ^ƒXƒN:**
-- ? LoggerAErrorHandlerAVariableScopeAServiceContainer ‚ÌÀ‘•Š®—¹
-- ? Šî–{“I‚Èƒ†ƒjƒbƒgƒeƒXƒg‚Ìì¬
-- ? İŒv‘‚Æƒ^ƒXƒNƒŠƒXƒg‚Ìì¬
+**^XN:**
+- ? LoggerAErrorHandlerAVariableScopeAServiceContainer Ì
+- ? {IÈƒjbgeXgÌì¬
+- ? İŒvÆƒ^XNXgÌì¬
 
-**–¢Š®—¹ƒ^ƒXƒN:**
-- [ ] ‘SƒNƒ‰ƒX‚Ìƒ†ƒjƒbƒgƒeƒXƒgŠg[iŒ»İ40%j
-- [ ] CI/CDƒpƒCƒvƒ‰ƒCƒ“\’z
+**^XN:**
+- [ ] SNXÌƒjbgeXgg[i40%j
+- [ ] CI/CDpCvC\z
 
 ---
 
-### ƒtƒF[ƒY1: óMƒCƒxƒ“ƒgƒpƒCƒvƒ‰ƒCƒ“C³ - 100% Š®—¹ ?
+### tF[Y1: MCxgpCvCC - 100%  ?
 
-| €–Ú | İŒv—v‹ | À‘•ó‹µ | i’» |
+|  | İŒvv |  | i |
 |-----|---------|---------|------|
-| TcpClientóMˆ— | óMŒã‚ÉƒCƒxƒ“ƒg”­‰Î | ? C³Ï‚İiL65-77j | 100% |
-| TcpServeróMˆ— | óMŒã‚ÉƒCƒxƒ“ƒg”­‰Î | ? C³Ï‚İiL80-81j | 100% |
-| UDPóMˆ— | óMŒã‚ÉƒCƒxƒ“ƒg”­‰Î | ? C³Ï‚İiL81-82j | 100% |
-| ReceivedEventPipeline | “‡ƒCƒxƒ“ƒgˆ— | ? Š®‘SÀ‘• (`Core/Domain/ReceivedEventPipeline.ps1`) | 100% |
-| RuleProcessor | ƒ‹[ƒ‹ƒ}ƒbƒ`ƒ“ƒOEÀs | ? Š®‘SÀ‘• (`Core/Domain/RuleProcessor.ps1`) | 100% |
-| “‡Œ`®ƒ‹[ƒ‹‘Î‰ | UnifiedŒ`®‚Ìˆ— | ? À‘•Ï‚İ | 100% |
+| TcpClientM | MÉƒCxg | ? CÏ‚İiL65-77j | 100% |
+| TcpServerM | MÉƒCxg | ? CÏ‚İiL80-81j | 100% |
+| UDPM | MÉƒCxg | ? CÏ‚İiL81-82j | 100% |
+| ReceivedEventPipeline | Cxg | ? S (`Core/Domain/ReceivedEventPipeline.ps1`) | 100% |
+| RuleProcessor | [}b`OEs | ? S (`Core/Domain/RuleProcessor.ps1`) | 100% |
+| `[Î‰ | Unified`Ì | ? Ï‚ | 100% |
 
-**À‘•‚Ì“Á’¥:**
+**Ì“:**
 ```powershell
-# ’ÊMƒ‚ƒWƒ…[ƒ‹“à‚Å‚ÌÀ‘•ƒpƒ^[ƒ“i3‚Â‚·‚×‚Ä“ˆêj
-if ($Global:ReceivedEventPipeline) {
-    $Global:ReceivedEventPipeline.ProcessEvent($connId, $receivedData, $metadata)
-} else {
-    # ƒtƒH[ƒ‹ƒoƒbƒN: ‹ŒÀ‘•‚ğg—p
-    Invoke-ReceivedEvent -ConnectionId $connId -ReceivedData $receivedData
-}
+# ÊMW[Å‚Ìp^[i3Â‚×‚Ä“j
+$Global:ReceivedEventPipeline.ProcessEvent($connId, $receivedData, $metadata)
 ```
 
-**‰Û‘è:**
-- ReceivedEventPipeline‚ª‘¶İ‚µ‚È‚¢ê‡‚ÌƒtƒH[ƒ‹ƒoƒbƒN‚ª‹ŒÀ‘•ˆË‘¶
-- ‹Œ`Modules/ReceivedEventHandler.ps1`‚ª•À‘¶‚µ‚Ä‚¨‚èA“ñdŠÇ—ó‘Ô
+**Û‘:**
+- ReceivedEventPipelineİ‚È‚ê‡ÌƒtH[obNË‘
 
 ---
 
-### ƒtƒF[ƒY2: Ú‘±ŠÇ—‰ü‘P - 100% Š®—¹ ?
+### tF[Y2: Ú‘Ç—P - 100%  ?
 
-| €–Ú | İŒv—v‹ | À‘•ó‹µ | i’» |
+|  | İŒvv |  | i |
 |-----|---------|---------|------|
-| ConnectionConfiguration | ƒCƒ~ƒ…[ƒ^ƒuƒ‹‚Èİ’èƒNƒ‰ƒX | ? Š®‘SÀ‘• (`Core/Domain/ConnectionModels.ps1`) | 100% |
-| ConnectionRuntimeState | ƒXƒŒƒbƒhƒZ[ƒt‚Èó‘ÔŠÇ— | ? Š®‘SÀ‘• (“¯ã) | 100% |
-| ManagedConnection | “‡Ú‘±ƒIƒuƒWƒFƒNƒg | ? Š®‘SÀ‘• (“¯ã) | 100% |
-| ConnectionService | Ú‘±ƒ‰ƒCƒtƒTƒCƒNƒ‹ŠÇ— | ? Š®‘SÀ‘• (`Core/Domain/ConnectionService.ps1`) | 100% |
-| ServiceContainer“‡ | DI‚É‚æ‚éˆË‘¶«’“ü | ? À‘•Ï‚İ (`TcpDebugger.ps1` L92-95) | 100% |
-| TcpClientAdapter | TCP Client’ÊMˆ— | ? Š®‘SÀ‘• (`Core/Infrastructure/Adapters/TcpClientAdapter.ps1`) | 100% |
-| TcpServerAdapter | TCP Server’ÊMˆ— | ? Š®‘SÀ‘• (`Core/Infrastructure/Adapters/TcpServerAdapter.ps1`) | 100% |
-| UdpAdapter | UDP’ÊMˆ— | ? Š®‘SÀ‘• (`Core/Infrastructure/Adapters/UdpAdapter.ps1`) | 100% |
-| ‹Œƒ‚ƒWƒ…[ƒ‹‚Ìƒ‰ƒbƒp[‰» | Modules/*.ps1‚ÌVƒA[ƒLƒeƒNƒ`ƒƒ‘Î‰ | ? À‘•Ï‚İi2025-11-16j | 100% |
-| ‹ŒÀ‘•‚Ìíœ | ƒŒƒKƒV[ƒR[ƒh‚ÌŠ®‘Síœ | ? Š®—¹i2025-11-16 ‘æ2‰ñj | 100% |
+| ConnectionConfiguration | C~[^uÈİ’NX | ? S (`Core/Domain/ConnectionModels.ps1`) | 100% |
+| ConnectionRuntimeState | XbhZ[tÈÔŠÇ— | ? S () | 100% |
+| ManagedConnection | Ú‘IuWFNg | ? S () | 100% |
+| ConnectionService | Ú‘CtTCNÇ— | ? S (`Core/Domain/ConnectionService.ps1`) | 100% |
+| ServiceContainer | DIÉ‚Ë‘ | ? Ï‚ (`TcpDebugger.ps1` L92-95) | 100% |
+| TcpClientAdapter | TCP ClientÊM | ? S (`Core/Infrastructure/Adapters/TcpClientAdapter.ps1`) | 100% |
+| TcpServerAdapter | TCP ServerÊM | ? S (`Core/Infrastructure/Adapters/TcpServerAdapter.ps1`) | 100% |
+| UdpAdapter | UDPÊM | ? S (`Core/Infrastructure/Adapters/UdpAdapter.ps1`) | 100% |
+| W[Ìƒbp[ | Modules/*.ps1ÌVA[LeN`Î‰ | ? Ï‚İi2025-11-16j | 100% |
+| Ìíœ | KV[R[hÌŠSíœ | ? i2025-11-16 2j | 100% |
 
-**À‘•—áiÅI”Åj:**
+**iÅIÅj:**
 ```powershell
-# Modules/TcpClient.ps1 - ƒVƒ“ƒvƒ‹‚Èƒ‰ƒbƒp[À‘•
+# Modules/TcpClient.ps1 - VvÈƒbp[
 function Start-TcpClientConnection {
     param([object]$Connection)
     
-    # ServiceContainer•K{
+    # ServiceContainerK{
     if (-not $Global:ServiceContainer) {
         throw "ServiceContainer is not initialized."
     }
     
-    # ƒAƒ_ƒvƒ^[‚ğæ“¾‚µ‚ÄÀs
+    # A_v^[æ“¾Äs
     $adapter = $Global:ServiceContainer.Resolve('TcpClientAdapter')
     
     if ($Connection -is [ManagedConnection]) {
@@ -135,7 +129,7 @@ function Start-TcpClientConnection {
         return
     }
     
-    # ConnectionService‚É“o˜^Ï‚İ‚©Šm”F
+    # ConnectionServiceÉ“o^Ï‚İ‚mF
     if ($Connection.Id -and $Global:ConnectionService) {
         $managedConn = $Global:ConnectionService.GetConnection($Connection.Id)
         if ($managedConn) {
@@ -144,188 +138,185 @@ function Start-TcpClientConnection {
         }
     }
     
-    # –¢“o˜^‚Ìê‡‚ÍƒGƒ‰[
+    # o^Ìê‡ÍƒG[
     throw "Connection not registered in ConnectionService."
 }
 ```
 
-**ÅV‚Ìi’»i2025-11-16 ‘æ2‰ñj:**
-- ? `Modules/TcpClient.ps1` ‚©‚ç‹ŒÀ‘•‚ğŠ®‘Síœi~120síŒ¸j
-- ? `Modules/TcpServer.ps1` ‚©‚ç‹ŒÀ‘•‚ğŠ®‘Síœi~120síŒ¸j
-- ? `Modules/UdpCommunication.ps1` ‚©‚ç‹ŒÀ‘•‚ğŠ®‘Síœi~120síŒ¸j
-- ? `Modules/ConnectionManager.ps1` ‚©‚çƒtƒH[ƒ‹ƒoƒbƒNƒR[ƒh‚ğíœ
-- ? ‡Œv–ñ360s‚ÌƒŒƒKƒV[ƒR[ƒh‚ğíœ
-- ? ‚·‚×‚Ä‚Ì’ÊMƒ‚ƒWƒ…[ƒ‹‚ªVƒA[ƒLƒeƒNƒ`ƒƒ‚Ì‚İ‚ğg—p
-- ? ServiceContainer ‚ª‘¶İ‚µ‚È‚¢ê‡‚Í–¾¦“I‚ÉƒGƒ‰[
+**ÅVÌii2025-11-16 2j:**
+- ? `Modules/TcpClient.ps1` ç‹ŒSíœi~120síŒ¸j
+- ? `Modules/TcpServer.ps1` ç‹ŒSíœi~120síŒ¸j
+- ? `Modules/UdpCommunication.ps1` ç‹ŒSíœi~120síŒ¸j
+- ? `Modules/ConnectionManager.ps1` tH[obNR[híœ
+- ? v360sÌƒKV[R[híœ
+- ? ×‚Ä‚Ì’ÊMW[VA[LeN`Ì‚İ‚gp
+- ? ServiceContainer İ‚È‚ê‡Í–IÉƒG[
 
-**Š®—¹ƒ^ƒXƒN:**
-- ? VƒA[ƒLƒeƒNƒ`ƒƒ‚Ö‚ÌŠ®‘SˆÚs
-- ? ‹ŒÀ‘•‚ÌŠ®‘Síœ
-- ? $Global:Connections ‚Ö‚Ì’¼ÚƒAƒNƒZƒX‚ğ”p~iƒAƒ_ƒvƒ^[‘w‚ÅŠ®‘S‚É‰B•Áj
+**^XN:**
+- ? VA[LeN`Ö‚ÌŠSÚs
+- ? ÌŠSíœ
+- ? $Global:Connections Ö‚Ì’ÚƒANZXp~iA_v^[wÅŠSÉ‰Bj
 
 ---
 
-### ƒtƒF[ƒY3: ƒƒbƒZ[ƒWˆ—“‡ - 100% Š®—¹ ?
+### tF[Y3: bZ[W - 100%  ?
 
-| €–Ú | İŒv—v‹ | À‘•ó‹µ | i’» |
+|  | İŒvv |  | i |
 |-----|---------|---------|------|
-| MessageService | ƒeƒ“ƒvƒŒ[ƒg“WŠJE•Ï”’uŠ·EƒVƒiƒŠƒIÀs | ? À‘•Š®—¹i2025-11-16j | 100% |
-| RuleProcessor | ƒ‹[ƒ‹ˆ—“‡ | ? À‘•Ï‚İ | 100% |
-| TemplateRepository | ƒeƒ“ƒvƒŒ[ƒgƒLƒƒƒbƒVƒ…ŠÇ— | ? MessageService“à‚ÉÀ‘• | 100% |
-| RuleRepository | ƒ‹[ƒ‹ƒLƒƒƒbƒVƒ…ŠÇ— | ? Š®‘SÀ‘• (`Core/Infrastructure/Repositories/RuleRepository.ps1`) | 100% |
-| InstanceRepository | ƒCƒ“ƒXƒ^ƒ“ƒXŠÇ— | ? Š®‘SÀ‘• (`Core/Infrastructure/Repositories/InstanceRepository.ps1`) | 100% |
-| d•¡ƒR[ƒhíœ | 3‚Â‚Ìƒ‹[ƒ‹“Ç‚İ‚İ‚Ì“‡ | ? Š®—¹iReceivedRuleEngine“‡Ï‚İj | 100% |
-| ‹Œƒ‚ƒWƒ…[ƒ‹‚Ì”ñ„§‰» | MessageHandler/ScenarioEngine/QuickSender/PeriodicSender | ? Š®—¹i2025-11-16j | 100% |
-| ƒƒbƒZ[ƒW‘—MAPI | MessageService‚É‚æ‚é“ˆêAPI | ? À‘•Š®—¹i2025-11-16j | 100% |
+| MessageService | ev[gWJEÏuEViIs | ? i2025-11-16j | 100% |
+| RuleProcessor | [ | ? Ï‚ | 100% |
+| TemplateRepository | ev[gLbVÇ— | ? MessageServiceÉ | 100% |
+| RuleRepository | [LbVÇ— | ? S (`Core/Infrastructure/Repositories/RuleRepository.ps1`) | 100% |
+| InstanceRepository | CX^XÇ— | ? S (`Core/Infrastructure/Repositories/InstanceRepository.ps1`) | 100% |
+| dR[híœ | 3Â‚Ìƒ[Ç‚İİ‚Ì“ | ? iReceivedRuleEngineÏ‚İj | 100% |
+| W[Ì”ñ„ | MessageHandler/ScenarioEngine/QuickSender/PeriodicSender | ? i2025-11-16j | 100% |
+| bZ[WMAPI | MessageServiceÉ‚é“API | ? i2025-11-16j | 100% |
 
-**À‘•Ï‚İ‚Ì‹@”\:**
-- ? RuleRepository: ƒtƒ@ƒCƒ‹•ÏXŒŸ’mŒ^ƒLƒƒƒbƒVƒ…
-- ? InstanceRepository: ƒCƒ“ƒXƒ^ƒ“ƒXİ’è“Ç‚İ‚İ
-- ? RuleProcessor: AutoResponse + OnReceived “‡ˆ—
-- ? **MessageService: ƒeƒ“ƒvƒŒ[ƒgˆ—E•Ï”“WŠJEƒVƒiƒŠƒIÀs‚Ì“‡**
-- ? **MessageHandler.ps1/ScenarioEngine.ps1 ‚É”ñ„§ƒ}[ƒN‚Æƒ‰ƒbƒp[ŠÖ”‚ğ’Ç‰Á**
-- ? **MessageService‘—MAPI: SendTemplate/SendBytes/SendHex/SendText** © **NEW**
-- ? **QuickSender.ps1/PeriodicSender.ps1 ‚É”ñ„§ƒ}[ƒN‚ğ’Ç‰Á** © **NEW**
+**Ï‚İ‚Ì‹@\:**
+- ? RuleRepository: t@CÏXm^LbV
+- ? InstanceRepository: CX^Xİ’Ç‚İ
+- ? RuleProcessor: AutoResponse + OnReceived 
+- ? **MessageService: ev[gEÏWJEViIsÌ“**
+- ? **MessageHandler.ps1/ScenarioEngine.ps1 É”ñ„}[NÆƒbp[ÖÇ‰**
+- ? **MessageServiceMAPI: SendTemplate/SendBytes/SendHex/SendText**  **NEW**
+- ? **QuickSender.ps1/PeriodicSender.ps1 É”ñ„}[NÇ‰**  **NEW**
 
-**ÅV‚ÌÀ‘•i2025-11-16 ‘æ3‰ñE‘æ4‰ñj:**
-- ? `Core/Domain/MessageService.ps1` Šg’£
-  - SendTemplate: ƒeƒ“ƒvƒŒ[ƒg‚©‚ç‘—M
-  - SendBytes: ƒoƒCƒgƒf[ƒ^‘—M
-  - SendHex: HEX•¶š—ñ‘—M
-  - SendText: ƒeƒLƒXƒgƒƒbƒZ[ƒW‘—M
-- ? `Modules/QuickSender.ps1` ”ñ„§‰»
-- ? `Modules/PeriodicSender.ps1` ”ñ„§‰»
-- ? ‚·‚×‚Ä‚ÌƒƒbƒZ[ƒWˆ—‚ªVƒA[ƒLƒeƒNƒ`ƒƒ‚É“‡Š®—¹
+**ÅVÌi2025-11-16 3E4j:**
+- ? `Core/Domain/MessageService.ps1` g
+  - SendTemplate: ev[gç‘—M
+  - SendBytes: oCgf[^M
+  - SendHex: HEXñ‘—M
+  - SendText: eLXgbZ[WM
+- ? `Modules/QuickSender.ps1` ñ„
+- ? `Modules/PeriodicSender.ps1` ñ„
+- ? ×‚Ä‚ÌƒbZ[WVA[LeN`É“
 
-**“‡ó‹µ:**
-- ? ReceivedRuleEngine: RuleRepository‚ğg—pi“‡Ï‚İj
-- ? AutoResponse/OnReceivedHandler: RuleRepository‚ğg—pi“‡Ï‚İj
-- ? MessageHandler/ScenarioEngine: MessageService‚ÖˆÏ÷i“‡Ï‚İj
-- ? QuickSender/PeriodicSender: ”ñ„§ƒ}[ƒN’Ç‰Ái«—ˆ“I‚ÉMessageService“‡—\’èj
+**:**
+- ? ReceivedRuleEngine: RuleRepositorygpiÏ‚İj
+- ? AutoResponse/OnReceivedHandler: RuleRepositorygpiÏ‚İj
+- ? MessageHandler/ScenarioEngine: MessageServiceÖˆÏiÏ‚İj
+- ? QuickSender/PeriodicSender: ñ„}[NÇ‰iIMessageService\j
 
-**Š®—¹Šî€’B¬:**
-- ? d•¡ƒR[ƒhíœŠ®—¹
-- ? ƒLƒƒƒbƒVƒ…ŠÇ—‚Ì“ˆê‰»Š®—¹
-- ? VAPI‚Ö‚ÌˆÚsƒpƒXŠm—§
+**î€B:**
+- ? dR[híœ
+- ? LbVÇ—Ì“ê‰»
+- ? VAPIÖ‚ÌˆÚspXm
 
 ---
 
-### ƒtƒF[ƒY4: UI‰ü‘P - 0% Š®—¹ ?
+### tF[Y4: UIP - 0%  ?
 
-| €–Ú | İŒv—v‹ | À‘•ó‹µ | i’» |
+|  | İŒvv |  | i |
 |-----|---------|---------|------|
-| ConnectionViewModel | MVVMƒpƒ^[ƒ“ | ? –¢À‘• | 0% |
-| UIUpdateService | UIXV‚Ì“ˆê‰» | ? –¢À‘• | 0% |
-| ƒf[ƒ^ƒoƒCƒ“ƒfƒBƒ“ƒO | ViewModel‚ÆUI‚Ì•ª—£ | ? –¢À‘• | 0% |
-| ”ñ“¯ŠúUIXV | UIƒXƒŒƒbƒh•ª—£ | ?? •”•ª‘Î‰ | 30% |
+| ConnectionViewModel | MVVMp^[ | ?  | 0% |
+| UIUpdateService | UIXVÌ“ê‰» | ?  | 0% |
+| f[^oCfBO | ViewModelUIÌ• | ?  | 0% |
+| ñ“¯ŠUIXV | UIXbh | ?? Î‰ | 30% |
 
-**Œ»ó:**
-- `UI/MainForm.ps1` ‚ª‘¶İ‚·‚é‚ªAMVVM–¢“K—p
-- ˆê•”‚Å `$Global:ConnectionService` ‚ğg—p‚µ‚Ä‚¢‚éiL8-10j
-- UIXV‚ª“¯Šú“I‚És‚í‚ê‚Ä‚¢‚é‰ÓŠ‚ª‘½‚¢
+**:**
+- `UI/MainForm.ps1` İ‚é‚ªAMVVMKp
+- ê•” `$Global:ConnectionService` gpÄ‚iL8-10j
+- UIXVIÉsÄ‚Ó
 
 ---
 
-## ? ƒR[ƒhƒx[ƒX•ªÍŒ‹‰Ê
+## ? R[hx[XÍŒ
 
-### ƒA[ƒLƒeƒNƒ`ƒƒ‘w‚ÌŒ»ó
+### A[LeN`wÌŒ
 
 ```
-Œ»İ‚Ì\‘¢:
-„¥„Ÿ„Ÿ Core/                          [VƒA[ƒLƒeƒNƒ`ƒƒ - ‚“x‚ÉÀ‘•Ï‚İ]
-„    „¥„Ÿ„Ÿ Domain/
-„    „    „¥„Ÿ„Ÿ ConnectionService.ps1     ? À‘•Ï‚İ
-„    „    „¥„Ÿ„Ÿ ConnectionModels.ps1      ? À‘•Ï‚İ
-„    „    „¥„Ÿ„Ÿ ReceivedEventPipeline.ps1 ? À‘•Ï‚İ
-„    „    „¥„Ÿ„Ÿ RuleProcessor.ps1         ? À‘•Ï‚İ
-„    „    „¤„Ÿ„Ÿ VariableScope.ps1         ? À‘•Ï‚İ
-„    „¥„Ÿ„Ÿ Common/
-„    „    „¥„Ÿ„Ÿ Logger.ps1                ? À‘•Ï‚İ
-„    „    „¥„Ÿ„Ÿ ErrorHandler.ps1          ? –¢À‘•
-„    „    „¤„Ÿ„Ÿ ThreadSafeCollections.ps1 ? –¢À‘•
-„    „¤„Ÿ„Ÿ Infrastructure/
-„        „¥„Ÿ„Ÿ ServiceContainer.ps1      ? À‘•Ï‚İ
-„        „¥„Ÿ„Ÿ Adapters/
-„        „    „¥„Ÿ„Ÿ TcpClientAdapter.ps1  ? À‘•Ï‚İi2025-11-16Šm”Fj
-„        „    „¥„Ÿ„Ÿ TcpServerAdapter.ps1  ? À‘•Ï‚İi2025-11-16Šm”Fj
-„        „    „¤„Ÿ„Ÿ UdpAdapter.ps1        ? À‘•Ï‚İi2025-11-16Šm”Fj
-„        „¤„Ÿ„Ÿ Repositories/
-„            „¥„Ÿ„Ÿ RuleRepository.ps1    ? À‘•Ï‚İ
-„            „¤„Ÿ„Ÿ InstanceRepository.ps1 ? À‘•Ï‚İ
-„ 
-„¤„Ÿ„Ÿ Modules/                       [‹ŒƒA[ƒLƒeƒNƒ`ƒƒ - VƒA[ƒLƒeƒNƒ`ƒƒ‚Ìƒ‰ƒbƒp[‚ÉˆÚs’†]
-    „¥„Ÿ„Ÿ TcpClient.ps1              ? ƒ‰ƒbƒp[‰»Š®—¹i2025-11-16j
-    „¥„Ÿ„Ÿ TcpServer.ps1              ? ƒ‰ƒbƒp[‰»Š®—¹i2025-11-16j
-    „¥„Ÿ„Ÿ UdpCommunication.ps1       ? ƒ‰ƒbƒp[‰»Š®—¹i2025-11-16j
-    „¥„Ÿ„Ÿ AutoResponse.ps1           ?? RuleProcessor‚Æd•¡
-    „¥„Ÿ„Ÿ OnReceivedHandler.ps1      ?? ReceivedEventHandler‚Æd•¡
-    „¥„Ÿ„Ÿ ReceivedEventHandler.ps1   ?? ReceivedEventPipeline‚Æd•¡
-    „¥„Ÿ„Ÿ ConnectionManager.ps1      ?? ConnectionService‚Ö‚Ì‹´“n‚µ–ğ
-    „¤„Ÿ„Ÿ ... ‚»‚Ì‘¼‘½”
+İ‚Ì\:
+ Core/                          [VA[LeN` - xÉÏ‚]
+    Domain/
+       ConnectionService.ps1     ? Ï‚
+       ConnectionModels.ps1      ? Ï‚
+       ReceivedEventPipeline.ps1 ? Ï‚
+       RuleProcessor.ps1         ? Ï‚
+       VariableScope.ps1         ? Ï‚
+    Common/
+       Logger.ps1                ? Ï‚
+       ErrorHandler.ps1          ? 
+       ThreadSafeCollections.ps1 ? 
+    Infrastructure/
+        ServiceContainer.ps1      ? Ï‚
+        Adapters/
+           TcpClientAdapter.ps1  ? Ï‚İi2025-11-16mFj
+           TcpServerAdapter.ps1  ? Ï‚İi2025-11-16mFj
+           UdpAdapter.ps1        ? Ï‚İi2025-11-16mFj
+        Repositories/
+            RuleRepository.ps1    ? Ï‚
+            InstanceRepository.ps1 ? Ï‚
+
+ Modules/                       [A[LeN` - VA[LeN`Ìƒbp[ÉˆÚs]
+     TcpClient.ps1              ? bp[i2025-11-16j
+     TcpServer.ps1              ? bp[i2025-11-16j
+     UdpCommunication.ps1       ? bp[i2025-11-16j
+     AutoResponse.ps1           ?? RuleProcessorÆd
+     ConnectionManager.ps1      ?? ConnectionServiceÖ‚Ì‹n
+     ... Ì‘
 ```
 
-### ƒOƒ[ƒoƒ‹•Ï”‚Ìg—pó‹µ
+### O[oÏÌgp
 
-| •Ï”–¼ | g—p‰ÓŠ | ˆÚsó‹µ |
+| Ï | gpÓ | Ús |
 |--------|---------|---------|
-| `$Global:Connections` | Modules/*.ps1iƒtƒH[ƒ‹ƒoƒbƒN—pj | ? VƒA[ƒLƒeƒNƒ`ƒƒ‚ÌƒtƒH[ƒ‹ƒoƒbƒN‚Æ‚µ‚Ä•Û |
-| `$Global:ConnectionService` | TcpDebugger.ps1, UI/MainForm.ps1, Modules/ConnectionManager.ps1, Modules/Tcp*.ps1 | ? VƒVƒXƒeƒ€‚ÅÏ‹É“I‚Ég—p’† |
-| `$Global:ReceivedEventPipeline` | TcpClient/Server/UDPi—Dæg—pj | ? VƒVƒXƒeƒ€‚ÅÏ‹É“I‚Ég—p’† |
-| `$Global:ServiceContainer` | TcpDebugger.ps1, Modules/Tcp*.ps1, Modules/Udp*.ps1 | ? DI ƒRƒ“ƒeƒi‚Æ‚µ‚Äg—p’† |
+| `$Global:Connections` | Modules/*.ps1itH[obNpj | ? VA[LeN`ÌƒtH[obNÆ‚Ä•Û |
+| `$Global:ConnectionService` | TcpDebugger.ps1, UI/MainForm.ps1, Modules/ConnectionManager.ps1, Modules/Tcp*.ps1 | ? VVXeÅÏ‹É“IÉgp |
+| `$Global:ReceivedEventPipeline` | TcpClient/Server/UDPiDgpj | ? VVXeÅÏ‹É“IÉgp |
+| `$Global:ServiceContainer` | TcpDebugger.ps1, Modules/Tcp*.ps1, Modules/Udp*.ps1 | ? DI ReiÆ‚Ägp |
 
-**ˆÚsí—ª‚Ìi“Wi2025-11-16j:**
-’ÊMƒ‚ƒWƒ…[ƒ‹iTcpClient/TcpServer/UDPj‚ªVƒA[ƒLƒeƒNƒ`ƒƒ‚Ìƒ‰ƒbƒp[‚ÉŠ®‘SˆÚs:
+**Úsí—ªÌiWi2025-11-16j:**
+ÊMW[iTcpClient/TcpServer/UDPjVA[LeN`Ìƒbp[ÉŠSÚs:
 ```powershell
-# V‚µ‚¢ƒpƒ^[ƒ“iModules/TcpClient.ps1j
+# Vp^[iModules/TcpClient.ps1j
 function Start-TcpClientConnection {
-    # VƒA[ƒLƒeƒNƒ`ƒƒ‚ğ—Dæg—p
+    # VA[LeN`Dgp
     if ($Global:ServiceContainer) {
         $adapter = $Global:ServiceContainer.Resolve('TcpClientAdapter')
         $adapter.Start($Connection.Id)
         return
     }
     
-    # ƒtƒH[ƒ‹ƒoƒbƒN: ‹ŒÀ‘•iŒã•ûŒİŠ·«‚Ì‚½‚ß•Ûj
-    # ... ƒŒƒKƒV[ƒR[ƒh ...
+    # tH[obN: iİŠÌ‚ß•Ûj
+    # ... KV[R[h ...
 }
 ```
 
-Œ»İ‚à `$Global:ConnectionService` ‚ª“à•”‚Å `$Global:Connections` ‚ğ‹¤—L‚·‚é‚±‚Æ‚ÅŠ®‘S‚ÈŒİŠ·«‚ğ•Û:
+İ‚ `$Global:ConnectionService`  `$Global:Connections` Lé‚±Æ‚ÅŠSÈŒİŠÛ:
 ```powershell
-# TcpDebugger.ps1 ‚Å‚Ì‰Šú‰»
+# TcpDebugger.ps1 Å‚Ì
 $Global:Connections = [System.Collections.Hashtable]::Synchronized(@{})
 $Global:ConnectionService = [ConnectionService]::new($logger, $Global:Connections)
 ```
 
 ---
 
-## ?? ”­Œ©‚³‚ê‚½–â‘è“_
+## ?? ê‚½_
 
-### 1. “ñdƒA[ƒLƒeƒNƒ`ƒƒ–â‘èiÅ—Dæj
+### 1. dA[LeN`iÅ—Dj
 
-**–â‘è:** V‹Œ‚ÌƒA[ƒLƒeƒNƒ`ƒƒ‚ª•À‘¶‚µA‚Ç‚¿‚ç‚ğg‚¤‚×‚«‚©•s–¾ŠmB
+**:** VÌƒA[LeN`AÇ‚g×‚smB
 
-**‰e‹¿‰ÓŠ:**
-- óMƒCƒxƒ“ƒgˆ—: `ReceivedEventHandler.ps1` (‹Œ) vs `ReceivedEventPipeline.ps1` (V)
-- ƒ‹[ƒ‹ˆ—: `AutoResponse.ps1` + `OnReceivedHandler.ps1` (‹Œ) vs `RuleProcessor.ps1` (V)
-- Ú‘±ŠÇ—: `$Global:Connections` ’¼ÚƒAƒNƒZƒX (‹Œ) vs `ConnectionService` (V)
+**eÓ:**
+- [: `AutoResponse.ps1` + `OnReceivedHandler.ps1` () vs `RuleProcessor.ps1` (V)
+- Ú‘Ç—: `$Global:Connections` ÚƒANZX () vs `ConnectionService` (V)
 
-**„§‘Î‰:**
-1. ‹Œƒ‚ƒWƒ…[ƒ‹‚É `[Obsolete]` ƒ}[ƒN’Ç‰Á
-2. ‹Œƒ‚ƒWƒ…[ƒ‹‚ğVƒ‚ƒWƒ…[ƒ‹‚Ìƒ‰ƒbƒp[‚É•ÏX
-3. ’iŠK“I‚ÈíœŒv‰æ‚ğô’è
+**Î‰:**
+1. W[ `[Obsolete]` }[NÇ‰
+2. W[VW[Ìƒbp[É•ÏX
+3. iKIÈíœv
 
-### 2. ƒOƒ[ƒoƒ‹•Ï”ˆË‘¶‚Ìc‘¶i‚—Dæ“xj
+### 2. O[oÏË‘ÌciDxj
 
-**–â‘è:** İŒv‘‚Å‚ÍˆË‘¶«’“ü‚ğ„§‚µ‚Ä‚¢‚é‚ªAÀ‘•‚Å‚Í‘½‚­‚ÌƒOƒ[ƒoƒ‹•Ï”‚ªc‘¶B
+**:** İŒvÅ‚ÍˆË‘ğ„Ä‚é‚ªAÅ‚Í‘ÌƒO[oÏcB
 
-**c‘¶‚µ‚Ä‚¢‚éƒOƒ[ƒoƒ‹•Ï”:**
-- `$Global:Connections` - 16‰ÓŠ‚Åg—p
-- `$Global:ConnectionService` - 9‰ÓŠ‚Åg—p
-- `$Global:ReceivedEventPipeline` - 7‰ÓŠ‚Åg—p
+**cÄ‚O[oÏ:**
+- `$Global:Connections` - 16ÓÅgp
+- `$Global:ConnectionService` - 9ÓÅgp
+- `$Global:ReceivedEventPipeline` - 7ÓÅgp
 
-**„§‘Î‰:**
-’ÊMƒAƒ_ƒvƒ^[‚ğƒNƒ‰ƒX‰»‚µAƒRƒ“ƒXƒgƒ‰ƒNƒ^’“ü‚ÉˆÚs:
+**Î‰:**
+ÊMA_v^[NXARXgN^ÉˆÚs:
 ```powershell
 class TcpClientAdapter {
     hidden [ConnectionService]$_connectionService
@@ -338,337 +329,336 @@ class TcpClientAdapter {
 }
 ```
 
-### 3. MessageProcessor ‚ÌŒ‡”@i’†—Dæ“xj
+### 3. MessageProcessor ÌŒ@iDxj
 
-**–â‘è:** İŒv‘‚Åd—v‚È–ğŠ„‚ğ’S‚¤ `MessageProcessor` ƒNƒ‰ƒX‚ª–¢À‘•B
+**:** İŒvÅdvÈ–S `MessageProcessor` NXB
 
-**‰e‹¿:**
-- ƒeƒ“ƒvƒŒ[ƒgˆ—‚ªŠeƒ‚ƒWƒ…[ƒ‹‚ÉUİ
-- •Ï”“WŠJƒƒWƒbƒN‚Ìd•¡
-- ƒLƒƒƒbƒVƒ…í—ª‚Ì•s“ˆê
+**e:**
+- ev[geW[ÉU
+- ÏWJWbNÌd
+- LbVí—ªÌ•s
 
-**„§‘Î‰:**
-İŒv‘‚Ì•t˜^A.3‚É]‚Á‚ÄÀ‘•‚·‚éB
+**Î‰:**
+İŒvÌ•t^A.3É]ÄB
 
-### 4. ƒGƒ‰[ƒnƒ“ƒhƒŠƒ“ƒO‚Ì•s“ˆêi’†—Dæ“xj
+### 4. G[nhOÌ•siDxj
 
-**–â‘è:** `ErrorHandler.ps1` ‚ª–¢À‘•‚ÅAŠeƒ‚ƒWƒ…[ƒ‹‚ª“Æ©‚ÌƒGƒ‰[ˆ—‚ğÀ‘•B
+**:** `ErrorHandler.ps1` ÅAeW[ÆÌƒG[B
 
-**Œ»ó‚Ìƒpƒ^[ƒ“:**
+**Ìƒp^[:**
 ```powershell
-# ƒpƒ^[ƒ“1: try-catch ‚Åˆ¬‚è‚Â‚Ô‚·
+# p^[1: try-catch ÅˆÂ‚Ô‚
 try { ... } catch { Write-Warning $_ }
 
-# ƒpƒ^[ƒ“2: LoggerŒo—R‚ÅƒGƒ‰[ƒƒO
+# p^[2: LoggeroRÅƒG[O
 try { ... } catch { $logger.LogError("...", $_) }
 
-# ƒpƒ^[ƒ“3: ƒGƒ‰[‚ğ‚»‚Ì‚Ü‚Ü“Š‚°‚é
+# p^[3: G[Ì‚Ü‚Ü“
 try { ... } catch { throw }
 ```
 
-**„§‘Î‰:**
-“ˆê“I‚È ErrorHandler ƒNƒ‰ƒX‚ğÀ‘•‚·‚éB
+**Î‰:**
+I ErrorHandler NXB
 
-### 5. ƒeƒXƒgƒJƒoƒŒƒbƒW‚Ì•s‘«i’á—Dæ“xj
+### 5. eXgJobWÌ•siDxj
 
-**Œ»ó:**
-- ƒ†ƒjƒbƒgƒeƒXƒg: Logger, VariableScope ‚Ì‚İ
-- “‡ƒeƒXƒg: ‚È‚µ
-- E2EƒeƒXƒg: ‚È‚µ
+**:**
+- jbgeXg: Logger, VariableScope Ì‚
+- eXg: È‚
+- E2EeXg: È‚
 
-**„§‘Î‰:**
-ŠeƒNƒ‰ƒX‚É‘Î‚µ‚ÄÅ’áŒÀ‚Ìƒ†ƒjƒbƒgƒeƒXƒg‚ğ’Ç‰ÁB
-
----
-
-## ? –¢Š®—¹ƒ^ƒXƒNˆê——i—Dæ‡ˆÊ‡j
-
-### ? —Dæ“x: ‚iCritical Pathj
-
-#### H1. ’ÊMƒ‚ƒWƒ…[ƒ‹‚ÌƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒO
-- **–Ú“I:** $Global:Connections ‚Ö‚Ì’¼ÚƒAƒNƒZƒX‚ğ”rœ
-- **ì‹Æ“à—e:**
-  1. [ ] `Modules/TcpClient.ps1` ‚ğ `Core/Infrastructure/Adapters/TcpClientAdapter.ps1` ‚ÉƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒO
-  2. [ ] `Modules/TcpServer.ps1` ‚ğ `Core/Infrastructure/Adapters/TcpServerAdapter.ps1` ‚ÉƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒO
-  3. [ ] `Modules/UdpCommunication.ps1` ‚ğ `Core/Infrastructure/Adapters/UdpAdapter.ps1` ‚ÉƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒO
-  4. [ ] ŠeƒAƒ_ƒvƒ^[‚ğƒNƒ‰ƒX‰»‚µAServiceContainer‚É“o˜^
-- **Š®—¹Šî€:** `$Global:Connections` ‚Ö‚Ì’¼ÚƒAƒNƒZƒX‚ªƒ[ƒ‚É‚È‚é
-- **H”Œ©Ï:** 3-5“ú
-
-#### H2. ‹Œƒ‚ƒWƒ…[ƒ‹‚Ì”ñ„§‰»‚Æƒ‰ƒbƒp[‰»
-- **–Ú“I:** V‹Œ‚Ì“ñdƒA[ƒLƒeƒNƒ`ƒƒ‚ğ‰ğÁ
-- **ì‹Æ“à—e:**
-  1. [ ] `Modules/ReceivedEventHandler.ps1` ‚ğ ReceivedEventPipeline ‚Ìƒ‰ƒbƒp[‚É•ÏX
-  2. [ ] `Modules/AutoResponse.ps1` ‚ğ RuleProcessor ‚Ìƒ‰ƒbƒp[‚É•ÏX
-  3. [ ] `Modules/OnReceivedHandler.ps1` ‚ğ RuleProcessor ‚Ìƒ‰ƒbƒp[‚É•ÏX
-  4. [ ] Šeƒtƒ@ƒCƒ‹‚É”ñ„§Œx‚ğ’Ç‰Á
-- **Š®—¹Šî€:** ‹Œƒ‚ƒWƒ…[ƒ‹‚ªVÀ‘•‚Ö‚Ì”–‚¢ƒ‰ƒbƒp[‚É‚È‚é
-- **H”Œ©Ï:** 2-3“ú
-
-#### H3. MessageProcessor ‚ÌÀ‘•
-- **–Ú“I:** ƒeƒ“ƒvƒŒ[ƒgˆ—‚Ì“‡
-- **ì‹Æ“à—e:**
-  1. [ ] `Core/Domain/MessageProcessor.ps1` ‚ğARCHITECTURE_REFACTORING.md •t˜^A.3‚É]‚Á‚ÄÀ‘•
-  2. [ ] TemplateRepository ‚ÌÀ‘•
-  3. [ ] •Ï”“WŠJƒƒWƒbƒN‚Ì“‡
-  4. [ ] ServiceContainer ‚Ö‚Ì“o˜^
-- **Š®—¹Šî€:** ‚·‚×‚Ä‚Ìƒeƒ“ƒvƒŒ[ƒgˆ—‚ª MessageProcessor Œo—R‚É‚È‚é
-- **H”Œ©Ï:** 4-6“ú
-
-### ? —Dæ“x: ’†iImportant but not Urgentj
-
-#### M1. ErrorHandler ‚ÌÀ‘•
-- **ì‹Æ“à—e:**
-  1. [ ] `Core/Common/ErrorHandler.ps1` ‚ğİŒv‘‚É]‚Á‚ÄÀ‘•
-  2. [ ] ƒJƒXƒ^ƒ€—áŠOƒNƒ‰ƒX‚Ì’è‹` (CommunicationException, InvalidOperationException“™)
-  3. [ ] 3‘wƒGƒ‰[ƒnƒ“ƒhƒŠƒ“ƒOí—ª‚Ì“K—p
-- **H”Œ©Ï:** 2-3“ú
-
-#### M2. ThreadSafeCollections ‚ÌÀ‘•
-- **ì‹Æ“à—e:**
-  1. [ ] `Core/Common/ThreadSafeCollections.ps1` ‚ğÀ‘•
-  2. [ ] ŠeíƒXƒŒƒbƒhƒZ[ƒtƒRƒŒƒNƒVƒ‡ƒ“‚Ì’ñ‹Ÿ
-- **H”Œ©Ï:** 1-2“ú
-
-#### M3. ScenarioRepository ‚ÌÀ‘•
-- **ì‹Æ“à—e:**
-  1. [ ] `Core/Infrastructure/Repositories/ScenarioRepository.ps1` ‚ğÀ‘•
-  2. [ ] ƒVƒiƒŠƒIƒtƒ@ƒCƒ‹‚ÌƒLƒƒƒbƒVƒ…ŠÇ—
-- **H”Œ©Ï:** 2-3“ú
-
-#### M4. ƒ†ƒjƒbƒgƒeƒXƒg‚ÌŠg[
-- **ì‹Æ“à—e:**
-  1. [ ] ConnectionService ‚ÌƒeƒXƒgì¬
-  2. [ ] ReceivedEventPipeline ‚ÌƒeƒXƒgì¬
-  3. [ ] RuleProcessor ‚ÌƒeƒXƒgì¬
-  4. [ ] MessageProcessor ‚ÌƒeƒXƒgì¬iÀ‘•Œãj
-- **H”Œ©Ï:** 3-4“ú
-
-### ? —Dæ“x: ’áiNice to havej
-
-#### L1. UI‘w‚ÌMVVM‰»
-- **ì‹Æ“à—e:**
-  1. [ ] `Presentation/UI/ConnectionViewModel.ps1` ‚ğÀ‘•
-  2. [ ] `Presentation/UI/UIUpdateService.ps1` ‚ğÀ‘•
-  3. [ ] MainForm.ps1 ‚ÌƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒO
-- **H”Œ©Ï:** 5-7“ú
-
-#### L2. CI/CDƒpƒCƒvƒ‰ƒCƒ“‚Ì\’z
-- **ì‹Æ“à—e:**
-  1. [ ] GitHub Actions / Azure DevOps ƒpƒCƒvƒ‰ƒCƒ“‚Ìİ’è
-  2. [ ] ©“®ƒeƒXƒgÀs
-  3. [ ] ƒR[ƒhƒJƒoƒŒƒbƒWƒŒƒ|[ƒg
-- **H”Œ©Ï:** 2-3“ú
-
-#### L3. ƒhƒLƒ…ƒƒ“ƒg®”õ
-- **ì‹Æ“à—e:**
-  1. [ ] APIƒŠƒtƒ@ƒŒƒ“ƒX‚Ì©“®¶¬
-  2. [ ] ƒ‚ƒWƒ…[ƒ‹Ó–±ƒ}ƒgƒŠƒNƒX‚Ìì¬
-  3. [ ] ˆÚsƒKƒCƒh‚Ìì¬
-- **H”Œ©Ï:** 2-3“ú
+**Î‰:**
+eNXÉ‘Î‚ÄÅ’ÌƒjbgeXgÇ‰B
 
 ---
 
-## ? „§‚³‚ê‚éŸ‚ÌƒAƒNƒVƒ‡ƒ“
+## ? ^XNê——iDæ‡Êj
 
-### ’ZŠú–Ú•Wi1-2TŠÔj
+### ? Dx: iCritical Pathj
 
-1. **H1. ’ÊMƒ‚ƒWƒ…[ƒ‹‚ÌƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒO**‚ğŠ®—¹
-   - ‚Ü‚¸ TcpClient ‚©‚ç’…è‚µA“®ìŠm”FŒã‚É Server/UDP ‚É“WŠJ
-   - Šù‘¶‹@”\‚ğ‰ó‚³‚È‚¢‚æ‚¤A’iŠK“I‚ÉˆÚs
+#### H1. ÊMW[Ìƒt@N^O
+- **Ú“I:** $Global:Connections Ö‚Ì’ÚƒANZXr
+- **Æ“e:**
+  1. [ ] `Modules/TcpClient.ps1`  `Core/Infrastructure/Adapters/TcpClientAdapter.ps1` Éƒt@N^O
+  2. [ ] `Modules/TcpServer.ps1`  `Core/Infrastructure/Adapters/TcpServerAdapter.ps1` Éƒt@N^O
+  3. [ ] `Modules/UdpCommunication.ps1`  `Core/Infrastructure/Adapters/UdpAdapter.ps1` Éƒt@N^O
+  4. [ ] eA_v^[NXAServiceContainerÉ“o^
+- **î€:** `$Global:Connections` Ö‚Ì’ÚƒANZX[É‚È‚
+- **H:** 3-5
 
-2. **H2. ‹Œƒ‚ƒWƒ…[ƒ‹‚Ì”ñ„§‰»**‚ğÀ{
-   - ƒ‰ƒbƒp[‰»‚É‚æ‚èŒã•ûŒİŠ·«‚ğ•Û
-   - ”ñ„§Œx‚ÅŠJ”­Ò‚ÉˆÚs‚ğ‘£‚·
+#### H2. W[Ì”ñ„Æƒbp[
+- **Ú“I:** VÌ“dA[LeN`
+- **Æ“e:**
+  2. [ ] `Modules/AutoResponse.ps1`  RuleProcessor Ìƒbp[É•ÏX
+  3. [ ] `Modules/OnReceivedHandler.ps1`  RuleProcessor Ìƒbp[É•ÏX
+  4. [ ] et@CÉ”ñ„xÇ‰
+- **î€:** W[VÖ‚Ì”bp[É‚È‚
+- **H:** 2-3
 
-3. **M1. ErrorHandler ‚ÌÀ‘•**
-   - ƒGƒ‰[ˆ—‚Ì“ˆê‚É‚æ‚èAƒfƒoƒbƒOŒø—¦Œüã
+#### H3. MessageProcessor Ì
+- **Ú“I:** ev[gÌ“
+- **Æ“e:**
+  1. [ ] `Core/Domain/MessageProcessor.ps1` ARCHITECTURE_REFACTORING.md t^A.3É]Ä
+  2. [ ] TemplateRepository Ì
+  3. [ ] ÏWJWbNÌ“
+  4. [ ] ServiceContainer Ö‚Ì“o^
+- **î€:** ×‚Ä‚Ìƒev[g MessageProcessor oRÉ‚È‚
+- **H:** 4-6
 
-### ’†Šú–Ú•Wi1-2ƒ–Œj
+### ? Dx: iImportant but not Urgentj
 
-4. **H3. MessageProcessor ‚ÌÀ‘•**
-   - ƒeƒ“ƒvƒŒ[ƒgˆ—‚Ì“‡‚É‚æ‚èAƒR[ƒh‚Ìd•¡‚ğíŒ¸
+#### M1. ErrorHandler Ì
+- **Æ“e:**
+  1. [ ] `Core/Common/ErrorHandler.ps1` İŒvÉ]Ä
+  2. [ ] JX^ONXÌ’` (CommunicationException, InvalidOperationException)
+  3. [ ] 3wG[nhOí—ªÌ“Kp
+- **H:** 2-3
 
-5. **M4. ƒ†ƒjƒbƒgƒeƒXƒg‚ÌŠg[**
-   - ƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒO‚ÌˆÀ‘S«‚ğ’S•Û
+#### M2. ThreadSafeCollections Ì
+- **Æ“e:**
+  1. [ ] `Core/Common/ThreadSafeCollections.ps1` 
+  2. [ ] eXbhZ[tRNVÌ’
+- **H:** 1-2
 
-6. **M3. ScenarioRepository ‚ÌÀ‘•**
-   - ƒVƒiƒŠƒI‹@”\‚Ì‹­‰»
+#### M3. ScenarioRepository Ì
+- **Æ“e:**
+  1. [ ] `Core/Infrastructure/Repositories/ScenarioRepository.ps1` 
+  2. [ ] ViIt@CÌƒLbVÇ—
+- **H:** 2-3
 
-### ’·Šú–Ú•Wi2-3ƒ–Œj
+#### M4. jbgeXgÌŠg[
+- **Æ“e:**
+  1. [ ] ConnectionService ÌƒeXgì¬
+  2. [ ] ReceivedEventPipeline ÌƒeXgì¬
+  3. [ ] RuleProcessor ÌƒeXgì¬
+  4. [ ] MessageProcessor ÌƒeXgì¬ij
+- **H:** 3-4
 
-7. **L1. UI‘w‚ÌMVVM‰»**
-   - ƒ†[ƒU[‘ÌŒ±‚ÌŒüã
+### ? Dx: iNice to havej
 
-8. **‹ŒModulesƒtƒHƒ‹ƒ_‚ÌŠ®‘S”p~**
-   - VƒA[ƒLƒeƒNƒ`ƒƒ‚Ö‚ÌŠ®‘SˆÚs
+#### L1. UIwMVVM
+- **Æ“e:**
+  1. [ ] `Presentation/UI/ConnectionViewModel.ps1` 
+  2. [ ] `Presentation/UI/UIUpdateService.ps1` 
+  3. [ ] MainForm.ps1 Ìƒt@N^O
+- **H:** 5-7
+
+#### L2. CI/CDpCvCÌ\z
+- **Æ“e:**
+  1. [ ] GitHub Actions / Azure DevOps pCvCÌİ’
+  2. [ ] eXgs
+  3. [ ] R[hJobW|[g
+- **H:** 2-3
+
+#### L3. hLg
+- **Æ“e:**
+  1. [ ] APIt@XÌ
+  2. [ ] W[Ó–}gNXÌì¬
+  3. [ ] ÚsKChÌì¬
+- **H:** 2-3
 
 ---
 
-## ? ¬Œ÷ƒƒgƒŠƒNƒX
+## ? éŸÌƒANV
 
-### Œ»İ‚Ìw•W
+### ZÚ•Wi1-2TÔj
 
-| ƒƒgƒŠƒNƒX | Œ»İ’l | –Ú•W’l | ’B¬—¦ |
+1. **H1. ÊMW[Ìƒt@N^O**
+   - Ü‚ TcpClient ç’…è‚µAmF Server/UDP É“WJ
+   - @\ó‚³‚È‚æ‚¤AiKIÉˆÚs
+
+2. **H2. W[Ì”ñ„**{
+   - bp[É‚İŠÛ
+   - ñ„xÅŠJÒ‚ÉˆÚsğ‘£‚
+
+3. **M1. ErrorHandler Ì**
+   - G[Ì“É‚AfobO
+
+### Ú•Wi1-2j
+
+4. **H3. MessageProcessor Ì**
+   - ev[gÌ“É‚AR[hÌdíŒ¸
+
+5. **M4. jbgeXgÌŠg[**
+   - t@N^OÌˆSS
+
+6. **M3. ScenarioRepository Ì**
+   - ViI@\Ì‹
+
+### Ú•Wi2-3j
+
+7. **L1. UIwMVVM**
+   - [U[ÌŒÌŒ
+
+8. **ModulestH_ÌŠSp~**
+   - VA[LeN`Ö‚ÌŠSÚs
+
+---
+
+## ? gNX
+
+### İ‚ÌwW
+
+| gNX | İ’l | Ú•Wl | B |
 |-----------|--------|--------|--------|
-| ƒtƒF[ƒYŠ®—¹—¦ | 2.5/4 | 4/4 | 63% |
-| ƒOƒ[ƒoƒ‹•Ï”ˆË‘¶‰ÓŠ | 32‰ÓŠ | 0‰ÓŠ | 0% |
-| ƒ†ƒjƒbƒgƒeƒXƒgƒJƒoƒŒƒbƒW | ~10% | 80% | 13% |
-| d•¡ƒR[ƒhíŒ¸ | ~40% | 80% | 50% |
-| VƒA[ƒLƒeƒNƒ`ƒƒÌ—p—¦ | ~60% | 100% | 60% |
+| tF[Y | 2.5/4 | 4/4 | 63% |
+| O[oÏË‘Ó | 32Ó | 0Ó | 0% |
+| jbgeXgJobW | ~10% | 80% | 13% |
+| dR[híŒ¸ | ~40% | 80% | 50% |
+| VA[LeN`Ì—p | ~60% | 100% | 60% |
 
-### ¡Œã‚Ì‘ª’è•û–@
+### Ì‘@
 
-- **ƒOƒ[ƒoƒ‹•Ï”ˆË‘¶:** `grep -r "\$Global:Connections" Modules/` ‚ÅƒJƒEƒ“ƒg
-- **ƒeƒXƒgƒJƒoƒŒƒbƒW:** Pester ‚Ì `-CodeCoverage` ƒIƒvƒVƒ‡ƒ“‚Å‘ª’è
-- **d•¡ƒR[ƒh:** SonarQube“™‚ÌÃ“I‰ğÍƒc[ƒ‹‚ÅŒŸo
-- **VƒA[ƒLƒeƒNƒ`ƒƒÌ—p—¦:** Core/”z‰º‚ÌƒR[ƒhs” / ‘S‘Ì‚ÌƒR[ƒhs”
+- **O[oÏË‘:** `grep -r "\$Global:Connections" Modules/` ÅƒJEg
+- **eXgJobW:** Pester  `-CodeCoverage` IvVÅ‘
+- **dR[h:** SonarQubeÌÃ“IÍƒc[ÅŒo
+- **VA[LeN`Ì—p:** Core/zÌƒR[hs / SÌ‚ÌƒR[hs
 
 ---
 
-## ? •ÏX—š—ğ
+## ? ÏX
 
-| “ú•t | ƒo[ƒWƒ‡ƒ“ | •ÏX“à—e |
+| t | o[W | ÏXe |
 |------|-----------|---------|
-| 2025-01-16 | 1.0 | ‰”Åì¬ - Œ»ó•ªÍ‚Æ–¢Š®—¹ƒ^ƒXƒNˆê—— |
-| 2025-11-16 | 1.1 | Phase 1Š®—¹XV - ’ÊMƒ‚ƒWƒ…[ƒ‹‚Ìƒ‰ƒbƒp[‰»Š®—¹AErrorHandlerÀ‘•Šm”F |
-| 2025-11-16 | 1.2 | Phase 2Š®—¹XV - ‹ŒÀ‘•‚ÌŠ®‘SíœAVƒA[ƒLƒeƒNƒ`ƒƒ‚Ö‚ÌŠ®‘SˆÚs |
+| 2025-01-16 | 1.0 | Åì¬ - ó•ªÍ‚Æ–^XNê—— |
+| 2025-11-16 | 1.1 | Phase 1XV - ÊMW[Ìƒbp[AErrorHandlermF |
+| 2025-11-16 | 1.2 | Phase 2XV - ÌŠSíœAVA[LeN`Ö‚ÌŠSÚs |
 
 ---
 
-## ? 2025-11-16 À{“à—eƒTƒ}ƒŠ[i‘æ2‰ñj
+## ? 2025-11-16 {eT}[i2j
 
-### Š®—¹‚µ‚½ƒ^ƒXƒN
+### ^XN
 
-1. ? **Modules/TcpClient.ps1 ‚Ì‹ŒÀ‘•íœ**
-   - ƒtƒH[ƒ‹ƒoƒbƒNƒR[ƒh‚ğŠ®‘Síœi–ñ120síŒ¸j
-   - VƒA[ƒLƒeƒNƒ`ƒƒ‚Ì‚İ‚ğg—p‚·‚éÀ‘•‚É•ÏX
-   - ServiceContainer‚Ì‘¶İƒ`ƒFƒbƒN‚ğ•K{‰»
-   - Shift-JISƒGƒ“ƒR[ƒfƒBƒ“ƒO‚Å•Û‘¶
+1. ? **Modules/TcpClient.ps1 Ì‹íœ**
+   - tH[obNR[hSíœi120síŒ¸j
+   - VA[LeN`Ì‚İ‚gpÉ•ÏX
+   - ServiceContainerÌ‘İƒ`FbNK{
+   - Shift-JISGR[fBOÅ•Û‘
 
-2. ? **Modules/TcpServer.ps1 ‚Ì‹ŒÀ‘•íœ**
-   - ƒtƒH[ƒ‹ƒoƒbƒNƒR[ƒh‚ğŠ®‘Síœi–ñ120síŒ¸j
-   - VƒA[ƒLƒeƒNƒ`ƒƒ‚Ì‚İ‚ğg—p‚·‚éÀ‘•‚É•ÏX
-   - Shift-JISƒGƒ“ƒR[ƒfƒBƒ“ƒO‚Å•Û‘¶
+2. ? **Modules/TcpServer.ps1 Ì‹íœ**
+   - tH[obNR[hSíœi120síŒ¸j
+   - VA[LeN`Ì‚İ‚gpÉ•ÏX
+   - Shift-JISGR[fBOÅ•Û‘
 
-3. ? **Modules/UdpCommunication.ps1 ‚Ì‹ŒÀ‘•íœ**
-   - ƒtƒH[ƒ‹ƒoƒbƒNƒR[ƒh‚ğŠ®‘Síœi–ñ120síŒ¸j
-   - VƒA[ƒLƒeƒNƒ`ƒƒ‚Ì‚İ‚ğg—p‚·‚éÀ‘•‚É•ÏX
-   - Shift-JISƒGƒ“ƒR[ƒfƒBƒ“ƒO‚Å•Û‘¶
+3. ? **Modules/UdpCommunication.ps1 Ì‹íœ**
+   - tH[obNR[hSíœi120síŒ¸j
+   - VA[LeN`Ì‚İ‚gpÉ•ÏX
+   - Shift-JISGR[fBOÅ•Û‘
 
-4. ? **Modules/ConnectionManager.ps1 ‚ÌƒtƒH[ƒ‹ƒoƒbƒNíœ**
-   - ‹ŒÀ‘•‚Ö‚ÌƒtƒH[ƒ‹ƒoƒbƒNƒR[ƒh‚ğíœ
-   - ServiceContainer‚ª•K{‚Å‚ ‚é‚±‚Æ‚ğ–¾¦
-   - VƒA[ƒLƒeƒNƒ`ƒƒ‚Ì‚İ‚Å“®ì
+4. ? **Modules/ConnectionManager.ps1 ÌƒtH[obNíœ**
+   - Ö‚ÌƒtH[obNR[híœ
+   - ServiceContainerK{Å‚é‚±Æ‚ğ–¾
+   - VA[LeN`Ì‚İ‚Å“
 
-5. ? **”ñ„§ƒ‚ƒWƒ…[ƒ‹‚Ö‚Ìƒ}[ƒN’Ç‰Á**
-   - `Modules/AutoResponse.ps1` ‚ÉDEPRECATEDƒRƒƒ“ƒg’Ç‰Á
-   - `Modules/OnReceivedHandler.ps1` ‚ÉDEPRECATEDƒRƒƒ“ƒg’Ç‰Á
-   - ŠJ”­Ò‚ÉVƒA[ƒLƒeƒNƒ`ƒƒiReceivedEventPipelinej‚Ìg—p‚ğ‘£‚·
+5. ? **ñ„W[Ö‚Ìƒ}[NÇ‰**
+   - `Modules/AutoResponse.ps1` DEPRECATEDRgÇ‰
+   - `Modules/OnReceivedHandler.ps1` DEPRECATEDRgÇ‰
+   - JÒ‚ÉVA[LeN`iReceivedEventPipelinejÌgpğ‘£‚
 
-6. ? **i’»ƒhƒLƒ…ƒƒ“ƒg‚ÌÅIXV**
-   - Phase 0: 100%Š®—¹‚ÉXV
-   - Phase 2: 100%Š®—¹‚ÉXV
-   - ‘S‘Ìi’»: 85-90%‚ÉXV
-   - À{“à—e‚ÌÚ×‚ğ‹L˜^
+6. ? **ihLgÌÅIXV**
+   - Phase 0: 100%ÉXV
+   - Phase 2: 100%ÉXV
+   - SÌi: 85-90%ÉXV
+   - {eÌÚ×‚L^
 
-### ƒR[ƒhíŒ¸‚Ì¬‰Ê
+### R[híŒ¸Ì
 
-**íœ‚µ‚½ƒŒƒKƒV[ƒR[ƒh:**
-- TcpClient.ps1: –ñ120s
-- TcpServer.ps1: –ñ120s
-- UdpCommunication.ps1: –ñ120s
-- ConnectionManager.ps1: –ñ30s
-- **‡Œv: –ñ390s‚ÌƒŒƒKƒV[ƒR[ƒhíœ**
+**íœKV[R[h:**
+- TcpClient.ps1: 120s
+- TcpServer.ps1: 120s
+- UdpCommunication.ps1: 120s
+- ConnectionManager.ps1: 30s
+- **v: 390sÌƒKV[R[híœ**
 
-**ŠÈ—ª‰»‚³‚ê‚½À‘•:**
+**È—ê‚½:**
 ```powershell
-# Before: –ñ180siƒ‰ƒbƒp[ + ƒtƒH[ƒ‹ƒoƒbƒNj
-# After: –ñ45siƒ‰ƒbƒp[‚Ì‚İj
-# íŒ¸—¦: –ñ75%‚ÌƒR[ƒhíŒ¸
+# Before: 180sibp[ + tH[obNj
+# After: 45sibp[Ì‚İj
+# íŒ¸: 75%ÌƒR[híŒ¸
 ```
 
-### ƒA[ƒLƒeƒNƒ`ƒƒ‚Ì‰ü‘P
+### A[LeN`Ì‰P
 
-**Beforei‘æ1‰ñŒãj:**
-```
-Modules/TcpClient.ps1
-  „¥„Ÿ VƒA[ƒLƒeƒNƒ`ƒƒi—Dæj
-  „¤„Ÿ ‹ŒÀ‘•iƒtƒH[ƒ‹ƒoƒbƒNj © ƒŒƒKƒV[ƒR[ƒh
-```
-
-**Afteri‘æ2‰ñŒãj:**
+**Beforei1j:**
 ```
 Modules/TcpClient.ps1
-  „¤„Ÿ VƒA[ƒLƒeƒNƒ`ƒƒi‚Ì‚İj © ƒNƒŠ[ƒ“‚ÈÀ‘•
+   VA[LeN`iDj
+   itH[obNj  KV[R[h
 ```
 
-### ‹Zp“I‚È—˜“_
+**Afteri2j:**
+```
+Modules/TcpClient.ps1
+   VA[LeN`iÌ‚İj  N[È
+```
 
-1. **•Ûç«‚ÌŒüã**
-   - ƒR[ƒhƒx[ƒX‚ª–ñ25%íŒ¸
-   - À‘•ƒpƒX‚ª’Pˆê‰»‚³‚êAƒfƒoƒbƒO‚ª—eˆÕ‚É
+### ZpIÈ—_
 
-2. **–¾Šm‚ÈƒGƒ‰[ƒnƒ“ƒhƒŠƒ“ƒO**
-   - ServiceContainer–¢‰Šú‰»‚É–¾¦“I‚ÈƒGƒ‰[
-   - Œë‚Á‚½g‚¢•û‚ğ–h~
+1. **Ûç«ÌŒ**
+   - R[hx[X25%íŒ¸
+   - pXPê‰»AfobOeÕ‚
 
-3. **ˆêŠÑ«‚ÌŠm•Û**
-   - ‚·‚×‚Ä‚Ì’ÊMƒ‚ƒWƒ…[ƒ‹‚ª“¯ˆêƒpƒ^[ƒ“
-   - V‹KŠJ”­Ò‚ÌŠwKƒRƒXƒgíŒ¸
+2. **mÈƒG[nhO**
+   - ServiceContainerÉ–IÈƒG[
+   - gh~
 
-4. **ƒeƒXƒ^ƒrƒŠƒeƒB‚ÌŒüã**
-   - ˆË‘¶ŠÖŒW‚ª–¾Šm
-   - ƒ‚ƒbƒN‚âƒXƒ^ƒu‚ª—eˆÕ‚É’“ü‰Â”\
+3. **ÑÌŠm**
+   - ×‚Ä‚Ì’ÊMW[p^[
+   - VKJÒ‚ÌŠwKRXgíŒ¸
 
-### Ÿ‚ÌƒXƒeƒbƒv‚Ì„§
+4. **eX^reBÌŒ**
+   - Ë‘ÖŒWm
+   - bNX^ueÕ‚É’Â”\
 
-1. **ƒ†ƒjƒbƒgƒeƒXƒg‚ÌŠg[** - VÀ‘•‚ÌƒeƒXƒgƒP[ƒXì¬
-2. **MessageProcessor ‚ÌÀ‘•** - ƒeƒ“ƒvƒŒ[ƒgˆ—‚Ì“‡
-3. **”ñ„§ƒ‚ƒWƒ…[ƒ‹‚Ì’iŠK“I”p~Œv‰æ** - AutoResponse/OnReceivedHandler‚ÌŠ®‘Síœ
-4. **UI‘w‚ÌMVVM‰»** - Phase 4‚Ì’…è
+### ÌƒXebvÌ
+
+1. **jbgeXgÌŠg[** - VÌƒeXgP[Xì¬
+2. **MessageProcessor Ì** - ev[gÌ“
+3. **ñ„W[Ì’iKIp~v** - AutoResponse/OnReceivedHandlerÌŠSíœ
+4. **UIwMVVM** - Phase 4Ì’
 
 ---
 
-## ? 2025-11-16 À{“à—eƒTƒ}ƒŠ[
+## ? 2025-11-16 {eT}[
 
-### Š®—¹‚µ‚½ƒ^ƒXƒN
+### ^XN
 
-1. ? **Modules/TcpClient.ps1 ‚Ìƒ‰ƒbƒp[‰»**
-   - TcpClientAdapter ‚ğ—Dæ“I‚Ég—p‚·‚éÀ‘•‚É•ÏX
-   - ServiceContainerŒo—R‚ÅƒAƒ_ƒvƒ^[‚ğ‰ğŒˆ
-   - ƒtƒH[ƒ‹ƒoƒbƒN‹@”\‚É‚æ‚èŒã•ûŒİŠ·«‚ğ•Û
-   - Shift-JISƒGƒ“ƒR[ƒfƒBƒ“ƒO‚Å•Û‘¶
+1. ? **Modules/TcpClient.ps1 Ìƒbp[**
+   - TcpClientAdapter DIÉgpÉ•ÏX
+   - ServiceContaineroRÅƒA_v^[
+   - tH[obN@\É‚İŠÛ
+   - Shift-JISGR[fBOÅ•Û‘
 
-2. ? **Modules/TcpServer.ps1 ‚Ìƒ‰ƒbƒp[‰»**
-   - TcpServerAdapter ‚ğ—Dæ“I‚Ég—p‚·‚éÀ‘•‚É•ÏX
-   - ServiceContainerŒo—R‚ÅƒAƒ_ƒvƒ^[‚ğ‰ğŒˆ
-   - ƒtƒH[ƒ‹ƒoƒbƒN‹@”\‚É‚æ‚èŒã•ûŒİŠ·«‚ğ•Û
-   - Shift-JISƒGƒ“ƒR[ƒfƒBƒ“ƒO‚Å•Û‘¶
+2. ? **Modules/TcpServer.ps1 Ìƒbp[**
+   - TcpServerAdapter DIÉgpÉ•ÏX
+   - ServiceContaineroRÅƒA_v^[
+   - tH[obN@\É‚İŠÛ
+   - Shift-JISGR[fBOÅ•Û‘
 
-3. ? **Modules/UdpCommunication.ps1 ‚Ìƒ‰ƒbƒp[‰»**
-   - UdpAdapter ‚ğ—Dæ“I‚Ég—p‚·‚éÀ‘•‚É•ÏX
-   - ServiceContainerŒo—R‚ÅƒAƒ_ƒvƒ^[‚ğ‰ğŒˆ
-   - ƒtƒH[ƒ‹ƒoƒbƒN‹@”\‚É‚æ‚èŒã•ûŒİŠ·«‚ğ•Û
-   - Shift-JISƒGƒ“ƒR[ƒfƒBƒ“ƒO‚Å•Û‘¶
+3. ? **Modules/UdpCommunication.ps1 Ìƒbp[**
+   - UdpAdapter DIÉgpÉ•ÏX
+   - ServiceContaineroRÅƒA_v^[
+   - tH[obN@\É‚İŠÛ
+   - Shift-JISGR[fBOÅ•Û‘
 
-4. ? **ErrorHandler ‚ÌÀ‘•Šm”F**
-   - `Core/Common/ErrorHandler.ps1` ‚ªŠù‚ÉÀ‘•‚³‚ê‚Ä‚¢‚é‚±‚Æ‚ğŠm”F
-   - InvokeSafe ƒƒ\ƒbƒh‚É‚æ‚é“ˆê“I‚ÈƒGƒ‰[ƒnƒ“ƒhƒŠƒ“ƒO‹@”\‚ğ’ñ‹Ÿ
+4. ? **ErrorHandler ÌmF**
+   - `Core/Common/ErrorHandler.ps1` ÉÄ‚é‚±Æ‚mF
+   - InvokeSafe \bhÉ‚é“IÈƒG[nhO@\
 
-5. ? **i’»ƒhƒLƒ…ƒƒ“ƒg‚ÌXV**
-   - REFACTORING_PROGRESS.md ‚É‚·‚×‚Ä‚Ì•ÏX‚ğ”½‰f
-   - i’»—¦‚ğ 75-80% ‚©‚ç 80% ‚ÉXV
-   - Phase 0 ‚ÌŠ®—¹—¦‚ğ 90% ‚©‚ç 95% ‚ÉXV
+5. ? **ihLgÌXV**
+   - REFACTORING_PROGRESS.md É‚×‚Ä‚Ì•ÏXğ”½‰f
+   - i 75-80%  80% ÉXV
+   - Phase 0 ÌŠ 90%  95% ÉXV
 
-### ‹Zp“I‚ÈÀ‘•Ú×
+### ZpIÈÚ
 
-**ƒ‰ƒbƒp[ƒpƒ^[ƒ“‚ÌÀ‘•:**
+**bp[p^[Ì:**
 ```powershell
 function Start-TcpClientConnection {
     param([object]$Connection)
     
-    # VƒA[ƒLƒeƒNƒ`ƒƒ‚ğ—Dæg—p
+    # VA[LeN`Dgp
     if ($Global:ServiceContainer) {
         try {
             $adapter = $Global:ServiceContainer.Resolve('TcpClientAdapter')
@@ -692,26 +682,26 @@ function Start-TcpClientConnection {
         }
     }
     
-    # ƒtƒH[ƒ‹ƒoƒbƒN: ‹ŒÀ‘•iŒã•ûŒİŠ·«‚Ì‚½‚ß•Ûj
+    # tH[obN: iİŠÌ‚ß•Ûj
     # ...
 }
 ```
 
-### ‰e‹¿”ÍˆÍ
+### eÍˆ
 
-- ? Šù‘¶‚ÌÚ‘±ˆ—‚Í‚·‚×‚Ä“®ì‚ğŒp‘±
-- ? VƒA[ƒLƒeƒNƒ`ƒƒ‚ª—˜—p‰Â”\‚Èê‡‚Í©“®“I‚Ég—p
-- ? ‹ŒÀ‘•‚Ö‚ÌƒtƒH[ƒ‹ƒoƒbƒN‚É‚æ‚èAˆÚsŠúŠÔ’†‚àˆÀ‘S‚É“®ì
-- ? “ú–{ŒêŠÂ‹«iShift-JISj‚É‘Î‰
+- ? ÌÚ‘Í‚×‚Ä“p
+- ? VA[LeN`pÂ”\Èê‡ÍIÉgp
+- ? Ö‚ÌƒtH[obNÉ‚AÚsÔ’SÉ“
+- ? {Â‹iShift-JISjÉ‘Î‰
 
-### Ÿ‚ÌƒXƒeƒbƒv‚Ì„§
+### ÌƒXebvÌ
 
-1. **MessageProcessor ‚ÌÀ‘•** - ƒeƒ“ƒvƒŒ[ƒgˆ—‚Ì“‡
-2. **ƒ†ƒjƒbƒgƒeƒXƒg‚ÌŠg[** - VƒAƒ_ƒvƒ^[‚ÌƒeƒXƒgƒP[ƒXì¬
-3. **ConnectionManager ‚È‚Ç‚Ì‘¼ƒ‚ƒWƒ…[ƒ‹‚ÌˆÚs** - ’iŠK“I‚ÈŠ®‘SˆÚs
-4. **$Global:Connections ‚Ö‚Ì’¼ÚƒAƒNƒZƒX‚ÌíŒ¸** - ƒŒƒKƒV[ƒR[ƒh‚Ì®—
+1. **MessageProcessor Ì** - ev[gÌ“
+2. **jbgeXgÌŠg[** - VA_v^[ÌƒeXgP[Xì¬
+3. **ConnectionManager È‚Ç‚Ì‘W[ÌˆÚs** - iKIÈŠSÚs
+4. **$Global:Connections Ö‚Ì’ÚƒANZXÌíŒ¸** - KV[R[hÌ
 
 ---
 
-**ì¬Ò:** GitHub Copilot  
-**ƒŒƒrƒ…[ó‘Ô:** Draft - ƒŒƒrƒ…[‘Ò‚¿
+**ì¬:** GitHub Copilot  
+**r[:** Draft - r[Ò‚
