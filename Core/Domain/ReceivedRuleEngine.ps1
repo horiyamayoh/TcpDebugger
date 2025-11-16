@@ -273,4 +273,294 @@ function Test-TextRuleMatch {
     }
 }
 
+function Test-OnReceivedMatch {
+    <#
+    .SYNOPSIS
+    受信データがOnReceivedルールにマッチするかチェック
+    #>
+    param(
+        [Parameter(Mandatory=$true)]
+        [byte[]]$ReceivedData,
+
+        [Parameter(Mandatory=$true)]
+        [object]$Rule
+    )
+
+    # 共通エンジンを使用
+    return Test-ReceivedRuleMatch -ReceivedData $ReceivedData -Rule $Rule -DefaultEncoding "UTF-8"
+}
+
+function Invoke-AutoResponse {
+    <#
+    .SYNOPSIS
+    受信データに対して自動応答を実行
+    #>
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$ConnectionId,
+
+        [Parameter(Mandatory=$true)]
+        [byte[]]$ReceivedData,
+
+        [Parameter(Mandatory=$true)]
+        [array]$Rules
+    )
+
+    if (-not $Global:Connections.ContainsKey($ConnectionId)) {
+        return
+    }
+
+    $conn = $Global:Connections[$ConnectionId]
+
+    $defaultEncoding = "UTF-8"
+    if ($conn.Variables.ContainsKey('DefaultEncoding') -and $conn.Variables['DefaultEncoding']) {
+        $defaultEncoding = $conn.Variables['DefaultEncoding']
+    }
+
+    $matchedCount = 0
+
+    foreach ($rule in $Rules) {
+        $matchEncoding = if ($rule.Encoding) { $rule.Encoding } else { $defaultEncoding }
+
+        if (-not (Test-ReceivedRuleMatch -ReceivedData $ReceivedData -Rule $rule -DefaultEncoding $matchEncoding)) {
+            continue
+        }
+
+        $matchedCount++
+
+        # マッチした場合の処理
+        $ruleName = if ($rule.RuleName) { $rule.RuleName } else { "Unknown" }
+        Write-Host "[AutoResponse] Rule matched ($matchedCount): $ruleName" -ForegroundColor Cyan
+
+        # 遅延処理
+        if ($rule.Delay -and [int]$rule.Delay -gt 0) {
+            Start-Sleep -Milliseconds ([int]$rule.Delay)
+        }
+
+        # アクションタイプに応じて処理
+        $actionType = if ($rule.PSObject.Properties.Name -contains '__ActionType') {
+            $rule.__ActionType
+        } else {
+            'AutoResponse'
+        }
+
+        switch ($actionType) {
+            'AutoResponse' {
+                # AutoResponse処理のみ
+                Invoke-BinaryAutoResponse -ConnectionId $ConnectionId -Rule $rule -Connection $conn
+            }
+            'OnReceived' {
+                # OnReceivedスクリプト実行のみ
+                Invoke-OnReceivedScript -ConnectionId $ConnectionId -ReceivedData $ReceivedData -Rule $rule -Connection $conn
+            }
+            'Both' {
+                # 両方実行（AutoResponse → OnReceived の順）
+                Invoke-BinaryAutoResponse -ConnectionId $ConnectionId -Rule $rule -Connection $conn
+                Invoke-OnReceivedScript -ConnectionId $ConnectionId -ReceivedData $ReceivedData -Rule $rule -Connection $conn
+            }
+            'None' {
+                Write-Warning "[AutoResponse] Rule has no action defined: $ruleName"
+            }
+            default {
+                # 旧形式の場合
+                if ($rule.__RuleType -eq 'AutoResponse_Legacy') {
+                    Invoke-TextAutoResponse -ConnectionId $ConnectionId -Rule $rule -Connection $conn -DefaultEncoding $defaultEncoding
+                } else {
+                    Invoke-BinaryAutoResponse -ConnectionId $ConnectionId -Rule $rule -Connection $conn
+                }
+            }
+        }
+
+        # 複数ルール対応: breakせずに継続
+    }
+
+    if ($matchedCount -gt 0) {
+        Write-Host "[AutoResponse] Total $matchedCount rule(s) processed" -ForegroundColor Green
+    }
+}
+
+function Invoke-BinaryAutoResponse {
+    <#
+    .SYNOPSIS
+    バイナリマッチングルールに基づく自動応答（電文ファイル参照）
+    #>
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$ConnectionId,
+
+        [Parameter(Mandatory=$true)]
+        [object]$Rule,
+
+        [Parameter(Mandatory=$true)]
+        [object]$Connection
+    )
+
+    if ([string]::IsNullOrWhiteSpace($Rule.ResponseMessageFile)) {
+        Write-Warning "[AutoResponse] ResponseMessageFile is not specified in the rule"
+        return
+    }
+
+    # 電文ファイルのパスを解決
+    $messageFilePath = $Rule.ResponseMessageFile
+
+    # 相対パスの場合、インスタンスのtemplatesフォルダからの相対パスとして解釈
+    if (-not [System.IO.Path]::IsPathRooted($messageFilePath)) {
+        if ($Connection.Variables.ContainsKey('InstancePath')) {
+            $instancePath = $Connection.Variables['InstancePath']
+            $messageFilePath = Join-Path $instancePath "templates\$messageFilePath"
+        }
+    }
+
+    if (-not (Test-Path -LiteralPath $messageFilePath)) {
+        Write-Warning "[AutoResponse] Response message file not found: $messageFilePath"
+        return
+    }
+
+    # 電文ファイルを読み込む
+    try {
+        $templates = Get-MessageTemplateCache -FilePath $messageFilePath -ThrowOnMissing
+    } catch {
+        Write-Warning "[AutoResponse] Failed to load response message file: $_"
+        return
+    }
+
+    if (-not $templates -or $templates.Count -eq 0) {
+        Write-Warning "[AutoResponse] No templates found in $messageFilePath"
+        return
+    }
+
+    # DEFAULTテンプレートを取得（新形式の電文定義は常にDEFAULT名で格納される）
+    if (-not $templates.ContainsKey('DEFAULT')) {
+        Write-Warning "[AutoResponse] DEFAULT template not found in $messageFilePath"
+        return
+    }
+
+    $template = $templates['DEFAULT']
+
+    # 16進数ストリームをバイト配列に変換
+    try {
+        $responseBytes = ConvertTo-ByteArray -Data $template.Format -Encoding 'HEX'
+    } catch {
+        Write-Warning "[AutoResponse] Failed to convert hex stream to bytes: $_"
+        return
+    }
+
+    # 送信
+    try {
+        Send-Data -ConnectionId $ConnectionId -Data $responseBytes
+        $hexPreview = $template.Format
+        if ($hexPreview.Length -gt 40) {
+            $hexPreview = $hexPreview.Substring(0, 40) + "..."
+        }
+        Write-Host "[AutoResponse] Sent message from $($Rule.ResponseMessageFile) (${hexPreview})" -ForegroundColor Blue
+    } catch {
+        Write-Warning "[AutoResponse] Failed to send auto-response: $_"
+    }
+}
+
+function Invoke-TextAutoResponse {
+    <#
+    .SYNOPSIS
+    テキストマッチングルールに基づく自動応答（旧形式）
+    #>
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$ConnectionId,
+
+        [Parameter(Mandatory=$true)]
+        [object]$Rule,
+
+        [Parameter(Mandatory=$true)]
+        [object]$Connection,
+
+        [Parameter(Mandatory=$true)]
+        [string]$DefaultEncoding
+    )
+
+    $responseTemplate = if ($rule.ResponseTemplate) { $rule.ResponseTemplate } else { "" }
+    $response = Expand-MessageVariables -Template $responseTemplate -Variables $Connection.Variables
+
+    $responseEncoding = if ($rule.Encoding) { $rule.Encoding } else { $DefaultEncoding }
+
+    try {
+        $responseBytes = ConvertTo-ByteArray -Data $response -Encoding $responseEncoding
+    } catch {
+        Write-Warning "[AutoResponse] Failed to encode auto-response message: $_"
+        return
+    }
+
+    try {
+        Send-Data -ConnectionId $ConnectionId -Data $responseBytes
+        Write-Host "[AutoResponse] Auto-responded: $response" -ForegroundColor Blue
+    } catch {
+        Write-Warning "[AutoResponse] Failed to send auto-response: $_"
+    }
+}
+
+function Invoke-OnReceivedScript {
+    <#
+    .SYNOPSIS
+    OnReceivedスクリプトを実行
+    #>
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$ConnectionId,
+
+        [Parameter(Mandatory=$true)]
+        [byte[]]$ReceivedData,
+
+        [Parameter(Mandatory=$true)]
+        [object]$Rule,
+
+        [Parameter(Mandatory=$true)]
+        [object]$Connection
+    )
+
+    if ([string]::IsNullOrWhiteSpace($Rule.ScriptFile)) {
+        Write-Warning "[OnReceived] ScriptFile is not specified"
+        return
+    }
+
+    # スクリプトファイルのパスを解決
+    $scriptPath = $Rule.ScriptFile
+
+    # 相対パスの場合、インスタンスのscenarios/onreceivedフォルダからの相対パス
+    if (-not [System.IO.Path]::IsPathRooted($scriptPath)) {
+        if ($Connection.Variables.ContainsKey('InstancePath')) {
+            $instancePath = $Connection.Variables['InstancePath']
+            $scriptPath = Join-Path $instancePath "scenarios\onreceived\$scriptPath"
+        }
+    }
+
+    if (-not (Test-Path -LiteralPath $scriptPath)) {
+        Write-Warning "[OnReceived] Script file not found: $scriptPath"
+        return
+    }
+
+    # スクリプト実行用のコンテキストを準備
+    $scriptContext = @{
+        ReceivedData = $ReceivedData
+        Connection = $Connection
+        ConnectionId = $ConnectionId
+        Rule = $Rule
+        InstancePath = $Connection.Variables['InstancePath']
+    }
+
+    try {
+        Write-Host "[OnReceived] Executing script: $($Rule.ScriptFile)" -ForegroundColor Blue
+
+        # スクリプトを実行
+        $scriptBlock = [scriptblock]::Create((Get-Content -LiteralPath $scriptPath -Raw -Encoding UTF8))
+
+        # スクリプトに変数を渡して実行
+        & $scriptBlock -Context $scriptContext
+
+        Write-Host "[OnReceived] Script executed successfully" -ForegroundColor Green
+    } catch {
+        Write-Warning "[OnReceived] Script execution failed: $_"
+        Write-Warning $_.ScriptStackTrace
+    }
+}
+
+
 

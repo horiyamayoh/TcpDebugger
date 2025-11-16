@@ -303,3 +303,188 @@ class MessageService {
         $this.SendBytes($connectionId, $bytes)
     }
 }
+
+# =====================================================================
+# グローバルヘルパー関数（旧互換性のため）
+# =====================================================================
+
+function Get-MessageTemplateCache {
+    <#
+    .SYNOPSIS
+    電文テンプレートファイルをキャッシュ付きで読み込む
+    
+    .PARAMETER FilePath
+    テンプレートファイルのパス
+    
+    .PARAMETER ThrowOnMissing
+    ファイルが見つからない場合にエラーをスロー
+    #>
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$FilePath,
+        
+        [switch]$ThrowOnMissing
+    )
+    
+    if (-not (Test-Path -LiteralPath $FilePath)) {
+        if ($ThrowOnMissing) {
+            throw "Template file not found: $FilePath"
+        }
+        return @{}
+    }
+    
+    # Shift-JISでCSV読み込み（電文ファイルはShift-JIS形式）
+    $sjisEncoding = [System.Text.Encoding]::GetEncoding("Shift_JIS")
+    $rows = Import-Csv -Path $FilePath -Encoding $sjisEncoding
+    
+    if (-not $rows -or $rows.Count -eq 0) {
+        return @{}
+    }
+    
+    # 電文形式の場合、すべての行を結合してHEX文字列を作成
+    $hexStream = ""
+    foreach ($row in $rows) {
+        # Row1, Row2, ... の2列目のHEX値を結合
+        $properties = $row.PSObject.Properties.Name
+        if ($properties.Count -ge 2) {
+            $hexValue = $properties[1]
+            $hexStream += $row.$hexValue
+        }
+    }
+    
+    # DEFAULTテンプレートとして返す
+    $template = [PSCustomObject]@{
+        Name = 'DEFAULT'
+        Format = $hexStream
+    }
+    
+    return @{
+        'DEFAULT' = $template
+    }
+}
+
+function ConvertTo-ByteArray {
+    <#
+    .SYNOPSIS
+    文字列またはHEX文字列をバイト配列に変換
+    
+    .PARAMETER Data
+    変換するデータ
+    
+    .PARAMETER Encoding
+    エンコーディング（HEX, UTF-8, Shift_JIS, ASCII）
+    #>
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$Data,
+        
+        [Parameter(Mandatory=$false)]
+        [string]$Encoding = "UTF-8"
+    )
+    
+    if ([string]::IsNullOrWhiteSpace($Data)) {
+        return @()
+    }
+    
+    $normalizedEncoding = $Encoding.ToUpperInvariant() -replace '[_-]', ''
+    
+    if ($normalizedEncoding -eq 'HEX') {
+        # HEX文字列をバイト配列に変換
+        $hex = $Data -replace '\s+', ''
+        if ($hex.Length % 2 -ne 0) {
+            throw "Invalid hex string length: $($hex.Length)"
+        }
+        
+        $bytes = New-Object byte[] ($hex.Length / 2)
+        for ($i = 0; $i -lt $hex.Length; $i += 2) {
+            $bytes[$i / 2] = [Convert]::ToByte($hex.Substring($i, 2), 16)
+        }
+        return $bytes
+    }
+    
+    # テキストエンコーディング
+    $enc = switch ($normalizedEncoding) {
+        'UTF8' { [System.Text.Encoding]::UTF8 }
+        'SHIFTJIS' { [System.Text.Encoding]::GetEncoding('Shift_JIS') }
+        'SJIS' { [System.Text.Encoding]::GetEncoding('Shift_JIS') }
+        'ASCII' { [System.Text.Encoding]::ASCII }
+        default { [System.Text.Encoding]::UTF8 }
+    }
+    
+    return $enc.GetBytes($Data)
+}
+
+function ConvertFrom-ByteArray {
+    <#
+    .SYNOPSIS
+    バイト配列を文字列に変換
+    
+    .PARAMETER Data
+    バイト配列
+    
+    .PARAMETER Encoding
+    エンコーディング（UTF-8, Shift_JIS, ASCII）
+    #>
+    param(
+        [Parameter(Mandatory=$true)]
+        [byte[]]$Data,
+        
+        [Parameter(Mandatory=$false)]
+        [string]$Encoding = "UTF-8"
+    )
+    
+    if (-not $Data -or $Data.Length -eq 0) {
+        return ""
+    }
+    
+    $normalizedEncoding = $Encoding.ToUpperInvariant() -replace '[_-]', ''
+    
+    $enc = switch ($normalizedEncoding) {
+        'UTF8' { [System.Text.Encoding]::UTF8 }
+        'SHIFTJIS' { [System.Text.Encoding]::GetEncoding('Shift_JIS') }
+        'SJIS' { [System.Text.Encoding]::GetEncoding('Shift_JIS') }
+        'ASCII' { [System.Text.Encoding]::ASCII }
+        default { [System.Text.Encoding]::UTF8 }
+    }
+    
+    return $enc.GetString($Data)
+}
+
+function Expand-MessageVariables {
+    <#
+    .SYNOPSIS
+    メッセージテンプレート内の変数を展開
+    
+    .PARAMETER Template
+    変数を含むテンプレート文字列
+    
+    .PARAMETER Variables
+    変数のハッシュテーブル
+    #>
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$Template,
+        
+        [Parameter(Mandatory=$false)]
+        [hashtable]$Variables = @{}
+    )
+    
+    if ($Global:MessageService) {
+        return $Global:MessageService.ExpandVariables($Template, $Variables)
+    }
+    
+    # フォールバック: 簡易実装
+    $result = $Template
+    $pattern = '\$\{([^}]+)\}'
+    $matches = [regex]::Matches($result, $pattern)
+    
+    foreach ($match in $matches) {
+        $varName = $match.Groups[1].Value
+        if ($Variables.ContainsKey($varName)) {
+            $result = $result.Replace($match.Value, $Variables[$varName].ToString())
+        }
+    }
+    
+    return $result
+}
+
