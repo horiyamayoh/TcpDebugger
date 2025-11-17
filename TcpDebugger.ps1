@@ -72,6 +72,7 @@ $script:ErrorHandler = [ErrorHandler]::new($script:Logger)
 $Global:Connections = if ($Global:Connections) { $Global:Connections } else { [System.Collections.Hashtable]::Synchronized(@{}) }
 
 $script:ServiceContainer = New-ServiceContainer
+$Global:ServiceContainer = $script:ServiceContainer
 $script:ServiceContainer.RegisterSingleton('Logger', { param($c) $script:Logger })
 $script:ServiceContainer.RegisterSingleton('ConnectionService', {
     param($c)
