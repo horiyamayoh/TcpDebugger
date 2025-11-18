@@ -76,6 +76,24 @@ function Show-MainForm {
     Register-GridEvents -DataGridView $dgvInstances -GridState $gridState
     Register-ButtonEvents -DataGridView $dgvInstances -BtnRefresh $btnRefresh -BtnConnect $btnConnect -BtnDisconnect $btnDisconnect
 
+    # メッセージ処理タイマー (100ms間隔でRunspaceからのメッセージを処理)
+    $messageTimer = New-Object System.Windows.Forms.Timer
+    $messageTimer.Interval = 100
+    $messageTimer.Add_Tick({
+        try {
+            if ($Global:MessageProcessor) {
+                $processed = $Global:MessageProcessor.ProcessMessages(50)
+                if ($processed -gt 0) {
+                    Write-Verbose "[MessageTimer] Processed $processed messages"
+                }
+            }
+        }
+        catch {
+            Write-Verbose "[MessageTimer] Error: $_"
+        }
+    })
+    $messageTimer.Start()
+
     # Timer for periodic refresh (2秒間隔で競合を軽減)
     $timer = New-RefreshTimer -IntervalMilliseconds 2000
     $timer.Add_Tick({
@@ -94,6 +112,7 @@ function Show-MainForm {
 
     # Form closing cleanup
     $form.Add_FormClosing({
+        $messageTimer.Stop()
         $timer.Stop()
         foreach ($conn in Get-UiConnections) {
             try {

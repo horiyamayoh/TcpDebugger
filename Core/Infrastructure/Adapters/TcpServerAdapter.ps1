@@ -5,11 +5,13 @@ class TcpServerAdapter {
     hidden [ConnectionService]$_connectionService
     hidden [ReceivedEventPipeline]$_pipeline
     hidden [Logger]$_logger
+    hidden [RunspaceMessageQueue]$_messageQueue
 
     TcpServerAdapter(
         [ConnectionService]$connectionService,
         [ReceivedEventPipeline]$pipeline,
-        [Logger]$logger
+        [Logger]$logger,
+        [RunspaceMessageQueue]$messageQueue
     ) {
         if (-not $connectionService) {
             throw "ConnectionService is required for TcpServerAdapter."
@@ -20,10 +22,14 @@ class TcpServerAdapter {
         if (-not $logger) {
             throw "Logger is required for TcpServerAdapter."
         }
+        if (-not $messageQueue) {
+            throw "RunspaceMessageQueue is required for TcpServerAdapter."
+        }
 
         $this._connectionService = $connectionService
         $this._pipeline = $pipeline
         $this._logger = $logger
+        $this._messageQueue = $messageQueue
     }
 
     <#
@@ -51,61 +57,78 @@ class TcpServerAdapter {
             throw "TcpServerAdapter requires Mode='Server'."
         }
 
-        # ローカルIPとポートの検証
         if ([string]::IsNullOrWhiteSpace($connection.LocalIP) -or $connection.LocalPort -le 0) {
             throw "Invalid LocalIP or LocalPort for TCP Server."
         }
 
-        # 既存スレッドが動作中の場合はキャンセル
-        if ($connection.State.WorkerThread -and $connection.State.WorkerThread.IsAlive) {
-            $this._logger.LogWarning("Worker thread already running. Cancelling existing thread.", @{
+        # 既存Runspaceが動作中の場合は停止
+        if ($connection.Variables.ContainsKey('_PowerShell')) {
+            $this._logger.LogWarning("PowerShell Runspace already running. Stopping existing runspace.", @{
                 ConnectionId = $connectionId
             })
-            $connection.CancellationSource.Cancel()
+            $this.Stop($connectionId)
             Start-Sleep -Milliseconds 100
         }
 
         # 新しいキャンセルトークンソースを作成
         $connection.CancellationSource = [System.Threading.CancellationTokenSource]::new()
-        $connection.State.CancellationSource = $connection.CancellationSource
 
-        # スレッドで非同期実行
+        # Runspace作成
+        $runspace = [RunspaceFactory]::CreateRunspace()
+        $runspace.Open()
+
+        # PowerShellインスタンス作成
+        $ps = [PowerShell]::Create()
+        $ps.Runspace = $runspace
+
+        # RunspaceMessages.ps1のパスを取得してドットソース
+        $messagesPath = Join-Path $PSScriptRoot "..\..\Domain\RunspaceMessages.ps1"
+        $loadScript = ". '$messagesPath'"
+        $null = $ps.AddScript($loadScript).Invoke()
+        $ps.Commands.Clear()
+
+        # メインScriptBlock
         $scriptBlock = {
-            param($adapter, $connId, $localIP, $localPort, $cancellationToken)
-
+            param(
+                [string]$ConnectionId,
+                [string]$LocalIP,
+                [int]$LocalPort,
+                [object]$MessageQueue,
+                [object]$SendQueueSync,
+                [System.Threading.CancellationToken]$CancellationToken
+            )
+            
             $listener = $null
             $client = $null
             $stream = $null
             
             try {
-                $adapter._logger.LogInfo("Starting TCP Server", @{
-                    ConnectionId = $connId
-                    LocalEndpoint = "${localIP}:${localPort}"
-                })
-
-                $conn = $adapter._connectionService.GetConnection($connId)
-                if (-not $conn) {
-                    throw "Connection not found during thread execution"
+                $msg = New-LogMessage -ConnectionId $ConnectionId -Level 'Info' -Message 'Starting TCP Server' -Context @{
+                    LocalEndpoint = "${LocalIP}:${LocalPort}"
                 }
-
-                $conn.UpdateStatus("CONNECTING")
-
+                $MessageQueue.Enqueue($msg)
+                
+                $msg = New-StatusUpdateMessage -ConnectionId $ConnectionId -Status 'CONNECTING'
+                $MessageQueue.Enqueue($msg)
+                
                 # TCP リスナー作成
-                $ipAddress = [System.Net.IPAddress]::Parse($localIP)
-                $listener = New-Object System.Net.Sockets.TcpListener($ipAddress, $localPort)
+                $ipAddress = [System.Net.IPAddress]::Parse($LocalIP)
+                $listener = New-Object System.Net.Sockets.TcpListener($ipAddress, $LocalPort)
                 $listener.Start()
-
-                $conn.UpdateStatus("CONNECTED")
-                $conn.SetSocket($listener)
-                $conn.MarkActivity()
-
-                $adapter._logger.LogInfo("TCP Server listening successfully", @{
-                    ConnectionId = $connId
-                    LocalEndpoint = "${localIP}:${localPort}"
-                })
-
+                
+                $msg = New-StatusUpdateMessage -ConnectionId $ConnectionId -Status 'CONNECTED'
+                $MessageQueue.Enqueue($msg)
+                
+                $msg = New-ActivityMessage -ConnectionId $ConnectionId
+                $MessageQueue.Enqueue($msg)
+                
+                $msg = New-LogMessage -ConnectionId $ConnectionId -Level 'Info' -Message 'TCP Server listening successfully' -Context @{
+                    LocalEndpoint = "${LocalIP}:${LocalPort}"
+                }
+                $MessageQueue.Enqueue($msg)
+                
                 # クライアント接続待機ループ
-                while (-not $cancellationToken.IsCancellationRequested) {
+                while (-not $CancellationToken.IsCancellationRequested) {
                     try {
                         # 接続待機（ポーリング方式）
                         if ($listener.Pending()) {
@@ -123,39 +146,38 @@ class TcpServerAdapter {
 
                             $remoteEndpoint = $client.Client.RemoteEndPoint.ToString()
                             
-                            $adapter._logger.LogInfo("TCP Server accepted client connection", @{
-                                ConnectionId = $connId
+                            $msg = New-LogMessage -ConnectionId $ConnectionId -Level 'Info' -Message 'TCP Server accepted client connection' -Context @{
                                 RemoteEndpoint = $remoteEndpoint
-                            })
+                            }
+                            $MessageQueue.Enqueue($msg)
                         }
 
                         # クライアントが接続中の場合、送受信処理
                         if ($client -and $client.Connected) {
                             # 送信処理
-                            while ($conn.SendQueue.Count -gt 0) {
-                                $data = $null
-                                $syncRoot = [System.Collections.ArrayList]::Synchronized($conn.SendQueue).SyncRoot
-                                [System.Threading.Monitor]::Enter($syncRoot)
+                            if ($SendQueueSync -and $SendQueueSync.Count -gt 0) {
+                                [System.Threading.Monitor]::Enter($SendQueueSync.SyncRoot)
                                 try {
-                                    if ($conn.SendQueue.Count -gt 0) {
-                                        $data = $conn.SendQueue[0]
-                                        $conn.SendQueue.RemoveAt(0)
+                                    while ($SendQueueSync.Count -gt 0) {
+                                        $data = $SendQueueSync[0]
+                                        $SendQueueSync.RemoveAt(0)
+                                        
+                                        if ($data) {
+                                            $stream.Write($data, 0, $data.Length)
+                                            $stream.Flush()
+                                            
+                                            $msg = New-LogMessage -ConnectionId $ConnectionId -Level 'Info' -Message 'Sent data to client' -Context @{
+                                                Length = $data.Length
+                                            }
+                                            $MessageQueue.Enqueue($msg)
+                                            
+                                            $msg = New-ActivityMessage -ConnectionId $ConnectionId
+                                            $MessageQueue.Enqueue($msg)
+                                        }
                                     }
                                 }
                                 finally {
-                                    [System.Threading.Monitor]::Exit($syncRoot)
-                                }
-
-                                if ($data) {
-                                    $stream.Write($data, 0, $data.Length)
-                                    $stream.Flush()
-
-                                    $adapter._logger.LogInfo("Sent data to client", @{
-                                        ConnectionId = $connId
-                                        Length = $data.Length
-                                    })
-
-                                    $conn.MarkActivity()
+                                    [System.Threading.Monitor]::Exit($SendQueueSync.SyncRoot)
                                 }
                             }
 
@@ -171,8 +193,11 @@ class TcpServerAdapter {
                                         RemoteEndPoint = $client.Client.RemoteEndPoint.ToString()
                                     }
 
-                                    # ReceivedEventPipeline経由で受信イベントを処理
-                                    $adapter._pipeline.ProcessEvent($connId, $receivedData, $metadata)
+                                    $msg = New-DataReceivedMessage -ConnectionId $ConnectionId -Data $receivedData -Metadata $metadata
+                                    $MessageQueue.Enqueue($msg)
+                                    
+                                    $msg = New-ActivityMessage -ConnectionId $ConnectionId
+                                    $MessageQueue.Enqueue($msg)
                                 }
                             }
                         }
@@ -182,25 +207,24 @@ class TcpServerAdapter {
 
                     }
                     catch {
-                        if (-not $cancellationToken.IsCancellationRequested) {
-                            $adapter._logger.LogError("Error in TCP server loop", $_.Exception, @{
-                                ConnectionId = $connId
-                            })
+                        if (-not $CancellationToken.IsCancellationRequested) {
+                            $msg = New-LogMessage -ConnectionId $ConnectionId -Level 'Error' -Message 'Error in TCP server loop' -Context @{
+                                ErrorMessage = $_.Exception.Message
+                            }
+                            $MessageQueue.Enqueue($msg)
                         }
                     }
                 }
 
             }
             catch {
-                $adapter._logger.LogError("TCP Server error", $_.Exception, @{
-                    ConnectionId = $connId
-                    LocalEndpoint = "${localIP}:${localPort}"
-                })
-
-                $conn = $adapter._connectionService.GetConnection($connId)
-                if ($conn) {
-                    $conn.SetError($_.Exception.Message, $_.Exception)
+                $msg = New-ErrorMessage -ConnectionId $ConnectionId -Message $_.Exception.Message -Exception $_.Exception
+                $MessageQueue.Enqueue($msg)
+                
+                $msg = New-LogMessage -ConnectionId $ConnectionId -Level 'Error' -Message 'TCP Server error' -Context @{
+                    ErrorMessage = $_.Exception.Message
                 }
+                $MessageQueue.Enqueue($msg)
             }
             finally {
                 # クリーンアップ
@@ -214,63 +238,34 @@ class TcpServerAdapter {
                     try { $listener.Stop() } catch { }
                 }
 
-                $conn = $adapter._connectionService.GetConnection($connId)
-                if ($conn) {
-                    if ($conn.Status -ne "ERROR") {
-                        $conn.UpdateStatus("DISCONNECTED")
-                    }
-                    $conn.ClearSocket()
-                }
-
-                $adapter._logger.LogInfo("TCP Server stopped", @{
-                    ConnectionId = $connId
-                })
+                $msg = New-StatusUpdateMessage -ConnectionId $ConnectionId -Status 'DISCONNECTED'
+                $MessageQueue.Enqueue($msg)
+                
+                $msg = New-LogMessage -ConnectionId $ConnectionId -Level 'Info' -Message 'TCP Server stopped' -Context @{}
+                $MessageQueue.Enqueue($msg)
             }
         }
 
-        # スレッド開始
-        $thread = New-Object System.Threading.Thread([System.Threading.ParameterizedThreadStart]{
-            param($params)
-            try {
-                & $params.ScriptBlock `
-                    -adapter $params.Adapter `
-                    -connId $params.ConnectionId `
-                    -localIP $params.LocalIP `
-                    -localPort $params.LocalPort `
-                    -cancellationToken $params.CancellationToken
-            }
-            catch {
-                # ?X???b?h???O??G???[???L???b?`????N???b?V????h?
-                try {
-                    $params.Adapter._logger.LogError("Fatal error in server thread", $_.Exception, @{
-                        ConnectionId = $params.ConnectionId
-                        ThreadId = [System.Threading.Thread]::CurrentThread.ManagedThreadId
-                    })
-                }
-                catch {
-                    Write-Host "[FATAL SERVER THREAD ERROR] $($_.Exception.Message)" -ForegroundColor Red
-                }
-            }
-        })
+        # ScriptBlockを追加してパラメータを設定
+        $null = $ps.AddScript($scriptBlock)
+        $null = $ps.AddParameter('ConnectionId', $connectionId)
+        $null = $ps.AddParameter('LocalIP', $connection.LocalIP)
+        $null = $ps.AddParameter('LocalPort', $connection.LocalPort)
+        $null = $ps.AddParameter('MessageQueue', $this._messageQueue)
+        $null = $ps.AddParameter('SendQueueSync', $connection.SendQueue)
+        $null = $ps.AddParameter('CancellationToken', $connection.CancellationSource.Token)
 
-        $connection.State.WorkerThread = $thread
-        $connection.Thread = $thread
-        $thread.IsBackground = $true
-        
-        $threadParams = @{
-            Adapter = $this
-            ConnectionId = $connectionId
-            LocalIP = $connection.LocalIP
-            LocalPort = $connection.LocalPort
-            CancellationToken = $connection.CancellationSource.Token
-            ScriptBlock = $scriptBlock  # scriptBlock???Q??????
-        }
-        
-        $thread.Start($threadParams)
+        # 非同期実行開始
+        $asyncHandle = $ps.BeginInvoke()
 
-        $this._logger.LogInfo("TCP Server thread started", @{
+        # Runspace関連オブジェクトを保存
+        $connection.Variables['_Runspace'] = $runspace
+        $connection.Variables['_PowerShell'] = $ps
+        $connection.Variables['_AsyncHandle'] = $asyncHandle
+
+        $this._logger.LogInfo("TCP Server Runspace started", @{
             ConnectionId = $connectionId
-            ThreadId = $thread.ManagedThreadId
+            LocalEndpoint = "$($connection.LocalIP):$($connection.LocalPort)"
         })
     }
 
@@ -291,7 +286,7 @@ class TcpServerAdapter {
             return
         }
 
-        $this._logger.LogInfo("Stopping TCP Server", @{
+        $this._logger.LogInfo("Stopping TCP Server Runspace", @{
             ConnectionId = $connectionId
         })
 
@@ -308,16 +303,80 @@ class TcpServerAdapter {
             }
         }
 
-        # スレッドの終了を待機（最大2秒）
-        if ($connection.State.WorkerThread -and $connection.State.WorkerThread.IsAlive) {
-            $waitResult = $connection.State.WorkerThread.Join(2000)
-            if (-not $waitResult) {
-                $this._logger.LogWarning("Thread did not stop gracefully within timeout", @{
+        # Runspaceの停止
+        $ps = $connection.Variables['_PowerShell']
+        $asyncHandle = $connection.Variables['_AsyncHandle']
+        $runspace = $connection.Variables['_Runspace']
+
+        if ($ps) {
+            try {
+                # 実行中のRunspaceを停止
+                if ($ps.InvocationStateInfo.State -eq [System.Management.Automation.PSInvocationState]::Running) {
+                    $this._logger.LogInfo("Stopping Runspace execution", @{
+                        ConnectionId = $connectionId
+                    })
+                    $ps.Stop()
+                }
+
+                # 非同期実行の完了を待機（最大2秒）
+                if ($asyncHandle) {
+                    try {
+                        $ps.EndInvoke($asyncHandle)
+                    }
+                    catch {
+                        # EndInvokeでエラーが発生してもログだけ記録
+                        $this._logger.LogWarning("Error during EndInvoke", @{
+                            ConnectionId = $connectionId
+                            Error = $_.Exception.Message
+                        })
+                    }
+                }
+            }
+            catch {
+                $this._logger.LogWarning("Error stopping Runspace", @{
                     ConnectionId = $connectionId
+                    Error = $_.Exception.Message
+                })
+            }
+            finally {
+                # PowerShellオブジェクトの破棄
+                try {
+                    $ps.Dispose()
+                }
+                catch {
+                    $this._logger.LogWarning("Error disposing PowerShell object", @{
+                        ConnectionId = $connectionId
+                        Error = $_.Exception.Message
+                    })
+                }
+            }
+        }
+
+        # Runspaceの破棄
+        if ($runspace) {
+            try {
+                if ($runspace.RunspaceStateInfo.State -ne [System.Management.Automation.Runspaces.RunspaceState]::Closed) {
+                    $runspace.Close()
+                }
+                $runspace.Dispose()
+            }
+            catch {
+                $this._logger.LogWarning("Error disposing Runspace", @{
+                    ConnectionId = $connectionId
+                    Error = $_.Exception.Message
                 })
             }
         }
 
+        # 変数のクリーンアップ
+        $connection.Variables.Remove('_PowerShell')
+        $connection.Variables.Remove('_AsyncHandle')
+        $connection.Variables.Remove('_Runspace')
+
         $connection.UpdateStatus("DISCONNECTED")
+
+        $this._logger.LogInfo("TCP Server Runspace stopped", @{
+            ConnectionId = $connectionId
+        })
     }
 }

@@ -20,6 +20,15 @@ $script:RootPath = $PSScriptRoot
 $script:CurrentMainForm = $null
 $script:ConsoleCancelHandler = $null
 
+# WinForms例外モードを設定（既にコントロールが作成されている場合は無視）
+Add-Type -AssemblyName System.Windows.Forms
+try {
+    [System.Windows.Forms.Application]::SetUnhandledExceptionMode([System.Windows.Forms.UnhandledExceptionMode]::CatchException)
+}
+catch {
+    # コントロールが既に作成されている場合はスキップ（実害なし）
+}
+
 # モジュールのインポート
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host "  TCP Test Controller v1.0" -ForegroundColor Cyan
@@ -43,7 +52,10 @@ $coreModules = @(
     "Core\Domain\RuleProcessor.ps1",
     "Core\Domain\ReceivedEventPipeline.ps1",
     "Core\Domain\MessageService.ps1",
+    "Core\Domain\RunspaceMessages.ps1",
     "Core\Infrastructure\ServiceContainer.ps1",
+    "Core\Infrastructure\RunspaceMessageQueue.ps1",
+    "Core\Infrastructure\RunspaceMessageProcessor.ps1",
     "Core\Infrastructure\Adapters\TcpClientAdapter.ps1",
     "Core\Infrastructure\Adapters\TcpServerAdapter.ps1",
     "Core\Infrastructure\Adapters\UdpAdapter.ps1",
@@ -71,7 +83,7 @@ $script:Logger = New-FileLogger -Path $logPath -Name "TcpDebugger"
 $script:ErrorHandler = [ErrorHandler]::new($script:Logger)
 $Global:Connections = if ($Global:Connections) { $Global:Connections } else { [System.Collections.Hashtable]::Synchronized(@{}) }
 
-# �O���[�o���ȗO���n���h���[�ݒ�
+# グローバル例外ハンドラー設定
 [System.AppDomain]::CurrentDomain.add_UnhandledException({
     param($sender, $eventArgs)
     $exception = $eventArgs.ExceptionObject
@@ -82,8 +94,7 @@ $Global:Connections = if ($Global:Connections) { $Global:Connections } else { [S
     Write-Host $exception.StackTrace -ForegroundColor Red
 })
 
-# WinForms�X���b�h�O���̃G���[���n���h���[
-Add-Type -AssemblyName System.Windows.Forms
+# WinFormsスレッド例外ハンドラー
 [System.Windows.Forms.Application]::add_ThreadException({
     param($sender, $eventArgs)
     $exception = $eventArgs.Exception
@@ -97,7 +108,6 @@ Add-Type -AssemblyName System.Windows.Forms
         [System.Windows.Forms.MessageBoxIcon]::Error
     ) | Out-Null
 })
-[System.Windows.Forms.Application]::SetUnhandledExceptionMode([System.Windows.Forms.UnhandledExceptionMode]::CatchException)
 
 $script:ServiceContainer = New-ServiceContainer
 $Global:ServiceContainer = $script:ServiceContainer
@@ -134,13 +144,30 @@ $script:ServiceContainer.RegisterSingleton('MessageService', {
     [MessageService]::new($logger, $connectionService)
 })
 
+# Runspace通信基盤の登録
+$script:ServiceContainer.RegisterSingleton('RunspaceMessageQueue', {
+    param($c)
+    $logger = $c.Resolve('Logger')
+    [RunspaceMessageQueue]::new($logger)
+})
+
+$script:ServiceContainer.RegisterSingleton('MessageProcessor', {
+    param($c)
+    $queue = $c.Resolve('RunspaceMessageQueue')
+    $connectionService = $c.Resolve('ConnectionService')
+    $pipeline = $c.Resolve('ReceivedEventPipeline')
+    $logger = $c.Resolve('Logger')
+    [RunspaceMessageProcessor]::new($queue, $connectionService, $pipeline, $logger)
+})
+
 # 通信アダプターの登録（Transient: 必要時に新規インスタンス生成）
 $script:ServiceContainer.RegisterTransient('TcpClientAdapter', {
     param($c)
     $connectionService = $c.Resolve('ConnectionService')
     $pipeline = $c.Resolve('ReceivedEventPipeline')
     $logger = $c.Resolve('Logger')
-    [TcpClientAdapter]::new($connectionService, $pipeline, $logger)
+    $messageQueue = $c.Resolve('RunspaceMessageQueue')
+    [TcpClientAdapter]::new($connectionService, $pipeline, $logger, $messageQueue)
 })
 
 $script:ServiceContainer.RegisterTransient('TcpServerAdapter', {
@@ -148,7 +175,8 @@ $script:ServiceContainer.RegisterTransient('TcpServerAdapter', {
     $connectionService = $c.Resolve('ConnectionService')
     $pipeline = $c.Resolve('ReceivedEventPipeline')
     $logger = $c.Resolve('Logger')
-    [TcpServerAdapter]::new($connectionService, $pipeline, $logger)
+    $messageQueue = $c.Resolve('RunspaceMessageQueue')
+    [TcpServerAdapter]::new($connectionService, $pipeline, $logger, $messageQueue)
 })
 
 $script:ServiceContainer.RegisterTransient('UdpAdapter', {
@@ -156,7 +184,8 @@ $script:ServiceContainer.RegisterTransient('UdpAdapter', {
     $connectionService = $c.Resolve('ConnectionService')
     $pipeline = $c.Resolve('ReceivedEventPipeline')
     $logger = $c.Resolve('Logger')
-    [UdpAdapter]::new($connectionService, $pipeline, $logger)
+    $messageQueue = $c.Resolve('RunspaceMessageQueue')
+    [UdpAdapter]::new($connectionService, $pipeline, $logger, $messageQueue)
 })
 
 $Global:ConnectionService = $script:ServiceContainer.Resolve('ConnectionService')
@@ -164,6 +193,8 @@ $Global:RuleRepository = $script:ServiceContainer.Resolve('RuleRepository')
 $Global:InstanceRepository = $script:ServiceContainer.Resolve('InstanceRepository')
 $Global:ReceivedEventPipeline = $script:ServiceContainer.Resolve('ReceivedEventPipeline')
 $Global:MessageService = $script:ServiceContainer.Resolve('MessageService')
+$Global:MessageProcessor = $script:ServiceContainer.Resolve('MessageProcessor')
+$Global:RunspaceMessageQueue = $script:ServiceContainer.Resolve('RunspaceMessageQueue')
 
 Write-Host "[Init] Loading modules..." -ForegroundColor Cyan
 

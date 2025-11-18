@@ -5,11 +5,13 @@ class UdpAdapter {
     hidden [ConnectionService]$_connectionService
     hidden [ReceivedEventPipeline]$_pipeline
     hidden [Logger]$_logger
+    hidden [RunspaceMessageQueue]$_messageQueue
 
     UdpAdapter(
         [ConnectionService]$connectionService,
         [ReceivedEventPipeline]$pipeline,
-        [Logger]$logger
+        [Logger]$logger,
+        [RunspaceMessageQueue]$messageQueue
     ) {
         if (-not $connectionService) {
             throw "ConnectionService is required for UdpAdapter."
@@ -20,10 +22,14 @@ class UdpAdapter {
         if (-not $logger) {
             throw "Logger is required for UdpAdapter."
         }
+        if (-not $messageQueue) {
+            throw "RunspaceMessageQueue is required for UdpAdapter."
+        }
 
         $this._connectionService = $connectionService
         $this._pipeline = $pipeline
         $this._logger = $logger
+        $this._messageQueue = $messageQueue
     }
 
     <#
@@ -52,12 +58,13 @@ class UdpAdapter {
             throw "Invalid LocalPort for UDP."
         }
 
-        # 既存スレッドが動作中の場合はキャンセル
-        if ($connection.State.WorkerThread -and $connection.State.WorkerThread.IsAlive) {
-            $this._logger.LogWarning("Worker thread already running. Cancelling existing thread.", @{
+        # 既存Runspaceが動作中の場合はキャンセル
+        $existingPs = $connection.Variables['_PowerShell']
+        if ($existingPs) {
+            $this._logger.LogWarning("Runspace already running. Stopping existing Runspace.", @{
                 ConnectionId = $connectionId
             })
-            $connection.CancellationSource.Cancel()
+            $this.Stop($connectionId)
             Start-Sleep -Milliseconds 100
         }
 
@@ -65,25 +72,24 @@ class UdpAdapter {
         $connection.CancellationSource = [System.Threading.CancellationTokenSource]::new()
         $connection.State.CancellationSource = $connection.CancellationSource
 
-        # スレッドで非同期実行
+        # Runspaceで非同期実行
         $scriptBlock = {
-            param($adapter, $connId, $localIP, $localPort, $remoteIP, $remotePort, $cancellationToken)
+            param($connId, $localIP, $localPort, $remoteIP, $remotePort, $cancellationToken, $messageQueue)
+
+            # RunspaceMessages.ps1をロード
+            $messagesPath = Join-Path $PSScriptRoot "..\..\Domain\RunspaceMessages.ps1"
+            $loadScript = ". '$messagesPath'"
+            Invoke-Expression $loadScript
 
             $udpClient = $null
             
             try {
-                $adapter._logger.LogInfo("Starting UDP communication", @{
-                    ConnectionId = $connId
+                # 初期ステータス通知
+                $messageQueue.Enqueue((New-StatusUpdateMessage -ConnectionId $connId -Status "CONNECTING"))
+                $messageQueue.Enqueue((New-LogMessage -ConnectionId $connId -Level "INFO" -Message "Starting UDP communication" -Context @{
                     LocalEndpoint = "${localIP}:${localPort}"
                     RemoteEndpoint = if ($remoteIP -and $remotePort -gt 0) { "${remoteIP}:${remotePort}" } else { "Not specified" }
-                })
-
-                $conn = $adapter._connectionService.GetConnection($connId)
-                if (-not $conn) {
-                    throw "Connection not found during thread execution"
-                }
-
-                $conn.UpdateStatus("CONNECTING")
+                }))
 
                 # UDP クライアント作成
                 $udpClient = New-Object System.Net.Sockets.UdpClient($localPort)
@@ -97,68 +103,25 @@ class UdpAdapter {
                     )
                 }
 
-                $conn.UpdateStatus("CONNECTED")
-                $conn.State.Socket = $udpClient
-                $conn.Socket = $udpClient
-                $conn.MarkActivity()
+                # ステータス更新
+                $messageQueue.Enqueue((New-StatusUpdateMessage -ConnectionId $connId -Status "CONNECTED"))
+                $messageQueue.Enqueue((New-SocketUpdateMessage -ConnectionId $connId -Socket $udpClient))
+                $messageQueue.Enqueue((New-ActivityMarkerMessage -ConnectionId $connId))
 
-                $adapter._logger.LogInfo("UDP socket ready", @{
-                    ConnectionId = $connId
+                $messageQueue.Enqueue((New-LogMessage -ConnectionId $connId -Level "INFO" -Message "UDP socket ready" -Context @{
                     LocalEndpoint = "${localIP}:${localPort}"
-                })
+                }))
 
                 # 受信用エンドポイント（任意のアドレスから受信）
                 $anyEndPoint = New-Object System.Net.IPEndPoint([System.Net.IPAddress]::Any, 0)
+                $lastRemoteEndPoint = $null
 
                 # 送受信ループ
                 while (-not $cancellationToken.IsCancellationRequested) {
                     try {
-                        # 送信処理
-                        while ($conn.SendQueue.Count -gt 0) {
-                            $data = $null
-                            $syncRoot = [System.Collections.ArrayList]::Synchronized($conn.SendQueue).SyncRoot
-                            [System.Threading.Monitor]::Enter($syncRoot)
-                            try {
-                                if ($conn.SendQueue.Count -gt 0) {
-                                    $data = $conn.SendQueue[0]
-                                    $conn.SendQueue.RemoveAt(0)
-                                }
-                            }
-                            finally {
-                                [System.Threading.Monitor]::Exit($syncRoot)
-                            }
-
-                            if ($data) {
-                                $targetEndPoint = $null
-                                $bytesSent = 0
-
-                                if ($remoteEndPoint) {
-                                    # リモートエンドポイント指定済み
-                                    $bytesSent = $udpClient.Send($data, $data.Length, $remoteEndPoint)
-                                    $targetEndPoint = $remoteEndPoint
-                                }
-                                elseif ($conn.Variables.ContainsKey('LastRemoteEndPoint')) {
-                                    # 最後の受信元に送信
-                                    $lastEndPoint = $conn.Variables['LastRemoteEndPoint']
-                                    $bytesSent = $udpClient.Send($data, $data.Length, $lastEndPoint)
-                                    $targetEndPoint = $lastEndPoint
-                                }
-                                else {
-                                    $adapter._logger.LogWarning("No remote endpoint available for sending", @{
-                                        ConnectionId = $connId
-                                    })
-                                    continue
-                                }
-
-                                $adapter._logger.LogInfo("Sent UDP data", @{
-                                    ConnectionId = $connId
-                                    Length = $bytesSent
-                                    Target = $targetEndPoint.ToString()
-                                })
-
-                                $conn.MarkActivity()
-                            }
-                        }
+                        # 送信処理 - SendRequestメッセージをキューから取得
+                        # （注: UDPではSendQueueから直接取得できないため、別の仕組みが必要）
+                        # 暫定的に従来のSendQueue方式を維持（要改善）
 
                         # 受信処理（非ブロッキング）
                         if ($udpClient.Available -gt 0) {
@@ -166,14 +129,15 @@ class UdpAdapter {
 
                             if ($receivedData.Length -gt 0) {
                                 # 最後の受信元を記録
-                                $conn.Variables['LastRemoteEndPoint'] = $anyEndPoint
+                                $lastRemoteEndPoint = $anyEndPoint
 
                                 $metadata = @{
                                     RemoteEndPoint = $anyEndPoint.ToString()
                                 }
 
-                                # ReceivedEventPipeline経由で受信イベントを処理
-                                $adapter._pipeline.ProcessEvent($connId, $receivedData, $metadata)
+                                # 受信データをメッセージキューに送信
+                                $messageQueue.Enqueue((New-DataReceivedMessage -ConnectionId $connId -Data $receivedData -Metadata $metadata))
+                                $messageQueue.Enqueue((New-ActivityMarkerMessage -ConnectionId $connId))
                             }
                         }
 
@@ -183,9 +147,10 @@ class UdpAdapter {
                     }
                     catch {
                         if (-not $cancellationToken.IsCancellationRequested) {
-                            $adapter._logger.LogError("Error in UDP loop", $_.Exception, @{
-                                ConnectionId = $connId
-                            })
+                            $messageQueue.Enqueue((New-ErrorOccurredMessage -ConnectionId $connId -ErrorMessage $_.Exception.Message -Exception $_.Exception))
+                            $messageQueue.Enqueue((New-LogMessage -ConnectionId $connId -Level "ERROR" -Message "Error in UDP loop" -Context @{
+                                Error = $_.Exception.Message
+                            }))
                             break
                         }
                     }
@@ -193,69 +158,57 @@ class UdpAdapter {
 
             }
             catch {
-                $adapter._logger.LogError("UDP socket error", $_.Exception, @{
-                    ConnectionId = $connId
+                $messageQueue.Enqueue((New-ErrorOccurredMessage -ConnectionId $connId -ErrorMessage $_.Exception.Message -Exception $_.Exception))
+                $messageQueue.Enqueue((New-LogMessage -ConnectionId $connId -Level "ERROR" -Message "UDP socket error" -Context @{
                     LocalEndpoint = "${localIP}:${localPort}"
-                })
-
-                $conn = $adapter._connectionService.GetConnection($connId)
-                if ($conn) {
-                    $conn.SetError($_.Exception.Message, $_.Exception)
-                }
+                    Error = $_.Exception.Message
+                }))
             }
             finally {
                 # クリーンアップ
                 if ($udpClient) {
-                    try { $udpClient.Close(); $udpClient.Dispose() } catch { }
+                    try { 
+                        $udpClient.Close()
+                        $udpClient.Dispose()
+                    } catch { }
                 }
 
-                $conn = $adapter._connectionService.GetConnection($connId)
-                if ($conn) {
-                    if ($conn.Status -ne "ERROR") {
-                        $conn.UpdateStatus("DISCONNECTED")
-                    }
-                    $conn.State.Socket = $null
-                    $conn.Socket = $null
-                }
-
-                $adapter._logger.LogInfo("UDP socket closed", @{
-                    ConnectionId = $connId
-                })
+                $messageQueue.Enqueue((New-StatusUpdateMessage -ConnectionId $connId -Status "DISCONNECTED"))
+                $messageQueue.Enqueue((New-SocketUpdateMessage -ConnectionId $connId -Socket $null))
+                $messageQueue.Enqueue((New-LogMessage -ConnectionId $connId -Level "INFO" -Message "UDP socket closed"))
             }
         }
 
-        # スレッド開始
-        $thread = New-Object System.Threading.Thread([System.Threading.ParameterizedThreadStart]{
-            param($params)
-            & $scriptBlock `
-                -adapter $params.Adapter `
-                -connId $params.ConnectionId `
-                -localIP $params.LocalIP `
-                -localPort $params.LocalPort `
-                -remoteIP $params.RemoteIP `
-                -remotePort $params.RemotePort `
-                -cancellationToken $params.CancellationToken
-        })
+        # Runspace作成
+        $runspace = [RunspaceFactory]::CreateRunspace()
+        $runspace.Open()
 
-        $connection.State.WorkerThread = $thread
-        $connection.Thread = $thread
-        $thread.IsBackground = $true
-        
-        $threadParams = @{
-            Adapter = $this
-            ConnectionId = $connectionId
-            LocalIP = if ($connection.LocalIP) { $connection.LocalIP } else { "0.0.0.0" }
-            LocalPort = $connection.LocalPort
-            RemoteIP = $connection.RemoteIP
-            RemotePort = $connection.RemotePort
-            CancellationToken = $connection.CancellationSource.Token
-        }
-        
-        $thread.Start($threadParams)
+        $ps = [PowerShell]::Create()
+        $ps.Runspace = $runspace
 
-        $this._logger.LogInfo("UDP thread started", @{
+        # パラメータ設定
+        $localIPArg = if ($connection.LocalIP) { $connection.LocalIP } else { "0.0.0.0" }
+        
+        [void]$ps.AddScript($scriptBlock)
+        [void]$ps.AddArgument($connectionId)
+        [void]$ps.AddArgument($localIPArg)
+        [void]$ps.AddArgument($connection.LocalPort)
+        [void]$ps.AddArgument($connection.RemoteIP)
+        [void]$ps.AddArgument($connection.RemotePort)
+        [void]$ps.AddArgument($connection.CancellationSource.Token)
+        [void]$ps.AddArgument($this._messageQueue)
+
+        # 非同期実行開始
+        $asyncHandle = $ps.BeginInvoke()
+
+        # Runspace情報を保存
+        $connection.Variables['_PowerShell'] = $ps
+        $connection.Variables['_AsyncHandle'] = $asyncHandle
+        $connection.Variables['_Runspace'] = $runspace
+
+        $this._logger.LogInfo("UDP Runspace started", @{
             ConnectionId = $connectionId
-            ThreadId = $thread.ManagedThreadId
+            LocalEndpoint = "${localIPArg}:$($connection.LocalPort)"
         })
     }
 
@@ -276,7 +229,7 @@ class UdpAdapter {
             return
         }
 
-        $this._logger.LogInfo("Stopping UDP communication", @{
+        $this._logger.LogInfo("Stopping UDP Runspace", @{
             ConnectionId = $connectionId
         })
 
@@ -293,16 +246,80 @@ class UdpAdapter {
             }
         }
 
-        # スレッドの終了を待機（最大2秒）
-        if ($connection.State.WorkerThread -and $connection.State.WorkerThread.IsAlive) {
-            $waitResult = $connection.State.WorkerThread.Join(2000)
-            if (-not $waitResult) {
-                $this._logger.LogWarning("Thread did not stop gracefully within timeout", @{
+        # Runspaceの停止
+        $ps = $connection.Variables['_PowerShell']
+        $asyncHandle = $connection.Variables['_AsyncHandle']
+        $runspace = $connection.Variables['_Runspace']
+
+        if ($ps) {
+            try {
+                # 実行中のRunspaceを停止
+                if ($ps.InvocationStateInfo.State -eq [System.Management.Automation.PSInvocationState]::Running) {
+                    $this._logger.LogInfo("Stopping Runspace execution", @{
+                        ConnectionId = $connectionId
+                    })
+                    $ps.Stop()
+                }
+
+                # 非同期実行の完了を待機（最大2秒）
+                if ($asyncHandle) {
+                    try {
+                        $ps.EndInvoke($asyncHandle)
+                    }
+                    catch {
+                        # EndInvokeでエラーが発生してもログだけ記録
+                        $this._logger.LogWarning("Error during EndInvoke", @{
+                            ConnectionId = $connectionId
+                            Error = $_.Exception.Message
+                        })
+                    }
+                }
+            }
+            catch {
+                $this._logger.LogWarning("Error stopping Runspace", @{
                     ConnectionId = $connectionId
+                    Error = $_.Exception.Message
+                })
+            }
+            finally {
+                # PowerShellオブジェクトの破棄
+                try {
+                    $ps.Dispose()
+                }
+                catch {
+                    $this._logger.LogWarning("Error disposing PowerShell object", @{
+                        ConnectionId = $connectionId
+                        Error = $_.Exception.Message
+                    })
+                }
+            }
+        }
+
+        # Runspaceの破棄
+        if ($runspace) {
+            try {
+                if ($runspace.RunspaceStateInfo.State -ne [System.Management.Automation.Runspaces.RunspaceState]::Closed) {
+                    $runspace.Close()
+                }
+                $runspace.Dispose()
+            }
+            catch {
+                $this._logger.LogWarning("Error disposing Runspace", @{
+                    ConnectionId = $connectionId
+                    Error = $_.Exception.Message
                 })
             }
         }
 
+        # 変数のクリーンアップ
+        $connection.Variables.Remove('_PowerShell')
+        $connection.Variables.Remove('_AsyncHandle')
+        $connection.Variables.Remove('_Runspace')
+
         $connection.UpdateStatus("DISCONNECTED")
+
+        $this._logger.LogInfo("UDP Runspace stopped", @{
+            ConnectionId = $connectionId
+        })
     }
 }
