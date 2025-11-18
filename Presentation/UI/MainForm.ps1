@@ -66,6 +66,7 @@ function Show-MainForm {
     $script:suppressScenarioEvent = $false
     $script:suppressOnReceivedEvent = $false
     $script:suppressPeriodicSendEvent = $false
+    $script:lastSelectedConnectionId = $null
     $gridState = @{
         EditingInProgress = $false
         PendingComboDropDown = $null
@@ -157,6 +158,16 @@ function Register-GridEvents {
         Handle-ComboBoxClick -Sender $sender -Args $args -GridState $GridState
     })
 
+    # Track selection to preserve it across grid updates
+    $DataGridView.Add_SelectionChanged({
+        if ($DataGridView.SelectedRows.Count -gt 0 -and $DataGridView.Columns.Contains("Id")) {
+            $connId = $DataGridView.SelectedRows[0].Cells["Id"].Value
+            if ($connId) {
+                $script:lastSelectedConnectionId = $connId
+            }
+        }
+    })
+
     $DataGridView.Add_EditingControlShowing({
         param($sender, $eventArgs)
         Handle-EditingControlShowing -Sender $sender -EventArgs $eventArgs -GridState $GridState
@@ -190,6 +201,7 @@ function Register-ButtonEvents {
     $BtnConnect.Add_Click({
         $connection = Get-SelectedConnection -DataGridView $DataGridView
         if (-not $connection) {
+            [System.Windows.Forms.MessageBox]::Show("Please select a connection first.", "No Selection") | Out-Null
             return
         }
         try {
@@ -221,16 +233,27 @@ function Get-SelectedConnection {
         [System.Windows.Forms.DataGridView]$DataGridView
     )
 
-    if ($DataGridView.SelectedRows.Count -eq 0) {
-        return $null
+    $connId = $null
+    
+    # Try getting selection from SelectedRows first
+    if ($DataGridView.SelectedRows.Count -gt 0 -and $DataGridView.Columns.Contains("Id")) {
+        $connId = $DataGridView.SelectedRows[0].Cells["Id"].Value
     }
-    if (-not $DataGridView.Columns.Contains("Id")) {
-        return $null
+    
+    # Fallback: Try CurrentRow if no selection
+    if (-not $connId -and $DataGridView.CurrentRow -and $DataGridView.Columns.Contains("Id")) {
+        $connId = $DataGridView.CurrentRow.Cells["Id"].Value
     }
-    $connId = $DataGridView.SelectedRows[0].Cells["Id"].Value
+    
+    # Fallback: Use last selected connection ID (preserved across grid updates)
+    if (-not $connId -and $script:lastSelectedConnectionId) {
+        $connId = $script:lastSelectedConnectionId
+    }
+    
     if (-not $connId) {
         return $null
     }
+    
     try {
         return Get-UiConnection -ConnectionId $connId
     } catch {
@@ -567,18 +590,26 @@ function Update-InstanceList {
     }
 
     $state = Save-GridState -DataGridView $DataGridView
-    $DataGridView.Rows.Clear()
+    
+    # Suspend layout to prevent flickering
+    $DataGridView.SuspendLayout()
+    
+    try {
+        $DataGridView.Rows.Clear()
 
-    $connections = Get-UiConnections
-    if (-not $connections -or $connections.Count -eq 0) {
-        return
+        $connections = Get-UiConnections
+        if (-not $connections -or $connections.Count -eq 0) {
+            return
+        }
+
+        foreach ($conn in $connections | Sort-Object DisplayName) {
+            Add-ConnectionRow -DataGridView $DataGridView -Connection $conn
+        }
+
+        Restore-GridState -DataGridView $DataGridView -State $state
+    } finally {
+        $DataGridView.ResumeLayout()
     }
-
-    foreach ($conn in $connections | Sort-Object DisplayName) {
-        Add-ConnectionRow -DataGridView $DataGridView -Connection $conn
-    }
-
-    Restore-GridState -DataGridView $DataGridView -State $state
 }
 
 function Save-GridState {
