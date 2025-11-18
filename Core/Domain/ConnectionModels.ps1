@@ -109,6 +109,7 @@ class ManagedConnection {
     [System.Collections.Hashtable]$ScenarioTimers
     [System.Collections.Generic.List[object]]$PeriodicTimers
     [object]$Adapter
+    hidden [object]$_propertyLock
     [string]$Id
     [string]$Name
     [string]$DisplayName
@@ -132,6 +133,7 @@ class ManagedConnection {
         [object]$adapter,
         [System.Collections.Hashtable]$variables
     ) {
+        $this._propertyLock = [object]::new()
         $this.Config = $config
         $this.State = [ConnectionRuntimeState]::new()
         $this.Adapter = $adapter
@@ -169,23 +171,69 @@ class ManagedConnection {
     }
 
     [void] UpdateStatus([string]$status) {
-        $this.State.SetStatus($status)
-        $this.Status = $status
+        [System.Threading.Monitor]::Enter($this._propertyLock)
+        try {
+            $this.State.SetStatus($status)
+            $this.Status = $status
+        }
+        finally {
+            [System.Threading.Monitor]::Exit($this._propertyLock)
+        }
     }
 
     [void] MarkActivity() {
-        $now = Get-Date
-        $this.LastActivity = $now
-        $this.State.LastActivity = $now
+        [System.Threading.Monitor]::Enter($this._propertyLock)
+        try {
+            $now = Get-Date
+            $this.LastActivity = $now
+            $this.State.LastActivity = $now
+        }
+        finally {
+            [System.Threading.Monitor]::Exit($this._propertyLock)
+        }
     }
 
     [void] SetError([string]$message, [Exception]$exception) {
-        $this.ErrorMessage = $message
-        $this.State.SetError($message, $exception)
+        [System.Threading.Monitor]::Enter($this._propertyLock)
+        try {
+            $this.ErrorMessage = $message
+            $this.State.SetError($message, $exception)
+        }
+        finally {
+            [System.Threading.Monitor]::Exit($this._propertyLock)
+        }
     }
 
     [void] ClearError() {
-        $this.ErrorMessage = $null
-        $this.State.ClearError()
+        [System.Threading.Monitor]::Enter($this._propertyLock)
+        try {
+            $this.ErrorMessage = $null
+            $this.State.ClearError()
+        }
+        finally {
+            [System.Threading.Monitor]::Exit($this._propertyLock)
+        }
+    }
+
+    [void] SetSocket([object]$socket) {
+        [System.Threading.Monitor]::Enter($this._propertyLock)
+        try {
+            $this.Socket = $socket
+            $this.State.Socket = $socket
+        }
+        finally {
+            [System.Threading.Monitor]::Exit($this._propertyLock)
+        }
+    }
+
+    [void] ClearSocket() {
+        [System.Threading.Monitor]::Enter($this._propertyLock)
+        try {
+            $this.Socket = $null
+            $this.State.Socket = $null
+        }
+        finally {
+            [System.Threading.Monitor]::Exit($this._propertyLock)
+        }
     }
 }

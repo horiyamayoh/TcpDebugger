@@ -86,7 +86,16 @@ class ConnectionService {
     }
 
     [ManagedConnection[]] GetAllConnections() {
-        return $this._connections.Values
+        [System.Threading.Monitor]::Enter($this._lock)
+        try {
+            # Synchronized Hashtable???.Values????????S?????
+            # ?R?s?[??????????S??z??????
+            $result = @($this._connections.Values)
+            return $result
+        }
+        finally {
+            [System.Threading.Monitor]::Exit($this._lock)
+        }
     }
 
     [ManagedConnection[]] GetConnectionsByGroup([string]$group) {

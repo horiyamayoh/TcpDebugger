@@ -98,8 +98,21 @@ function Start-Connection {
         return
     }
     
-    $conn.Status = "CONNECTING"
-    $conn.ErrorMessage = $null
+    $conn.UpdateStatus("CONNECTING")
+    $conn.ClearError()
+    
+    # ���̃L�����Z���g�[�N�����N���[���A�b�v
+    if ($conn.CancellationSource) {
+        try {
+            $conn.CancellationSource.Dispose()
+        } catch {
+            Write-Verbose "[ConnectionManager] Failed to dispose old CancellationSource: $_"
+        }
+        $conn.CancellationSource = $null
+    }
+    if ($conn.State.CancellationSource) {
+        $conn.State.CancellationSource = $null
+    }
     
     Write-Host "[ConnectionManager] Starting connection: $($conn.DisplayName)" -ForegroundColor Cyan
     
@@ -110,18 +123,32 @@ function Start-Connection {
         }
         
         # �V�����A�_�v�^�[�A�[�L�e�N�`�����g�p
+        # �d�v: �A�_�v�^�[�C���X�^���X��GC�΍����Ƀ��l�N�V�����ɕۑ�
         switch ($conn.Protocol) {
             "TCP" {
                 if ($conn.Mode -eq "Client") {
                     $adapter = $Global:ServiceContainer.Resolve('TcpClientAdapter')
+                    # �A�_�v�^�[�𕛑�����ăX���b�h�����̎Q�Ƃ��ێ�
+                    if (-not $conn.Variables) {
+                        $conn.Variables = @{}
+                    }
+                    $conn.Variables['_Adapter'] = $adapter
                     $adapter.Start($ConnectionId)
                 } elseif ($conn.Mode -eq "Server") {
                     $adapter = $Global:ServiceContainer.Resolve('TcpServerAdapter')
+                    if (-not $conn.Variables) {
+                        $conn.Variables = @{}
+                    }
+                    $conn.Variables['_Adapter'] = $adapter
                     $adapter.Start($ConnectionId)
                 }
             }
             "UDP" {
                 $adapter = $Global:ServiceContainer.Resolve('UdpAdapter')
+                if (-not $conn.Variables) {
+                    $conn.Variables = @{}
+                }
+                $conn.Variables['_Adapter'] = $adapter
                 $adapter.Start($ConnectionId)
             }
             default {
@@ -129,8 +156,8 @@ function Start-Connection {
             }
         }
         
-        $conn.Status = "CONNECTED"
-        $conn.LastActivity = Get-Date
+        $conn.UpdateStatus("CONNECTED")
+        $conn.MarkActivity()
         
         $periodicProfilePath = $null
         if ($conn.Variables.ContainsKey('PeriodicSendProfilePath')) {
@@ -156,8 +183,7 @@ function Start-Connection {
         Write-Host "[ConnectionManager] Connection established: $($conn.DisplayName)" -ForegroundColor Green
         
     } catch {
-        $conn.Status = "ERROR"
-        $conn.ErrorMessage = $_.Exception.Message
+        $conn.SetError($_.Exception.Message, $_.Exception)
         Write-Error "[ConnectionManager] Failed to start connection $($conn.DisplayName): $_"
     }
 }
@@ -208,20 +234,39 @@ function Stop-Connection {
             $conn.ScenarioTimers.Clear()
         }
         
+        # CancellationSource���L�����Z���������ď�����
         if ($conn.CancellationSource) {
-            $conn.CancellationSource.Cancel()
+            try {
+                $conn.CancellationSource.Cancel()
+                Start-Sleep -Milliseconds 50  # �L�����Z�����`�������܂Ői�҂�
+                $conn.CancellationSource.Dispose()
+            } catch {
+                Write-Verbose "[ConnectionManager] Failed to cancel/dispose CancellationSource: $_"
+            }
+            $conn.CancellationSource = $null
+        }
+        
+        if ($conn.State.CancellationSource) {
+            $conn.State.CancellationSource = $null
         }
         
         if ($conn.Socket) {
-            if ($conn.Socket -is [System.Net.Sockets.TcpClient]) {
-                $conn.Socket.Close()
-            } elseif ($conn.Socket -is [System.Net.Sockets.TcpListener]) {
-                $conn.Socket.Stop()
-            } elseif ($conn.Socket -is [System.Net.Sockets.UdpClient]) {
-                $conn.Socket.Close()
+            try {
+                if ($conn.Socket -is [System.Net.Sockets.TcpClient]) {
+                    $conn.Socket.Close()
+                } elseif ($conn.Socket -is [System.Net.Sockets.TcpListener]) {
+                    $conn.Socket.Stop()
+                } elseif ($conn.Socket -is [System.Net.Sockets.UdpClient]) {
+                    $conn.Socket.Close()
+                }
+                $conn.Socket.Dispose()
             }
-            $conn.Socket.Dispose()
-            $conn.Socket = $null
+            catch {
+                Write-Verbose "[ConnectionManager] Failed to close/dispose socket: $_"
+            }
+            finally {
+                $conn.ClearSocket()
+            }
         }
         
         if ($conn.Thread -and $conn.Thread.IsAlive) {
@@ -234,7 +279,12 @@ function Stop-Connection {
             }
         }
         
-        $conn.Status = "DISCONNECTED"
+        # �A�_�v�^�[�Q�Ƃ���������
+        if ($conn.Variables -and $conn.Variables.ContainsKey('_Adapter')) {
+            $conn.Variables.Remove('_Adapter')
+        }
+        
+        $conn.UpdateStatus("DISCONNECTED")
         $conn.Thread = $null
         
         Write-Host "[ConnectionManager] Connection stopped: $($conn.DisplayName)" -ForegroundColor Green

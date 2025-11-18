@@ -96,8 +96,7 @@ class TcpServerAdapter {
                 $listener.Start()
 
                 $conn.UpdateStatus("CONNECTED")
-                $conn.State.Socket = $listener
-                $conn.Socket = $listener
+                $conn.SetSocket($listener)
                 $conn.MarkActivity()
 
                 $adapter._logger.LogInfo("TCP Server listening successfully", @{
@@ -220,8 +219,7 @@ class TcpServerAdapter {
                     if ($conn.Status -ne "ERROR") {
                         $conn.UpdateStatus("DISCONNECTED")
                     }
-                    $conn.State.Socket = $null
-                    $conn.Socket = $null
+                    $conn.ClearSocket()
                 }
 
                 $adapter._logger.LogInfo("TCP Server stopped", @{
@@ -233,12 +231,26 @@ class TcpServerAdapter {
         # スレッド開始
         $thread = New-Object System.Threading.Thread([System.Threading.ParameterizedThreadStart]{
             param($params)
-            & $scriptBlock `
-                -adapter $params.Adapter `
-                -connId $params.ConnectionId `
-                -localIP $params.LocalIP `
-                -localPort $params.LocalPort `
-                -cancellationToken $params.CancellationToken
+            try {
+                & $params.ScriptBlock `
+                    -adapter $params.Adapter `
+                    -connId $params.ConnectionId `
+                    -localIP $params.LocalIP `
+                    -localPort $params.LocalPort `
+                    -cancellationToken $params.CancellationToken
+            }
+            catch {
+                # ?X???b?h???O??G???[???L???b?`????N???b?V????h?
+                try {
+                    $params.Adapter._logger.LogError("Fatal error in server thread", $_.Exception, @{
+                        ConnectionId = $params.ConnectionId
+                        ThreadId = [System.Threading.Thread]::CurrentThread.ManagedThreadId
+                    })
+                }
+                catch {
+                    Write-Host "[FATAL SERVER THREAD ERROR] $($_.Exception.Message)" -ForegroundColor Red
+                }
+            }
         })
 
         $connection.State.WorkerThread = $thread
@@ -251,6 +263,7 @@ class TcpServerAdapter {
             LocalIP = $connection.LocalIP
             LocalPort = $connection.LocalPort
             CancellationToken = $connection.CancellationSource.Token
+            ScriptBlock = $scriptBlock  # scriptBlock???Q??????
         }
         
         $thread.Start($threadParams)

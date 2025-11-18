@@ -76,13 +76,19 @@ function Show-MainForm {
     Register-GridEvents -DataGridView $dgvInstances -GridState $gridState
     Register-ButtonEvents -DataGridView $dgvInstances -BtnRefresh $btnRefresh -BtnConnect $btnConnect -BtnDisconnect $btnDisconnect
 
-    # Timer for periodic refresh
-    $timer = New-RefreshTimer -IntervalMilliseconds 1000
+    # Timer for periodic refresh (2ïbä‘äuÇ≈ã£çáÇåyå∏)
+    $timer = New-RefreshTimer -IntervalMilliseconds 2000
     $timer.Add_Tick({
-        if (-not $gridState.EditingInProgress -and -not $dgvInstances.IsCurrentCellInEditMode) {
-            Update-InstanceList -DataGridView $dgvInstances
+        try {
+            if (-not $gridState.EditingInProgress -and -not $dgvInstances.IsCurrentCellInEditMode) {
+                Update-InstanceList -DataGridView $dgvInstances
+            }
+            Update-LogDisplay -TextBox $txtLog -GetConnectionsCallback { Get-UiConnections }
         }
-        Update-LogDisplay -TextBox $txtLog -GetConnectionsCallback { Get-UiConnections }
+        catch {
+            # ?^?C?}?[????G???[??????????A???O??L?^
+            Write-Verbose "[UI Timer] Error during refresh: $_"
+        }
     })
     $timer.Start()
 
@@ -206,7 +212,8 @@ function Register-ButtonEvents {
         }
         try {
             Start-Connection -ConnectionId $connection.Id
-            [System.Windows.Forms.MessageBox]::Show("Connection started: $($connection.DisplayName)", "Success") | Out-Null
+            # MessageBox??UI???X???b?h???u???b?N?????A??????????
+            # [System.Windows.Forms.MessageBox]::Show("Connection started: $($connection.DisplayName)", "Success") | Out-Null
         } catch {
             [System.Windows.Forms.MessageBox]::Show("Failed to start connection: $_", "Error") | Out-Null
         }
@@ -589,26 +596,36 @@ function Update-InstanceList {
         return
     }
 
-    $state = Save-GridState -DataGridView $DataGridView
-    
-    # Suspend layout to prevent flickering
-    $DataGridView.SuspendLayout()
-    
     try {
-        $DataGridView.Rows.Clear()
+        $state = Save-GridState -DataGridView $DataGridView
+        
+        # Suspend layout to prevent flickering
+        $DataGridView.SuspendLayout()
+        
+        try {
+            $DataGridView.Rows.Clear()
 
-        $connections = Get-UiConnections
-        if (-not $connections -or $connections.Count -eq 0) {
-            return
+            $connections = Get-UiConnections
+            if (-not $connections -or $connections.Count -eq 0) {
+                return
+            }
+
+            foreach ($conn in $connections | Sort-Object DisplayName) {
+                try {
+                    Add-ConnectionRow -DataGridView $DataGridView -Connection $conn
+                }
+                catch {
+                    Write-Verbose "[UI] Failed to add row for connection: $_"
+                }
+            }
+
+            Restore-GridState -DataGridView $DataGridView -State $state
+        } finally {
+            $DataGridView.ResumeLayout()
         }
-
-        foreach ($conn in $connections | Sort-Object DisplayName) {
-            Add-ConnectionRow -DataGridView $DataGridView -Connection $conn
-        }
-
-        Restore-GridState -DataGridView $DataGridView -State $state
-    } finally {
-        $DataGridView.ResumeLayout()
+    }
+    catch {
+        Write-Verbose "[UI] Update-InstanceList failed: $_"
     }
 }
 
@@ -673,47 +690,58 @@ function Add-ConnectionRow {
         $Connection
     )
 
-    $endpoint = Get-ConnectionEndpoint -Connection $Connection
-
-    $rowIndex = $DataGridView.Rows.Add(
-        $Connection.DisplayName,
-        "$($Connection.Protocol) $($Connection.Mode)",
-        $endpoint,
-        $Connection.Status,
-        $null,
-        $null,
-        $null,
-        $null,
-        $null,
-        $null,
-        $null,
-        $Connection.Id
-    )
-
-    $row = $DataGridView.Rows[$rowIndex]
-
     try {
-        $script:suppressScenarioEvent = $true
-        $script:suppressOnReceivedEvent = $true
-        $script:suppressPeriodicSendEvent = $true
+        $endpoint = Get-ConnectionEndpoint -Connection $Connection
+        
+        # ?X???b?h?Z?[?t??X?e?[?^?X??????
+        $status = $Connection.Status
+        $displayName = $Connection.DisplayName
+        $protocol = $Connection.Protocol
+        $mode = $Connection.Mode
+        $connId = $Connection.Id
 
-        $instancePath = if ($Connection.Variables.ContainsKey('InstancePath')) { $Connection.Variables['InstancePath'] } else { $null }
+        $rowIndex = $DataGridView.Rows.Add(
+            $displayName,
+            "$protocol $mode",
+            $endpoint,
+            $status,
+            $null,
+            $null,
+            $null,
+            $null,
+            $null,
+            $null,
+            $null,
+            $connId
+        )
 
-        Configure-ScenarioColumn -Row $row -Connection $Connection -InstancePath $instancePath
-        Configure-OnReceivedColumn -Row $row -Connection $Connection -InstancePath $instancePath
-        Configure-PeriodicSendColumn -Row $row -Connection $Connection -InstancePath $instancePath
-        Configure-QuickDataColumn -Row $row -InstancePath $instancePath
-        Configure-QuickActionColumn -Row $row -InstancePath $instancePath
+        $row = $DataGridView.Rows[$rowIndex]
 
+        try {
+            $script:suppressScenarioEvent = $true
+            $script:suppressOnReceivedEvent = $true
+            $script:suppressPeriodicSendEvent = $true
+
+            $instancePath = if ($Connection.Variables.ContainsKey('InstancePath')) { $Connection.Variables['InstancePath'] } else { $null }
+
+            Configure-ScenarioColumn -Row $row -Connection $Connection -InstancePath $instancePath
+            Configure-OnReceivedColumn -Row $row -Connection $Connection -InstancePath $instancePath
+            Configure-PeriodicSendColumn -Row $row -Connection $Connection -InstancePath $instancePath
+            Configure-QuickDataColumn -Row $row -InstancePath $instancePath
+            Configure-QuickActionColumn -Row $row -InstancePath $instancePath
+
+        } catch {
+            $row.Cells["Scenario"].Value = ""
+        } finally {
+            $script:suppressScenarioEvent = $false
+            $script:suppressOnReceivedEvent = $false
+            $script:suppressPeriodicSendEvent = $false
+        }
+
+        Set-RowColor -Row $row -Status $status
     } catch {
-        $row.Cells["Scenario"].Value = ""
-    } finally {
-        $script:suppressScenarioEvent = $false
-        $script:suppressOnReceivedEvent = $false
-        $script:suppressPeriodicSendEvent = $false
+        Write-Verbose "[UI] Failed to add connection row: $_"
     }
-
-    Set-RowColor -Row $row -Status $Connection.Status
 }
 
 function Get-ConnectionEndpoint {

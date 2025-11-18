@@ -99,8 +99,7 @@ class TcpClientAdapter {
 
                 # 接続成功
                 $conn.UpdateStatus("CONNECTED")
-                $conn.State.Socket = $tcpClient
-                $conn.Socket = $tcpClient
+                $conn.SetSocket($tcpClient)
                 $conn.MarkActivity()
 
                 $adapter._logger.LogInfo("TCP Client connected successfully", @{
@@ -199,8 +198,7 @@ class TcpClientAdapter {
                     if ($conn.Status -ne "ERROR") {
                         $conn.UpdateStatus("DISCONNECTED")
                     }
-                    $conn.State.Socket = $null
-                    $conn.Socket = $null
+                    $conn.ClearSocket()
                 }
 
                 $adapter._logger.LogInfo("TCP Client connection closed", @{
@@ -212,12 +210,27 @@ class TcpClientAdapter {
         # スレッド開始
         $thread = New-Object System.Threading.Thread([System.Threading.ParameterizedThreadStart]{
             param($params)
-            & $scriptBlock `
-                -adapter $params.Adapter `
-                -connId $params.ConnectionId `
-                -remoteIP $params.RemoteIP `
-                -remotePort $params.RemotePort `
-                -cancellationToken $params.CancellationToken
+            try {
+                & $params.ScriptBlock `
+                    -adapter $params.Adapter `
+                    -connId $params.ConnectionId `
+                    -remoteIP $params.RemoteIP `
+                    -remotePort $params.RemotePort `
+                    -cancellationToken $params.CancellationToken
+            }
+            catch {
+                # ?X???b?h???O??G???[???L???b?`????N???b?V????h?
+                try {
+                    $params.Adapter._logger.LogError("Fatal error in worker thread", $_.Exception, @{
+                        ConnectionId = $params.ConnectionId
+                        ThreadId = [System.Threading.Thread]::CurrentThread.ManagedThreadId
+                    })
+                }
+                catch {
+                    # ???O???o?????s?s??????A???C???R???[????o??
+                    Write-Host "[FATAL THREAD ERROR] $($_.Exception.Message)" -ForegroundColor Red
+                }
+            }
         })
 
         $connection.State.WorkerThread = $thread
@@ -230,6 +243,7 @@ class TcpClientAdapter {
             RemoteIP = $connection.RemoteIP
             RemotePort = $connection.RemotePort
             CancellationToken = $connection.CancellationSource.Token
+            ScriptBlock = $scriptBlock  # scriptBlock???Q??????
         }
         
         $thread.Start($threadParams)

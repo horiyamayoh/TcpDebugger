@@ -71,6 +71,34 @@ $script:Logger = New-FileLogger -Path $logPath -Name "TcpDebugger"
 $script:ErrorHandler = [ErrorHandler]::new($script:Logger)
 $Global:Connections = if ($Global:Connections) { $Global:Connections } else { [System.Collections.Hashtable]::Synchronized(@{}) }
 
+# �O���[�o���ȗO���n���h���[�ݒ�
+[System.AppDomain]::CurrentDomain.add_UnhandledException({
+    param($sender, $eventArgs)
+    $exception = $eventArgs.ExceptionObject
+    $script:Logger.LogError("Unhandled exception in AppDomain", $exception, @{
+        IsTerminating = $eventArgs.IsTerminating
+    })
+    Write-Host "[FATAL] Unhandled exception: $($exception.Message)" -ForegroundColor Red
+    Write-Host $exception.StackTrace -ForegroundColor Red
+})
+
+# WinForms�X���b�h�O���̃G���[���n���h���[
+Add-Type -AssemblyName System.Windows.Forms
+[System.Windows.Forms.Application]::add_ThreadException({
+    param($sender, $eventArgs)
+    $exception = $eventArgs.Exception
+    $script:Logger.LogError("Unhandled thread exception", $exception, @{})
+    Write-Host "[ERROR] Thread exception: $($exception.Message)" -ForegroundColor Red
+    Write-Host $exception.StackTrace -ForegroundColor Red
+    [System.Windows.Forms.MessageBox]::Show(
+        "An unexpected error occurred:`n`n$($exception.Message)`n`nSee log file for details.",
+        "Error",
+        [System.Windows.Forms.MessageBoxButtons]::OK,
+        [System.Windows.Forms.MessageBoxIcon]::Error
+    ) | Out-Null
+})
+[System.Windows.Forms.Application]::SetUnhandledExceptionMode([System.Windows.Forms.UnhandledExceptionMode]::CatchException)
+
 $script:ServiceContainer = New-ServiceContainer
 $Global:ServiceContainer = $script:ServiceContainer
 $script:ServiceContainer.RegisterSingleton('Logger', { param($c) $script:Logger })
