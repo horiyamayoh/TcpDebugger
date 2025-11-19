@@ -67,6 +67,7 @@ function Show-MainForm {
     $script:suppressOnReceivedEvent = $false
     $script:suppressPeriodicSendEvent = $false
     $script:lastSelectedConnectionId = $null
+    $script:comboSelectedIndexChangedHandler = $null
     $gridState = @{
         EditingInProgress = $false
         PendingComboDropDown = $null
@@ -170,7 +171,17 @@ function Register-GridEvents {
 
     $DataGridView.Add_CellValueChanged({
         param($sender, $args)
-        Handle-ScenarioChanged -Sender $sender -Args $args
+        if ($args.ColumnIndex -lt 0 -or $args.RowIndex -lt 0) {
+            return
+        }
+        $column = $sender.Columns[$args.ColumnIndex]
+        
+        if ($column.Name -eq "Scenario") {
+            Handle-ScenarioChanged -Sender $sender -Args $args
+        }
+        elseif ($column.Name -eq "PeriodicSend") {
+            Handle-PeriodicSendChanged -Sender $sender -Args $args
+        }
     })
 
     $DataGridView.Add_CellContentClick({
@@ -407,6 +418,126 @@ function Apply-AutoResponseProfile {
     }
 }
 
+function Handle-PeriodicSendChanged {
+    param(
+        $Sender,
+        $Args
+    )
+
+    if ($script:suppressPeriodicSendEvent) {
+        return
+    }
+    if ($Args.ColumnIndex -lt 0 -or $Args.RowIndex -lt 0) {
+        return
+    }
+    $column = $Sender.Columns[$Args.ColumnIndex]
+    if ($column.Name -ne "PeriodicSend") {
+        return
+    }
+
+    $row = $Sender.Rows[$Args.RowIndex]
+    if (-not $row.Cells.Contains("Id")) {
+        return
+    }
+
+    $connId = $row.Cells["Id"].Value
+    if (-not $connId) {
+        return
+    }
+
+    $cell = $row.Cells["PeriodicSend"]
+    $tagData = $cell.Tag
+    $mapping = $null
+    $currentPeriodicSendKey = ""
+
+    if ($tagData -is [System.Collections.IDictionary]) {
+        if ($tagData.ContainsKey("Mapping")) {
+            $mapping = $tagData["Mapping"]
+        }
+        if ($tagData.ContainsKey("PeriodicSendProfileKey")) {
+            $currentPeriodicSendKey = $tagData["PeriodicSendProfileKey"]
+        }
+    }
+
+    $selectedKey = if ($cell.Value) { [string]$cell.Value } else { "" }
+    
+    $entry = $null
+    if ($mapping -and $mapping.ContainsKey($selectedKey)) {
+        $entry = $mapping[$selectedKey]
+    }
+
+    Apply-PeriodicSendProfile -ConnectionId $connId -Entry $entry -Cell $cell -CurrentKey $currentPeriodicSendKey -Sender $Sender
+}
+
+function Apply-PeriodicSendProfile {
+    param(
+        [string]$ConnectionId,
+        $Entry,
+        $Cell,
+        [string]$CurrentKey,
+        $Sender
+    )
+
+    $profileName = $null
+    $profilePath = $null
+    if ($Entry -and $Entry.Type -eq "Profile") {
+        $profileName = $Entry.Name
+        $profilePath = $Entry.Path
+    }
+
+    try {
+        $connection = Get-ManagedConnection -ConnectionId $ConnectionId
+        if (-not $connection) {
+            throw "Connection not found: $ConnectionId"
+        }
+
+        # 既存のPeriodicSendを停止
+        Stop-PeriodicSend -ConnectionId $ConnectionId
+
+        # 新しいプロファイルを設定
+        if ($profilePath -and (Test-Path -LiteralPath $profilePath)) {
+            # インスタンスパスを取得
+            $instancePath = $null
+            if ($connection.Variables.ContainsKey('InstancePath')) {
+                $instancePath = $connection.Variables['InstancePath']
+            }
+
+            # PeriodicSendを開始
+            Start-PeriodicSend -ConnectionId $ConnectionId -RuleFilePath $profilePath -InstancePath $instancePath
+            
+            # 接続オブジェクトにプロファイル名を保存
+            $connection.Variables['PeriodicSendProfile'] = $profileName
+            $connection.Variables['PeriodicSendProfilePath'] = $profilePath
+            
+            Write-Host "[PeriodicSend] Applied profile: $profileName" -ForegroundColor Green
+        }
+        else {
+            # プロファイルをクリア
+            $connection.Variables.Remove('PeriodicSendProfile')
+            $connection.Variables.Remove('PeriodicSendProfilePath')
+        }
+
+        # Tagを更新
+        $tagData = $Cell.Tag
+        if ($tagData -is [System.Collections.IDictionary] -and $tagData.ContainsKey("PeriodicSendProfileKey")) {
+            $tagData["PeriodicSendProfileKey"] = $Cell.Value
+        }
+    }
+    catch {
+        # エラー時は元の値に戻す
+        if ($CurrentKey -ne $Cell.Value) {
+            $script:suppressPeriodicSendEvent = $true
+            try {
+                $Cell.Value = $CurrentKey
+            } finally {
+                $script:suppressPeriodicSendEvent = $false
+            }
+            $Sender.InvalidateCell($Cell)
+        }
+        [System.Windows.Forms.MessageBox]::Show("Failed to apply periodic send profile: $_", "Error") | Out-Null
+    }
+}
+
 function Handle-CellContentClick {
     param(
         $Sender,
@@ -589,21 +720,105 @@ function Handle-EditingControlShowing {
         return
     }
 
-    if (-not $GridState.PendingComboDropDown) {
-        return
-    }
+    # ドロップダウン表示処理
+    if ($GridState.PendingComboDropDown) {
+        $currentCell = $Sender.CurrentCell
+        if (-not $currentCell -or -not $currentCell.OwningColumn) {
+            $GridState.PendingComboDropDown = $null
+            return
+        }
 
-    $currentCell = $Sender.CurrentCell
-    if (-not $currentCell -or -not $currentCell.OwningColumn) {
+        if ($currentCell.OwningColumn.Name -eq $GridState.PendingComboDropDown) {
+            $control.DroppedDown = $true
+        }
+
         $GridState.PendingComboDropDown = $null
-        return
     }
 
-    if ($currentCell.OwningColumn.Name -eq $GridState.PendingComboDropDown) {
-        $control.DroppedDown = $true
+    # コンボボックス選択変更の即座反映（PeriodicSendやScenario用）
+    $currentCell = $Sender.CurrentCell
+    if ($currentCell -and $currentCell.OwningColumn) {
+        $columnName = $currentCell.OwningColumn.Name
+        
+        # 以前のイベントハンドラーを削除（重複登録防止）
+        $control.remove_SelectedIndexChanged($script:comboSelectedIndexChangedHandler)
+        
+        # 新しいイベントハンドラーを作成
+        $script:comboSelectedIndexChangedHandler = {
+            param($comboSender, $comboArgs)
+            
+            # コンボボックスから親のDataGridViewを取得
+            $comboBox = $comboSender -as [System.Windows.Forms.ComboBox]
+            if (-not $comboBox) {
+                return
+            }
+            
+            # 親コントロールを辿ってDataGridViewを取得
+            $grid = $comboBox.Parent
+            while ($grid -and $grid -isnot [System.Windows.Forms.DataGridView]) {
+                $grid = $grid.Parent
+            }
+            
+            if (-not $grid) {
+                return
+            }
+            
+            $cell = $grid.CurrentCell
+            
+            if ($cell -and $comboBox.SelectedItem) {
+                $selectedValue = $comboBox.SelectedItem.Key
+                $entry = $comboBox.SelectedItem
+                $columnName = $cell.OwningColumn.Name
+                $rowIndex = $cell.RowIndex
+                
+                # 行からConnectionIdを取得
+                $row = $grid.Rows[$rowIndex]
+                
+                # 列の存在確認（安全な方法）
+                $idCell = $null
+                try {
+                    $idCell = $row.Cells["Id"]
+                }
+                catch {
+                    return
+                }
+                
+                if (-not $idCell) {
+                    return
+                }
+                
+                $connId = $idCell.Value
+                if (-not $connId) {
+                    return
+                }
+                
+                # セルの値を更新
+                $cell.Value = $selectedValue
+                
+                # 編集を終了
+                $grid.EndEdit()
+                
+                # PeriodicSendの場合は直接処理を実行
+                if ($columnName -eq "PeriodicSend") {
+                    $tagData = $cell.Tag
+                    $currentPeriodicSendKey = ""
+                    if ($tagData -is [System.Collections.IDictionary] -and $tagData.ContainsKey("PeriodicSendProfileKey")) {
+                        $currentPeriodicSendKey = $tagData["PeriodicSendProfileKey"]
+                    }
+                    
+                    try {
+                        Apply-PeriodicSendProfile -ConnectionId $connId -Entry $entry -Cell $cell -CurrentKey $currentPeriodicSendKey -Sender $grid
+                    }
+                    catch {
+                        Write-Warning "Error in Apply-PeriodicSendProfile: $_"
+                    }
+                }
+            }
+        }
+        
+        # イベントハンドラー登録
+        $control.add_SelectedIndexChanged($script:comboSelectedIndexChangedHandler)
     }
-
-    $GridState.PendingComboDropDown = $null
 }
 
 function Update-InstanceList {
