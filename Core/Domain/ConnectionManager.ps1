@@ -573,6 +573,7 @@ function Stop-PeriodicSend {
     Write-Host "[PeriodicSend] Stopping periodic timers for connection: $($connection.DisplayName)" -ForegroundColor Yellow
 
     foreach ($timerState in @($connection.PeriodicTimers)) {
+        # タイマーを停止・破棄
         try {
             if ($timerState.Timer) {
                 $timerState.Timer.Stop()
@@ -582,10 +583,19 @@ function Stop-PeriodicSend {
             Write-Verbose "[PeriodicSend] Failed to dispose timer: $_"
         }
 
+        # イベントをアンレジスター
         try {
             if ($timerState.Event) {
-                Unregister-Event -SourceIdentifier $timerState.Event.Name -ErrorAction SilentlyContinue
-                Remove-Job -Id $timerState.Event.Id -Force -ErrorAction SilentlyContinue
+                $eventName = $timerState.Event.Name
+                $eventId = $timerState.Event.Id
+                
+                Unregister-Event -SourceIdentifier $eventName -Force -ErrorAction SilentlyContinue
+                
+                $job = Get-Job -Id $eventId -ErrorAction SilentlyContinue
+                if ($job) {
+                    Stop-Job -Id $eventId -ErrorAction SilentlyContinue
+                    Remove-Job -Id $eventId -Force -ErrorAction SilentlyContinue
+                }
             }
         } catch {
             Write-Verbose "[PeriodicSend] Failed to unregister event: $_"

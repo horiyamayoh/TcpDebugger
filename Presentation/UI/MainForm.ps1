@@ -491,10 +491,7 @@ function Apply-PeriodicSendProfile {
             throw "Connection not found: $ConnectionId"
         }
 
-        # 既存のPeriodicSendを停止
-        Stop-PeriodicSend -ConnectionId $ConnectionId
-
-        # 新しいプロファイルを設定
+        # 新しいプロファイルを設定（Start-PeriodicSendが内部でStop-PeriodicSendを呼ぶ）
         if ($profilePath -and (Test-Path -LiteralPath $profilePath)) {
             # インスタンスパスを取得
             $instancePath = $null
@@ -502,7 +499,7 @@ function Apply-PeriodicSendProfile {
                 $instancePath = $connection.Variables['InstancePath']
             }
 
-            # PeriodicSendを開始
+            # PeriodicSendを開始（内部で既存タイマーを停止）
             Start-PeriodicSend -ConnectionId $ConnectionId -RuleFilePath $profilePath -InstancePath $instancePath
             
             # 接続オブジェクトにプロファイル名を保存
@@ -512,9 +509,11 @@ function Apply-PeriodicSendProfile {
             Write-Host "[PeriodicSend] Applied profile: $profileName" -ForegroundColor Green
         }
         else {
-            # プロファイルをクリア
+            # プロファイルをクリア（明示的にタイマーを停止）
+            Stop-PeriodicSend -ConnectionId $ConnectionId
             $connection.Variables.Remove('PeriodicSendProfile')
             $connection.Variables.Remove('PeriodicSendProfilePath')
+            Write-Host "[PeriodicSend] Cleared profile" -ForegroundColor Yellow
         }
 
         # Tagを更新
