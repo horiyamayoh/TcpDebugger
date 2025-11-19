@@ -1,5 +1,5 @@
 # MessageService.ps1
-# ƒƒbƒZ[ƒWƒeƒ“ƒvƒŒ[ƒgˆ—‚ÆƒVƒiƒŠƒIÀs‚ğ“‡ŠÇ—
+# ï¿½ï¿½ï¿½bï¿½Zï¿½[ï¿½Wï¿½eï¿½ï¿½ï¿½vï¿½ï¿½ï¿½[ï¿½gï¿½ï¿½ï¿½ï¿½ï¿½ÆƒVï¿½iï¿½ï¿½ï¿½Iï¿½ï¿½ï¿½sï¿½ğ“ï¿½ï¿½Ç—ï¿½
 
 class MessageService {
     hidden [Logger]$_logger
@@ -14,14 +14,14 @@ class MessageService {
         $this._customVariableHandlers = @{}
     }
 
-    # ƒJƒXƒ^ƒ€•Ï”ƒnƒ“ƒhƒ‰[‚Ì“o˜^
+    # ï¿½Jï¿½Xï¿½^ï¿½ï¿½ï¿½Ïï¿½ï¿½nï¿½ï¿½ï¿½hï¿½ï¿½ï¿½[ï¿½Ì“oï¿½^
     [void] RegisterCustomVariableHandler([string]$name, [scriptblock]$handler) {
         $key = $name.ToLowerInvariant()
         $this._customVariableHandlers[$key] = $handler
         $this._logger.LogInfo("Custom variable handler registered: $name")
     }
 
-    # ƒJƒXƒ^ƒ€•Ï”ƒnƒ“ƒhƒ‰[‚Ìíœ
+    # ï¿½Jï¿½Xï¿½^ï¿½ï¿½ï¿½Ïï¿½ï¿½nï¿½ï¿½ï¿½hï¿½ï¿½ï¿½[ï¿½Ìíœ
     [void] UnregisterCustomVariableHandler([string]$name) {
         $key = $name.ToLowerInvariant()
         if ($this._customVariableHandlers.ContainsKey($key)) {
@@ -30,7 +30,7 @@ class MessageService {
         }
     }
 
-    # ƒJƒXƒ^ƒ€•Ï”ƒnƒ“ƒhƒ‰[‚ÌÀs
+    # ï¿½Jï¿½Xï¿½^ï¿½ï¿½ï¿½Ïï¿½ï¿½nï¿½ï¿½ï¿½hï¿½ï¿½ï¿½[ï¿½Ìï¿½ï¿½s
     [object] InvokeCustomVariableHandler([string]$identifier, [hashtable]$variables) {
         if ([string]::IsNullOrWhiteSpace($identifier)) {
             return $null
@@ -64,7 +64,7 @@ class MessageService {
         }
     }
 
-    # ƒeƒ“ƒvƒŒ[ƒg‚Ìƒ[ƒhiƒLƒƒƒbƒVƒ…•t‚«j
+    # ï¿½eï¿½ï¿½ï¿½vï¿½ï¿½ï¿½[ï¿½gï¿½Ìƒï¿½ï¿½[ï¿½hï¿½iï¿½Lï¿½ï¿½ï¿½bï¿½Vï¿½ï¿½ï¿½tï¿½ï¿½ï¿½j
     [object] LoadTemplate([string]$filePath) {
         if ($this._templateCache.ContainsKey($filePath)) {
             $cached = $this._templateCache[$filePath]
@@ -90,13 +90,13 @@ class MessageService {
         return $content
     }
 
-    # ƒeƒ“ƒvƒŒ[ƒgƒLƒƒƒbƒVƒ…‚ÌƒNƒŠƒA
+    # ï¿½eï¿½ï¿½ï¿½vï¿½ï¿½ï¿½[ï¿½gï¿½Lï¿½ï¿½ï¿½bï¿½Vï¿½ï¿½ï¿½ÌƒNï¿½ï¿½ï¿½A
     [void] ClearTemplateCache() {
         $this._templateCache.Clear()
         $this._logger.LogInfo("Template cache cleared")
     }
 
-    # •Ï”‚Ì“WŠJ
+    # ï¿½Ïï¿½ï¿½Ì“Wï¿½J
     [string] ExpandVariables([string]$text, [hashtable]$variables) {
         if ([string]::IsNullOrWhiteSpace($text)) {
             return $text
@@ -110,16 +110,16 @@ class MessageService {
             $varName = $match.Groups[1].Value
             $value = $null
 
-            # ƒJƒXƒ^ƒ€ƒnƒ“ƒhƒ‰[‚ğs
+            # ï¿½Jï¿½Xï¿½^ï¿½ï¿½ï¿½nï¿½ï¿½ï¿½hï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½s
             $customValue = $this.InvokeCustomVariableHandler($varName, $variables)
             if ($null -ne $customValue) {
                 $value = $customValue
             }
-            # ’Êí‚Ì•Ï”‚ğs
+            # ï¿½Êï¿½Ì•Ïï¿½ï¿½ï¿½ï¿½ï¿½ï¿½s
             elseif ($variables.ContainsKey($varName)) {
                 $value = $variables[$varName]
             }
-            # ‘g‚İ‚İ•Ï”
+            # ï¿½gï¿½İï¿½ï¿½İ•Ïï¿½
             else {
                 $value = $this.ResolveBuiltInVariable($varName)
             }
@@ -132,7 +132,7 @@ class MessageService {
         return $result
     }
 
-    # ‘g‚İ‚İ•Ï”‚Ì‰ğŒˆ
+    # ï¿½gï¿½İï¿½ï¿½İ•Ïï¿½ï¿½Ì‰ï¿½ï¿½ï¿½
     [object] ResolveBuiltInVariable([string]$name) {
         $result = switch ($name.ToLowerInvariant()) {
             'timestamp' { (Get-Date -Format 'yyyy-MM-dd HH:mm:ss') }
@@ -148,7 +148,7 @@ class MessageService {
         return $result
     }
 
-    # ƒƒbƒZ[ƒW‚ğƒoƒCƒg”z—ñ‚É•ÏŠ·
+    # ï¿½ï¿½ï¿½bï¿½Zï¿½[ï¿½Wï¿½ï¿½ï¿½oï¿½Cï¿½gï¿½zï¿½ï¿½É•ÏŠï¿½
     [byte[]] ConvertMessageToBytes([string]$message, [string]$encoding) {
         if ([string]::IsNullOrWhiteSpace($message)) {
             return @()
@@ -164,7 +164,7 @@ class MessageService {
         return $enc.GetBytes($message)
     }
 
-    # HEX•¶š—ñ‚ğƒoƒCƒg”z—ñ‚É•ÏŠ·
+    # HEXï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½oï¿½Cï¿½gï¿½zï¿½ï¿½É•ÏŠï¿½
     [byte[]] ConvertHexToBytes([string]$hexString) {
         $hex = $hexString -replace '\s+', ''
         if ($hex.Length % 2 -ne 0) {
@@ -179,7 +179,7 @@ class MessageService {
         return $bytes
     }
 
-    # ƒeƒ“ƒvƒŒ[ƒg‚©‚çƒƒbƒZ[ƒW‚ğ¶¬
+    # ï¿½eï¿½ï¿½ï¿½vï¿½ï¿½ï¿½[ï¿½gï¿½ï¿½ï¿½çƒï¿½bï¿½Zï¿½[ï¿½Wï¿½ğ¶ï¿½
     [byte[]] ProcessTemplate([string]$templatePath, [hashtable]$variables, [string]$connectionId) {
         $template = $this.LoadTemplate($templatePath)
         $conn = $this._connectionService.GetConnection($connectionId)
@@ -187,7 +187,7 @@ class MessageService {
             throw "Connection not found: $connectionId"
         }
 
-        # Ú‘±‚Ì•Ï”‚Æƒ}[ƒW
+        # ï¿½Ú‘ï¿½ï¿½Ì•Ïï¿½ï¿½Æƒ}ï¿½[ï¿½W
         $mergedVars = @{}
         foreach ($key in $conn.Variables.Keys) {
             $mergedVars[$key] = $conn.Variables[$key]
@@ -196,7 +196,7 @@ class MessageService {
             $mergedVars[$key] = $variables[$key]
         }
 
-        # ƒeƒ“ƒvƒŒ[ƒgˆ—iÅ‰‚Ìs‚Ì‚İ‚ğg—pj
+        # ï¿½eï¿½ï¿½ï¿½vï¿½ï¿½ï¿½[ï¿½gï¿½ï¿½ï¿½ï¿½ï¿½iï¿½Åï¿½ï¿½Ìsï¿½Ì‚İ‚ï¿½ï¿½gï¿½pï¿½j
         if ($template -and $template.Count -gt 0) {
             $row = $template[0]
             $message = $row.Message
@@ -213,7 +213,7 @@ class MessageService {
         return @()
     }
 
-    # ƒVƒiƒŠƒIƒtƒ@ƒCƒ‹‚Ì“Ç‚İ‚İ
+    # ï¿½Vï¿½iï¿½ï¿½ï¿½Iï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½Ì“Ç‚İï¿½ï¿½ï¿½
     [object[]] LoadScenario([string]$scenarioPath) {
         if (-not (Test-Path -LiteralPath $scenarioPath)) {
             throw "Scenario file not found: $scenarioPath"
@@ -224,7 +224,8 @@ class MessageService {
         return $steps
     }
 
-    # ƒVƒiƒŠƒI‚ÌÀsi”ñ“¯Šúj
+
+    # ViIÌsiñ“¯Šj
     [void] StartScenario([string]$connectionId, [string]$scenarioPath) {
         $conn = $this._connectionService.GetConnection($connectionId)
         if (-not $conn) {
@@ -234,90 +235,167 @@ class MessageService {
         $scenarioSteps = $this.LoadScenario($scenarioPath)
         $logger = $this._logger
         $messageService = $this
+        $connectionService = $this._connectionService
 
         $scriptBlock = {
-            param($connId, $steps, $svc, $log)
+            param($connId, $steps, $svc, $log, $connSvc)
 
-            try {
-                for ($i = 0; $i -lt $steps.Count; $i++) {
-                    $step = $steps[$i]
-                    $log.LogInfo("Scenario step $($i+1)/$($steps.Count): $($step.Action)")
+            $conn = $connSvc.GetConnection($connId)
+            if (-not $conn) {
+                $log.LogWarning("Connection not found during scenario execution", @{ ConnectionId = $connId })
+                return
+            }
 
-                    # ‚±‚±‚ÅƒVƒiƒŠƒIƒXƒeƒbƒv‚ğÀs
-                    # iÚ×À‘•‚ÍŒã‘±‚Å’Ç‰Áj
+            # ã‚·ãƒŠãƒªã‚ªå¤‰æ•°ã‚’æ¥ç¶šå¤‰æ•°ã‹ã‚‰è¤‡è£½
+            $variables = @{}
+            foreach ($key in $conn.Variables.Keys) {
+                $variables[$key] = $conn.Variables[$key]
+            }
+
+            $defaultEncoding = if ($variables.ContainsKey('DefaultEncoding')) { $variables['DefaultEncoding'] } else { 'UTF-8' }
+            $lastRecvIndex = $conn.RecvBuffer.Count
+            $lastReceived = $null
+
+            for ($i = 0; $i -lt $steps.Count; $i++) {
+                $step = $steps[$i]
+                $action = if ($step.Action) { $step.Action.ToUpperInvariant() } else { '' }
+
+                try {
+                    switch ($action) {
+                        'SEND' {
+                            $encoding = if ($step.Parameter2) { $step.Parameter2 } else { $defaultEncoding }
+                            $expanded = $svc.ExpandVariables([string]$step.Parameter1, $variables)
+                            $bytes = $svc.ConvertMessageToBytes($expanded, $encoding)
+                            [void]$conn.SendQueue.Add($bytes)
+                            $log.LogInfo("Scenario SEND", @{ ConnectionId = $connId; Step = $step.Step; Length = $bytes.Length })
+                        }
+                        'SEND_HEX' {
+                            $bytes = $svc.ConvertHexToBytes([string]$step.Parameter1)
+                            [void]$conn.SendQueue.Add($bytes)
+                            $log.LogInfo("Scenario SEND_HEX", @{ ConnectionId = $connId; Step = $step.Step; Length = $bytes.Length })
+                        }
+                        'SLEEP' {
+                            $duration = 0
+                            [int]::TryParse([string]$step.Parameter1, [ref]$duration) | Out-Null
+                            if ($duration -gt 0) {
+                                Start-Sleep -Milliseconds $duration
+                            }
+                        }
+                        'WAIT_RECV' {
+                            $timeoutMs = 5000
+                            if ($step.Parameter1 -and [string]$step.Parameter1 -match 'TIMEOUT=([0-9]+)') {
+                                $timeoutMs = [int]$Matches[1]
+                            }
+
+                            $deadline = [DateTime]::UtcNow.AddMilliseconds($timeoutMs)
+                            $matched = $false
+                            while ([DateTime]::UtcNow -lt $deadline) {
+                                $conn = $connSvc.GetConnection($connId)
+                                if (-not $conn) { break }
+
+                                $currentCount = $conn.RecvBuffer.Count
+                                if ($currentCount -gt $lastRecvIndex) {
+                                    $lastReceived = $conn.RecvBuffer[$currentCount - 1]
+                                    $lastRecvIndex = $currentCount
+
+                                    $pattern = $null
+                                    if ($step.Parameter2 -and [string]$step.Parameter2 -match 'PATTERN=(.+)') {
+                                        $pattern = $Matches[1]
+                                    }
+
+                                    if ($pattern) {
+                                        $recvText = try {
+                                            [System.Text.Encoding]::GetEncoding($defaultEncoding).GetString($lastReceived.Data)
+                                        } catch {
+                                            [System.Text.Encoding]::UTF8.GetString($lastReceived.Data)
+                                        }
+
+                                        if ($recvText -notmatch $pattern) {
+                                            continue
+                                        }
+                                    }
+
+                                    $matched = $true
+                                    break
+                                }
+
+                                Start-Sleep -Milliseconds 50
+                            }
+
+                            if (-not $matched) {
+                                $log.LogWarning("WAIT_RECV timed out", @{ ConnectionId = $connId; Step = $step.Step })
+                            }
+                        }
+                        'SAVE_RECV' {
+                            $varName = $null
+                            if ($step.Parameter1 -and [string]$step.Parameter1 -match 'VAR_NAME=(.+)') {
+                                $varName = $Matches[1]
+                            } elseif ($step.Parameter1) {
+                                $varName = [string]$step.Parameter1
+                            }
+
+                            if (-not $varName) {
+                                $log.LogWarning("SAVE_RECV requires VAR_NAME", @{ ConnectionId = $connId; Step = $step.Step })
+                                continue
+                            }
+
+                            if (-not $lastReceived) {
+                                $log.LogWarning("SAVE_RECV has no data to save", @{ ConnectionId = $connId; Step = $step.Step })
+                                continue
+                            }
+
+                            $encoding = if ($step.Parameter2) { $step.Parameter2 } else { $defaultEncoding }
+                            $text = try {
+                                [System.Text.Encoding]::GetEncoding($encoding).GetString($lastReceived.Data)
+                            } catch {
+                                [System.Text.Encoding]::UTF8.GetString($lastReceived.Data)
+                            }
+
+                            $variables[$varName] = $text
+                            $conn.Variables[$varName] = $text
+                            $log.LogInfo("Saved received data to variable", @{ ConnectionId = $connId; Step = $step.Step; Variable = $varName })
+                        }
+                        default {
+                            $log.LogWarning("Unsupported scenario action", @{ ConnectionId = $connId; Step = $step.Step; Action = $action })
+                        }
+                    }
                 }
-            } catch {
-                $log.LogError("Scenario execution failed", $_)
+                catch {
+                    $log.LogError("Scenario step failed", $_.Exception, @{ ConnectionId = $connId; Step = $step.Step; Action = $action })
+                }
             }
         }
 
         $runspace = [powershell]::Create()
-        $runspace.AddScript($scriptBlock).AddArgument($connectionId).AddArgument($scenarioSteps).AddArgument($messageService).AddArgument($logger) | Out-Null
-        $null = $runspace.BeginInvoke()
+        $runspace.AddScript($scriptBlock).AddArgument($connectionId).AddArgument($scenarioSteps).AddArgument($messageService).AddArgument($logger).AddArgument($connectionService) | Out-Null
+        $asyncResult = $runspace.BeginInvoke()
 
-        $this._logger.LogInfo("Scenario started: $scenarioPath for connection: $connectionId")
+        Register-WaitForSingleObject -InputObject $asyncResult.AsyncWaitHandle -Action {
+            param($state, $timedOut)
+            try {
+                $runspace.EndInvoke($asyncResult)
+            } finally {
+                $runspace.Dispose()
+            }
+        } | Out-Null
+
+        $this._logger.LogInfo("Scenario started", @{ ConnectionId = $connectionId; Path = $scenarioPath; Steps = $scenarioSteps.Count })
     }
-
-    # ƒeƒ“ƒvƒŒ[ƒg‚©‚çƒƒbƒZ[ƒW‚ğ‘—M
-    [void] SendTemplate([string]$connectionId, [string]$templatePath, [hashtable]$variables) {
-        $bytes = $this.ProcessTemplate($templatePath, $variables, $connectionId)
-        $conn = $this._connectionService.GetConnection($connectionId)
-        if (-not $conn) {
-            throw "Connection not found: $connectionId"
-        }
-
-        if ($conn.Stream -and $conn.Stream.CanWrite) {
-            $conn.Stream.Write($bytes, 0, $bytes.Length)
-            $conn.Stream.Flush()
-            $this._logger.LogInfo("Template sent: $templatePath to $connectionId ($($bytes.Length) bytes)")
-        } else {
-            throw "Connection stream is not writable: $connectionId"
-        }
-    }
-
-    # ƒoƒCƒgƒf[ƒ^‚ğ‘—M
-    [void] SendBytes([string]$connectionId, [byte[]]$data) {
-        $conn = $this._connectionService.GetConnection($connectionId)
-        if (-not $conn) {
-            throw "Connection not found: $connectionId"
-        }
-
-        if ($conn.Stream -and $conn.Stream.CanWrite) {
-            $conn.Stream.Write($data, 0, $data.Length)
-            $conn.Stream.Flush()
-            $this._logger.LogInfo("Bytes sent to $connectionId ($($data.Length) bytes)")
-        } else {
-            throw "Connection stream is not writable: $connectionId"
-        }
-    }
-
-    # HEX•¶š—ñ‚ğ‘—M
-    [void] SendHex([string]$connectionId, [string]$hexString) {
-        $bytes = $this.ConvertHexToBytes($hexString)
-        $this.SendBytes($connectionId, $bytes)
-    }
-
-    # ƒeƒLƒXƒgƒƒbƒZ[ƒW‚ğ‘—M
-    [void] SendText([string]$connectionId, [string]$text, [string]$encoding) {
-        $bytes = $this.ConvertMessageToBytes($text, $encoding)
-        $this.SendBytes($connectionId, $bytes)
-    }
-}
 
 # =====================================================================
-# ƒOƒ[ƒoƒ‹ƒwƒ‹ƒp[ŠÖ”i‹ŒŒİŠ·«‚Ì‚½‚ßj
+# ï¿½Oï¿½ï¿½ï¿½[ï¿½oï¿½ï¿½ï¿½wï¿½ï¿½ï¿½pï¿½[ï¿½Öï¿½ï¿½iï¿½ï¿½ï¿½İŠï¿½ï¿½ï¿½ï¿½Ì‚ï¿½ï¿½ßj
 # =====================================================================
 
 function Get-MessageTemplateCache {
     <#
     .SYNOPSIS
-    “d•¶ƒeƒ“ƒvƒŒ[ƒgƒtƒ@ƒCƒ‹‚ğƒLƒƒƒbƒVƒ…•t‚«‚Å“Ç‚İ‚Ş
+    ï¿½dï¿½ï¿½ï¿½eï¿½ï¿½ï¿½vï¿½ï¿½ï¿½[ï¿½gï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½Lï¿½ï¿½ï¿½bï¿½Vï¿½ï¿½ï¿½tï¿½ï¿½ï¿½Å“Ç‚İï¿½ï¿½ï¿½
     
     .PARAMETER FilePath
-    ƒeƒ“ƒvƒŒ[ƒgƒtƒ@ƒCƒ‹‚ÌƒpƒX
+    ï¿½eï¿½ï¿½ï¿½vï¿½ï¿½ï¿½[ï¿½gï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½Ìƒpï¿½X
     
     .PARAMETER ThrowOnMissing
-    ƒtƒ@ƒCƒ‹‚ªŒ©‚Â‚©‚ç‚È‚¢ê‡‚ÉƒGƒ‰[‚ğƒXƒ[
+    ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â‚ï¿½ï¿½ï¿½È‚ï¿½ï¿½ê‡ï¿½ÉƒGï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½Xï¿½ï¿½ï¿½[
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -333,7 +411,7 @@ function Get-MessageTemplateCache {
         return @{}
     }
     
-    # Shift-JIS‚ÅCSV“Ç‚İ‚İi“d•¶ƒtƒ@ƒCƒ‹‚ÍShift-JISŒ`®j
+    # Shift-JISï¿½ï¿½CSVï¿½Ç‚İï¿½ï¿½İiï¿½dï¿½ï¿½ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½ï¿½Shift-JISï¿½`ï¿½ï¿½ï¿½j
     $sjisEncoding = [System.Text.Encoding]::GetEncoding("Shift_JIS")
     $rows = Import-Csv -Path $FilePath -Encoding $sjisEncoding
     
@@ -341,10 +419,10 @@ function Get-MessageTemplateCache {
         return @{}
     }
     
-    # “d•¶Œ`®‚Ìê‡A‚·‚×‚Ä‚Ìs‚ğŒ‹‡‚µ‚ÄHEX•¶š—ñ‚ğì¬
+    # ï¿½dï¿½ï¿½ï¿½`ï¿½ï¿½ï¿½Ìê‡ï¿½Aï¿½ï¿½ï¿½×‚Ä‚Ìsï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½HEXï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ì¬
     $hexStream = ""
     foreach ($row in $rows) {
-        # Row1, Row2, ... ‚Ì2—ñ–Ú‚ÌHEX’l‚ğŒ‹‡
+        # Row1, Row2, ... ï¿½ï¿½2ï¿½ï¿½Ú‚ï¿½HEXï¿½lï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         $properties = $row.PSObject.Properties.Name
         if ($properties.Count -ge 2) {
             $hexValue = $properties[1]
@@ -352,7 +430,7 @@ function Get-MessageTemplateCache {
         }
     }
     
-    # DEFAULTƒeƒ“ƒvƒŒ[ƒg‚Æ‚µ‚Ä•Ô‚·
+    # DEFAULTï¿½eï¿½ï¿½ï¿½vï¿½ï¿½ï¿½[ï¿½gï¿½Æ‚ï¿½ï¿½Ä•Ô‚ï¿½
     $template = [PSCustomObject]@{
         Name = 'DEFAULT'
         Format = $hexStream
@@ -366,43 +444,42 @@ function Get-MessageTemplateCache {
 function ConvertTo-ByteArray {
     <#
     .SYNOPSIS
-    •¶š—ñ‚Ü‚½‚ÍHEX•¶š—ñ‚ğƒoƒCƒg”z—ñ‚É•ÏŠ·
-    
+    æ–‡å­—åˆ—ã¾ãŸã¯HEXæ–‡å­—åˆ—ã‚’ãƒã‚¤ãƒˆé…åˆ—ã«å¤‰æ›
+
     .PARAMETER Data
-    •ÏŠ·‚·‚éƒf[ƒ^
-    
+    å¤‰æ›å¯¾è±¡ãƒ‡ãƒ¼ã‚¿
+
     .PARAMETER Encoding
-    ƒGƒ“ƒR[ƒfƒBƒ“ƒOiHEX, UTF-8, Shift_JIS, ASCIIj
+    ã‚¨ãƒ³ã‚³ãƒ¼ãƒ‡ã‚£ãƒ³ã‚°ï¼ˆHEX, UTF-8, Shift_JIS, ASCIIï¼‰
     #>
     param(
         [Parameter(Mandatory=$true)]
         [string]$Data,
-        
+
         [Parameter(Mandatory=$false)]
         [string]$Encoding = "UTF-8"
     )
-    
+
     if ([string]::IsNullOrWhiteSpace($Data)) {
         return @()
     }
-    
+
     $normalizedEncoding = $Encoding.ToUpperInvariant() -replace '[_-]', ''
-    
+
     if ($normalizedEncoding -eq 'HEX') {
-        # HEX•¶š—ñ‚ğƒoƒCƒg”z—ñ‚É•ÏŠ·
         $hex = $Data -replace '\s+', ''
         if ($hex.Length % 2 -ne 0) {
             throw "Invalid hex string length: $($hex.Length)"
         }
-        
+
         $bytes = New-Object byte[] ($hex.Length / 2)
         for ($i = 0; $i -lt $hex.Length; $i += 2) {
             $bytes[$i / 2] = [Convert]::ToByte($hex.Substring($i, 2), 16)
         }
+
         return $bytes
     }
-    
-    # ƒeƒLƒXƒgƒGƒ“ƒR[ƒfƒBƒ“ƒO
+
     $enc = switch ($normalizedEncoding) {
         'UTF8' { [System.Text.Encoding]::UTF8 }
         'SHIFTJIS' { [System.Text.Encoding]::GetEncoding('Shift_JIS') }
@@ -410,20 +487,44 @@ function ConvertTo-ByteArray {
         'ASCII' { [System.Text.Encoding]::ASCII }
         default { [System.Text.Encoding]::UTF8 }
     }
-    
+
     return $enc.GetBytes($Data)
+}
+
+function Get-MessageService {
+    if ($Global:MessageService) {
+        return $Global:MessageService
+    }
+    if ($Global:ServiceContainer) {
+        return $Global:ServiceContainer.Resolve('MessageService')
+    }
+    throw "MessageService is not initialized."
+}
+
+function Start-Scenario {
+    param(
+        [Parameter(Mandatory=$true)][string]$ConnectionId,
+        [Parameter(Mandatory=$true)][string]$ScenarioPath
+    )
+
+    if (-not (Test-Path -LiteralPath $ScenarioPath)) {
+        throw "Scenario file not found: $ScenarioPath"
+    }
+
+    $service = Get-MessageService
+    $service.StartScenario($ConnectionId, $ScenarioPath)
 }
 
 function ConvertFrom-ByteArray {
     <#
     .SYNOPSIS
-    ƒoƒCƒg”z—ñ‚ğ•¶š—ñ‚É•ÏŠ·
+    ï¿½oï¿½Cï¿½gï¿½zï¿½ï¿½ğ•¶ï¿½ï¿½ï¿½É•ÏŠï¿½
     
     .PARAMETER Data
-    ƒoƒCƒg”z—ñ
+    ï¿½oï¿½Cï¿½gï¿½zï¿½ï¿½
     
     .PARAMETER Encoding
-    ƒGƒ“ƒR[ƒfƒBƒ“ƒOiUTF-8, Shift_JIS, ASCIIj
+    ï¿½Gï¿½ï¿½ï¿½Rï¿½[ï¿½fï¿½Bï¿½ï¿½ï¿½Oï¿½iUTF-8, Shift_JIS, ASCIIï¿½j
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -453,13 +554,13 @@ function ConvertFrom-ByteArray {
 function Expand-MessageVariables {
     <#
     .SYNOPSIS
-    ƒƒbƒZ[ƒWƒeƒ“ƒvƒŒ[ƒg“à‚Ì•Ï”‚ğ“WŠJ
+    ï¿½ï¿½ï¿½bï¿½Zï¿½[ï¿½Wï¿½eï¿½ï¿½ï¿½vï¿½ï¿½ï¿½[ï¿½gï¿½ï¿½ï¿½Ì•Ïï¿½ï¿½ï¿½Wï¿½J
     
     .PARAMETER Template
-    •Ï”‚ğŠÜ‚Şƒeƒ“ƒvƒŒ[ƒg•¶š—ñ
+    ï¿½Ïï¿½ï¿½ï¿½ï¿½Ü‚Şƒeï¿½ï¿½ï¿½vï¿½ï¿½ï¿½[ï¿½gï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     
     .PARAMETER Variables
-    •Ï”‚ÌƒnƒbƒVƒ…ƒe[ƒuƒ‹
+    ï¿½Ïï¿½ï¿½Ìƒnï¿½bï¿½Vï¿½ï¿½ï¿½eï¿½[ï¿½uï¿½ï¿½
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -473,7 +574,7 @@ function Expand-MessageVariables {
         return $Global:MessageService.ExpandVariables($Template, $Variables)
     }
     
-    # ƒtƒH[ƒ‹ƒoƒbƒN: ŠÈˆÕÀ‘•
+    # ï¿½tï¿½Hï¿½[ï¿½ï¿½ï¿½oï¿½bï¿½N: ï¿½ÈˆÕï¿½ï¿½ï¿½
     $result = $Template
     $pattern = '\$\{([^}]+)\}'
     $matches = [regex]::Matches($result, $pattern)
