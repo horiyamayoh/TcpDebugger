@@ -182,6 +182,9 @@ function Register-GridEvents {
         elseif ($column.Name -eq "PeriodicSend") {
             Handle-PeriodicSendChanged -Sender $sender -Args $args
         }
+        elseif ($column.Name -eq "OnReceived") {
+            Handle-OnReceivedChanged -Sender $sender -Args $args
+        }
     })
 
     $DataGridView.Add_CellContentClick({
@@ -537,6 +540,88 @@ function Apply-PeriodicSendProfile {
     }
 }
 
+function Handle-OnReceivedChanged {
+    param(
+        $Sender,
+        $Args
+    )
+
+    if ($script:suppressOnReceivedEvent) {
+        return
+    }
+    if ($Args.ColumnIndex -lt 0 -or $Args.RowIndex -lt 0) {
+        return
+    }
+    $column = $Sender.Columns[$Args.ColumnIndex]
+    if ($column.Name -ne "OnReceived") {
+        return
+    }
+
+    $row = $Sender.Rows[$Args.RowIndex]
+    if (-not $row.Cells.Contains("Id")) {
+        return
+    }
+
+    $connId = $row.Cells["Id"].Value
+    if (-not $connId) {
+        return
+    }
+
+    $cell = $row.Cells["OnReceived"]
+    $tagData = $cell.Tag
+    $mapping = $null
+    $currentProfileKey = ""
+
+    if ($tagData -is [System.Collections.IDictionary] -and $tagData.ContainsKey("Mapping") -and $tagData.ContainsKey("OnReceivedProfileKey")) {
+        $mapping = $tagData["Mapping"]
+        $currentProfileKey = $tagData["OnReceivedProfileKey"]
+    }
+
+    $selectedKey = if ($cell.Value) { [string]$cell.Value } else { "" }
+    $entry = $null
+    if ($mapping -and $mapping.ContainsKey($selectedKey)) {
+        $entry = $mapping[$selectedKey]
+    }
+
+    Apply-OnReceivedProfile -ConnectionId $connId -Entry $entry -Cell $cell -CurrentKey $currentProfileKey -Sender $Sender
+}
+
+function Apply-OnReceivedProfile {
+    param(
+        [string]$ConnectionId,
+        $Entry,
+        $Cell,
+        [string]$CurrentKey,
+        $Sender
+    )
+
+    $profileName = $null
+    $profilePath = $null
+    if ($Entry -and $Entry.Type -eq "Profile") {
+        $profileName = $Entry.Name
+        $profilePath = $Entry.Path
+    }
+
+    try {
+        Set-ConnectionOnReceivedProfile -ConnectionId $ConnectionId -ProfileName $profileName -ProfilePath $profilePath | Out-Null
+        $tagData = $Cell.Tag
+        if ($tagData -is [System.Collections.IDictionary] -and $tagData.ContainsKey("OnReceivedProfileKey")) {
+            $tagData["OnReceivedProfileKey"] = $Cell.Value
+        }
+    } catch {
+        if ($CurrentKey -ne $Cell.Value) {
+            $script:suppressOnReceivedEvent = $true
+            try {
+                $Cell.Value = $CurrentKey
+            } finally {
+                $script:suppressOnReceivedEvent = $false
+            }
+            $Sender.InvalidateCell($Cell)
+        }
+        [System.Windows.Forms.MessageBox]::Show("Failed to apply OnReceived profile: $_", "Error") | Out-Null
+    }
+}
+
 function Handle-CellContentClick {
     param(
         $Sender,
@@ -797,7 +882,7 @@ function Handle-EditingControlShowing {
                 # 編集を終了
                 $grid.EndEdit()
                 
-                # PeriodicSendの場合は直接処理を実行
+                # カラムごとの処理を実行
                 if ($columnName -eq "PeriodicSend") {
                     $tagData = $cell.Tag
                     $currentPeriodicSendKey = ""
@@ -810,6 +895,38 @@ function Handle-EditingControlShowing {
                     }
                     catch {
                         Write-Warning "Error in Apply-PeriodicSendProfile: $_"
+                    }
+                }
+                elseif ($columnName -eq "Scenario") {
+                    $tagData = $cell.Tag
+                    $currentProfileKey = ""
+                    if ($tagData -is [System.Collections.IDictionary] -and $tagData.ContainsKey("ProfileKey")) {
+                        $currentProfileKey = $tagData["ProfileKey"]
+                    }
+                    
+                    try {
+                        if ($entry -and $entry.Type -eq "Scenario") {
+                            Execute-Scenario -ConnectionId $connId -Entry $entry -Cell $cell -CurrentKey $currentProfileKey -Sender $grid
+                        } else {
+                            Apply-AutoResponseProfile -ConnectionId $connId -Entry $entry -Cell $cell -CurrentKey $currentProfileKey -Sender $grid
+                        }
+                    }
+                    catch {
+                        Write-Warning "Error in Scenario handling: $_"
+                    }
+                }
+                elseif ($columnName -eq "OnReceived") {
+                    $tagData = $cell.Tag
+                    $currentOnReceivedKey = ""
+                    if ($tagData -is [System.Collections.IDictionary] -and $tagData.ContainsKey("OnReceivedProfileKey")) {
+                        $currentOnReceivedKey = $tagData["OnReceivedProfileKey"]
+                    }
+                    
+                    try {
+                        Apply-OnReceivedProfile -ConnectionId $connId -Entry $entry -Cell $cell -CurrentKey $currentOnReceivedKey -Sender $grid
+                    }
+                    catch {
+                        Write-Warning "Error in Apply-OnReceivedProfile: $_"
                     }
                 }
             }
