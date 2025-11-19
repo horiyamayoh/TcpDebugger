@@ -43,15 +43,36 @@ class RuleProcessor {
                 return
             }
 
+            # OnReceivedルールをBefore/Afterに分ける
+            $onReceivedRulesBefore = @()
+            $onReceivedRulesAfter = @()
+            
+            if ($onReceivedProfilePath) {
+                $onReceivedRules = $this._ruleRepository.GetRules($onReceivedProfilePath)
+                if ($onReceivedRules -and $onReceivedRules.Count -gt 0) {
+                    foreach ($rule in $onReceivedRules) {
+                        if ($rule.__ExecutionTiming -eq 'Before') {
+                            $onReceivedRulesBefore += $rule
+                        } else {
+                            $onReceivedRulesAfter += $rule
+                        }
+                    }
+                }
+            }
+
+            # 1. Before OnReceived を実行
+            if ($onReceivedRulesBefore.Count -gt 0) {
+                $this.ProcessOnReceived($connection, $data, $onReceivedRulesBefore)
+            }
+
+            # 2. AutoResponse を実行
             if ($autoRules -and $autoRules.Count -gt 0) {
                 $this.ProcessAutoResponse($connection, $data, $autoRules)
             }
 
-            if ($onReceivedProfilePath) {
-                $onReceivedRules = $this._ruleRepository.GetRules($onReceivedProfilePath)
-                if ($onReceivedRules -and $onReceivedRules.Count -gt 0) {
-                    $this.ProcessOnReceived($connection, $data, $onReceivedRules)
-                }
+            # 3. After OnReceived を実行
+            if ($onReceivedRulesAfter.Count -gt 0) {
+                $this.ProcessOnReceived($connection, $data, $onReceivedRulesAfter)
             }
         }
         catch {

@@ -70,6 +70,16 @@ function Read-ReceivedRules {
     foreach ($rule in $rules) {
         $rule | Add-Member -NotePropertyName '__RuleType' -NotePropertyValue $detectedType -Force
         
+        # ExecutionTiming の判定（OnReceivedルールのみ有効）
+        $executionTiming = 'After'  # デフォルト
+        if ($properties -contains 'ExecutionTiming' -and -not [string]::IsNullOrWhiteSpace($rule.ExecutionTiming)) {
+            $timing = $rule.ExecutionTiming.Trim()
+            if ($timing -eq 'Before' -or $timing -eq 'After') {
+                $executionTiming = $timing
+            }
+        }
+        $rule | Add-Member -NotePropertyName '__ExecutionTiming' -NotePropertyValue $executionTiming -Force
+        
         # 統合形式の場合、各ルールの実際のアクションタイプを判定
         if ($detectedType -eq 'Unified') {
             $hasResponse = -not [string]::IsNullOrWhiteSpace($rule.ResponseMessageFile)

@@ -24,6 +24,7 @@ AutoResponse機能とOnReceived機能は、共通のCSVルールフォーマットを使用します。
 | 列名 | 必須 | 説明 |
 |------|------|------|
 | ScriptFile | 必須 | 実行するPowerShellスクリプトファイル名（相対パスまたは絶対パス）<br>相対パスの場合は `scenarios/onreceived/` からの相対パス |
+| ExecutionTiming | 任意 | スクリプト実行タイミング<br>`Before`: AutoResponseの前に実行<br>`After`: AutoResponseの後に実行（デフォルト） |
 
 ## ルールタイプの自動判定
 
@@ -78,11 +79,19 @@ RuleName,MatchOffset,MatchLength,MatchValue,ResponseMessageFile,Delay
 
 ### OnReceivedルールの例
 ```csv
-RuleName,MatchOffset,MatchLength,MatchValue,ScriptFile,Delay
-ID転記,0,2,0102,copy_message_id.ps1,0
-シーケンス処理,0,2,0103,process_sequence.ps1,0
-エコーバック,0,2,0104,echo_back.ps1,0
+RuleName,MatchOffset,MatchLength,MatchValue,ScriptFile,Delay,ExecutionTiming
+ID転記,0,2,0102,copy_message_id.ps1,0,Before
+シーケンス処理,0,2,0103,process_sequence.ps1,0,Before
+エコーバック,0,2,0104,echo_back.ps1,0,After
 ```
+
+#### ExecutionTimingの使い分け
+- **`Before`**: AutoResponse実行前にスクリプトを実行
+  - 用途: スクリプトで処理した結果を応答に含めたい場合
+  - 例: データベースへの書き込み結果を応答に反映、変数の更新など
+- **`After`** (デフォルト): AutoResponse実行後にスクリプトを実行
+  - 用途: 応答を優先し、バッチ処理は後で行う場合
+  - 例: ログ記録、統計更新など、応答に影響しない処理
 
 ## マッチング動作
 
