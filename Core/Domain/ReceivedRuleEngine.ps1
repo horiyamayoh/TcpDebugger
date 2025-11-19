@@ -27,9 +27,11 @@ function Read-ReceivedRules {
         return @()
     }
 
-    # Shift-JISでCSV読み込み
-    $sjisEncoding = [System.Text.Encoding]::GetEncoding("Shift_JIS")
-    $rules = Import-Csv -Path $FilePath -Encoding $sjisEncoding
+    # Shift-JISでCSV読み込み（PowerShell 5.1対応）
+    # Import-CsvのEncodingパラメータはSystem.Text.Encodingオブジェクトを受け付けないため
+    # Get-ContentでShift-JIS読み込み→ConvertFrom-Csvで解析
+    $content = Get-Content -Path $FilePath -Encoding Default -Raw
+    $rules = $content | ConvertFrom-Csv
 
     if ($rules.Count -eq 0) {
         return @()

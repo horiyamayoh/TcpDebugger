@@ -131,12 +131,22 @@ class UdpAdapter {
                                 # 最後の受信元を記録
                                 $lastRemoteEndPoint = $anyEndPoint
 
+                                # デバッグログ：受信データ確認
+                                $messageQueue.Enqueue((New-LogMessage -ConnectionId $connId -Level 'Info' -Message "DATA RECEIVED IN RUNSPACE" -Context @{
+                                    BytesRead = $receivedData.Length
+                                    DataHex = ($receivedData | ForEach-Object { $_.ToString("X2") }) -join ' '
+                                }))
+
                                 $metadata = @{
                                     RemoteEndPoint = $anyEndPoint.ToString()
                                 }
 
                                 # 受信データをメッセージキューに送信
                                 $messageQueue.Enqueue((New-DataReceivedMessage -ConnectionId $connId -Data $receivedData -Metadata $metadata))
+                                
+                                # デバッグログ：DataReceivedメッセージ送信確認
+                                $messageQueue.Enqueue((New-LogMessage -ConnectionId $connId -Level 'Info' -Message "DataReceivedMessage ENQUEUED" -Context @{}))
+                                
                                 $messageQueue.Enqueue((New-ActivityMarkerMessage -ConnectionId $connId))
                             }
                         }

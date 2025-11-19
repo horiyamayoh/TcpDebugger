@@ -68,8 +68,6 @@ class RunspaceMessageProcessor {
             SendRequest = 0
             Unknown = 0
         }
-        
-        $this._logger.LogInfo("RunspaceMessageProcessor initialized", @{})
     }
     
     <#
@@ -99,8 +97,14 @@ class RunspaceMessageProcessor {
         while ($processed -lt $maxCount) {
             $message = $null
             
-            if (-not $this._queue.TryDequeue([ref]$message)) {
+            $dequeueResult = $this._queue.TryDequeue([ref]$message)
+            
+            if (-not $dequeueResult) {
                 # キューが空
+                break
+            }
+            
+            if (-not $message) {
                 break
             }
             
@@ -210,16 +214,15 @@ class RunspaceMessageProcessor {
             $data = $message.Data['Data']
             $metadata = $message.Data['Metadata']
             
-            # ReceivedEventPipeline経由で処理
-            $this._pipeline.ProcessEvent(
-                $message.ConnectionId,
-                $data,
-                $metadata
-            )
-            
-            # アクティビティをマーク（DataReceivedメッセージには既にActivityMarkerが
-            # 送られている想定だが、念のためここでもマーク）
             if ($conn) {
+                $this._pipeline.ProcessEvent(
+                    $message.ConnectionId,
+                    $data,
+                    $metadata
+                )
+                
+                # アクティビティをマーク（DataReceivedメッセージには既にActivityMarkerが
+                # 送られている想定だが、念のためここでもマーク）
                 $conn.MarkActivity()
             }
         }

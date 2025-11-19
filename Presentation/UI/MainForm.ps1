@@ -84,13 +84,10 @@ function Show-MainForm {
         try {
             if ($Global:MessageProcessor) {
                 $processed = $Global:MessageProcessor.ProcessMessages(50)
-                if ($processed -gt 0) {
-                    Write-Verbose "[MessageTimer] Processed $processed messages"
-                }
             }
         }
         catch {
-            Write-Verbose "[MessageTimer] Error: $_"
+            # ƒGƒ‰[‚Í’Êí‚ÌƒƒK[‚É”C‚¹‚é
         }
     })
     $messageTimer.Start()

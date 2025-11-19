@@ -175,12 +175,23 @@ class TcpClientAdapter {
                         if ($bytesRead -gt 0) {
                             $receivedData = $buffer[0..($bytesRead - 1)]
                             
+                            # デバッグログ：受信データ確認
+                            $msg = New-LogMessage -ConnectionId $ConnectionId -Level 'Info' -Message "DATA RECEIVED IN RUNSPACE" -Context @{
+                                BytesRead = $bytesRead
+                                DataHex = ($receivedData | ForEach-Object { $_.ToString("X2") }) -join ' '
+                            }
+                            $MessageQueue.Enqueue($msg)
+                            
                             $metadata = @{
                                 RemoteEndPoint = "${RemoteIP}:${RemotePort}"
                             }
                             
                             # データ受信メッセージ
                             $msg = New-DataReceivedMessage -ConnectionId $ConnectionId -Data $receivedData -Metadata $metadata
+                            $MessageQueue.Enqueue($msg)
+                            
+                            # デバッグログ：DataReceivedメッセージ送信確認
+                            $msg = New-LogMessage -ConnectionId $ConnectionId -Level 'Info' -Message "DataReceivedMessage ENQUEUED" -Context @{}
                             $MessageQueue.Enqueue($msg)
                             
                             # アクティビティマーカー
