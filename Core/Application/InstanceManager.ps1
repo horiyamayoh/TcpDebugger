@@ -159,7 +159,9 @@ function Get-InstanceDataBank {
     }
 
     try {
-        $rows = Import-Csv -Path $databankPath -Encoding UTF8
+        # PowerShell 5.1対応: Shift-JIS/UTF8両対応
+        $content = Get-Content -Path $databankPath -Encoding Default -Raw
+        $rows = $content | ConvertFrom-Csv
     } catch {
         Write-Warning "Failed to read databank: $_"
         return @()

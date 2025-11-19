@@ -79,7 +79,8 @@ class MessageService {
         }
 
         $fileInfo = Get-Item -LiteralPath $filePath
-        $content = Import-Csv -Path $filePath -Encoding UTF8
+        # PowerShell 5.1‘Î‰ž: Shift-JIS/UTF8—¼‘Î‰ž
+        $content = Get-Content -Path $filePath -Encoding Default -Raw | ConvertFrom-Csv
 
         $this._templateCache[$filePath] = @{
             Data = $content
@@ -219,7 +220,9 @@ class MessageService {
             throw "Scenario file not found: $scenarioPath"
         }
 
-        $steps = Import-Csv -Path $scenarioPath -Encoding UTF8
+        # PowerShell 5.1‘Î‰ž: Shift-JIS/UTF8—¼‘Î‰ž
+        $content = Get-Content -Path $scenarioPath -Encoding Default -Raw
+        $steps = $content | ConvertFrom-Csv
         $this._logger.LogInfo("Scenario loaded: $scenarioPath ($($steps.Count) steps)")
         return $steps
     }
