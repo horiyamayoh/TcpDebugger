@@ -382,9 +382,12 @@ function Read-PeriodicSendRules {
     }
 
     try {
-        # Shift-JIS で読み込み
+        # Shift-JIS で読み込み（PowerShell 5.1対応）
+        # Get-ContentでShift-JIS読み込み → ConvertFrom-Csvでパース
         $encoding = [System.Text.Encoding]::GetEncoding("Shift_JIS")
-        $rules = Import-Csv -Path $FilePath -Encoding $encoding
+        $content = Get-Content -Path $FilePath -Encoding Byte -Raw
+        $text = $encoding.GetString($content)
+        $rules = $text | ConvertFrom-Csv
 
         $validRules = @()
         foreach ($rule in $rules) {
@@ -476,6 +479,11 @@ function Start-PeriodicSend {
         $timer.Interval = $rule.IntervalMs
         $timer.AutoReset = $true
 
+        # 関数のスクリプトブロックを取得（イベントスコープで使用可能にする）
+        $getTemplateFunc = ${function:Get-MessageTemplateCache}
+        $convertBytesFunc = ${function:ConvertTo-ByteArray}
+        $sendDataFunc = ${function:Send-Data}
+
         # タイマーイベント設定
         $timerEvent = Register-ObjectEvent -InputObject $timer -EventName Elapsed -Action {
             param($sender, $eventArgs)
@@ -483,6 +491,9 @@ function Start-PeriodicSend {
             $connId = $Event.MessageData.ConnectionId
             $messageFile = $Event.MessageData.MessageFile
             $ruleName = $Event.MessageData.RuleName
+            $getTemplate = $Event.MessageData.GetTemplateFunc
+            $convertBytes = $Event.MessageData.ConvertBytesFunc
+            $sendData = $Event.MessageData.SendDataFunc
 
             if (-not $Global:Connections.ContainsKey($connId)) {
                 return
@@ -496,7 +507,8 @@ function Start-PeriodicSend {
             }
 
             try {
-                $templates = Get-MessageTemplateCache -FilePath $messageFile -ThrowOnMissing
+                # スクリプトブロックとして関数を呼び出し
+                $templates = & $getTemplate -FilePath $messageFile -ThrowOnMissing
                 if (-not $templates -or -not $templates.ContainsKey('DEFAULT')) {
                     Write-Warning "[PeriodicSend] DEFAULT template not found in: $messageFile"
                     return
@@ -508,8 +520,8 @@ function Start-PeriodicSend {
                     return
                 }
 
-                $bytes = ConvertTo-ByteArray -Data $template.Format -Encoding 'HEX'
-                Send-Data -ConnectionId $connId -Data $bytes
+                $bytes = & $convertBytes -Data $template.Format -Encoding 'HEX'
+                & $sendData -ConnectionId $connId -Data $bytes
 
                 Write-Host "[PeriodicSend] Sent periodic message for rule '$ruleName' ($($bytes.Length) bytes)" -ForegroundColor Cyan
             } catch {
@@ -519,6 +531,9 @@ function Start-PeriodicSend {
             ConnectionId = $ConnectionId
             MessageFile = $rule.MessageFile
             RuleName = $rule.RuleName
+            GetTemplateFunc = $getTemplateFunc
+            ConvertBytesFunc = $convertBytesFunc
+            SendDataFunc = $sendDataFunc
         }
 
         # タイマーを保存

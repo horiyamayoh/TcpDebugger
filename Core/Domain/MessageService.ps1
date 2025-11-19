@@ -334,8 +334,11 @@ function Get-MessageTemplateCache {
     }
     
     # Shift-JISでCSV読み込み（電文ファイルはShift-JIS形式）
+    # PowerShell 5.1のImport-CsvはEncodingオブジェクトを受け取れないため、Get-Contentで読み込み
     $sjisEncoding = [System.Text.Encoding]::GetEncoding("Shift_JIS")
-    $rows = Import-Csv -Path $FilePath -Encoding $sjisEncoding
+    $rawBytes = Get-Content -Path $FilePath -Encoding Byte -Raw
+    $csvText = $sjisEncoding.GetString($rawBytes)
+    $rows = $csvText | ConvertFrom-Csv
     
     if (-not $rows -or $rows.Count -eq 0) {
         return @{}
