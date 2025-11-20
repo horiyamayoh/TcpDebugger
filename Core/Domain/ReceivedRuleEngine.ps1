@@ -449,10 +449,16 @@ function Invoke-BinaryAutoResponse {
 
     $template = $templates['DEFAULT']
 
-    # 16進数ストリームをバイト配列に変換
+    # 16進数ストリームをバイト配列に変換（キャッシュ済みのBytesがあれば再利用）
     try {
-        $responseBytes = ConvertTo-ByteArray -Data $template.Format -Encoding 'HEX'
-    } catch {
+        if ($template.PSObject.Properties.Name -contains 'Bytes' -and $template.Bytes) {
+            $responseBytes = $template.Bytes
+        }
+        else {
+            $responseBytes = ConvertTo-ByteArray -Data $template.Format -Encoding 'HEX'
+        }
+    }
+    catch {
         Write-Warning "[AutoResponse] Failed to convert hex stream to bytes: $_"
         return
     }
@@ -561,14 +567,38 @@ function Invoke-OnReceivedScript {
     try {
         Write-Host "[OnReceived] Executing script: $($Rule.ScriptFile)" -ForegroundColor Blue
 
-        # スクリプトを実行
-        $scriptBlock = [scriptblock]::Create((Get-Content -LiteralPath $scriptPath -Raw -Encoding UTF8))
+        $resolvedFullPath = [System.IO.Path]::GetFullPath($scriptPath)
+        $fileInfo = Get-Item -LiteralPath $resolvedFullPath
+        $lastWrite = $fileInfo.LastWriteTimeUtc
+
+        if (-not $script:OnReceivedScriptCache) {
+            $script:OnReceivedScriptCache = @{}
+        }
+
+        $scriptBlock = $null
+
+        if ($script:OnReceivedScriptCache.ContainsKey($resolvedFullPath)) {
+            $cached = $script:OnReceivedScriptCache[$resolvedFullPath]
+            if ($cached.LastWriteTime -eq $lastWrite) {
+                $scriptBlock = $cached.ScriptBlock
+            }
+        }
+
+        if (-not $scriptBlock) {
+            $scriptContent = Get-Content -LiteralPath $resolvedFullPath -Raw -Encoding UTF8
+            $scriptBlock = [scriptblock]::Create($scriptContent)
+            $script:OnReceivedScriptCache[$resolvedFullPath] = [PSCustomObject]@{
+                LastWriteTime = $lastWrite
+                ScriptBlock   = $scriptBlock
+            }
+        }
 
         # スクリプトに変数を渡して実行
         & $scriptBlock -Context $scriptContext
 
         Write-Host "[OnReceived] Script executed successfully" -ForegroundColor Green
-    } catch {
+    }
+    catch {
         Write-Warning "[OnReceived] Script execution failed: $_"
         Write-Warning $_.ScriptStackTrace
     }
