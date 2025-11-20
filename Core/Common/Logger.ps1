@@ -81,6 +81,8 @@ class Logger {
         [byte[]]$data,
         [hashtable]$context = @{}
     ) {
+        if (-not $this._enabled) { return }
+        
         if (-not $context) { $context = @{} }
         $context['ConnectionId'] = $connectionId
         $context['Length'] = if ($data) { $data.Length } else { 0 }
