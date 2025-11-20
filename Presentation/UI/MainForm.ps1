@@ -46,13 +46,10 @@ function Show-MainForm {
     $form.Controls.Add($dgvInstances)
 
     # Toolbar buttons using ViewBuilder
-    $btnRefresh = New-ToolbarButton -Text "Refresh" -X 10 -Y 10
-    $form.Controls.Add($btnRefresh)
-
-    $btnConnect = New-ToolbarButton -Text "Connect" -X 120 -Y 10
+    $btnConnect = New-ToolbarButton -Text "Connect" -X 10 -Y 10
     $form.Controls.Add($btnConnect)
 
-    $btnDisconnect = New-ToolbarButton -Text "Disconnect" -X 230 -Y 10
+    $btnDisconnect = New-ToolbarButton -Text "Disconnect" -X 120 -Y 10
     $form.Controls.Add($btnDisconnect)
 
     # Log area using ViewBuilder
@@ -75,7 +72,7 @@ function Show-MainForm {
 
     # Register event handlers
     Register-GridEvents -DataGridView $dgvInstances -GridState $gridState
-    Register-ButtonEvents -DataGridView $dgvInstances -BtnRefresh $btnRefresh -BtnConnect $btnConnect -BtnDisconnect $btnDisconnect
+    Register-ButtonEvents -DataGridView $dgvInstances -BtnConnect $btnConnect -BtnDisconnect $btnDisconnect
 
     # メッセージ処理タイマー (100ms間隔でRunspaceからのメッセージを処理)
     $messageTimer = New-Object System.Windows.Forms.Timer
@@ -225,14 +222,9 @@ function Register-GridEvents {
 function Register-ButtonEvents {
     param(
         [System.Windows.Forms.DataGridView]$DataGridView,
-        [System.Windows.Forms.Button]$BtnRefresh,
         [System.Windows.Forms.Button]$BtnConnect,
         [System.Windows.Forms.Button]$BtnDisconnect
     )
-
-    $BtnRefresh.Add_Click({
-        Update-InstanceList -DataGridView $DataGridView
-    })
 
     $BtnConnect.Add_Click({
         $connection = Get-SelectedConnection -DataGridView $DataGridView
@@ -257,7 +249,6 @@ function Register-ButtonEvents {
         }
         try {
             Stop-Connection -ConnectionId $connection.Id
-            [System.Windows.Forms.MessageBox]::Show("Connection stopped: $($connection.DisplayName)", "Success") | Out-Null
         } catch {
             [System.Windows.Forms.MessageBox]::Show("Failed to stop connection: $_", "Error") | Out-Null
         }
@@ -995,9 +986,26 @@ function Save-GridState {
         $firstDisplayedIndex = $null
     }
 
+    # ComboBoxの選択状態を保存
+    $comboStates = @{}
+    foreach ($row in $DataGridView.Rows) {
+        if ($row.Cells["Id"].Value) {
+            $connId = $row.Cells["Id"].Value
+            $comboStates[$connId] = @{}
+            
+            # 各ComboBox列の選択値を保存
+            foreach ($colName in @('AutoResponse', 'OnReceived', 'PeriodicSend')) {
+                if ($DataGridView.Columns.Contains($colName)) {
+                    $comboStates[$connId][$colName] = $row.Cells[$colName].Value
+                }
+            }
+        }
+    }
+
     return @{
         SelectedId = $selectedId
         FirstDisplayedIndex = $firstDisplayedIndex
+        ComboStates = $comboStates
     }
 }
 
@@ -1016,6 +1024,21 @@ function Restore-GridState {
                     $DataGridView.CurrentCell = $row.Cells[0]
                 }
                 break
+            }
+        }
+    }
+
+    # Restore ComboBox states
+    if ($State.ComboStates) {
+        foreach ($row in $DataGridView.Rows) {
+            $connId = $row.Cells["Id"].Value
+            if ($connId -and $State.ComboStates.ContainsKey($connId)) {
+                $savedState = $State.ComboStates[$connId]
+                foreach ($colName in $savedState.Keys) {
+                    if ($DataGridView.Columns.Contains($colName)) {
+                        $row.Cells[$colName].Value = $savedState[$colName]
+                    }
+                }
             }
         }
     }
