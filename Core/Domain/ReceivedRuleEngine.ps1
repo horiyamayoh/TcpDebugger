@@ -522,7 +522,7 @@ function Invoke-BinaryAutoResponse {
         if ($hexPreview.Length -gt 40) {
             $hexPreview = $hexPreview.Substring(0, 40) + "..."
         }
-        Write-Host "[AutoResponse] Sent message from $($Rule.ResponseMessageFile) (${hexPreview})" -ForegroundColor Blue
+        Write-DebugLog "[AutoResponse] Sent message from $($Rule.ResponseMessageFile) (${hexPreview})" "Blue"
     } catch {
         Write-Warning "[AutoResponse] Failed to send auto-response: $_"
     }

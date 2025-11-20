@@ -1,6 +1,17 @@
 ﻿# ConnectionManager.ps1
 # �ڑ��Ǘ����W���[�� - �����ڑ��̈ꌳ�Ǘ�
 
+# デバッグ出力ヘルパー
+function Write-DebugLog {
+    param(
+        [string]$Message,
+        [string]$ForegroundColor = "White"
+    )
+    if ($script:EnableDebugOutput) {
+        Write-Host $Message -ForegroundColor $ForegroundColor
+    }
+}
+
 function Get-ConnectionService {
     if ($Global:ConnectionService) {
         return $Global:ConnectionService
@@ -28,7 +39,7 @@ function New-ConnectionManager {
     �ڑ��}�l�[�W���[��������
     #>
     
-    Write-Host "[ConnectionManager] Initializing..." -ForegroundColor Cyan
+    Write-DebugLog "[ConnectionManager] Initializing..." "Cyan"
     
     $service = Get-ConnectionService
     foreach ($conn in @($service.GetAllConnections())) {
@@ -40,7 +51,7 @@ function New-ConnectionManager {
     }
     $service.ClearConnections()
     
-    Write-Host "[ConnectionManager] Initialized" -ForegroundColor Green
+    Write-DebugLog "[ConnectionManager] Initialized" "Green"
 }
 
 function Add-Connection {
@@ -59,7 +70,7 @@ function Add-Connection {
         throw "Failed to add connection."
     }
     
-    Write-Host "[ConnectionManager] Added connection: $($conn.DisplayName) [$($conn.Id)]" -ForegroundColor Green
+    Write-DebugLog "[ConnectionManager] Added connection: $($conn.DisplayName) [$($conn.Id)]" "Green"
     
     return $conn
 }
@@ -78,7 +89,7 @@ function Remove-Connection {
     Stop-Connection -ConnectionId $ConnectionId -Force
     $service.RemoveConnection($ConnectionId)
     
-    Write-Host "[ConnectionManager] Removed connection: $ConnectionId" -ForegroundColor Yellow
+    Write-DebugLog "[ConnectionManager] Removed connection: $ConnectionId" "Yellow"
 }
 
 function Start-Connection {
@@ -114,7 +125,7 @@ function Start-Connection {
         $conn.State.CancellationSource = $null
     }
     
-    Write-Host "[ConnectionManager] Starting connection: $($conn.DisplayName)" -ForegroundColor Cyan
+    Write-DebugLog "[ConnectionManager] Starting connection: $($conn.DisplayName)" "Cyan"
     
     try {
         # ServiceContainer���K�v
@@ -180,7 +191,7 @@ function Start-Connection {
             }
         }
         
-        Write-Host "[ConnectionManager] Connection established: $($conn.DisplayName)" -ForegroundColor Green
+        Write-DebugLog "[ConnectionManager] Connection established: $($conn.DisplayName)" "Green"
         
     } catch {
         $conn.SetError($_.Exception.Message, $_.Exception)
@@ -202,7 +213,7 @@ function Stop-Connection {
     
     $conn = Get-ManagedConnection -ConnectionId $ConnectionId
     
-    Write-Host "[ConnectionManager] Stopping connection: $($conn.DisplayName)" -ForegroundColor Yellow
+    Write-DebugLog "[ConnectionManager] Stopping connection: $($conn.DisplayName)" "Yellow"
     
     try {
         try {
@@ -287,7 +298,7 @@ function Stop-Connection {
         $conn.UpdateStatus("DISCONNECTED")
         $conn.Thread = $null
         
-        Write-Host "[ConnectionManager] Connection stopped: $($conn.DisplayName)" -ForegroundColor Green
+        Write-DebugLog "[ConnectionManager] Connection stopped: $($conn.DisplayName)" "Green"
         
     } catch {
         Write-Error "[ConnectionManager] Error stopping connection: $_"
@@ -425,7 +436,7 @@ function Read-PeriodicSendRules {
             }
         }
 
-        Write-Host "[PeriodicSend] Loaded $($validRules.Count) periodic send rules from $FilePath" -ForegroundColor Green
+        Write-DebugLog "[PeriodicSend] Loaded $($validRules.Count) periodic send rules from $FilePath" "Green"
         return $validRules
 
     } catch {
@@ -464,7 +475,7 @@ function Start-PeriodicSend {
     $rules = Read-PeriodicSendRules -FilePath $RuleFilePath -InstancePath $InstancePath
     
     if ($rules.Count -eq 0) {
-        Write-Host "[PeriodicSend] No valid periodic send rules found" -ForegroundColor Yellow
+        Write-DebugLog "[PeriodicSend] No valid periodic send rules found" "Yellow"
         return
     }
 
@@ -523,7 +534,7 @@ function Start-PeriodicSend {
                 $bytes = & $convertBytes -Data $template.Format -Encoding 'HEX'
                 & $sendData -ConnectionId $connId -Data $bytes
 
-                Write-Host "[PeriodicSend] Sent periodic message for rule '$ruleName' ($($bytes.Length) bytes)" -ForegroundColor Cyan
+                Write-DebugLog "[PeriodicSend] Sent periodic message for rule '$ruleName' ($($bytes.Length) bytes)" "Cyan"
             } catch {
                 Write-Warning "[PeriodicSend] Failed to send periodic message for rule '$ruleName': $_"
             }
@@ -546,7 +557,7 @@ function Start-PeriodicSend {
 
         # タイマー開始
         $timer.Start()
-        Write-Host "[PeriodicSend] Started periodic timer for rule '$($rule.RuleName)' (Interval: $($rule.IntervalMs)ms)" -ForegroundColor Green
+        Write-DebugLog "[PeriodicSend] Started periodic timer for rule '$($rule.RuleName)' (Interval: $($rule.IntervalMs)ms)" "Green"
     }
 }
 
@@ -570,8 +581,9 @@ function Stop-PeriodicSend {
         return
     }
 
-    Write-Host "[PeriodicSend] Stopping periodic timers for connection: $($connection.DisplayName)" -ForegroundColor Yellow
-
+    
+    Write-DebugLog "[PeriodicSend] Stopping periodic timers for connection: $($connection.DisplayName)" "Yellow"
+    
     foreach ($timerState in @($connection.PeriodicTimers)) {
         # タイマーを停止・破棄
         try {
@@ -603,7 +615,7 @@ function Stop-PeriodicSend {
     }
 
     $connection.PeriodicTimers.Clear()
-    Write-Host "[PeriodicSend] All periodic timers stopped" -ForegroundColor Green
+    Write-DebugLog "[PeriodicSend] All periodic timers stopped" "Green"
 }
 
 function Set-ConnectionPeriodicSendProfile {
@@ -634,7 +646,7 @@ function Set-ConnectionPeriodicSendProfile {
     if ([string]::IsNullOrWhiteSpace($ProfilePath)) {
         $conn.Variables.Remove('PeriodicSendProfile')
         $conn.Variables.Remove('PeriodicSendProfilePath')
-        Write-Host "[PeriodicSend] Cleared periodic send profile for $($conn.DisplayName)" -ForegroundColor Yellow
+        Write-DebugLog "[PeriodicSend] Cleared periodic send profile for $($conn.DisplayName)" "Yellow"
         return
     }
 
@@ -648,9 +660,8 @@ function Set-ConnectionPeriodicSendProfile {
     $conn.Variables['PeriodicSendProfile'] = $profileName
     $conn.Variables['PeriodicSendProfilePath'] = $resolved
 
-    Write-Host "[PeriodicSend] Profile '$profileName' applied to $($conn.DisplayName)" -ForegroundColor Green
-
-    # 接続が既にアクティブな場合は即座に開始
+    
+    Write-DebugLog "[PeriodicSend] Profile '$profileName' applied to $($conn.DisplayName)" "Green"    # 接続が既にアクティブな場合は即座に開始
     if ($conn.Status -eq "CONNECTED") {
         Start-PeriodicSend -ConnectionId $ConnectionId -RuleFilePath $resolved -InstancePath $InstancePath
     }
