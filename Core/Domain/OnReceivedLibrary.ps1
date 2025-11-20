@@ -1,10 +1,10 @@
 # OnReceivedLibrary.ps1
-# OnReceived�X�N���v�g�p�̃w���p�[�֐����C�u����
+# OnReceivedスクリプト用のヘルパー関数ライブラリ
 
 function Get-ByteSlice {
     <#
     .SYNOPSIS
-    �o�C�g�z�񂩂�w��͈͂��X���C�X
+    バイト配列から指定範囲をスライス
     
     .EXAMPLE
     $data = Get-ByteSlice -Data $ReceivedData -Offset 0 -Length 2
@@ -36,7 +36,7 @@ function Get-ByteSlice {
 function Set-ByteSlice {
     <#
     .SYNOPSIS
-    �o�C�g�z��̎w��ʒu�Ƀf�[�^���R�s�[
+    バイト配列の指定位置にデータをコピー
     
     .EXAMPLE
     Set-ByteSlice -Target $messageData -Offset 4 -Source $idBytes
@@ -66,7 +66,7 @@ function Set-ByteSlice {
 function Read-MessageFile {
     <#
     .SYNOPSIS
-    �d����`�t�@�C����ǂݍ���Ńo�C�g�z����擾
+    電文定義ファイルを読み込んでバイト配列を取得
     
     .EXAMPLE
     $responseData = Read-MessageFile -FilePath "response.csv"
@@ -82,7 +82,7 @@ function Read-MessageFile {
 
     $resolvedPath = $FilePath
 
-    # ���΃p�X�̏ꍇ�A�C���X�^���X��templates�t�H���_�������
+    # 相対パスの場合、インスタンスのtemplatesフォルダから解決
     if (-not [System.IO.Path]::IsPathRooted($resolvedPath)) {
         if ($InstancePath) {
             $resolvedPath = Join-Path $InstancePath "templates\$FilePath"
@@ -93,7 +93,7 @@ function Read-MessageFile {
         throw "Message file not found: $resolvedPath"
     }
 
-    # �d���e���v���[�g��ǂݍ���
+    # 電文テンプレートを読み込み
     $templates = Get-MessageTemplateCache -FilePath $resolvedPath -ThrowOnMissing
 
     if (-not $templates.ContainsKey('DEFAULT')) {
@@ -101,17 +101,21 @@ function Read-MessageFile {
     }
 
     $template = $templates['DEFAULT']
-    
-    # 16�i���X�g���[�����o�C�g�z��ɕϊ�
-    $bytes = ConvertTo-ByteArray -Data $template.Format -Encoding 'HEX'
-    
+
+    # 16進数ストリームをバイト配列に変換
+    $bytes = if ($template.PSObject.Properties.Name -contains 'Bytes' -and $template.Bytes) {
+        $template.Bytes
+    } else {
+        ConvertTo-ByteArray -Data $template.Format -Encoding 'HEX'
+    }
+
     return $bytes
 }
 
 function Write-MessageFile {
     <#
     .SYNOPSIS
-    �o�C�g�z���d����`�t�@�C���ɏ�������
+    バイト配列を電文定義ファイルに書き込み
     
     .EXAMPLE
     Write-MessageFile -Data $messageData -FilePath "output.csv" -InstancePath $Context.InstancePath
@@ -132,20 +136,20 @@ function Write-MessageFile {
 
     $resolvedPath = $FilePath
 
-    # ���΃p�X�̏ꍇ�A�C���X�^���X��templates�t�H���_�������
+    # 相対パスの場合、インスタンスのtemplatesフォルダから解決
     if (-not [System.IO.Path]::IsPathRooted($resolvedPath)) {
         if ($InstancePath) {
             $resolvedPath = Join-Path $InstancePath "templates\$FilePath"
         }
     }
 
-    # �f�B���N�g�������݂��Ȃ��ꍇ�͍쐬
+    # ディレクトリが存在しない場合は作成
     $directory = [System.IO.Path]::GetDirectoryName($resolvedPath)
     if (-not (Test-Path -LiteralPath $directory)) {
         New-Item -Path $directory -ItemType Directory -Force | Out-Null
     }
 
-    # �o�C�g�z���16�i��������ɕϊ����A�K�؂ȍs�ɕ���
+    # バイト配列を16進数文字列に変換し、適切な行に分割
     $hexString = ($Data | ForEach-Object { $_.ToString("X2") }) -join ''
     
     $lines = @()
@@ -160,7 +164,7 @@ function Write-MessageFile {
         $rowNumber++
     }
 
-    # Shift-JIS�ŏ�������
+    # Shift-JISで書き込み
     $sjisEncoding = [System.Text.Encoding]::GetEncoding("Shift_JIS")
     [System.IO.File]::WriteAllLines($resolvedPath, $lines, $sjisEncoding)
 }
@@ -168,7 +172,7 @@ function Write-MessageFile {
 function Send-MessageFile {
     <#
     .SYNOPSIS
-    �d����`�t�@�C����ǂݍ���ő��M
+    電文定義ファイルを読み込んで送信
     
     .EXAMPLE
     Send-MessageFile -ConnectionId $Context.ConnectionId -FilePath "response.csv" -InstancePath $Context.InstancePath
@@ -197,7 +201,7 @@ function Send-MessageFile {
 function Send-MessageData {
     <#
     .SYNOPSIS
-    �o�C�g�z��𑗐M
+    バイト配列を送信
     
     .EXAMPLE
     Send-MessageData -ConnectionId $Context.ConnectionId -Data $messageBytes
@@ -222,7 +226,7 @@ function Send-MessageData {
 function ConvertTo-HexString {
     <#
     .SYNOPSIS
-    �o�C�g�z���16�i��������ɕϊ�
+    バイト配列を16進数文字列に変換
     
     .EXAMPLE
     $hex = ConvertTo-HexString -Data $bytes
@@ -242,7 +246,7 @@ function ConvertTo-HexString {
 function ConvertFrom-HexString {
     <#
     .SYNOPSIS
-    16�i����������o�C�g�z��ɕϊ�
+    16進数文字列をバイト配列に変換
     
     .EXAMPLE
     $bytes = ConvertFrom-HexString -HexString "0102030A"
@@ -270,7 +274,7 @@ function ConvertFrom-HexString {
 function Get-ConnectionVariable {
     <#
     .SYNOPSIS
-    �R�l�N�V�����ϐ����擾
+    コネクション変数を取得
     
     .EXAMPLE
     $counter = Get-ConnectionVariable -Connection $Context.Connection -Name "Counter" -Default 0
@@ -296,7 +300,7 @@ function Get-ConnectionVariable {
 function Set-ConnectionVariable {
     <#
     .SYNOPSIS
-    �R�l�N�V�����ϐ���ݒ�
+    コネクション変数を設定
     
     .EXAMPLE
     Set-ConnectionVariable -Connection $Context.Connection -Name "Counter" -Value 1
@@ -318,7 +322,7 @@ function Set-ConnectionVariable {
 function Write-OnReceivedLog {
     <#
     .SYNOPSIS
-    OnReceived�X�N���v�g���烍�O�o��
+    OnReceivedスクリプトからログ出力
     
     .EXAMPLE
     Write-OnReceivedLog "Processing message ID: $messageId"
