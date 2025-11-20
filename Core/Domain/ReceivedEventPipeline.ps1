@@ -43,20 +43,21 @@ class ReceivedEventPipeline {
             return
         }
 
-        if (-not $metadata) {
-            $metadata = @{}
-        }
+        $metadata = if ($metadata) { $metadata } else { @{} }
+        $metadataKeys = if ($metadata.Count -gt 0) { @($metadata.Keys) } else { @() }
 
         $timestamp = Get-Date
-        $entry = [PSCustomObject]@{
+        $entryMap = @{
             Timestamp = $timestamp
             Data      = $data
             Length    = $data.Length
         }
 
-        foreach ($key in $metadata.Keys) {
-            $entry | Add-Member -NotePropertyName $key -NotePropertyValue $metadata[$key] -Force
+        foreach ($key in $metadataKeys) {
+            $entryMap[$key] = $metadata[$key]
         }
+
+        $entry = [PSCustomObject]$entryMap
 
         try {
             if ($connection.RecvBuffer) {
@@ -83,7 +84,7 @@ class ReceivedEventPipeline {
             RemotePort = $connection.RemotePort
         }
 
-        foreach ($key in $metadata.Keys) {
+        foreach ($key in $metadataKeys) {
             $logContext[$key] = $metadata[$key]
         }
 
