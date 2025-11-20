@@ -3,7 +3,7 @@
 
 param($Context)
 
-. "$PSScriptRoot\..\..\..\..\Modules\OnReceivedLibrary.ps1"
+. "$PSScriptRoot\..\..\..\..\Core\Domain\OnReceivedLibrary.ps1"
 
 Write-OnReceivedLog "ÉfÅ[É^Çï€ë∂ÇµÇ‹Ç∑"
 

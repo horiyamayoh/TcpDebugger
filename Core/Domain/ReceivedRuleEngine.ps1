@@ -1,6 +1,17 @@
 ﻿# ReceivedRuleEngine.ps1
 # 受信時のルール処理エンジン（AutoResponse/OnReceived共通）
 
+# デバッグ出力ヘルパー
+function Write-DebugLog {
+    param(
+        [string]$Message,
+        [string]$ForegroundColor = "White"
+    )
+    if ($script:EnableDebugOutput) {
+        Write-Host $Message -ForegroundColor $ForegroundColor
+    }
+}
+
 # Helper accessor for the shared rule repository
 function Get-RuleRepository {
     if ($Global:RuleRepository) {
@@ -109,10 +120,37 @@ function Read-ReceivedRules {
             $rule | Add-Member -NotePropertyName '__MatchType' -NotePropertyValue 'Text' -Force
         } else {
             $rule | Add-Member -NotePropertyName '__MatchType' -NotePropertyValue 'Binary' -Force
+            
+            # バイナリマッチングパターンを事前変換（性能最適化）
+            if (-not [string]::IsNullOrWhiteSpace($rule.MatchValue)) {
+                $hexValue = $rule.MatchValue.Trim() -replace '\s', '' -replace '0x', ''
+                
+                # 事前にバイト配列に変換（最適化版）
+                try {
+                    # 配列サイズを事前確定（+= は遅いので使わない）
+                    $byteCount = $hexValue.Length / 2
+                    $matchBytes = [byte[]]::new($byteCount)
+                    $byteIndex = 0
+                    
+                    for ($i = 0; $i -lt $hexValue.Length; $i += 2) {
+                        $hexByte = $hexValue.Substring($i, 2)
+                        $matchBytes[$byteIndex++] = [Convert]::ToByte($hexByte, 16)
+                    }
+                    
+                    # ルールに事前変換済みバイト配列を追加
+                    $rule | Add-Member -NotePropertyName '__MatchBytes' `
+                                       -NotePropertyValue $matchBytes `
+                                       -Force
+                }
+                catch {
+                    Write-Warning "[ReceivedRule] Failed to pre-compile match pattern for rule: $_"
+                    $rule | Add-Member -NotePropertyName '__MatchBytes' -NotePropertyValue $null -Force
+                }
+            }
         }
     }
 
-    Write-Host "[ReceivedRule] Loaded $($rules.Count) rules (Type: $detectedType) from $FilePath" -ForegroundColor Green
+    Write-DebugLog "[ReceivedRule] Loaded $($rules.Count) rules (Type: $detectedType) from $FilePath" "Green"
 
     return $rules
 }
@@ -207,11 +245,21 @@ function Test-BinaryRuleMatch {
         return $false
     }
 
-    # 16進数文字列をバイト配列に変換
-    $matchBytes = @()
-    for ($i = 0; $i -lt $hexValue.Length; $i += 2) {
-        $hexByte = $hexValue.Substring($i, 2)
-        $matchBytes += [Convert]::ToByte($hexByte, 16)
+    # 事前変換済みバイト配列を使用（HEX変換不要！）
+    $matchBytes = $null
+    if ($Rule.PSObject.Properties['__MatchBytes'] -and $Rule.__MatchBytes) {
+        $matchBytes = $Rule.__MatchBytes
+    }
+    else {
+        # フォールバック: 事前変換がない場合は実行時変換（最適化版）
+        $byteCount = $hexValue.Length / 2
+        $matchBytes = [byte[]]::new($byteCount)
+        $byteIndex = 0
+        
+        for ($i = 0; $i -lt $hexValue.Length; $i += 2) {
+            $hexByte = $hexValue.Substring($i, 2)
+            $matchBytes[$byteIndex++] = [Convert]::ToByte($hexByte, 16)
+        }
     }
 
     # 比較
@@ -342,7 +390,7 @@ function Invoke-AutoResponse {
 
         # マッチした場合の処理
         $ruleName = if ($rule.RuleName) { $rule.RuleName } else { "Unknown" }
-        Write-Host "[AutoResponse] Rule matched ($matchedCount): $ruleName" -ForegroundColor Cyan
+        Write-DebugLog "[AutoResponse] Rule matched ($matchedCount): $ruleName" "Cyan"
 
         # 遅延処理
         if ($rule.Delay -and [int]$rule.Delay -gt 0) {
@@ -387,7 +435,7 @@ function Invoke-AutoResponse {
     }
 
     if ($matchedCount -gt 0) {
-        Write-Host "[AutoResponse] Total $matchedCount rule(s) processed" -ForegroundColor Green
+        Write-DebugLog "[AutoResponse] Total $matchedCount rule(s) processed" "Green"
     }
 }
 
@@ -430,9 +478,12 @@ function Invoke-BinaryAutoResponse {
 
     # 電文ファイルを読み込む
     try {
+        Write-DebugLog "[AutoResponse] Loading template: $messageFilePath" "Yellow"
         $templates = Get-MessageTemplateCache -FilePath $messageFilePath -ThrowOnMissing
+        Write-DebugLog "[AutoResponse] Template loaded successfully" "Yellow"
     } catch {
         Write-Warning "[AutoResponse] Failed to load response message file: $_"
+        Write-Warning "[AutoResponse] Stack trace: $($_.ScriptStackTrace)"
         return
     }
 
@@ -449,9 +500,16 @@ function Invoke-BinaryAutoResponse {
 
     $template = $templates['DEFAULT']
 
-    # 16進数ストリームをバイト配列に変換
+    # 事前変換済みバイト配列を使用（HEX変換不要！）
     try {
-        $responseBytes = ConvertTo-ByteArray -Data $template.Format -Encoding 'HEX'
+        # テンプレートに事前変換済みのバイト配列がある場合はそれを使用
+        if ($template.PSObject.Properties['Bytes'] -and $template.Bytes) {
+            $responseBytes = $template.Bytes
+        }
+        else {
+            # フォールバック: 旧形式のテンプレートの場合はHEX変換
+            $responseBytes = ConvertTo-ByteArray -Data $template.Format -Encoding 'HEX'
+        }
     } catch {
         Write-Warning "[AutoResponse] Failed to convert hex stream to bytes: $_"
         return

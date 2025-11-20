@@ -4,7 +4,7 @@
 param($Context)
 
 # ライブラリ関数を読み込み
-. "$PSScriptRoot\..\..\..\..\Modules\OnReceivedLibrary.ps1"
+. "$PSScriptRoot\..\..\..\..\Core\Domain\OnReceivedLibrary.ps1"
 
 Write-OnReceivedLog "エコーバックを実行します"
 

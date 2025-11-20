@@ -60,6 +60,15 @@ class ReceivedEventPipeline {
 
         try {
             if ($connection.RecvBuffer) {
+                # RecvBufferサイズ制限（FIFO: 1000件を超えたら古いものを削除）
+                if ($connection.RecvBuffer.Count -ge 1000) {
+                    # 最も古いエントリを削除（先頭から100件削除して余裕を持たせる）
+                    $removeCount = [Math]::Min(100, $connection.RecvBuffer.Count - 900)
+                    for ($i = 0; $i -lt $removeCount; $i++) {
+                        [void]$connection.RecvBuffer.RemoveAt(0)
+                    }
+                }
+                
                 [void]$connection.RecvBuffer.Add($entry)
             }
             if ($connection -is [ManagedConnection]) {

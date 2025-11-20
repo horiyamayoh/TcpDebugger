@@ -89,8 +89,8 @@ function Show-MainForm {
     })
     $messageTimer.Start()
 
-    # Timer for periodic refresh (2秒間隔で競合を軽減)
-    $timer = New-RefreshTimer -IntervalMilliseconds 2000
+    # Timer for periodic refresh (3秒間隔で性能最適化)
+    $timer = New-RefreshTimer -IntervalMilliseconds 3000
     $timer.Add_Tick({
         try {
             if (-not $gridState.EditingInProgress -and -not $dgvInstances.IsCurrentCellInEditMode) {
@@ -109,6 +109,17 @@ function Show-MainForm {
     $form.Add_FormClosing({
         $messageTimer.Stop()
         $timer.Stop()
+        
+        # Loggerバッファをフラッシュ
+        if ($Global:Logger) {
+            try {
+                $Global:Logger.Flush()
+            }
+            catch {
+                # ignore errors
+            }
+        }
+        
         foreach ($conn in Get-UiConnections) {
             try {
                 Stop-Connection -ConnectionId $conn.Id -Force

@@ -78,8 +78,27 @@ if (-not (Test-Path -LiteralPath $logDirectory)) {
     New-Item -ItemType Directory -Path $logDirectory | Out-Null
 }
 
+# 設定ファイル読み込み
+$configPath = Join-Path $script:RootPath "Config\defaults.psd1"
+$config = if (Test-Path -LiteralPath $configPath) {
+    Import-PowerShellDataFile -Path $configPath
+} else {
+    @{ 
+        EnableFileLogging = $true
+        LogBufferSize = 50
+        LogFlushIntervalSeconds = 5
+        EnableDebugOutput = $true
+    }
+}
+
+# グローバル設定をスクリプトスコープに保存
+$script:EnableDebugOutput = if ($null -ne $config.EnableDebugOutput) { $config.EnableDebugOutput } else { $true }
+
 $logPath = Join-Path $logDirectory "TcpDebugger.log"
-$script:Logger = New-FileLogger -Path $logPath -Name "TcpDebugger"
+$script:Logger = New-FileLogger -Path $logPath -Name "TcpDebugger" `
+    -BufferSize $config.LogBufferSize `
+    -FlushIntervalSeconds $config.LogFlushIntervalSeconds `
+    -Enabled $config.EnableFileLogging
 $script:ErrorHandler = [ErrorHandler]::new($script:Logger)
 $Global:Connections = if ($Global:Connections) { $Global:Connections } else { [System.Collections.Hashtable]::Synchronized(@{}) }
 

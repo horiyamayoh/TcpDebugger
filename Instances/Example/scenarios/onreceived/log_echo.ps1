@@ -3,7 +3,7 @@
 
 param($Context)
 
-. "$PSScriptRoot\..\..\..\..\Modules\OnReceivedLibrary.ps1"
+. "$PSScriptRoot\..\..\..\..\Core\Domain\OnReceivedLibrary.ps1"
 
 Write-OnReceivedLog "エコー要求を受信しました"
 

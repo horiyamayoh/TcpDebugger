@@ -1,16 +1,31 @@
 # MessageService.ps1
 # メッセージテンプレート処理とシナリオ実行を統合管理
 
+# デバッグ出力ヘルパー
+function Write-DebugLog {
+    param(
+        [string]$Message,
+        [string]$ForegroundColor = "White"
+    )
+    if ($script:EnableDebugOutput) {
+        Write-Host $Message -ForegroundColor $ForegroundColor
+    }
+}
+
 class MessageService {
     hidden [Logger]$_logger
     hidden [ConnectionService]$_connectionService
     hidden [hashtable]$_templateCache
+    hidden [hashtable]$_scenarioCache
+    hidden [object]$_scenarioCacheLock
     hidden [hashtable]$_customVariableHandlers
 
     MessageService([Logger]$logger, [ConnectionService]$connectionService) {
         $this._logger = $logger
         $this._connectionService = $connectionService
         $this._templateCache = @{}
+        $this._scenarioCache = @{}
+        $this._scenarioCacheLock = [object]::new()
         $this._customVariableHandlers = @{}
     }
 
@@ -172,9 +187,14 @@ class MessageService {
             throw "Invalid hex string length: $($hex.Length)"
         }
 
-        $bytes = New-Object byte[] ($hex.Length / 2)
+        # 事前にサイズ確定した配列を作成（高速）
+        $byteCount = $hex.Length / 2
+        $bytes = [byte[]]::new($byteCount)
+        $byteIndex = 0
+        
+        # ループ内の除算を排除（高速化）
         for ($i = 0; $i -lt $hex.Length; $i += 2) {
-            $bytes[$i / 2] = [Convert]::ToByte($hex.Substring($i, 2), 16)
+            $bytes[$byteIndex++] = [Convert]::ToByte($hex.Substring($i, 2), 16)
         }
 
         return $bytes
@@ -214,17 +234,100 @@ class MessageService {
         return @()
     }
 
-    # シナリオファイルの読み込み
+    # シナリオファイルの読み込み（ファイル更新検知付きキャッシュ）
     [object[]] LoadScenario([string]$scenarioPath) {
         if (-not (Test-Path -LiteralPath $scenarioPath)) {
             throw "Scenario file not found: $scenarioPath"
         }
+        
+        $resolved = (Resolve-Path -LiteralPath $scenarioPath).Path
+        $fileInfo = Get-Item -LiteralPath $resolved
+        $lastWrite = $fileInfo.LastWriteTimeUtc  # ← ファイル更新時刻取得
+        $key = $resolved.ToLowerInvariant()
+        
+        # キャッシュチェック
+        $cached = $this.TryGetCachedScenario($key, $lastWrite)
+        if ($cached) {
+            $this._logger.LogDebug("Scenario cache HIT: $scenarioPath")
+            return $cached  # ファイル未更新ならキャッシュから返す
+        }
+        
+        $this._logger.LogDebug("Scenario cache MISS: $scenarioPath (loading from file)")
 
         # PowerShell 5.1対応: Shift-JIS/UTF8両対応
-        $content = Get-Content -Path $scenarioPath -Encoding Default -Raw
+        $content = Get-Content -Path $resolved -Encoding Default -Raw
         $steps = $content | ConvertFrom-Csv
+        
+        # キャッシュに保存（更新時刻付き）
+        $this.SetScenarioCache($key, $lastWrite, $steps)
+        
         $this._logger.LogInfo("Scenario loaded: $scenarioPath ($($steps.Count) steps)")
         return $steps
+    }
+    
+    hidden [object[]] TryGetCachedScenario([string]$key, [datetime]$lastWrite) {
+        [System.Threading.Monitor]::Enter($this._scenarioCacheLock)
+        try {
+            if ($this._scenarioCache.ContainsKey($key)) {
+                $entry = $this._scenarioCache[$key]
+                # ファイル更新時刻が一致すればキャッシュ有効
+                if ($entry.LastWriteTimeUtc -eq $lastWrite) {
+                    return $entry.Steps
+                }
+                # 更新時刻不一致 → ファイルが更新された → キャッシュ無効
+            }
+        }
+        finally {
+            [System.Threading.Monitor]::Exit($this._scenarioCacheLock)
+        }
+        return $null
+    }
+    
+    hidden [void] SetScenarioCache([string]$key, [datetime]$lastWrite, [object[]]$steps) {
+        [System.Threading.Monitor]::Enter($this._scenarioCacheLock)
+        try {
+            $this._scenarioCache[$key] = @{
+                LastWriteTimeUtc = $lastWrite  # ← 更新時刻を保存
+                Steps = $steps
+            }
+        }
+        finally {
+            [System.Threading.Monitor]::Exit($this._scenarioCacheLock)
+        }
+    }
+    
+    # 開発時用: シナリオキャッシュクリア
+    [void] ClearScenarioCache([string]$scenarioPath) {
+        if ([string]::IsNullOrWhiteSpace($scenarioPath)) {
+            # 全シナリオキャッシュクリア
+            [System.Threading.Monitor]::Enter($this._scenarioCacheLock)
+            try {
+                $count = $this._scenarioCache.Count
+                $this._scenarioCache.Clear()
+                $this._logger.LogInfo("All scenario cache cleared ($count entries)")
+            }
+            finally {
+                [System.Threading.Monitor]::Exit($this._scenarioCacheLock)
+            }
+            return
+        }
+        
+        $resolved = $scenarioPath
+        if (Test-Path -LiteralPath $scenarioPath) {
+            $resolved = (Resolve-Path -LiteralPath $scenarioPath).Path
+        }
+        $key = $resolved.ToLowerInvariant()
+        
+        [System.Threading.Monitor]::Enter($this._scenarioCacheLock)
+        try {
+            if ($this._scenarioCache.ContainsKey($key)) {
+                $null = $this._scenarioCache.Remove($key)
+                $this._logger.LogInfo("Scenario cache cleared: $scenarioPath")
+            }
+        }
+        finally {
+            [System.Threading.Monitor]::Exit($this._scenarioCacheLock)
+        }
     }
 
     # シナリオの実行（非同期）
@@ -311,10 +414,18 @@ class MessageService {
 # グローバルヘルパー関数（旧互換性のため）
 # =====================================================================
 
+# グローバルキャッシュ（モジュールレベル）
+$script:MessageTemplateCache = @{}
+$script:MessageTemplateCacheLock = [object]::new()
+
 function Get-MessageTemplateCache {
     <#
     .SYNOPSIS
-    電文テンプレートファイルをキャッシュ付きで読み込む
+    電文テンプレートをファイル更新検知付きキャッシュで読み込む
+    
+    .DESCRIPTION
+    ファイルのLastWriteTimeUtcを監視し、更新時は自動的にキャッシュを無効化して再読み込み。
+    アプリ実行中にテンプレートファイルを編集しても、次回アクセス時に最新版が反映される。
     
     .PARAMETER FilePath
     テンプレートファイルのパス
@@ -336,10 +447,36 @@ function Get-MessageTemplateCache {
         return @{}
     }
     
+    $resolvedPath = (Resolve-Path -LiteralPath $FilePath).Path
+    $fileInfo = Get-Item -LiteralPath $resolvedPath
+    $lastWriteTime = $fileInfo.LastWriteTimeUtc  # ← ファイル更新時刻を取得
+    $cacheKey = $resolvedPath.ToLowerInvariant()
+    
+    # キャッシュチェック（スレッドセーフ）
+    [System.Threading.Monitor]::Enter($script:MessageTemplateCacheLock)
+    try {
+        if ($script:MessageTemplateCache.ContainsKey($cacheKey)) {
+            $cached = $script:MessageTemplateCache[$cacheKey]
+            # ファイル更新時刻が一致すればキャッシュ有効
+            if ($cached.LastWriteTimeUtc -eq $lastWriteTime) {
+                # キャッシュHIT！（0.1ms）
+                Write-Debug "[TemplateCache] HIT: $FilePath"
+                return $cached.Templates
+            }
+            # 更新時刻不一致 → ファイルが更新された → キャッシュ無効
+            Write-Debug "[TemplateCache] INVALIDATED (file updated): $FilePath"
+        }
+    }
+    finally {
+        [System.Threading.Monitor]::Exit($script:MessageTemplateCacheLock)
+    }
+    
+    # キャッシュMISS - ファイル読み込み（5-10ms）
+    Write-Debug "[TemplateCache] MISS: $FilePath (loading from disk)"
+    
     # Shift-JISでCSV読み込み（電文ファイルはShift-JIS形式）
-    # PowerShell 5.1のImport-CsvはEncodingオブジェクトを受け取れないため、Get-Contentで読み込み
     $sjisEncoding = [System.Text.Encoding]::GetEncoding("Shift_JIS")
-    $rawBytes = Get-Content -Path $FilePath -Encoding Byte -Raw
+    $rawBytes = Get-Content -Path $resolvedPath -Encoding Byte -Raw
     $csvText = $sjisEncoding.GetString($rawBytes)
     $rows = $csvText | ConvertFrom-Csv
     
@@ -347,25 +484,79 @@ function Get-MessageTemplateCache {
         return @{}
     }
     
-    # 電文形式の場合、すべての行を結合してHEX文字列を作成
-    $hexStream = ""
+    # StringBuilder使用でHEX文字列結合を高速化
+    $sb = [System.Text.StringBuilder]::new()
     foreach ($row in $rows) {
         # Row1, Row2, ... の2列目のHEX値を結合
         $properties = $row.PSObject.Properties.Name
         if ($properties.Count -ge 2) {
             $hexValue = $properties[1]
-            $hexStream += $row.$hexValue
+            [void]$sb.Append($row.$hexValue)
         }
     }
+    $hexStream = $sb.ToString()
     
-    # DEFAULTテンプレートとして返す
+    # 事前にバイト配列に変換（HEX変換のオーバーヘッド削減）
+    $responseBytes = ConvertTo-ByteArray -Data $hexStream -Encoding 'HEX'
+    
     $template = [PSCustomObject]@{
         Name = 'DEFAULT'
-        Format = $hexStream
+        Format = $hexStream        # HEX文字列（デバッグ用）
+        Bytes = $responseBytes     # 事前変換済みバイト配列（高速送信用）
     }
     
-    return @{
-        'DEFAULT' = $template
+    $templates = @{ 'DEFAULT' = $template }
+    
+    # キャッシュに保存（更新時刻付き）
+    [System.Threading.Monitor]::Enter($script:MessageTemplateCacheLock)
+    try {
+        $script:MessageTemplateCache[$cacheKey] = @{
+            LastWriteTimeUtc = $lastWriteTime  # ← 更新時刻を保存
+            Templates = $templates
+        }
+    }
+    finally {
+        [System.Threading.Monitor]::Exit($script:MessageTemplateCacheLock)
+    }
+    
+    return $templates
+}
+
+function Clear-MessageTemplateCache {
+    <#
+    .SYNOPSIS
+    テンプレートキャッシュを手動でクリア（開発・デバッグ用）
+    
+    .PARAMETER FilePath
+    クリアするファイルパス（省略時は全キャッシュクリア）
+    #>
+    param(
+        [Parameter(Mandatory=$false)]
+        [string]$FilePath
+    )
+    
+    [System.Threading.Monitor]::Enter($script:MessageTemplateCacheLock)
+    try {
+        if ([string]::IsNullOrWhiteSpace($FilePath)) {
+            # 全キャッシュクリア
+            $count = $script:MessageTemplateCache.Count
+            $script:MessageTemplateCache.Clear()
+            Write-DebugLog "All template cache cleared ($count entries)" "Yellow"
+        }
+        else {
+            # 特定ファイルのキャッシュクリア
+            $resolvedPath = (Resolve-Path -LiteralPath $FilePath -ErrorAction SilentlyContinue).Path
+            if ($resolvedPath) {
+                $key = $resolvedPath.ToLowerInvariant()
+                if ($script:MessageTemplateCache.ContainsKey($key)) {
+                    $null = $script:MessageTemplateCache.Remove($key)
+                    Write-DebugLog "Template cache cleared: $FilePath" "Yellow"
+                }
+            }
+        }
+    }
+    finally {
+        [System.Threading.Monitor]::Exit($script:MessageTemplateCacheLock)
     }
 }
 
@@ -395,15 +586,20 @@ function ConvertTo-ByteArray {
     $normalizedEncoding = $Encoding.ToUpperInvariant() -replace '[_-]', ''
     
     if ($normalizedEncoding -eq 'HEX') {
-        # HEX文字列をバイト配列に変換
+        # HEX文字列をバイト配列に変換（最適化版）
         $hex = $Data -replace '\s+', ''
         if ($hex.Length % 2 -ne 0) {
             throw "Invalid hex string length: $($hex.Length)"
         }
         
-        $bytes = New-Object byte[] ($hex.Length / 2)
+        # 事前にサイズ確定した配列を作成（高速）
+        $byteCount = $hex.Length / 2
+        $bytes = [byte[]]::new($byteCount)
+        $byteIndex = 0
+        
+        # ループ内の除算を排除（高速化）
         for ($i = 0; $i -lt $hex.Length; $i += 2) {
-            $bytes[$i / 2] = [Convert]::ToByte($hex.Substring($i, 2), 16)
+            $bytes[$byteIndex++] = [Convert]::ToByte($hex.Substring($i, 2), 16)
         }
         return $bytes
     }

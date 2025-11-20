@@ -1,8 +1,8 @@
-RuleName,MatchOffset,MatchLength,MatchValue,ScriptFile,Delay
-ログイン処理,0,2,0001,log_login.ps1,0
-データ保存,0,2,0010,save_data.ps1,0
-統計更新,0,2,0010,update_stats.ps1,50
-エコーログ,0,2,0020,log_echo.ps1,0
-メッセージID転記,0,2,0102,copy_message_id.ps1,0
-シーケンス番号処理,0,2,0103,process_sequence.ps1,0
-エコーバック,0,2,0104,echo_back.ps1,0
+RuleName,MatchOffset,MatchLength,MatchValue,ScriptFile,Delay,ExecutionTiming
+ログイン処理,0,2,0001,log_login.ps1,0,After
+データ保存,0,2,0010,save_data.ps1,0,Before
+統計更新,0,2,0010,update_stats.ps1,50,After
+エコーログ,0,2,0020,log_echo.ps1,0,After
+メッセージID転記,0,2,0102,copy_message_id.ps1,0,Before
+シーケンス番号処理,0,2,0103,process_sequence.ps1,0,Before
+エコーバック,0,2,0104,echo_back.ps1,0,After
