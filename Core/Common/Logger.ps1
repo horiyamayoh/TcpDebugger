@@ -105,6 +105,27 @@ class Logger {
         $this.Log("RECEIVE", "Received data", $context)
     }
 
+    # Convenience aliases for legacy callers
+    [void] Info([string]$message, [hashtable]$context = @{}) {
+        $this.LogInfo($message, $context)
+    }
+
+    [void] Warning([string]$message, [hashtable]$context = @{}) {
+        $this.LogWarning($message, $context)
+    }
+
+    [void] Debug([string]$message, [hashtable]$context = @{}) {
+        $this.LogDebug($message, $context)
+    }
+
+    [void] Error(
+        [string]$message,
+        [Exception]$exception = $null,
+        [hashtable]$context = @{}
+    ) {
+        $this.LogError($message, $exception, $context)
+    }
+
     hidden [void] Log(
         [string]$level,
         [string]$message,

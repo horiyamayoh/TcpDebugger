@@ -38,12 +38,8 @@ function Show-MainForm {
     #>
 
     # Create main form using ViewBuilder
-    $form = New-MainFormWindow -Title "TCP Test Controller v1.0" -Width 1200 -Height 700
+    $form = New-MainFormWindow -Title "TCP Test Controller v1.0" -Width 1200 -Height 750
     $script:CurrentMainForm = $form
-
-    # DataGridView (connection list) using ViewBuilder
-    $dgvInstances = New-ConnectionDataGridView -X 10 -Y 50 -Width 1160 -Height 230
-    $form.Controls.Add($dgvInstances)
 
     # Toolbar buttons using ViewBuilder
     $btnConnect = New-ToolbarButton -Text "Connect" -X 10 -Y 10
@@ -52,17 +48,70 @@ function Show-MainForm {
     $btnDisconnect = New-ToolbarButton -Text "Disconnect" -X 120 -Y 10
     $form.Controls.Add($btnDisconnect)
 
+    # Global profile combo box (アプリケーションプロファイル用)
+    $lblGlobalProfile = New-Object System.Windows.Forms.Label
+    $lblGlobalProfile.Text = "App Profile:"
+    $lblGlobalProfile.Location = New-Object System.Drawing.Point(230, 13)
+    $lblGlobalProfile.Size = New-Object System.Drawing.Size(80, 20)
+    $lblGlobalProfile.TextAlign = [System.Drawing.ContentAlignment]::MiddleRight
+    $form.Controls.Add($lblGlobalProfile)
+
+    $script:cmbGlobalProfile = New-Object System.Windows.Forms.ComboBox
+    $script:cmbGlobalProfile.Location = New-Object System.Drawing.Point(315, 10)
+    $script:cmbGlobalProfile.Size = New-Object System.Drawing.Size(180, 25)
+    $script:cmbGlobalProfile.DropDownStyle = [System.Windows.Forms.ComboBoxStyle]::DropDownList
+    $form.Controls.Add($script:cmbGlobalProfile)
+
+    # DataGridView (connection list) using ViewBuilder
+    $dgvInstances = New-ConnectionDataGridView -X 10 -Y 50 -Width 1160 -Height 200
+    $form.Controls.Add($dgvInstances)
+
     # Log area using ViewBuilder
     $lblLog = New-LabelControl -Text "Connection Log:" -X 10 -Y 290 -Width 200 -Height 20
     $form.Controls.Add($lblLog)
 
-    $txtLog = New-LogTextBox -X 10 -Y 315 -Width 1165 -Height 335
+    $txtLog = New-LogTextBox -X 10 -Y 315 -Width 1165 -Height 385
     $form.Controls.Add($txtLog)
+    
+    # アプリケーションプロファイルコンボボックスの初期化
+    function Initialize-ProfileComboBoxes {
+        $script:cmbGlobalProfile.Items.Clear()
+        $script:cmbGlobalProfile.Items.Add("(None)") | Out-Null
+
+        if ($Global:ProfileService) {
+            $profiles = $Global:ProfileService.GetAvailableApplicationProfiles() | Sort-Object
+            foreach ($profileName in $profiles) {
+                if (-not [string]::IsNullOrWhiteSpace($profileName)) {
+                    $script:cmbGlobalProfile.Items.Add($profileName) | Out-Null
+                }
+            }
+        }
+
+        if ($script:cmbGlobalProfile.Items.Count -gt 0) {
+            $script:cmbGlobalProfile.SelectedIndex = 0
+        }
+    }
+    
+    # アプリケーションプロファイル選択イベント
+    $script:cmbGlobalProfile.Add_SelectedIndexChanged({
+        $selectedProfile = $script:cmbGlobalProfile.SelectedItem
+        if (-not $selectedProfile) {
+            return
+        }
+
+        if ($selectedProfile -eq "(None)") {
+            return
+        }
+
+        Apply-ApplicationProfile -DataGridView $dgvInstances -ProfileName $selectedProfile
+    })
 
     # State holders
     $script:suppressScenarioEvent = $false
     $script:suppressOnReceivedEvent = $false
     $script:suppressPeriodicSendEvent = $false
+    $script:suppressProfileEvent = $false
+    $script:isGlobalProfileLocked = $false
     $script:lastSelectedConnectionId = $null
     $script:comboSelectedIndexChangedHandler = $null
     $gridState = @{
@@ -136,7 +185,15 @@ function Show-MainForm {
         }
     })
 
-    # Initial load
+    # プロファイルコンボボックスを初期化
+    try {
+        Initialize-ProfileComboBoxes
+    }
+    catch {
+        Write-Host "[Warning] Failed to initialize profile combo boxes: $_" -ForegroundColor Yellow
+    }
+
+    # Initial load (after profiles are available)
     Update-InstanceList -DataGridView $dgvInstances
 
     # Show form
@@ -169,7 +226,7 @@ function Register-GridEvents {
     $DataGridView.Add_CurrentCellDirtyStateChanged({
         if ($DataGridView.IsCurrentCellDirty -and $DataGridView.CurrentCell -and
             $DataGridView.CurrentCell.OwningColumn -and
-            $DataGridView.CurrentCell.OwningColumn.Name -eq "Scenario") {
+            $DataGridView.CurrentCell.OwningColumn.Name -in @("Scenario", "OnReceived", "PeriodicSend", "Profile")) {
             $DataGridView.CommitEdit([System.Windows.Forms.DataGridViewDataErrorContexts]::Commit)
         }
     })
@@ -189,6 +246,9 @@ function Register-GridEvents {
         }
         elseif ($column.Name -eq "OnReceived") {
             Handle-OnReceivedChanged -Sender $sender -Args $args
+        }
+        elseif ($column.Name -eq "Profile") {
+            Handle-ProfileChanged -Sender $sender -Args $args
         }
     })
 
@@ -621,6 +681,162 @@ function Apply-OnReceivedProfile {
     }
 }
 
+function Handle-ProfileChanged {
+    param(
+        $Sender,
+        $Args
+    )
+
+    if ($script:suppressProfileEvent) {
+        return
+    }
+    if ($Args.ColumnIndex -lt 0 -or $Args.RowIndex -lt 0) {
+        return
+    }
+
+    $column = $Sender.Columns[$Args.ColumnIndex]
+    if ($column.Name -ne "Profile") {
+        return
+    }
+
+    $row = $Sender.Rows[$Args.RowIndex]
+    if (-not $row.Cells.Contains("Id")) {
+        return
+    }
+
+    $profileValue = [string]$row.Cells["Profile"].Value
+    Apply-ProfileToConnectionRow -DataGridView $Sender -Row $row -ProfileName $profileValue
+}
+
+function Apply-ProfileToConnectionRow {
+    param(
+        [Parameter(Mandatory=$true)][System.Windows.Forms.DataGridView]$DataGridView,
+        [Parameter(Mandatory=$true)][System.Windows.Forms.DataGridViewRow]$Row,
+        [string]$ProfileName
+    )
+
+    $connId = $Row.Cells["Id"].Value
+    if (-not $connId) {
+        return
+    }
+
+    $connection = $null
+    try {
+        $connection = Get-UiConnection -ConnectionId $connId
+    }
+    catch {
+        [System.Windows.Forms.MessageBox]::Show("Connection not found: $connId", "Error") | Out-Null
+        return
+    }
+
+    if (-not $Global:ProfileService) {
+        return
+    }
+
+    # インスタンス名とパスを取得
+    $instanceName = ""
+    if ($connection.Variables -and $connection.Variables.ContainsKey('InstanceName')) {
+        $instanceName = $connection.Variables['InstanceName']
+    }
+
+    $instancePath = Get-InstancePathFromConnection -Connection $connection
+
+    if ([string]::IsNullOrWhiteSpace($instanceName) -or [string]::IsNullOrWhiteSpace($instancePath)) {
+        return
+    }
+
+    try {
+        $Global:ProfileService.ApplyInstanceProfile($connId, $instanceName, $ProfileName, $instancePath)
+
+        $script:suppressProfileEvent = $true
+        $script:suppressScenarioEvent = $true
+        $script:suppressOnReceivedEvent = $true
+        $script:suppressPeriodicSendEvent = $true
+        
+        Update-InstanceList -DataGridView $DataGridView -PreserveComboStates:$false
+    }
+    catch {
+        [System.Windows.Forms.MessageBox]::Show("Failed to apply profile '$ProfileName': $_", "Error") | Out-Null
+    }
+    finally {
+        $script:suppressScenarioEvent = $false
+        $script:suppressOnReceivedEvent = $false
+        $script:suppressPeriodicSendEvent = $false
+        $script:suppressProfileEvent = $false
+    }
+}
+
+function Get-InstancePathFromConnection {
+    param(
+        $Connection
+    )
+
+    if (-not $Connection) {
+        return $null
+    }
+
+    if ($Connection.Variables -and $Connection.Variables.ContainsKey('InstancePath')) {
+        return $Connection.Variables['InstancePath']
+    }
+
+    if ($Connection.InstanceName) {
+        return Join-Path (Join-Path $script:RootPath "Instances") $Connection.InstanceName
+    }
+
+    return $null
+}
+
+function Apply-ApplicationProfile {
+    param(
+        [System.Windows.Forms.DataGridView]$DataGridView,
+        [string]$ProfileName
+    )
+
+    if (-not $Global:ProfileService -or [string]::IsNullOrWhiteSpace($ProfileName)) {
+        return
+    }
+
+    try {
+        # アプリケーションプロファイルを適用（全インスタンスに一斉適用）
+        $Global:ProfileService.ApplyApplicationProfile($ProfileName)
+        
+        # UIを更新
+        $script:suppressProfileEvent = $true
+        $script:suppressScenarioEvent = $true
+        $script:suppressOnReceivedEvent = $true
+        $script:suppressPeriodicSendEvent = $true
+        try {
+            Update-InstanceList -DataGridView $DataGridView -PreserveComboStates:$false
+        }
+        finally {
+            $script:suppressScenarioEvent = $false
+            $script:suppressOnReceivedEvent = $false
+            $script:suppressPeriodicSendEvent = $false
+            $script:suppressProfileEvent = $false
+        }
+    }
+    catch {
+        Write-Warning "[UI] Failed to apply application profile: $_"
+    }
+}
+
+function Set-ProfileColumnsReadOnly {
+    param(
+        [System.Windows.Forms.DataGridView]$DataGridView,
+        [bool]$IsLocked
+    )
+
+    if (-not $DataGridView) {
+        return
+    }
+
+    foreach ($columnName in @("Profile", "Scenario", "OnReceived", "PeriodicSend")) {
+        if ($DataGridView.Columns.Contains($columnName)) {
+            $DataGridView.Columns[$columnName].ReadOnly = $IsLocked
+        }
+    }
+}
+
 function Handle-CellContentClick {
     param(
         $Sender,
@@ -882,7 +1098,15 @@ function Handle-EditingControlShowing {
                 $grid.EndEdit()
                 
                 # カラムごとの処理を実行
-                if ($columnName -eq "PeriodicSend") {
+                if ($columnName -eq "Profile") {
+                    try {
+                        Apply-ProfileToConnectionRow -DataGridView $grid -Row $row -ProfileName $selectedValue
+                    }
+                    catch {
+                        Write-Warning "Error in Apply-ProfileToConnectionRow: $_"
+                    }
+                }
+                elseif ($columnName -eq "PeriodicSend") {
                     $tagData = $cell.Tag
                     $currentPeriodicSendKey = ""
                     if ($tagData -is [System.Collections.IDictionary] -and $tagData.ContainsKey("PeriodicSendProfileKey")) {
@@ -938,7 +1162,8 @@ function Handle-EditingControlShowing {
 
 function Update-InstanceList {
     param(
-        [System.Windows.Forms.DataGridView]$DataGridView
+        [System.Windows.Forms.DataGridView]$DataGridView,
+        [switch]$PreserveComboStates = $true
     )
 
     if (-not $DataGridView) {
@@ -968,7 +1193,7 @@ function Update-InstanceList {
                 }
             }
 
-            Restore-GridState -DataGridView $DataGridView -State $state
+            Restore-GridState -DataGridView $DataGridView -State $state -PreserveComboStates:$PreserveComboStates
         } finally {
             $DataGridView.ResumeLayout()
         }
@@ -1005,7 +1230,7 @@ function Save-GridState {
             $comboStates[$connId] = @{}
             
             # 各ComboBox列の選択値を保存
-            foreach ($colName in @('AutoResponse', 'OnReceived', 'PeriodicSend')) {
+            foreach ($colName in @('Profile', 'AutoResponse', 'OnReceived', 'PeriodicSend')) {
                 if ($DataGridView.Columns.Contains($colName)) {
                     $comboStates[$connId][$colName] = $row.Cells[$colName].Value
                 }
@@ -1023,7 +1248,8 @@ function Save-GridState {
 function Restore-GridState {
     param(
         [System.Windows.Forms.DataGridView]$DataGridView,
-        [hashtable]$State
+        [hashtable]$State,
+        [switch]$PreserveComboStates
     )
 
     # Restore selection
@@ -1039,8 +1265,8 @@ function Restore-GridState {
         }
     }
 
-    # Restore ComboBox states
-    if ($State.ComboStates) {
+    # Restore ComboBox states only if requested
+    if ($PreserveComboStates -and $State.ComboStates) {
         foreach ($row in $DataGridView.Rows) {
             $connId = $row.Cells["Id"].Value
             if ($connId -and $State.ComboStates.ContainsKey($connId)) {
@@ -1093,6 +1319,7 @@ function Add-ConnectionRow {
             $null,
             $null,
             $null,
+            $null,
             $connId
         )
 
@@ -1105,6 +1332,7 @@ function Add-ConnectionRow {
 
             $instancePath = if ($Connection.Variables.ContainsKey('InstancePath')) { $Connection.Variables['InstancePath'] } else { $null }
 
+            Configure-ProfileColumn -Row $row -Connection $Connection
             Configure-ScenarioColumn -Row $row -Connection $Connection -InstancePath $instancePath
             Configure-OnReceivedColumn -Row $row -Connection $Connection -InstancePath $instancePath
             Configure-PeriodicSendColumn -Row $row -Connection $Connection -InstancePath $instancePath

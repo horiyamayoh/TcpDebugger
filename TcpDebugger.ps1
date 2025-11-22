@@ -47,8 +47,11 @@ $coreModules = @(
     "Core\Domain\ConnectionManager.ps1",
     "Core\Domain\ReceivedRuleEngine.ps1",
     "Core\Domain\OnReceivedLibrary.ps1",
+    "Core\Domain\ProfileModels.ps1",
+    "Core\Domain\ProfileService.ps1",
     "Core\Infrastructure\Repositories\RuleRepository.ps1",
     "Core\Infrastructure\Repositories\InstanceRepository.ps1",
+    "Core\Infrastructure\Repositories\ProfileRepository.ps1",
     "Core\Domain\RuleProcessor.ps1",
     "Core\Domain\ReceivedEventPipeline.ps1",
     "Core\Domain\MessageService.ps1",
@@ -143,6 +146,16 @@ $script:ServiceContainer.RegisterSingleton('InstanceRepository', {
     param($c)
     [InstanceRepository]::new($script:Logger)
 })
+$script:ServiceContainer.RegisterSingleton('ProfileRepository', {
+    param($c)
+    [ProfileRepository]::new($script:Logger)
+})
+$script:ServiceContainer.RegisterSingleton('ProfileService', {
+    param($c)
+    $profileRepository = $c.Resolve('ProfileRepository')
+    $logger = $c.Resolve('Logger')
+    [ProfileService]::new($profileRepository, $logger)
+})
 $script:ServiceContainer.RegisterSingleton('RuleProcessor', {
     param($c)
     $logger = $c.Resolve('Logger')
@@ -210,6 +223,8 @@ $script:ServiceContainer.RegisterTransient('UdpAdapter', {
 $Global:ConnectionService = $script:ServiceContainer.Resolve('ConnectionService')
 $Global:RuleRepository = $script:ServiceContainer.Resolve('RuleRepository')
 $Global:InstanceRepository = $script:ServiceContainer.Resolve('InstanceRepository')
+$Global:ProfileRepository = $script:ServiceContainer.Resolve('ProfileRepository')
+$Global:ProfileService = $script:ServiceContainer.Resolve('ProfileService')
 $Global:ReceivedEventPipeline = $script:ServiceContainer.Resolve('ReceivedEventPipeline')
 $Global:MessageService = $script:ServiceContainer.Resolve('MessageService')
 $Global:MessageProcessor = $script:ServiceContainer.Resolve('MessageProcessor')
@@ -257,6 +272,33 @@ if ($instances.Count -eq 0) {
 } else {
     # インスタンスから接続を初期化
     Initialize-InstanceConnections -Instances $instances
+    
+    # インスタンスプロファイルを読み込み
+    Write-Host "[Init] Loading instance profiles..." -ForegroundColor Cyan
+    foreach ($instance in $instances) {
+        try {
+            $Global:ProfileService.LoadInstanceProfiles($instance.FolderName, $instance.FolderPath)
+            $loadedCount = $Global:ProfileService.GetAvailableInstanceProfiles($instance.FolderName).Count
+            Write-Host "  [+] Loaded $loadedCount profiles for: $($instance.FolderName)" -ForegroundColor Green
+        } catch {
+            Write-Warning "Failed to load profiles for $($instance.FolderName): $_"
+        }
+    }
+    
+    # アプリケーションプロファイルを読み込み
+    Write-Host "[Init] Loading application profiles..." -ForegroundColor Cyan
+    $appProfilePath = Join-Path (Join-Path $script:RootPath "Config") "app_profile.csv"
+    if (Test-Path $appProfilePath) {
+        try {
+            $instanceNames = $instances | ForEach-Object { $_.FolderName }
+            $Global:ProfileService.LoadApplicationProfiles($appProfilePath, $instanceNames)
+            Write-Host "  [+] Loaded application profiles" -ForegroundColor Green
+        } catch {
+            Write-Warning "Failed to load application profiles: $_"
+        }
+    } else {
+        Write-Warning "Application profile file not found: $appProfilePath"
+    }
     
     # AutoStart接続を開始
     Start-AutoStartConnections -Instances $instances

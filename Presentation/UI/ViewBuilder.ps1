@@ -107,6 +107,17 @@ function Add-ConnectionGridColumns {
     $colStatus.FillWeight = 100
     [void]$DataGridView.Columns.Add($colStatus)
 
+    # Profile column
+    $colProfile = New-Object System.Windows.Forms.DataGridViewComboBoxColumn
+    $colProfile.HeaderText = "Profile"
+    $colProfile.Name = "Profile"
+    $colProfile.DisplayMember = "Display"
+    $colProfile.ValueMember = "Key"
+    $colProfile.ValueType = [string]
+    $colProfile.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
+    $colProfile.FillWeight = 130
+    [void]$DataGridView.Columns.Add($colProfile)
+
     # Auto Response column (ComboBox)
     $colAutoResponse = New-Object System.Windows.Forms.DataGridViewComboBoxColumn
     $colAutoResponse.HeaderText = "Auto Response"
@@ -267,6 +278,84 @@ function New-RefreshTimer {
     $timer.Interval = $IntervalMilliseconds
 
     return $timer
+}
+
+function Configure-ProfileColumn {
+    <#
+    .SYNOPSIS
+    Configures the Profile column cell for a connection row (Instance Profile selection).
+    #>
+    param(
+        $Row,
+        $Connection
+    )
+
+    $profileCell = New-Object System.Windows.Forms.DataGridViewComboBoxCell
+    $profileCell.DisplayMember = "Display"
+    $profileCell.ValueMember = "Key"
+    $profileCell.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
+
+    $items = New-Object System.Collections.ArrayList
+    $mapping = @{}
+
+    $noneEntry = [PSCustomObject]@{
+        Display = "(None)"
+        Key     = ""
+    }
+    [void]$items.Add($noneEntry)
+    $mapping[$noneEntry.Key] = $noneEntry
+
+    # インスタンス名を取得
+    $instanceName = ""
+    if ($Connection -and $Connection.Variables -and $Connection.Variables.ContainsKey('InstanceName')) {
+        $instanceName = $Connection.Variables['InstanceName']
+    }
+
+    $availableProfiles = @()
+    if ($Global:ProfileService -and -not [string]::IsNullOrWhiteSpace($instanceName)) {
+        try {
+            $availableProfiles = $Global:ProfileService.GetAvailableInstanceProfiles($instanceName) | Sort-Object
+            Write-Verbose "[ViewBuilder] Instance: $instanceName, Profiles: $($availableProfiles.Count)"
+        }
+        catch {
+            Write-Verbose "[ViewBuilder] Failed to get profiles for $instanceName : $_"
+            $availableProfiles = @()
+        }
+    } else {
+        Write-Verbose "[ViewBuilder] ProfileService: $($null -ne $Global:ProfileService), InstanceName: '$instanceName'"
+    }
+
+    foreach ($name in $availableProfiles) {
+        if ([string]::IsNullOrWhiteSpace($name)) { continue }
+        $entry = [PSCustomObject]@{
+            Display = $name
+            Key     = $name
+        }
+        [void]$items.Add($entry)
+        $mapping[$entry.Key] = $entry
+    }
+
+    $currentProfile = ""
+    if ($Connection -and $Connection.Variables -and $Connection.Variables.ContainsKey('InstanceProfile')) {
+        $currentProfile = [string]$Connection.Variables['InstanceProfile']
+        if (-not [string]::IsNullOrWhiteSpace($currentProfile) -and -not $mapping.ContainsKey($currentProfile)) {
+            $entry = [PSCustomObject]@{
+                Display = "$currentProfile (missing)"
+                Key     = $currentProfile
+            }
+            [void]$items.Add($entry)
+            $mapping[$entry.Key] = $entry
+        }
+    }
+
+    foreach ($item in $items) {
+        [void]$profileCell.Items.Add($item)
+    }
+
+    $profileCell.Value = if ($currentProfile) { $currentProfile } else { "" }
+    $profileCell.Tag = @{ Mapping = $mapping }
+
+    $Row.Cells["Profile"] = $profileCell
 }
 
 function Configure-ScenarioColumn {
@@ -518,7 +607,7 @@ function Configure-PeriodicSendColumn {
     $periodicSendMapping[$periodicSendPlaceholder.Key] = $periodicSendPlaceholder
 
     foreach ($prof in $periodicSendProfiles) {
-        $key = "periodic::$($prof.ProfileName)"
+        $key = "periodicsend::$($prof.ProfileName)"
         $entry = [PSCustomObject]@{
             Display = $prof.ProfileName
             Key     = $key
@@ -532,7 +621,7 @@ function Configure-PeriodicSendColumn {
 
     $currentPeriodicSendKey = ""
     if ($currentPeriodicSendProfile) {
-        $currentPeriodicSendKey = "periodic::$currentPeriodicSendProfile"
+        $currentPeriodicSendKey = "periodicsend::$currentPeriodicSendProfile"
         if (-not $periodicSendMapping.ContainsKey($currentPeriodicSendKey)) {
             $displayName = if ($currentPeriodicSendPath) { "$currentPeriodicSendProfile (missing)" } else { $currentPeriodicSendProfile }
             $entry = [PSCustomObject]@{

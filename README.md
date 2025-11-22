@@ -254,6 +254,13 @@ PING,ERROR_TIMEOUT,UTF-8,3000,Exact
 REQUEST,ERROR 500,UTF-8,0,Contains
 ```
 
+### 7. プロファイル列とグローバルロック
+
+- DataGridView に **Profile** 列が追加され、`Config/column_profiles/*.csv` で定義した列プロファイル（Auto Response / On Received / Periodic をまとめたプリセット）を一括で適用できます。
+- プロファイルを選択すると同一行の Auto Response / On Received / Periodic 設定が即座に更新され、接続変数としても記録されます。
+- 画面左上にある **Profile** コンボ（Connect/Disconnect ボタンの横）でグローバルプロファイルを選ぶと、すべての行に同じプロファイルが適用され、対象列は読み取り専用になります。`(None)` を選び直すとロックが解除され、行ごとの編集に戻れます。
+- 列プロファイルの追加入力テンプレートは `Config/column_profiles/default.csv` を参照してください。Auto/OnReceived/Periodic の列に対象シナリオ名を記述するだけで、新しいプリセットをGUIから選択できます。
+
 ## シナリオアクション
 
 ### 送信アクション

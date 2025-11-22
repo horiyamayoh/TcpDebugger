@@ -533,8 +533,6 @@ function Start-PeriodicSend {
 
                 $bytes = & $convertBytes -Data $template.Format -Encoding 'HEX'
                 & $sendData -ConnectionId $connId -Data $bytes
-
-                Write-DebugLog "[PeriodicSend] Sent periodic message for rule '$ruleName' ($($bytes.Length) bytes)" "Cyan"
             } catch {
                 Write-Warning "[PeriodicSend] Failed to send periodic message for rule '$ruleName': $_"
             }
@@ -715,7 +713,8 @@ function Set-ConnectionOnReceivedProfile {
     # RuleRepositoryを通じてルールをキャッシュ
     if ($Global:RuleRepository) {
         try {
-            return $Global:RuleRepository.GetRules($resolved)
+            $rules = $Global:RuleRepository.GetRules($resolved)
+            return $rules
         } catch {
             Write-Warning "[OnReceived] Failed to load rules: $_"
             return @()
@@ -769,7 +768,8 @@ function Set-ConnectionAutoResponseProfile {
     # RuleRepositoryを通じてルールをキャッシュ
     if ($Global:RuleRepository) {
         try {
-            return $Global:RuleRepository.GetRules($resolved)
+            $rules = $Global:RuleRepository.GetRules($resolved)
+            return $rules
         } catch {
             Write-Warning "[AutoResponse] Failed to load rules: $_"
             return @()

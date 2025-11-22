@@ -1,0 +1,2 @@
+InstanceName,AutoResponseScenario,OnReceivedScenario,PeriodicScenario,AutoConnect
+Example,unified_rules.csv,rules.csv,heartbeat.csv,false

@@ -1,0 +1,8 @@
+ProfileName,ScenarioName
+Default,rules.csv
+Debug,rules2.csv
+EchoBack,echo_back.ps1
+LogEcho,log_echo.ps1
+LogLogin,log_login.ps1
+SaveData,save_data.ps1
+UpdateStats,update_stats.ps1

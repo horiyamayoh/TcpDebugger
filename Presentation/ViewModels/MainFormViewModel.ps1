@@ -12,14 +12,16 @@ class MainFormViewModel {
     [object]$ConnectionService
     [object]$InstanceManager
     [object]$MessageService
+    [object]$ProfileService
     
     # Event handlers storage
     [scriptblock]$OnPropertyChanged
     
-    MainFormViewModel([object]$connectionService, [object]$instanceManager, [object]$messageService) {
+    MainFormViewModel([object]$connectionService, [object]$instanceManager, [object]$messageService, [object]$profileService) {
         $this.ConnectionService = $connectionService
         $this.InstanceManager = $instanceManager
         $this.MessageService = $messageService
+        $this.ProfileService = $profileService
         $this.Connections = New-Object System.Collections.ArrayList
         $this.LogEntries = New-Object System.Collections.ArrayList
         $this.SelectedConnectionId = $null
@@ -43,6 +45,138 @@ class MainFormViewModel {
         }
         
         $this.NotifyPropertyChanged('Connections')
+    }
+    
+    # Load profile from file
+    [void] LoadProfile([string]$profilePath) {
+        try {
+            $profile = $this.ProfileService.LoadProfile($profilePath)
+            $this.AddLogEntry("Profile loaded: $profilePath")
+            $this.AddLogEntry("Loaded $($profile.InstanceProfiles.Count) instance profile(s)")
+        } catch {
+            $this.AddLogEntry("Failed to load profile: $_")
+            throw
+        }
+    }
+    
+    # Save current profile to file
+    [void] SaveProfile([string]$profilePath) {
+        try {
+            $profile = $this.ProfileService.GetCurrentProfile()
+            if ($null -eq $profile) {
+                throw "No profile to save"
+            }
+            
+            $this.ProfileService.SaveProfile($profile, $profilePath)
+            $this.AddLogEntry("Profile saved: $profilePath")
+        } catch {
+            $this.AddLogEntry("Failed to save profile: $_")
+            throw
+        }
+    }
+    
+    # Apply profile to connections
+    [void] ApplyProfileToConnections([string]$instancesBasePath) {
+        try {
+            $profile = $this.ProfileService.GetCurrentProfile()
+            if ($null -eq $profile) {
+                $this.AddLogEntry("No profile loaded")
+                return
+            }
+            
+            $connections = $this.ConnectionService.GetAllConnections()
+            $appliedCount = 0
+            $autoConnectList = @()
+            
+            foreach ($conn in $connections) {
+                $instanceName = $conn.InstanceName
+                $instProfile = $profile.GetInstanceProfile($instanceName)
+                
+                if ($null -eq $instProfile) {
+                    continue
+                }
+                
+                $instancePath = Join-Path $instancesBasePath $instanceName
+                
+                # Apply Auto Response scenario
+                if (-not [string]::IsNullOrWhiteSpace($instProfile.AutoResponseScenario)) {
+                    $scenarioPath = $this.ProfileService.ResolveScenarioPath($instancePath, "AutoResponse", $instProfile.AutoResponseScenario)
+                    if (-not [string]::IsNullOrWhiteSpace($scenarioPath) -and (Test-Path $scenarioPath)) {
+                        $this.SetAutoResponseProfile($conn.Id, $instProfile.AutoResponseScenario, $scenarioPath)
+                        $this.AddLogEntry("[$instanceName] Auto Response: $($instProfile.AutoResponseScenario)")
+                    }
+                }
+                
+                # Apply On Received scenario
+                if (-not [string]::IsNullOrWhiteSpace($instProfile.OnReceivedScenario)) {
+                    $scenarioPath = $this.ProfileService.ResolveScenarioPath($instancePath, "OnReceived", $instProfile.OnReceivedScenario)
+                    if (-not [string]::IsNullOrWhiteSpace($scenarioPath) -and (Test-Path $scenarioPath)) {
+                        $this.SetOnReceivedProfile($conn.Id, $instProfile.OnReceivedScenario, $scenarioPath)
+                        $this.AddLogEntry("[$instanceName] On Received: $($instProfile.OnReceivedScenario)")
+                    }
+                }
+                
+                # Apply Periodic scenario
+                if (-not [string]::IsNullOrWhiteSpace($instProfile.PeriodicScenario)) {
+                    $scenarioPath = $this.ProfileService.ResolveScenarioPath($instancePath, "Periodic", $instProfile.PeriodicScenario)
+                    if (-not [string]::IsNullOrWhiteSpace($scenarioPath) -and (Test-Path $scenarioPath)) {
+                        $this.SetPeriodicSendProfile($conn.Id, $scenarioPath, $instancePath)
+                        $this.AddLogEntry("[$instanceName] Periodic: $($instProfile.PeriodicScenario)")
+                    }
+                }
+                
+                # Track auto-connect instances
+                if ($instProfile.AutoConnect) {
+                    $autoConnectList += $conn.Id
+                }
+                
+                $appliedCount++
+            }
+            
+            $this.AddLogEntry("Applied profile to $appliedCount connection(s)")
+            
+            # Auto-connect if specified
+            if ($autoConnectList.Count -gt 0) {
+                $this.AddLogEntry("Auto-connecting $($autoConnectList.Count) connection(s)...")
+                foreach ($connId in $autoConnectList) {
+                    try {
+                        Start-Connection -ConnectionId $connId
+                        $conn = $this.ConnectionService.GetConnection($connId)
+                        $this.AddLogEntry("[$($conn.InstanceName)] Auto-connected")
+                    } catch {
+                        $this.AddLogEntry("[$connId] Auto-connect failed: $_")
+                    }
+                }
+            }
+        } catch {
+            $this.AddLogEntry("Failed to apply profile: $_")
+            throw
+        }
+    }
+    
+    # Update instance profile with current connection settings
+    [void] UpdateInstanceProfile([string]$connectionId) {
+        try {
+            $conn = $this.ConnectionService.GetConnection($connectionId)
+            if ($null -eq $conn) {
+                throw "Connection not found: $connectionId"
+            }
+            
+            # Create or update instance profile
+            $instProfile = [InstanceProfile]::new(
+                $conn.InstanceName,
+                $conn.AutoResponseProfile,
+                $conn.OnReceivedProfile,
+                $conn.PeriodicSendProfile,
+                $false  # AutoConnect default to false when manually updating
+            )
+            
+            $this.ProfileService.UpdateInstanceProfile($instProfile)
+            $this.AddLogEntry("Updated profile for: $($conn.InstanceName)")
+        } catch {
+            $this.AddLogEntry("Failed to update instance profile: $_")
+            throw
+        }
     }
     
     # Get selected connection object
@@ -365,8 +499,11 @@ function New-MainFormViewModel {
     .PARAMETER MessageService
     The message service instance.
     
+    .PARAMETER ProfileService
+    The profile service instance.
+    
     .EXAMPLE
-    $viewModel = New-MainFormViewModel -ConnectionService $connSvc -InstanceManager $instMgr -MessageService $msgSvc
+    $viewModel = New-MainFormViewModel -ConnectionService $connSvc -InstanceManager $instMgr -MessageService $msgSvc -ProfileService $profSvc
     #>
     param(
         [Parameter(Mandatory = $true)]
@@ -376,10 +513,13 @@ function New-MainFormViewModel {
         [object]$InstanceManager,
         
         [Parameter(Mandatory = $true)]
-        [object]$MessageService
+        [object]$MessageService,
+        
+        [Parameter(Mandatory = $false)]
+        [object]$ProfileService
     )
     
-    return [MainFormViewModel]::new($ConnectionService, $InstanceManager, $MessageService)
+    return [MainFormViewModel]::new($ConnectionService, $InstanceManager, $MessageService, $ProfileService)
 }
 
 Export-ModuleMember -Function New-MainFormViewModel

@@ -57,6 +57,7 @@ function Initialize-InstanceConnections {
             $conn = Add-Connection -Config $connConfig
             
             # インスタンス固有の設定を保存
+            $conn.Variables['InstanceName'] = $instance.FolderName
             $conn.Variables['InstancePath'] = $instance.FolderPath
             $conn.Variables['DefaultEncoding'] = $instance.DefaultEncoding
             $conn.Variables['AutoScenario'] = $instance.AutoScenario
