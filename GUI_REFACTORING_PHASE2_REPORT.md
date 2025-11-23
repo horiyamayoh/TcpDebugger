@@ -1,34 +1,34 @@
-# GUI ƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒO Phase 2 Š®—¹ƒŒƒ|[ƒg
+# GUI ãƒªãƒ•ã‚¡ã‚¯ã‚¿ãƒªãƒ³ã‚° Phase 2 å®Œäº†ãƒ¬ãƒãƒ¼ãƒˆ
 
-## ? À{“ú
+## ? å®Ÿæ–½æ—¥æ™‚
 **2025-01-17**
 
 ---
 
-## ? Phase 2 ‚Ì–Ú•W
+## ? Phase 2 ã®ç›®æ¨™
 
-1. MainForm.ps1 “à‚ÌUI\’zƒR[ƒh‚ğViewBuilder.ps1‚ÉŠ®‘SˆÚs
-2. ƒR[ƒh‚Ìd•¡‚ğíŒ¸‚µAÓ–±‚ğ–¾Šm‚É•ª—£
-3. •Ûç«‚ÆŠg’£«‚ÌŒüã
+1. MainForm.ps1 å†…ã®UIæ§‹ç¯‰ã‚³ãƒ¼ãƒ‰ã‚’ViewBuilder.ps1ã«å®Œå…¨ç§»è¡Œ
+2. ã‚³ãƒ¼ãƒ‰ã®é‡è¤‡ã‚’å‰Šæ¸›ã—ã€è²¬å‹™ã‚’æ˜ç¢ºã«åˆ†é›¢
+3. ä¿å®ˆæ€§ã¨æ‹¡å¼µæ€§ã®å‘ä¸Š
 
 ---
 
-## ? À{“à—e
+## ? å®Ÿæ–½å†…å®¹
 
-### 1. ViewBuilder.ps1 ‚ÌŠg’£ (280s ¨ 650s)
+### 1. ViewBuilder.ps1 ã®æ‹¡å¼µ (280è¡Œ â†’ 650è¡Œ)
 
-#### ’Ç‰Á‚³‚ê‚½ŠÖ”
+#### è¿½åŠ ã•ã‚ŒãŸé–¢æ•°
 
-| ŠÖ”–¼ | –Ú“I | s” |
+| é–¢æ•°å | ç›®çš„ | è¡Œæ•° |
 |-------|------|---:|
-| `Configure-ScenarioColumn` | Auto ResponseƒZƒ‹‚Ì\¬ | ~120 |
-| `Configure-QuickDataColumn` | Quick DataƒZƒ‹‚Ì\¬ | ~70 |
-| `Configure-QuickActionColumn` | Quick ActionƒZƒ‹‚Ì\¬ | ~60 |
-| `Set-RowColor` | Ú‘±ó‘Ô‚É‚æ‚és‚ÌFİ’è | ~20 |
-| `Update-LogDisplay` | ƒƒOƒeƒLƒXƒgƒ{ƒbƒNƒX‚ÌXV | ~50 |
-| `Get-MessageSummary` | ƒƒbƒZ[ƒWƒf[ƒ^‚Ì—v–ñ¶¬ | ~30 |
+| `Configure-ScenarioColumn` | Auto Responseã‚»ãƒ«ã®æ§‹æˆ | ~120 |
+| `Configure-QuickDataColumn` | Quick Dataã‚»ãƒ«ã®æ§‹æˆ | ~70 |
+| `Configure-QuickActionColumn` | Quick Actionã‚»ãƒ«ã®æ§‹æˆ | ~60 |
+| `Set-RowColor` | æ¥ç¶šçŠ¶æ…‹ã«ã‚ˆã‚‹è¡Œã®è‰²è¨­å®š | ~20 |
+| `Update-LogDisplay` | ãƒ­ã‚°ãƒ†ã‚­ã‚¹ãƒˆãƒœãƒƒã‚¯ã‚¹ã®æ›´æ–° | ~50 |
+| `Get-MessageSummary` | ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãƒ‡ãƒ¼ã‚¿ã®è¦ç´„ç”Ÿæˆ | ~30 |
 
-#### Export ‚³‚ê‚½ŠÖ”‚Ìˆê——
+#### Export ã•ã‚ŒãŸé–¢æ•°ã®ä¸€è¦§
 
 ```powershell
 Export-ModuleMember -Function @(
@@ -38,45 +38,45 @@ Export-ModuleMember -Function @(
     'New-LabelControl',
     'New-LogTextBox',
     'New-RefreshTimer',
-    'Configure-ScenarioColumn',      # V‹K’Ç‰Á
-    'Configure-QuickDataColumn',     # V‹K’Ç‰Á
-    'Configure-QuickActionColumn',   # V‹K’Ç‰Á
-    'Set-RowColor',                  # V‹K’Ç‰Á
-    'Update-LogDisplay',             # V‹K’Ç‰Á
-    'Get-MessageSummary'             # V‹K’Ç‰Á
+    'Configure-ScenarioColumn',      # æ–°è¦è¿½åŠ 
+    'Configure-QuickDataColumn',     # æ–°è¦è¿½åŠ 
+    'Configure-QuickActionColumn',   # æ–°è¦è¿½åŠ 
+    'Set-RowColor',                  # æ–°è¦è¿½åŠ 
+    'Update-LogDisplay',             # æ–°è¦è¿½åŠ 
+    'Get-MessageSummary'             # æ–°è¦è¿½åŠ 
 )
 ```
 
-### 2. MainForm.ps1 ‚ÌíŒ¸ (1236s ¨ 922s)
+### 2. MainForm.ps1 ã®å‰Šæ¸› (1236è¡Œ â†’ 922è¡Œ)
 
-#### íœ‚³‚ê‚½d•¡ŠÖ”
+#### å‰Šé™¤ã•ã‚ŒãŸé‡è¤‡é–¢æ•°
 
-- `New-UiMainForm` ¨ ViewBuilder ‚Ì `New-MainFormWindow` ‚ğg—p
-- `New-UiInstanceGrid` ¨ ViewBuilder ‚Ì `New-ConnectionDataGridView` ‚ğg—p
-- `Add-InstanceGridColumns` ¨ ViewBuilder ‚É“‡
-- `New-UiToolbarButton` ¨ ViewBuilder ‚Ì `New-ToolbarButton` ‚ğg—p
-- `New-UiLabel` ¨ ViewBuilder ‚Ì `New-LabelControl` ‚ğg—p
-- `New-UiLogTextBox` ¨ ViewBuilder ‚Ì `New-LogTextBox` ‚ğg—p
-- `Configure-ScenarioColumn` (d•¡) ¨ ViewBuilder”Å‚ğg—p
-- `Configure-QuickDataColumn` (d•¡) ¨ ViewBuilder”Å‚ğg—p
-- `Configure-QuickActionColumn` (d•¡) ¨ ViewBuilder”Å‚ğg—p
-- `Set-RowColor` (d•¡) ¨ ViewBuilder”Å‚ğg—p
-- `Update-LogDisplay` (d•¡Aƒpƒ‰ƒ[ƒ^C³”Å) ¨ ViewBuilder”Å‚ğg—p
-- `Get-MessageSummary` (d•¡) ¨ ViewBuilder”Å‚ğg—p
+- `New-UiMainForm` â†’ ViewBuilder ã® `New-MainFormWindow` ã‚’ä½¿ç”¨
+- `New-UiInstanceGrid` â†’ ViewBuilder ã® `New-ConnectionDataGridView` ã‚’ä½¿ç”¨
+- `Add-InstanceGridColumns` â†’ ViewBuilder ã«çµ±åˆ
+- `New-UiToolbarButton` â†’ ViewBuilder ã® `New-ToolbarButton` ã‚’ä½¿ç”¨
+- `New-UiLabel` â†’ ViewBuilder ã® `New-LabelControl` ã‚’ä½¿ç”¨
+- `New-UiLogTextBox` â†’ ViewBuilder ã® `New-LogTextBox` ã‚’ä½¿ç”¨
+- `Configure-ScenarioColumn` (é‡è¤‡) â†’ ViewBuilderç‰ˆã‚’ä½¿ç”¨
+- `Configure-QuickDataColumn` (é‡è¤‡) â†’ ViewBuilderç‰ˆã‚’ä½¿ç”¨
+- `Configure-QuickActionColumn` (é‡è¤‡) â†’ ViewBuilderç‰ˆã‚’ä½¿ç”¨
+- `Set-RowColor` (é‡è¤‡) â†’ ViewBuilderç‰ˆã‚’ä½¿ç”¨
+- `Update-LogDisplay` (é‡è¤‡ã€ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ä¿®æ­£ç‰ˆ) â†’ ViewBuilderç‰ˆã‚’ä½¿ç”¨
+- `Get-MessageSummary` (é‡è¤‡) â†’ ViewBuilderç‰ˆã‚’ä½¿ç”¨
 
-#### íŒ¸‚Ì“à–ó
+#### å‰Šæ¸›ã®å†…è¨³
 
-- **íœ‚³‚ê‚½d•¡ƒR[ƒh:** –ñ314s
-- **íŒ¸—¦:** 25.4%
-- **ƒˆ‚Èd•¡íœ:** –ñ56s
+- **å‰Šé™¤ã•ã‚ŒãŸé‡è¤‡ã‚³ãƒ¼ãƒ‰:** ç´„314è¡Œ
+- **å‰Šæ¸›ç‡:** 25.4%
+- **ç´”ç²‹ãªé‡è¤‡å‰Šé™¤:** ç´„56è¡Œ
 
-### 3. Update-LogDisplay ‚Ì‰ü‘P
+### 3. Update-LogDisplay ã®æ”¹å–„
 
-MainForm.ps1 “à‚Å `Get-UiConnections` ‚ğ’¼ÚŒÄ‚Ño‚µ‚Ä‚¢‚½À‘•‚ğA
-ViewBuilder.ps1 ‚Å‚ÍƒR[ƒ‹ƒoƒbƒNŠÖ”‚Æ‚µ‚Äó‚¯æ‚é‚æ‚¤‚É•ÏX‚µA
-ˆË‘¶«‚ğŒ¸‚ç‚µ‚Ü‚µ‚½B
+MainForm.ps1 å†…ã§ `Get-UiConnections` ã‚’ç›´æ¥å‘¼ã³å‡ºã—ã¦ã„ãŸå®Ÿè£…ã‚’ã€
+ViewBuilder.ps1 ã§ã¯ã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯é–¢æ•°ã¨ã—ã¦å—ã‘å–ã‚‹ã‚ˆã†ã«å¤‰æ›´ã—ã€
+ä¾å­˜æ€§ã‚’æ¸›ã‚‰ã—ã¾ã—ãŸã€‚
 
-#### Before (MainForm.ps1 “à)
+#### Before (MainForm.ps1 å†…)
 ```powershell
 function Update-LogDisplay {
     param([System.Windows.Forms.TextBox]$TextBox)
@@ -102,46 +102,46 @@ function Update-LogDisplay {
 }
 ```
 
-#### g—p—á (MainForm.ps1)
+#### ä½¿ç”¨ä¾‹ (MainForm.ps1)
 ```powershell
 Update-LogDisplay -TextBox $txtLog -GetConnectionsCallback { Get-UiConnections }
 ```
 
 ---
 
-## ? ƒR[ƒh•i¿‚ÌŒüã
+## ? ã‚³ãƒ¼ãƒ‰å“è³ªã®å‘ä¸Š
 
-### ƒtƒ@ƒCƒ‹ƒTƒCƒY‚Ì•Ï‰»
+### ãƒ•ã‚¡ã‚¤ãƒ«ã‚µã‚¤ã‚ºã®å¤‰åŒ–
 
-| ƒtƒ@ƒCƒ‹ | Phase 1 | Phase 2 | ‘Œ¸ |
+| ãƒ•ã‚¡ã‚¤ãƒ« | Phase 1 | Phase 2 | å¢—æ¸› |
 |---------|---------|---------|------|
-| MainForm.ps1 | 1,236s | 922s | **-314s** |
-| ViewBuilder.ps1 | 280s | 650s | +370s |
-| ‡Œv | 1,516s | 1,572s | +56s |
+| MainForm.ps1 | 1,236è¡Œ | 922è¡Œ | **-314è¡Œ** |
+| ViewBuilder.ps1 | 280è¡Œ | 650è¡Œ | +370è¡Œ |
+| åˆè¨ˆ | 1,516è¡Œ | 1,572è¡Œ | +56è¡Œ |
 
-**ƒˆ‚Èd•¡íœ:** 56s
+**ç´”ç²‹ãªé‡è¤‡å‰Šé™¤:** 56è¡Œ
 
-### Ó–±‚Ì–¾Šm‰»
+### è²¬å‹™ã®æ˜ç¢ºåŒ–
 
-#### ViewBuilder.ps1 ‚ÌÓ–±
-- ? WinFormsƒRƒ“ƒgƒ[ƒ‹‚Ì¶¬
-- ? DataGridView‚ÌƒZƒ‹\¬
-- ? s‚Ì•\¦ƒXƒ^ƒCƒ‹İ’è
-- ? ƒƒO•\¦‚ÌXVƒƒWƒbƒN
-- ? ƒƒbƒZ[ƒWƒf[ƒ^‚Ì®Œ`
+#### ViewBuilder.ps1 ã®è²¬å‹™
+- ? WinFormsã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ã®ç”Ÿæˆ
+- ? DataGridViewã®ã‚»ãƒ«æ§‹æˆ
+- ? è¡Œã®è¡¨ç¤ºã‚¹ã‚¿ã‚¤ãƒ«è¨­å®š
+- ? ãƒ­ã‚°è¡¨ç¤ºã®æ›´æ–°ãƒ­ã‚¸ãƒƒã‚¯
+- ? ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãƒ‡ãƒ¼ã‚¿ã®æ•´å½¢
 
-#### MainForm.ps1 ‚ÌÓ–±
-- ? ƒtƒH[ƒ€‚Ì\’z‚ÆƒŒƒCƒAƒEƒg
-- ? ƒCƒxƒ“ƒgƒnƒ“ƒhƒ‰‚Ì“o˜^
-- ? ƒf[ƒ^ƒoƒCƒ“ƒfƒBƒ“ƒO
-- ? Ú‘±ƒŠƒXƒg‚ÌXV
-- ? ƒ†[ƒU[ƒAƒNƒVƒ‡ƒ“‚Ìˆ—
+#### MainForm.ps1 ã®è²¬å‹™
+- ? ãƒ•ã‚©ãƒ¼ãƒ ã®æ§‹ç¯‰ã¨ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
+- ? ã‚¤ãƒ™ãƒ³ãƒˆãƒãƒ³ãƒ‰ãƒ©ã®ç™»éŒ²
+- ? ãƒ‡ãƒ¼ã‚¿ãƒã‚¤ãƒ³ãƒ‡ã‚£ãƒ³ã‚°
+- ? æ¥ç¶šãƒªã‚¹ãƒˆã®æ›´æ–°
+- ? ãƒ¦ãƒ¼ã‚¶ãƒ¼ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã®å‡¦ç†
 
 ---
 
-## ? •i¿•ÛØ
+## ? å“è³ªä¿è¨¼
 
-### \•¶ƒ`ƒFƒbƒNŒ‹‰Ê
+### æ§‹æ–‡ãƒã‚§ãƒƒã‚¯çµæœ
 
 ```powershell
 # MainForm.ps1
@@ -154,89 +154,89 @@ Update-LogDisplay -TextBox $txtLog -GetConnectionsCallback { Get-UiConnections }
 ? No syntax errors (386 lines)
 ```
 
-### LinterŒx
+### Linterè­¦å‘Š
 
-MainForm.ps1‚É‚Íˆê•”‚ÌlinterŒx‚ªc‚Á‚Ä‚¢‚Ü‚·‚ªA‚±‚ê‚ç‚Í:
-- ƒCƒxƒ“ƒgƒnƒ“ƒhƒ‰‚Ìƒpƒ‰ƒ[ƒ^–¼‚ÉŠÖ‚·‚éŒx(‹@”\‚É‰e‹¿‚È‚µ)
-- PowerShell•W€‚Ì“®ŒˆÈŠO‚ğg—p‚µ‚½ŠÖ”–¼‚ÌŒx(“à•”ŠÖ”‚Ì‚½‚ß‹–—e)
+MainForm.ps1ã«ã¯ä¸€éƒ¨ã®linterè­¦å‘ŠãŒæ®‹ã£ã¦ã„ã¾ã™ãŒã€ã“ã‚Œã‚‰ã¯:
+- ã‚¤ãƒ™ãƒ³ãƒˆãƒãƒ³ãƒ‰ãƒ©ã®ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿åã«é–¢ã™ã‚‹è­¦å‘Š(æ©Ÿèƒ½ã«å½±éŸ¿ãªã—)
+- PowerShellæ¨™æº–ã®å‹•è©ä»¥å¤–ã‚’ä½¿ç”¨ã—ãŸé–¢æ•°åã®è­¦å‘Š(å†…éƒ¨é–¢æ•°ã®ãŸã‚è¨±å®¹)
 
-ViewBuilder.ps1‚ÆMainFormViewModel.ps1‚É‚ÍŒx‚Í‚ ‚è‚Ü‚¹‚ñB
-
----
-
-## ? ’B¬‚µ‚½¬‰Ê
-
-### 1. ƒR[ƒh‚Ì®—
-- ? MainForm.ps1 ‚©‚ç314síŒ¸
-- ? UI\’zƒƒWƒbƒN‚ÌŠ®‘S•ª—£
-- ? Šeƒtƒ@ƒCƒ‹‚ÌÓ–±‚ª–¾Šm
-
-### 2. •Ûç«‚ÌŒüã
-- ? UIƒRƒ“ƒ|[ƒlƒ“ƒg‚Ì•ÏX‚ªViewBuilder.ps1‚Ì‚İ‚ÅŠ®Œ‹
-- ? ƒrƒWƒlƒXƒƒWƒbƒN‚Ì•ÏX‚ªMainFormViewModel.ps1‚Ì‚İ‚ÅŠ®Œ‹
-- ? ƒCƒxƒ“ƒgˆ—‚Ì•ÏX‚ªMainForm.ps1‚Ì‚İ‚ÅŠ®Œ‹
-
-### 3. ƒeƒXƒ^ƒrƒŠƒeƒB‚ÌŒüã
-- ? ViewBuilder‚ÌŠeŠÖ”‚ª“Æ—§‚µ‚ÄƒeƒXƒg‰Â”\
-- ? ViewModel‚ªUI‘w‚©‚çŠ®‘S‚É•ª—£
-- ? ƒ‚ƒbƒN‚ğg‚Á‚½ƒeƒXƒg‚ª—eˆÕ
-
-### 4. Šg’£«‚ÌŒüã
-- ? V‚µ‚¢UIƒRƒ“ƒ|[ƒlƒ“ƒg‚Ì’Ç‰Á‚ª—eˆÕ
-- ? V‚µ‚¢ƒZƒ‹í—Ş‚Ì’Ç‰Á‚ª“ˆê‚³‚ê‚½ƒpƒ^[ƒ“‚ÅÀ‘•‰Â”\
-- ? ‘¼‚ÌƒtƒH[ƒ€‚Å‚àViewBuilderŠÖ”‚ğÄ—˜—p‰Â”\
-
-### 5. Ä—˜—p«‚ÌŒüã
-- ? ViewBuilder‚Ì‘SŠÖ”‚ª‘¼‚ÌƒtƒH[ƒ€‚Åg—p‰Â”\
-- ? ƒZƒ‹\¬ƒpƒ^[ƒ“‚ª•W€‰»
-- ? ƒƒO•\¦ƒƒWƒbƒN‚ª”Ä—p‰»
+ViewBuilder.ps1ã¨MainFormViewModel.ps1ã«ã¯è­¦å‘Šã¯ã‚ã‚Šã¾ã›ã‚“ã€‚
 
 ---
 
-## ? ¡Œã‚Ì‰ü‘PˆÄ
+## ? é”æˆã—ãŸæˆæœ
 
-### Phase 3 Œó•â
+### 1. ã‚³ãƒ¼ãƒ‰ã®æ•´ç†
+- ? MainForm.ps1 ã‹ã‚‰314è¡Œå‰Šæ¸›
+- ? UIæ§‹ç¯‰ãƒ­ã‚¸ãƒƒã‚¯ã®å®Œå…¨åˆ†é›¢
+- ? å„ãƒ•ã‚¡ã‚¤ãƒ«ã®è²¬å‹™ãŒæ˜ç¢º
 
-1. **ƒvƒƒpƒeƒB•ÏX’Ê’m‚ÌÀ‘•**
-   - ViewModel‚ÉINotifyPropertyChangedƒpƒ^[ƒ“‚ğŠ®‘SÀ‘•
-   - ©“®“I‚ÈUIXV‚ÌÀŒ»
+### 2. ä¿å®ˆæ€§ã®å‘ä¸Š
+- ? UIã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã®å¤‰æ›´ãŒViewBuilder.ps1ã®ã¿ã§å®Œçµ
+- ? ãƒ“ã‚¸ãƒã‚¹ãƒ­ã‚¸ãƒƒã‚¯ã®å¤‰æ›´ãŒMainFormViewModel.ps1ã®ã¿ã§å®Œçµ
+- ? ã‚¤ãƒ™ãƒ³ãƒˆå‡¦ç†ã®å¤‰æ›´ãŒMainForm.ps1ã®ã¿ã§å®Œçµ
 
-2. **ƒGƒ‰[ƒnƒ“ƒhƒŠƒ“ƒO‚Ì“ˆê**
-   - ErrorHandlerƒNƒ‰ƒX‚ÌŠˆ—p
-   - ˆêŠÑ«‚Ì‚ ‚éƒGƒ‰[ˆ—
+### 3. ãƒ†ã‚¹ã‚¿ãƒ“ãƒªãƒ†ã‚£ã®å‘ä¸Š
+- ? ViewBuilderã®å„é–¢æ•°ãŒç‹¬ç«‹ã—ã¦ãƒ†ã‚¹ãƒˆå¯èƒ½
+- ? ViewModelãŒUIå±¤ã‹ã‚‰å®Œå…¨ã«åˆ†é›¢
+- ? ãƒ¢ãƒƒã‚¯ã‚’ä½¿ã£ãŸãƒ†ã‚¹ãƒˆãŒå®¹æ˜“
 
-3. **”ñ“¯Šúˆ—‚Ì“±“ü**
-   - ’·ŠÔˆ—‚ÌƒoƒbƒNƒOƒ‰ƒEƒ“ƒhÀs
-   - UI‚Ì‰“š«Œüã
+### 4. æ‹¡å¼µæ€§ã®å‘ä¸Š
+- ? æ–°ã—ã„UIã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã®è¿½åŠ ãŒå®¹æ˜“
+- ? æ–°ã—ã„ã‚»ãƒ«ç¨®é¡ã®è¿½åŠ ãŒçµ±ä¸€ã•ã‚ŒãŸãƒ‘ã‚¿ãƒ¼ãƒ³ã§å®Ÿè£…å¯èƒ½
+- ? ä»–ã®ãƒ•ã‚©ãƒ¼ãƒ ã§ã‚‚ViewBuilderé–¢æ•°ã‚’å†åˆ©ç”¨å¯èƒ½
 
-### Phase 4 Œó•â
-
-1. **ƒpƒtƒH[ƒ}ƒ“ƒXÅ“K‰»**
-   - ‰¼‘z‰»DataGridView‚Ì“±“ü
-   - ƒƒOXV‚ÌÅ“K‰»
-
-2. **UI/UX‰ü‘P**
-   - ƒe[ƒ}ƒTƒ|[ƒg
-   - ƒJƒXƒ^ƒ}ƒCƒY‰Â”\‚ÈƒŒƒCƒAƒEƒg
-
----
-
-## ? Œ‹˜_
-
-**GUIƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒO Phase 2‚Í¬Œ÷— ‚ÉŠ®—¹‚µ‚Ü‚µ‚½B**
-
-å‚È¬‰Ê:
-- ? ViewBuilder‚Ö‚ÌUI\’zƒR[ƒh‚ÌŠ®‘SˆÚs
-- ? MainForm.ps1‚Ì25%íŒ¸ (314síœ)
-- ? Ó–±‚Ì–¾Šm‚È•ª—£
-- ? ƒeƒXƒ^ƒrƒŠƒeƒBA•Ûç«AŠg’£«‚Ì‘å•Œüã
-- ? ‚·‚×‚Ä‚ÌŠù‘¶‹@”\‚ğˆÛ
-- ? \•¶ƒGƒ‰[‚È‚µ
-
-ƒR[ƒhƒx[ƒX‚Ì•i¿‚ª‘å•‚ÉŒüã‚µAMVVMƒpƒ^[ƒ“‚ÌŠî”Õ‚ªŠm—§‚³‚ê‚Ü‚µ‚½B
-¡Œã‚Ì‹@”\’Ç‰Á‚âƒƒ“ƒeƒiƒ“ƒX‚ª‚æ‚èŒø—¦“I‚És‚¦‚é‚æ‚¤‚É‚È‚è‚Ü‚µ‚½B
+### 5. å†åˆ©ç”¨æ€§ã®å‘ä¸Š
+- ? ViewBuilderã®å…¨é–¢æ•°ãŒä»–ã®ãƒ•ã‚©ãƒ¼ãƒ ã§ä½¿ç”¨å¯èƒ½
+- ? ã‚»ãƒ«æ§‹æˆãƒ‘ã‚¿ãƒ¼ãƒ³ãŒæ¨™æº–åŒ–
+- ? ãƒ­ã‚°è¡¨ç¤ºãƒ­ã‚¸ãƒƒã‚¯ãŒæ±ç”¨åŒ–
 
 ---
 
-**ƒŒƒ|[ƒgì¬“ú:** 2025-01-17  
-**ì¬Ò:** GitHub Copilot
+## ? ä»Šå¾Œã®æ”¹å–„æ¡ˆ
+
+### Phase 3 å€™è£œ
+
+1. **ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£å¤‰æ›´é€šçŸ¥ã®å®Ÿè£…**
+   - ViewModelã«INotifyPropertyChangedãƒ‘ã‚¿ãƒ¼ãƒ³ã‚’å®Œå…¨å®Ÿè£…
+   - è‡ªå‹•çš„ãªUIæ›´æ–°ã®å®Ÿç¾
+
+2. **ã‚¨ãƒ©ãƒ¼ãƒãƒ³ãƒ‰ãƒªãƒ³ã‚°ã®çµ±ä¸€**
+   - ErrorHandlerã‚¯ãƒ©ã‚¹ã®æ´»ç”¨
+   - ä¸€è²«æ€§ã®ã‚ã‚‹ã‚¨ãƒ©ãƒ¼å‡¦ç†
+
+3. **éåŒæœŸå‡¦ç†ã®å°å…¥**
+   - é•·æ™‚é–“å‡¦ç†ã®ãƒãƒƒã‚¯ã‚°ãƒ©ã‚¦ãƒ³ãƒ‰å®Ÿè¡Œ
+   - UIã®å¿œç­”æ€§å‘ä¸Š
+
+### Phase 4 å€™è£œ
+
+1. **ãƒ‘ãƒ•ã‚©ãƒ¼ãƒãƒ³ã‚¹æœ€é©åŒ–**
+   - ä»®æƒ³åŒ–DataGridViewã®å°å…¥
+   - ãƒ­ã‚°æ›´æ–°ã®æœ€é©åŒ–
+
+2. **UI/UXæ”¹å–„**
+   - ãƒ†ãƒ¼ãƒã‚µãƒãƒ¼ãƒˆ
+   - ã‚«ã‚¹ã‚¿ãƒã‚¤ã‚ºå¯èƒ½ãªãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
+
+---
+
+## ? çµè«–
+
+**GUIãƒªãƒ•ã‚¡ã‚¯ã‚¿ãƒªãƒ³ã‚° Phase 2ã¯æˆåŠŸè£ã«å®Œäº†ã—ã¾ã—ãŸã€‚**
+
+ä¸»ãªæˆæœ:
+- ? ViewBuilderã¸ã®UIæ§‹ç¯‰ã‚³ãƒ¼ãƒ‰ã®å®Œå…¨ç§»è¡Œ
+- ? MainForm.ps1ã®25%å‰Šæ¸› (314è¡Œå‰Šé™¤)
+- ? è²¬å‹™ã®æ˜ç¢ºãªåˆ†é›¢
+- ? ãƒ†ã‚¹ã‚¿ãƒ“ãƒªãƒ†ã‚£ã€ä¿å®ˆæ€§ã€æ‹¡å¼µæ€§ã®å¤§å¹…å‘ä¸Š
+- ? ã™ã¹ã¦ã®æ—¢å­˜æ©Ÿèƒ½ã‚’ç¶­æŒ
+- ? æ§‹æ–‡ã‚¨ãƒ©ãƒ¼ãªã—
+
+ã‚³ãƒ¼ãƒ‰ãƒ™ãƒ¼ã‚¹ã®å“è³ªãŒå¤§å¹…ã«å‘ä¸Šã—ã€MVVMãƒ‘ã‚¿ãƒ¼ãƒ³ã®åŸºç›¤ãŒç¢ºç«‹ã•ã‚Œã¾ã—ãŸã€‚
+ä»Šå¾Œã®æ©Ÿèƒ½è¿½åŠ ã‚„ãƒ¡ãƒ³ãƒ†ãƒŠãƒ³ã‚¹ãŒã‚ˆã‚ŠåŠ¹ç‡çš„ã«è¡Œãˆã‚‹ã‚ˆã†ã«ãªã‚Šã¾ã—ãŸã€‚
+
+---
+
+**ãƒ¬ãƒãƒ¼ãƒˆä½œæˆæ—¥:** 2025-01-17  
+**ä½œæˆè€…:** GitHub Copilot

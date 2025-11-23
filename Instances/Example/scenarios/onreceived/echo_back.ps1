@@ -1,15 +1,15 @@
-# echo_back.ps1
-# óM‚µ‚½ƒf[ƒ^‚ğ‚»‚Ì‚Ü‚ÜƒGƒR[ƒoƒbƒN
+ï»¿# echo_back.ps1
+# å—ä¿¡ã—ãŸãƒ‡ãƒ¼ã‚¿ã‚’ãã®ã¾ã¾ã‚¨ã‚³ãƒ¼ãƒãƒƒã‚¯
 
 param($Context)
 
-# ƒ‰ƒCƒuƒ‰ƒŠŠÖ”‚ğ“Ç‚İ‚İ
+# ãƒ©ã‚¤ãƒ–ãƒ©ãƒªé–¢æ•°ã‚’èª­ã¿è¾¼ã¿
 . "$PSScriptRoot\..\..\..\..\Core\Domain\OnReceivedLibrary.ps1"
 
-Write-OnReceivedLog "ƒGƒR[ƒoƒbƒN‚ğÀs‚µ‚Ü‚·"
+Write-OnReceivedLog "ã‚¨ã‚³ãƒ¼ãƒãƒƒã‚¯ã‚’å®Ÿè¡Œã—ã¾ã™"
 
-# óMƒf[ƒ^‚ğ‚»‚Ì‚Ü‚Ü‘—M
+# å—ä¿¡ãƒ‡ãƒ¼ã‚¿ã‚’ãã®ã¾ã¾é€ä¿¡
 Send-MessageData -ConnectionId $Context.ConnectionId -Data $Context.ReceivedData
 
 $dataLength = $Context.ReceivedData.Length
-Write-OnReceivedLog "ƒGƒR[ƒoƒbƒNŠ®—¹ ($dataLength ƒoƒCƒg)"
+Write-OnReceivedLog "ã‚¨ã‚³ãƒ¼ãƒãƒƒã‚¯å®Œäº† ($dataLength ãƒã‚¤ãƒˆ)"

@@ -1,13 +1,13 @@
-# Core/Infrastructure/RunspaceMessageQueue.ps1
-# ƒXƒŒƒbƒhƒZ[ƒt‚ÈƒƒbƒZ[ƒWƒLƒ…[À‘•
+ï»¿# Core/Infrastructure/RunspaceMessageQueue.ps1
+# ã‚¹ãƒ¬ãƒƒãƒ‰ã‚»ãƒ¼ãƒ•ãªãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚­ãƒ¥ãƒ¼å®Ÿè£…
 
 <#
 .SYNOPSIS
-RunspaceŠÔ’ÊM—p‚ÌƒXƒŒƒbƒhƒZ[ƒt‚ÈƒƒbƒZ[ƒWƒLƒ…[
+Runspaceé–“é€šä¿¡ç”¨ã®ã‚¹ãƒ¬ãƒƒãƒ‰ã‚»ãƒ¼ãƒ•ãªãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚­ãƒ¥ãƒ¼
 
 .DESCRIPTION
-ConcurrentQueue‚ğg—p‚µ‚ÄRunspace‚©‚çUIƒXƒŒƒbƒh‚ÖƒƒbƒZ[ƒW‚ğˆÀ‘S‚É“]‘—‚·‚éB
-‚±‚ÌƒNƒ‰ƒX‚ÍRunspaceMessages.ps1‚Å’è‹`‚³‚ê‚½ƒƒbƒZ[ƒWƒIƒuƒWƒFƒNƒg‚ğˆµ‚¤B
+ConcurrentQueueã‚’ä½¿ç”¨ã—ã¦Runspaceã‹ã‚‰UIã‚¹ãƒ¬ãƒƒãƒ‰ã¸ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’å®‰å…¨ã«è»¢é€ã™ã‚‹ã€‚
+ã“ã®ã‚¯ãƒ©ã‚¹ã¯RunspaceMessages.ps1ã§å®šç¾©ã•ã‚ŒãŸãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’æ‰±ã†ã€‚
 #>
 class RunspaceMessageQueue {
     hidden [System.Collections.Concurrent.ConcurrentQueue[object]]$_queue
@@ -17,10 +17,10 @@ class RunspaceMessageQueue {
     
     <#
     .SYNOPSIS
-    ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+    ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
     
     .PARAMETER logger
-    ƒƒK[ƒCƒ“ƒXƒ^ƒ“ƒX
+    ãƒ­ã‚¬ãƒ¼ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹
     #>
     RunspaceMessageQueue([Logger]$logger) {
         if (-not $logger) {
@@ -37,21 +37,21 @@ class RunspaceMessageQueue {
     
     <#
     .SYNOPSIS
-    ƒƒbƒZ[ƒW‚ğƒLƒ…[‚É’Ç‰Á
+    ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’ã‚­ãƒ¥ãƒ¼ã«è¿½åŠ 
     
     .PARAMETER message
-    RunspaceMessageƒIƒuƒWƒFƒNƒg
+    RunspaceMessageã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
     
     .DESCRIPTION
-    ƒXƒŒƒbƒhƒZ[ƒt‚ÉƒƒbƒZ[ƒW‚ğƒLƒ…[‚É’Ç‰Á‚·‚éB
-    nullƒƒbƒZ[ƒW‚Í‹‘”Û‚³‚ê‚éB
+    ã‚¹ãƒ¬ãƒƒãƒ‰ã‚»ãƒ¼ãƒ•ã«ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’ã‚­ãƒ¥ãƒ¼ã«è¿½åŠ ã™ã‚‹ã€‚
+    nullãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã¯æ‹’å¦ã•ã‚Œã‚‹ã€‚
     #>
     [void] Enqueue([object]$message) {
         if (-not $message) {
             throw "Message cannot be null"
         }
         
-        # ƒƒbƒZ[ƒW‚ªRunspaceMessageƒNƒ‰ƒX‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚©Šm”F
+        # ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãŒRunspaceMessageã‚¯ãƒ©ã‚¹ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‹ç¢ºèª
         if ($message.GetType().Name -ne 'RunspaceMessage') {
             $this._logger.LogWarning("Non-RunspaceMessage object enqueued", @{
                 Type = $message.GetType().FullName
@@ -61,7 +61,7 @@ class RunspaceMessageQueue {
         $this._queue.Enqueue($message)
         $this._totalEnqueued++
         
-        # ƒfƒoƒbƒOƒƒO (•K—v‚É‰‚¶‚ÄƒRƒƒ“ƒgƒAƒEƒg)
+        # ãƒ‡ãƒãƒƒã‚°ãƒ­ã‚° (å¿…è¦ã«å¿œã˜ã¦ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆ)
         # $this._logger.LogInfo("Message enqueued", @{
         #     Type = $message.Type
         #     ConnectionId = $message.ConnectionId
@@ -71,17 +71,17 @@ class RunspaceMessageQueue {
     
     <#
     .SYNOPSIS
-    ƒLƒ…[‚©‚çƒƒbƒZ[ƒW‚ğæ“¾
+    ã‚­ãƒ¥ãƒ¼ã‹ã‚‰ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’å–å¾—
     
     .PARAMETER message
-    æ“¾‚µ‚½ƒƒbƒZ[ƒW‚ğŠi”[‚·‚éQÆ•Ï”
+    å–å¾—ã—ãŸãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’æ ¼ç´ã™ã‚‹å‚ç…§å¤‰æ•°
     
     .RETURNS
-    æ“¾¬Œ÷‚ÍtrueAƒLƒ…[‚ª‹ó‚Ìê‡‚Ífalse
+    å–å¾—æˆåŠŸæ™‚ã¯trueã€ã‚­ãƒ¥ãƒ¼ãŒç©ºã®å ´åˆã¯false
     
     .DESCRIPTION
-    ƒXƒŒƒbƒhƒZ[ƒt‚ÉƒLƒ…[‚©‚çƒƒbƒZ[ƒW‚ğæ“¾‚·‚éB
-    ƒLƒ…[‚ª‹ó‚Ìê‡‚Ífalse‚ğ•Ô‚µAmessage‚É‚Ínull‚ªİ’è‚³‚ê‚éB
+    ã‚¹ãƒ¬ãƒƒãƒ‰ã‚»ãƒ¼ãƒ•ã«ã‚­ãƒ¥ãƒ¼ã‹ã‚‰ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’å–å¾—ã™ã‚‹ã€‚
+    ã‚­ãƒ¥ãƒ¼ãŒç©ºã®å ´åˆã¯falseã‚’è¿”ã—ã€messageã«ã¯nullãŒè¨­å®šã•ã‚Œã‚‹ã€‚
     
     .EXAMPLE
     $msg = $null
@@ -95,7 +95,7 @@ class RunspaceMessageQueue {
         if ($result) {
             $this._totalDequeued++
             
-            # ƒfƒoƒbƒOƒƒO (•K—v‚É‰‚¶‚ÄƒRƒƒ“ƒgƒAƒEƒg)
+            # ãƒ‡ãƒãƒƒã‚°ãƒ­ã‚° (å¿…è¦ã«å¿œã˜ã¦ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆ)
             # if ($message.Value) {
             #     $this._logger.LogInfo("Message dequeued", @{
             #         Type = $message.Value.Type
@@ -110,10 +110,10 @@ class RunspaceMessageQueue {
     
     <#
     .SYNOPSIS
-    ƒLƒ…[‚ÌŒ»İ‚ÌƒƒbƒZ[ƒW”‚ğæ“¾
+    ã‚­ãƒ¥ãƒ¼ã®ç¾åœ¨ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸æ•°ã‚’å–å¾—
     
     .RETURNS
-    ƒLƒ…[“à‚ÌƒƒbƒZ[ƒW”
+    ã‚­ãƒ¥ãƒ¼å†…ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸æ•°
     #>
     [int] GetCount() {
         return $this._queue.Count
@@ -121,10 +121,10 @@ class RunspaceMessageQueue {
     
     <#
     .SYNOPSIS
-    “Œvî•ñ‚ğæ“¾
+    çµ±è¨ˆæƒ…å ±ã‚’å–å¾—
     
     .RETURNS
-    “Œvî•ñ‚ÌƒnƒbƒVƒ…ƒe[ƒuƒ‹
+    çµ±è¨ˆæƒ…å ±ã®ãƒãƒƒã‚·ãƒ¥ãƒ†ãƒ¼ãƒ–ãƒ«
     #>
     [hashtable] GetStatistics() {
         return @{
@@ -137,11 +137,11 @@ class RunspaceMessageQueue {
     
     <#
     .SYNOPSIS
-    ƒLƒ…[‚ğƒNƒŠƒA
+    ã‚­ãƒ¥ãƒ¼ã‚’ã‚¯ãƒªã‚¢
     
     .DESCRIPTION
-    ƒLƒ…[“à‚Ì‚·‚×‚Ä‚ÌƒƒbƒZ[ƒW‚ğíœ‚·‚éB
-    ‹Ù‹}‚âƒVƒƒƒbƒgƒ_ƒEƒ“‚Ég—pB
+    ã‚­ãƒ¥ãƒ¼å†…ã®ã™ã¹ã¦ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’å‰Šé™¤ã™ã‚‹ã€‚
+    ç·Šæ€¥æ™‚ã‚„ã‚·ãƒ£ãƒƒãƒˆãƒ€ã‚¦ãƒ³æ™‚ã«ä½¿ç”¨ã€‚
     #>
     [void] Clear() {
         $clearedCount = 0
@@ -160,10 +160,10 @@ class RunspaceMessageQueue {
     
     <#
     .SYNOPSIS
-    ƒLƒ…[‚Ìó‘Ô‚ğƒƒOo—Í
+    ã‚­ãƒ¥ãƒ¼ã®çŠ¶æ…‹ã‚’ãƒ­ã‚°å‡ºåŠ›
     
     .DESCRIPTION
-    ƒfƒoƒbƒO—p‚ÉƒLƒ…[‚Ì“Œvî•ñ‚ğƒƒO‚Éo—Í
+    ãƒ‡ãƒãƒƒã‚°ç”¨ã«ã‚­ãƒ¥ãƒ¼ã®çµ±è¨ˆæƒ…å ±ã‚’ãƒ­ã‚°ã«å‡ºåŠ›
     #>
     [void] LogStatistics() {
         $stats = $this.GetStatistics()
@@ -172,10 +172,10 @@ class RunspaceMessageQueue {
     
     <#
     .SYNOPSIS
-    ƒLƒ…[‚ª‹ó‚©‚Ç‚¤‚©‚ğŠm”F
+    ã‚­ãƒ¥ãƒ¼ãŒç©ºã‹ã©ã†ã‹ã‚’ç¢ºèª
     
     .RETURNS
-    ‹ó‚Ìê‡trueAƒƒbƒZ[ƒW‚ª‚ ‚éê‡false
+    ç©ºã®å ´åˆtrueã€ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãŒã‚ã‚‹å ´åˆfalse
     #>
     [bool] IsEmpty() {
         return $this._queue.IsEmpty

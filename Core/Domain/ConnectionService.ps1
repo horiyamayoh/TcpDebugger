@@ -1,4 +1,4 @@
-. "$PSScriptRoot\ConnectionModels.ps1"
+﻿. "$PSScriptRoot\ConnectionModels.ps1"
 
 class ConnectionService {
     hidden [Logger]$_logger

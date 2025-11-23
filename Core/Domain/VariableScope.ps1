@@ -1,4 +1,4 @@
-# Core/Domain/VariableScope.ps1
+﻿# Core/Domain/VariableScope.ps1
 # Thread-safe variable scope abstraction for connections and scenarios
 
 class VariableScope {

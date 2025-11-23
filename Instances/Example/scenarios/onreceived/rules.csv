@@ -1,8 +1,8 @@
 RuleName,MatchOffset,MatchLength,MatchValue,ScriptFile,Delay,ExecutionTiming
-ƒƒOƒCƒ“ˆ—,0,2,0001,log_login.ps1,0,After
-ƒf[ƒ^•Û‘¶,0,2,0010,save_data.ps1,0,Before
-“ŒvXV,0,2,0010,update_stats.ps1,50,After
-ƒGƒR[ƒƒO,0,2,0020,log_echo.ps1,0,After
-ƒƒbƒZ[ƒWID“]‹L,0,2,0102,copy_message_id.ps1,0,Before
-ƒV[ƒPƒ“ƒX”Ô†ˆ—,0,2,0103,process_sequence.ps1,0,Before
-ƒGƒR[ƒoƒbƒN,0,2,0104,echo_back.ps1,0,After
+ãƒ­ã‚°ã‚¤ãƒ³å‡¦ç†,0,2,00 01,log_login.ps1,0,After
+ãƒ‡ãƒ¼ã‚¿ä¿å­˜,0,2,00 10,save_data.ps1,0,Before
+çµ±è¨ˆæ›´æ–°,0,2,00 10,update_stats.ps1,50,After
+ã‚¨ã‚³ãƒ¼ãƒ­ã‚°,0,2,00 20,log_echo.ps1,0,After
+ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸IDè»¢è¨˜,0,2,01 02,copy_message_id.ps1,0,Before
+ã‚·ãƒ¼ã‚±ãƒ³ã‚¹ç•ªå·å‡¦ç†,0,2,01 03,process_sequence.ps1,0,Before
+ã‚¨ã‚³ãƒ¼ãƒãƒƒã‚¯,0,2,01 04,echo_back.ps1,0,After

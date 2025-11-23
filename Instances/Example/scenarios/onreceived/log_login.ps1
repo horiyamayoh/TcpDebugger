@@ -1,6 +1,6 @@
-# log_login.ps1
-# ƒƒOƒCƒ“—v‹‚ğƒƒO‚É‹L˜^
+ï»¿# log_login.ps1
+# ãƒ­ã‚°ã‚¤ãƒ³è¦æ±‚ã‚’ãƒ­ã‚°ã«è¨˜éŒ²
 
 param($Context)
 
-Write-Host "Test Message: ƒƒOƒCƒ“—v‹‚ğóM‚µ‚Ü‚µ‚½B" -ForegroundColor Yellow
+Write-Host "Test Message: ãƒ­ã‚°ã‚¤ãƒ³è¦æ±‚ã‚’å—ä¿¡ã—ã¾ã—ãŸã€‚" -ForegroundColor Yellow

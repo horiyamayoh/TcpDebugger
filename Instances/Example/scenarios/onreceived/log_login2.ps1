@@ -1,6 +1,6 @@
-# log_login.ps1
-# ƒƒOƒCƒ“—v‹‚ðƒƒO‚É‹L˜^
+ï»¿# log_login.ps1
+# ãƒ­ã‚°ã‚¤ãƒ³è¦æ±‚ã‚’ãƒ­ã‚°ã«è¨˜éŒ²
 
 param($Context)
 
-Write-Host "ƒƒOƒCƒ“—v‹‚ðŽóM‚µ‚Ü‚µ‚½"
+Write-Host "ãƒ­ã‚°ã‚¤ãƒ³è¦æ±‚ã‚’å—ä¿¡ã—ã¾ã—ãŸ"

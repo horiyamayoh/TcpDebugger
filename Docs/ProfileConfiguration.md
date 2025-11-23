@@ -1,189 +1,189 @@
-# �v���t�@�C���@�\�̃h�L�������g# �v���t�@�C���ݒ�@�\
+# プロファイル機能のドキュメント# プロファイル設定機能
 
-## �T�v## �T�v
+## 概要## 概要
 
-TCP�f�o�b�K�[�A�v���P�[�V�����̃v���t�@�C���@�\�́A�����̐ڑ��ɑ΂���V�i���I�ݒ���ꊇ�Ǘ����邽�߂̋@�\�ł��BTcpDebugger �̃v���t�@�C���@�\���g�p����ƁA�A�v���P�[�V�����N�����Ɋe�ʐM�C���X�^���X�̃V�i���I�ݒ�������I�ɓK�p�ł��܂��B����ɂ��A����蓮�ŃV�i���I��I�������Ԃ��Ȃ��A�e�X�g���̃Z�b�g�A�b�v���������ł��܂��B
+TCPデバッガーアプリケーションのプロファイル機能は、複数の接続に対するシナリオ設定を一括管理するための機能です。TcpDebugger のプロファイル機能を使用すると、アプリケーション起動時に各通信インスタンスのシナリオ設定を自動的に適用できます。これにより、毎回手動でシナリオを選択する手間が省け、テスト環境のセットアップを効率化できます。
 
-## �v���t�@�C���̎��### ���w�v���t�@�C���@�\�i�V�@�\�j
+## プロファイルの種類### 多層プロファイル機能（新機能）
 
-### 1. ��v���t�@�C�� (Column Profiles)�v���t�@�C����3�̊K�w�ŊǗ�����܂��F
+### 1. 列プロファイル (Column Profiles)プロファイルは3つの階層で管理されます：
 
-DataGridView�̊e��iScenario, OnReceived, PeriodicSend�j�ɑΉ�����v���t�@�C���ł��B1. **��v���t�@�C���iColumn Profile�j**
-�e��̏㕔�ɂ���R���{�{�b�N�X�Ńv���t�@�C����I������ƁA���̗�̑S�Ă̍s�ɐݒ肪�K�p����܂��B   - 1�̃C���X�^���X�ɑ΂���S�V�i���I�ݒ�iAuto Response + On Received + Periodic�j
-   - �R���{�{�b�N�X�őI������ƁA3�̃V�i���I���ꊇ�Őݒ肳��܂�
-#### Scenario�v���t�@�C��   - �t�@�C��: `Config/column_profiles/*.csv`
-- �ꏊ: `Config/scenario_profiles/`
-- �t�H�[�}�b�g: `ProfileName,ScenarioName`2. **�A�v���P�[�V�����v���t�@�C���iApplication Profile�j**
-- ��: `Config/scenario_profiles/default.csv`   - �����C���X�^���X�ɑ΂����v���t�@�C���̑g�ݍ��킹
-   - �I������ƁA�S�C���X�^���X�̗�v���t�@�C���ƃV�i���I���ꊇ�ݒ肳��܂�
-```csv   - �t�@�C��: `Config/app_profiles/*.csv`
+DataGridViewの各列（Scenario, OnReceived, PeriodicSend）に対応するプロファイルです。1. **列プロファイル（Column Profile）**
+各列の上部にあるコンボボックスでプロファイルを選択すると、その列の全ての行に設定が適用されます。   - 1つのインスタンスに対する全シナリオ設定（Auto Response + On Received + Periodic）
+   - コンボボックスで選択すると、3つのシナリオが一括で設定されます
+#### Scenarioプロファイル   - ファイル: `Config/column_profiles/*.csv`
+- 場所: `Config/scenario_profiles/`
+- フォーマット: `ProfileName,ScenarioName`2. **アプリケーションプロファイル（Application Profile）**
+- 例: `Config/scenario_profiles/default.csv`   - 複数インスタンスに対する列プロファイルの組み合わせ
+   - 選択すると、全インスタンスの列プロファイルとシナリオが一括設定されます
+```csv   - ファイル: `Config/app_profiles/*.csv`
 ProfileName,ScenarioName
-Default,echo_test.csv3. **�ʃV�i���I**
-TestMode,loop_test.csv   - DataGridView �̊e��ŌʂɃV�i���I��I���\
-ProductionMode,echo_test.csv   - �v���t�@�C�����g�킸�A�蓮�Őݒ肷�邱�Ƃ��ł��܂�
+Default,echo_test.csv3. **個別シナリオ**
+TestMode,loop_test.csv   - DataGridView の各列で個別にシナリオを選択可能
+ProductionMode,echo_test.csv   - プロファイルを使わず、手動で設定することもできます
 ```
-**�g�p�t���[:**
-�I������ƁA�S�Ă̐ڑ���Scenario�񂪎w�肳�ꂽ�V�i���I�t�@�C���ɐݒ肳��܂��B```
-�A�v���v���t�@�C���I��
-#### OnReceived�v���t�@�C��  ��
-- �ꏊ: `Config/onreceived_profiles/`�e�C���X�^���X�ɗ�v���t�@�C�����K�p
-- �t�H�[�}�b�g: `ProfileName,ScenarioName`  ��
-- ��: `Config/onreceived_profiles/default.csv`�e�V�i���I�R���{�{�b�N�X�������ݒ�
+**使用フロー:**
+選択すると、全ての接続のScenario列が指定されたシナリオファイルに設定されます。```
+アプリプロファイル選択
+#### OnReceivedプロファイル  ↓
+- 場所: `Config/onreceived_profiles/`各インスタンスに列プロファイルが適用
+- フォーマット: `ProfileName,ScenarioName`  ↓
+- 例: `Config/onreceived_profiles/default.csv`各シナリオコンボボックスが自動設定
 ```
 ```csv
-ProfileName,ScenarioName## ��ȋ@�\
+ProfileName,ScenarioName## 主な機能
 Default,rules.csv
-Debug,rules2.csv1. **�C���X�^���X���Ƃ̃V�i���I�ݒ�**
-Production,rules.csv   - Auto Response �V�i���I�̎����I��
-```   - On Received �V�i���I�̎����I��
-   - Periodic �V�i���I�̎����I��
-�I������ƁA�S�Ă̐ڑ���OnReceived�񂪎w�肳�ꂽ�V�i���I�t�@�C���ɐݒ肳��܂��B
-2. **��v���t�@�C���i�V�@�\�j**
-#### Periodic�v���t�@�C��   - 3�̃V�i���I��1�̃v���t�@�C�����ňꊇ�Ǘ�
-- �ꏊ: `Config/periodic_profiles/`   - �R���{�{�b�N�X����I�����邾���őS�V�i���I���ݒ肳���
-- �t�H�[�}�b�g: `ProfileName,ScenarioName`
-- ��: `Config/periodic_profiles/default.csv`3. **�A�v���P�[�V�����v���t�@�C���i�V�@�\�j**
-   - �����C���X�^���X�̐ݒ��1�̃v���t�@�C���ŊǗ�
-```csv   - �J�����A�e�X�g���A�{�Ԋ��Ȃǂ̐؂�ւ����e��
+Debug,rules2.csv1. **インスタンスごとのシナリオ設定**
+Production,rules.csv   - Auto Response シナリオの自動選択
+```   - On Received シナリオの自動選択
+   - Periodic シナリオの自動選択
+選択すると、全ての接続のOnReceived列が指定されたシナリオファイルに設定されます。
+2. **列プロファイル（新機能）**
+#### Periodicプロファイル   - 3つのシナリオを1つのプロファイル名で一括管理
+- 場所: `Config/periodic_profiles/`   - コンボボックスから選択するだけで全シナリオが設定される
+- フォーマット: `ProfileName,ScenarioName`
+- 例: `Config/periodic_profiles/default.csv`3. **アプリケーションプロファイル（新機能）**
+   - 複数インスタンスの設定を1つのプロファイルで管理
+```csv   - 開発環境、テスト環境、本番環境などの切り替えが容易
 ProfileName,ScenarioName
-Default,heartbeat.csv4. **�����ڑ��@�\**
-FastHeartbeat,heartbeat2.csv   - �A�v���N�����Ɏw�肵���C���X�^���X�������I�ɐڑ�
+Default,heartbeat.csv4. **自動接続機能**
+FastHeartbeat,heartbeat2.csv   - アプリ起動時に指定したインスタンスを自動的に接続
 NoHeartbeat,
-```5. **�v���t�@�C���̕ۑ��Ɠǂݍ���**
-   - CSV �`���Őݒ��ۑ�
-�I������ƁA�S�Ă̐ڑ���PeriodicSend�񂪎w�肳�ꂽ�V�i���I�t�@�C���ɐݒ肳��܂��B   - �����̃v���t�@�C�����Ǘ��\
+```5. **プロファイルの保存と読み込み**
+   - CSV 形式で設定を保存
+選択すると、全ての接続のPeriodicSend列が指定されたシナリオファイルに設定されます。   - 複数のプロファイルを管理可能
 
-### 2. �A�v���P�[�V�����v���t�@�C�� (Application Profiles)## �v���t�@�C���t�@�C���̌`��
+### 2. アプリケーションプロファイル (Application Profiles)## プロファイルファイルの形式
 
-�A�v���P�[�V�����S�̂̐ݒ���ꊇ�ōs���v���t�@�C���ł��B### 1. ��v���t�@�C���iColumn Profile�j
-3�̗�v���t�@�C������x�ɐݒ�ł��܂��B
-��v���t�@�C���́A1�̃C���X�^���X�ɑ΂���S�V�i���I�ݒ���܂Ƃ߂����̂ł��B
-- �ꏊ: `Config/app_profiles/`
-- �t�H�[�}�b�g: `ProfileName,DefaultScenarioProfile,DefaultOnReceivedProfile,DefaultPeriodicProfile`**�t�@�C���p�X:** `Config/column_profiles/*.csv`
-- ��: `Config/app_profiles/development.csv`
+アプリケーション全体の設定を一括で行うプロファイルです。### 1. 列プロファイル（Column Profile）
+3つの列プロファイルを一度に設定できます。
+列プロファイルは、1つのインスタンスに対する全シナリオ設定をまとめたものです。
+- 場所: `Config/app_profiles/`
+- フォーマット: `ProfileName,DefaultScenarioProfile,DefaultOnReceivedProfile,DefaultPeriodicProfile`**ファイルパス:** `Config/column_profiles/*.csv`
+- 例: `Config/app_profiles/development.csv`
 ```csv
 ```csvProfileName,AutoResponseScenario,OnReceivedScenario,PeriodicScenario
 ProfileName,DefaultScenarioProfile,DefaultOnReceivedProfile,DefaultPeriodicProfileDefault,unified_rules.csv,rules.csv,heartbeat.csv
 Development,Default,Debug,FastHeartbeatTestMode,auto_only.csv,rules2.csv,heartbeat2.csv
 ```ProductionMode,unified_multi_action.csv,log_login.ps1,heartbeat.csv
 ```
-Apply�{�^�����N���b�N����ƁA�w�肳�ꂽ3�̗�v���t�@�C���������I�ɑI������A�S�Ă̐ڑ��ɓK�p����܂��B
-#### ��̐���
-## �g����
-| �� | �K�{ | ���� |
-### ��v���t�@�C���̎g�p|------|------|------|
-| `ProfileName` | �� | �v���t�@�C�����i�R���{�{�b�N�X�ɕ\�������j |
-1. DataGridView�̏㕔�ɂ���e��̃v���t�@�C���R���{�{�b�N�X���m�F| `AutoResponseScenario` | �~ | Auto Response �V�i���I�t�@�C���� |
-   - Scenario Profile: Auto Response��p| `OnReceivedScenario` | �~ | On Received �V�i���I�t�@�C���� |
-   - OnReceived Profile: On Received��p| `PeriodicScenario` | �~ | Periodic �V�i���I�t�@�C���� |
-   - Periodic Profile: Periodic Send��p
-**�g����:**
-2. �v���t�@�C����I��1. GUI�́uColumn Profile�v�R���{�{�b�N�X����I��
-   - �R���{�{�b�N�X�����]����v���t�@�C����I��2. �I�������C���X�^���X��3�̃V�i���I���ꊇ�Őݒ肳���
-   - �I������Ƒ����ɑS�Ă̐ڑ��̊Y����ɐݒ肪�K�p�����3. �����̗�v���t�@�C�����`���āA�p�r�ɉ����Đ؂�ւ��\
+Applyボタンをクリックすると、指定された3つの列プロファイルが自動的に選択され、全ての接続に適用されます。
+#### 列の説明
+## 使い方
+| 列名 | 必須 | 説明 |
+### 列プロファイルの使用|------|------|------|
+| `ProfileName` | ○ | プロファイル名（コンボボックスに表示される） |
+1. DataGridViewの上部にある各列のプロファイルコンボボックスを確認| `AutoResponseScenario` | × | Auto Response シナリオファイル名 |
+   - Scenario Profile: Auto Response列用| `OnReceivedScenario` | × | On Received シナリオファイル名 |
+   - OnReceived Profile: On Received列用| `PeriodicScenario` | × | Periodic シナリオファイル名 |
+   - Periodic Profile: Periodic Send列用
+**使い方:**
+2. プロファイルを選択1. GUIの「Column Profile」コンボボックスから選択
+   - コンボボックスから希望するプロファイルを選択2. 選択したインスタンスの3つのシナリオが一括で設定される
+   - 選択すると即座に全ての接続の該当列に設定が適用される3. 複数の列プロファイルを定義して、用途に応じて切り替え可能
 
-### �A�v���P�[�V�����v���t�@�C���̎g�p### 2. �A�v���P�[�V�����v���t�@�C���iApplication Profile�j
+### アプリケーションプロファイルの使用### 2. アプリケーションプロファイル（Application Profile）
 
-1. �E��́uApp Profile�v�R���{�{�b�N�X����v���t�@�C����I���A�v���P�[�V�����v���t�@�C���́A�����C���X�^���X�̐ݒ���܂Ƃ߂����̂ł��B
+1. 右上の「App Profile」コンボボックスからプロファイルを選択アプリケーションプロファイルは、複数インスタンスの設定をまとめたものです。
 
-2. �uApply�v�{�^�����N���b�N**�t�@�C���p�X:** `Config/app_profiles/*.csv`
+2. 「Apply」ボタンをクリック**ファイルパス:** `Config/app_profiles/*.csv`
 
-3. �I�����ꂽ�v���t�@�C���Ɋ�Â��āA3�̗�v���t�@�C���R���{�{�b�N�X�������I�ɐݒ肳���```csv
+3. 選択されたプロファイルに基づいて、3つの列プロファイルコンボボックスが自動的に設定される```csv
 InstanceName,ColumnProfileName,AutoResponseScenario,OnReceivedScenario,PeriodicScenario,AutoConnect
-4. ���ꂼ��̗�v���t�@�C�����S�Ă̐ڑ��ɓK�p�����Example,Default,,,,false
+4. それぞれの列プロファイルが全ての接続に適用されるExample,Default,,,,false
 ```
-## �t�@�C���\��
-#### ��̐���
+## ファイル構成
+#### 列の説明
 ```
-Config/| �� | �K�{ | ���� |
-  ������ scenario_profiles/|------|------|------|
-  ��   ������ default.csv        (Scenario��p�v���t�@�C��)| `InstanceName` | �� | �C���X�^���X�� |
-  ������ onreceived_profiles/| `ColumnProfileName` | �~ | �g�p�����v���t�@�C���� |
-  ��   ������ default.csv        (OnReceived��p�v���t�@�C��)| `AutoResponseScenario` | �~ | Auto Response �V�i���I�iColumnProfileName ����̏ꍇ�j |
-  ������ periodic_profiles/| `OnReceivedScenario` | �~ | On Received �V�i���I�iColumnProfileName ����̏ꍇ�j |
-  ��   ������ default.csv        (Periodic��p�v���t�@�C��)| `PeriodicScenario` | �~ | Periodic �V�i���I�iColumnProfileName ����̏ꍇ�j |
-  ������ app_profiles/| `AutoConnect` | �~ | �N�����Ɏ����ڑ����邩�i`true`/`false`�j |
-      ������ development.csv    (�J�����p�ݒ�)
-      ������ production.csv     (�{�Ԋ��p�ݒ�)**�D�揇��:**
-```- `ColumnProfileName` ���w�肳��Ă���ꍇ�A���̃v���t�@�C�����K�p�����
-- `ColumnProfileName` ����̏ꍇ�A�ʂ̃V�i���I�񂪎g�p�����
-## �v���t�@�C���̍쐬- �����w�肳��Ă���ꍇ�A`ColumnProfileName` ���D�悳���
+Config/| 列名 | 必須 | 説明 |
+  ├── scenario_profiles/|------|------|------|
+  │   └── default.csv        (Scenario列用プロファイル)| `InstanceName` | ○ | インスタンス名 |
+  ├── onreceived_profiles/| `ColumnProfileName` | × | 使用する列プロファイル名 |
+  │   └── default.csv        (OnReceived列用プロファイル)| `AutoResponseScenario` | × | Auto Response シナリオ（ColumnProfileName が空の場合） |
+  ├── periodic_profiles/| `OnReceivedScenario` | × | On Received シナリオ（ColumnProfileName が空の場合） |
+  │   └── default.csv        (Periodic列用プロファイル)| `PeriodicScenario` | × | Periodic シナリオ（ColumnProfileName が空の場合） |
+  └── app_profiles/| `AutoConnect` | × | 起動時に自動接続するか（`true`/`false`） |
+      ├── development.csv    (開発環境用設定)
+      └── production.csv     (本番環境用設定)**優先順位:**
+```- `ColumnProfileName` が指定されている場合、そのプロファイルが適用される
+- `ColumnProfileName` が空の場合、個別のシナリオ列が使用される
+## プロファイルの作成- 両方指定されている場合、`ColumnProfileName` が優先される
 
-### ��v���t�@�C���̍쐬**�g����:**
-1. GUI�́uApp Profile�v�R���{�{�b�N�X����I��
-1. �Y������f�B���N�g���ɐV����CSV�t�@�C�����쐬2. �uApply Profile�v�{�^�����N���b�N
-   - Scenario�p: `Config/scenario_profiles/myprofile.csv`3. �S�C���X�^���X�ɐݒ肪�ꊇ�K�p�����
-   - OnReceived�p: `Config/onreceived_profiles/myprofile.csv`
-   - Periodic�p: `Config/periodic_profiles/myprofile.csv`### 3. �]���^�v���t�@�C���i���ʌ݊��j
+### 列プロファイルの作成**使い方:**
+1. GUIの「App Profile」コンボボックスから選択
+1. 該当するディレクトリに新しいCSVファイルを作成2. 「Apply Profile」ボタンをクリック
+   - Scenario用: `Config/scenario_profiles/myprofile.csv`3. 全インスタンスに設定が一括適用される
+   - OnReceived用: `Config/onreceived_profiles/myprofile.csv`
+   - Periodic用: `Config/periodic_profiles/myprofile.csv`### 3. 従来型プロファイル（下位互換）
 
-2. CSV�t�H�[�}�b�g�ɏ]���Đݒ���L�q�]���^�̌ʃV�i���I�w������������g�p�\�ł��B
+2. CSVフォーマットに従って設定を記述従来型の個別シナリオ指定も引き続き使用可能です。
 
-```csv**�t�@�C���p�X:** `Config/profiles.csv`
+```csv**ファイルパス:** `Config/profiles.csv`
 ProfileName,ScenarioName
 MyProfile,my_scenario.csv```csv
 ```InstanceName,AutoResponseScenario,OnReceivedScenario,PeriodicScenario,AutoConnect
 Example,unified_rules.csv,rules.csv,heartbeat.csv,false
-3. �A�v���P�[�V�������ċN������ƁA�R���{�{�b�N�X�ɐV�����v���t�@�C�����\�������```
+3. アプリケーションを再起動すると、コンボボックスに新しいプロファイルが表示される```
 
-### �A�v���P�[�V�����v���t�@�C���̍쐬### �V�i���I�t�@�C�����̎w����@
+### アプリケーションプロファイルの作成### シナリオファイル名の指定方法
 
-1. `Config/app_profiles/` �ɐV����CSV�t�@�C�����쐬- �g���q�i`.csv` �܂��� `.ps1`�j�͊܂߂Ă��ȗ����Ă��\���܂���
-  - ��: `unified_rules` �܂��� `unified_rules.csv` �̂ǂ���ł���
-2. 3�̗�v���t�@�C�������w��- �V�i���I���g�p���Ȃ��ꍇ�́A�󗓂ɂ��܂�
-- ���΃p�X�́A�e�V�i���I�^�C�v�̕W���t�H���_����̑��΃p�X�ɂȂ�܂�
+1. `Config/app_profiles/` に新しいCSVファイルを作成- 拡張子（`.csv` または `.ps1`）は含めても省略しても構いません
+  - 例: `unified_rules` または `unified_rules.csv` のどちらでも可
+2. 3つの列プロファイル名を指定- シナリオを使用しない場合は、空欄にします
+- 相対パスは、各シナリオタイプの標準フォルダからの相対パスになります
 ```csv
-ProfileName,DefaultScenarioProfile,DefaultOnReceivedProfile,DefaultPeriodicProfile## �f�t�H���g�v���t�@�C���̐ݒ�
+ProfileName,DefaultScenarioProfile,DefaultOnReceivedProfile,DefaultPeriodicProfile## デフォルトプロファイルの設定
 MyAppProfile,MyScenarioProfile,MyOnReceivedProfile,MyPeriodicProfile
-```�A�v���P�[�V�����N�����Ɏ����I�ɓǂݍ��܂��v���t�@�C���́A�ȉ��̃p�X�ɔz�u���܂��F
+```アプリケーション起動時に自動的に読み込まれるプロファイルは、以下のパスに配置します：
 
-3. �A�v���P�[�V�������ċN������ƁA�R���{�{�b�N�X�ɐV�����v���t�@�C�����\�������```
+3. アプリケーションを再起動すると、コンボボックスに新しいプロファイルが表示される```
 Config/profiles.csv
-## ���ӎ���```
+## 注意事項```
 
-- �v���t�@�C�����i�t�@�C�����̊g���q�������������j���R���{�{�b�N�X�ɕ\������܂����̃t�@�C�������݂���ꍇ�A�A�v���N�����Ɏ����I�ɓǂݍ��܂�A�e�C���X�^���X�ɐݒ肪�K�p����܂��B
-- CSV�t�@�C����UTF-8�G���R�[�f�B���O�ŕۑ����Ă�������
-- ScenarioName����̏ꍇ�A���̗�ɂ͉����ݒ肳��܂���## �C���X�^���X��p�v���t�@�C��
-- ���݂��Ȃ��V�i���I�t�@�C�����w�肷��ƁA�G���[���b�Z�[�W���\������܂�
-- �v���t�@�C���̑I���͑����ɓK�p����܂����A���ۂ̐ڑ�����ɂ͉e�����܂���i�ڑ����ċN������K�v�͂���܂���j�e�C���X�^���X�t�H���_���� `profile.csv` ��z�u���邱�Ƃ��ł��܂��F
+- プロファイル名（ファイル名の拡張子を除いた部分）がコンボボックスに表示されますこのファイルが存在する場合、アプリ起動時に自動的に読み込まれ、各インスタンスに設定が適用されます。
+- CSVファイルはUTF-8エンコーディングで保存してください
+- ScenarioNameが空の場合、その列には何も設定されません## インスタンス専用プロファイル
+- 存在しないシナリオファイルを指定すると、エラーメッセージが表示されます
+- プロファイルの選択は即座に適用されますが、実際の接続動作には影響しません（接続を再起動する必要はありません）各インスタンスフォルダ内に `profile.csv` を配置することもできます：
 
 ```
 Instances/Example/profile.csv
 ```
-���̃t�@�C���́A���̃C���X�^���X��p�̐ݒ�Ƃ��Ďg�p�ł��܂��i�����̊g���p�j�B
-## �g�p��
-### ��1: ��v���t�@�C���̎g�p
+このファイルは、そのインスタンス専用の設定として使用できます（将来の拡張用）。
+## 使用例
+### 例1: 列プロファイルの使用
 **Config/column_profiles/default.csv**
 ```csv
 ProfileName,AutoResponseScenario,OnReceivedScenario,PeriodicScenario
 Default,unified_rules.csv,rules.csv,heartbeat.csv
 TestMode,auto_only.csv,rules2.csv,heartbeat2.csv
 ```
-**����菇:**
-1. GUI�ŃC���X�^���X��I��
-2. �uColumn Profile�v�R���{�{�b�N�X����uDefault�v��I��
-3. 3�̃V�i���I�������I�ɐݒ肳���
-### ��2: �A�v���P�[�V�����v���t�@�C���̎g�p
+**操作手順:**
+1. GUIでインスタンスを選択
+2. 「Column Profile」コンボボックスから「Default」を選択
+3. 3つのシナリオが自動的に設定される
+### 例2: アプリケーションプロファイルの使用
 **Config/app_profiles/development.csv**
 ```csv
 InstanceName,ColumnProfileName,AutoResponseScenario,OnReceivedScenario,PeriodicScenario,AutoConnect
 Server1,Default,,,,false
 Client1,TestMode,,,,false
 ```
-**����菇:**
-1. �uApp Profile�v�R���{�{�b�N�X����udevelopment�v��I��
-2. �uApply Profile�v�{�^�����N���b�N
-3. Server1�ɁuDefault�v��v���t�@�C�����K�p�����
-4. Client1�ɁuTestMode�v��v���t�@�C�����K�p�����
-### ��3: ��v���t�@�C���ƌʃV�i���I�̍���
+**操作手順:**
+1. 「App Profile」コンボボックスから「development」を選択
+2. 「Apply Profile」ボタンをクリック
+3. Server1に「Default」列プロファイルが適用される
+4. Client1に「TestMode」列プロファイルが適用される
+### 例3: 列プロファイルと個別シナリオの混在
 **Config/app_profiles/mixed.csv**
 ```csv
 InstanceName,ColumnProfileName,AutoResponseScenario,OnReceivedScenario,PeriodicScenario,AutoConnect
 Server1,Default,,,,true
 Client1,,auto_only.csv,log_login.ps1,heartbeat2.csv,false
 ```
-- `Server1`: �uDefault�v��v���t�@�C�����g�p�A�N�����Ɏ����ڑ�
-- `Client1`: ��v���t�@�C�����g�킸�A�ʂɃV�i���I���w��
-### ��4: �{�Ԋ��ƊJ�����̐؂�ւ�
+- `Server1`: 「Default」列プロファイルを使用、起動時に自動接続
+- `Client1`: 列プロファイルを使わず、個別にシナリオを指定
+### 例4: 本番環境と開発環境の切り替え
 **Config/column_profiles/default.csv**
 ```csv
 ProfileName,AutoResponseScenario,OnReceivedScenario,PeriodicScenario
@@ -195,95 +195,95 @@ Production,unified_multi_action.csv,log_login.ps1,heartbeat.csv
 InstanceName,ColumnProfileName,AutoResponseScenario,OnReceivedScenario,PeriodicScenario,AutoConnect
 Example,Production,,,,true
 ```
-**����菇:**
-- �J����: �uColumn Profile�v�ŁuDevelopment�v��I��
-- �{�Ԏ�: �uApp Profile�v�Łuproduction�v��I�� �� �uApply Profile�v���N���b�N
-## �v���t�@�C���̓���t���[
-1. **�A�v���P�[�V�����N��**
-   - `Config/profiles.csv` �����݂��邩�m�F
-2. **�v���t�@�C���ǂݍ���**
-   - CSV �t�@�C������͂��A�e�C���X�^���X�̐ݒ��ǂݍ���
-3. **�V�i���I�K�p**
-   - �e�C���X�^���X�ɑ΂��āA�w�肳�ꂽ�V�i���I�t�@�C���̃p�X������
-   - �V�i���I�t�@�C�������݂���ꍇ�A�ڑ��ɐݒ��K�p
-4. **�����ڑ�**
-   - `AutoConnect` �� `true` �̃C���X�^���X�������ڑ�
-5. **UI �X�V**
-   - DataGridView ���X�V���A�K�p���ꂽ�ݒ��\��
-## �V�i���I�t�@�C���̃p�X����
-�V�X�e���͈ȉ��̏����ŃV�i���I�t�@�C�����������܂��F
-1. **���S�p�X**: �w�肳�ꂽ�p�X�����̂܂ܑ��݂��邩�m�F
-2. **�g���q�t�^**: `.csv` �g���q��ǉ����Ċm�F
-3. **�X�N���v�g�g���q**: `.ps1` �g���q��ǉ����Ċm�F�iOn Received �̂݁j
-��:
-- `unified_rules` �Ǝw�肵���ꍇ
-  - `scenarios/auto/unified_rules` �� ���݂��Ȃ�
-  - `scenarios/auto/unified_rules.csv` �� ���݂���Ύg�p
-  - `scenarios/auto/unified_rules.ps1` �� ���݂���Ύg�p
-## �G���[����
-### �v���t�@�C�����ǂݍ��߂Ȃ��ꍇ
-- �x�����b�Z�[�W��\�����A�����𑱍s
-- �C���X�^���X�͎蓮�Őݒ�\�ȏ�ԂŋN��
-### �V�i���I�t�@�C����������Ȃ��ꍇ
-- �x�����O���o�͂��A���̃V�i���I�̓X�L�b�v
-- ���̃V�i���I�͐���ɓK�p
-### �����ڑ��Ɏ��s�����ꍇ
-- �G���[���O���o�͂��A���̃C���X�^���X�֐i��
-- �蓮�Őڑ����邱�Ƃ͉\
-## �v���t�@�C���̊Ǘ�
-### �v���t�@�C���t�@�C���̍쐬
-1. �e���v���[�g���R�s�[:
+**操作手順:**
+- 開発時: 「Column Profile」で「Development」を選択
+- 本番時: 「App Profile」で「production」を選択 → 「Apply Profile」をクリック
+## プロファイルの動作フロー
+1. **アプリケーション起動**
+   - `Config/profiles.csv` が存在するか確認
+2. **プロファイル読み込み**
+   - CSV ファイルを解析し、各インスタンスの設定を読み込む
+3. **シナリオ適用**
+   - 各インスタンスに対して、指定されたシナリオファイルのパスを解決
+   - シナリオファイルが存在する場合、接続に設定を適用
+4. **自動接続**
+   - `AutoConnect` が `true` のインスタンスを順次接続
+5. **UI 更新**
+   - DataGridView を更新し、適用された設定を表示
+## シナリオファイルのパス解決
+システムは以下の順序でシナリオファイルを検索します：
+1. **完全パス**: 指定されたパスがそのまま存在するか確認
+2. **拡張子付与**: `.csv` 拡張子を追加して確認
+3. **スクリプト拡張子**: `.ps1` 拡張子を追加して確認（On Received のみ）
+例:
+- `unified_rules` と指定した場合
+  - `scenarios/auto/unified_rules` → 存在しない
+  - `scenarios/auto/unified_rules.csv` → 存在すれば使用
+  - `scenarios/auto/unified_rules.ps1` → 存在すれば使用
+## エラー処理
+### プロファイルが読み込めない場合
+- 警告メッセージを表示し、処理を続行
+- インスタンスは手動で設定可能な状態で起動
+### シナリオファイルが見つからない場合
+- 警告ログを出力し、そのシナリオはスキップ
+- 他のシナリオは正常に適用
+### 自動接続に失敗した場合
+- エラーログを出力し、次のインスタンスへ進む
+- 手動で接続することは可能
+## プロファイルの管理
+### プロファイルファイルの作成
+1. テンプレートをコピー:
    ```powershell
    Copy-Item Config\profiles.csv Config\profiles_backup.csv
    ```
-2. �G�f�B�^�ŕҏW�iCSV �`�����ێ��j
-3. �A�v�����ċN�����ēK�p���m�F
-### �����v���t�@�C���̊Ǘ�
-�قȂ����p�r�ɉ����āA�����̃v���t�@�C���t�@�C����p�ӂł��܂��F
+2. エディタで編集（CSV 形式を維持）
+3. アプリを再起動して適用を確認
+### 複数プロファイルの管理
+異なる環境や用途に応じて、複数のプロファイルファイルを用意できます：
 ```
 Config/
-  profiles.csv           # �f�t�H���g�i�J�����j
-  profiles_test.csv      # �e�X�g��
-  profiles_production.csv # �{�Ԋ�
+  profiles.csv           # デフォルト（開発環境）
+  profiles_test.csv      # テスト環境
+  profiles_production.csv # 本番環境
 ```
-�g�p����v���t�@�C���� `profiles.csv` �ɃR�s�[���Ďg�p���܂��B
-## �x�X�g�v���N�e�B�X
-1. **�o�[�W�����Ǘ�**
-   - �v���t�@�C���t�@�C���� Git �ȂǂŊǗ�
-   - �`�[���ԂŐݒ�����L
-2. **�����K��**
-   - �V�i���I�t�@�C�����͕�����₷�����O���g�p
-   - �C���X�^���X���ƃV�i���I���̑Ή��𖾊m�ɂ���
-3. **�i�K�I�ȓK�p**
-   - �V�����v���t�@�C���́A�܂� `AutoConnect=false` �Ńe�X�g
-   - ����m�F��A�K�v�ɉ����Ď����ڑ���L����
-4. **�h�L�������g��**
-   - �e�v���t�@�C���̗p�r���R�����g�iCSV �̐擪�s�� `#` �ŋL�ځj
-   - README �ȂǂŐݒ�̈Ӑ}�����
-## �g���u���V���[�e�B���O
-### �V�i���I���K�p����Ȃ�
-**�����ƑΏ�:**
-- �t�@�C���p�X�����������m�F�i�啶�����������܂ށj
-- �V�i���I�t�@�C�������ۂɑ��݂��邩�m�F
-- ���O�o�͂��m�F�i`[Init]` �^�O�t�����b�Z�[�W�j
-### �����ڑ������s����
-**�����ƑΏ�:**
-- �ڑ���T�[�o�[���N�����Ă��邩�m�F
-- �C���X�^���X�ݒ�i`instance.psd1`�j�����������m�F
-- �蓮�ڑ��������āA�G���[���b�Z�[�W���m�F
-### �v���t�@�C�����ǂݍ��܂�Ȃ�
-**�����ƑΏ�:**
-- `Config/profiles.csv` �����݂��邩�m�F
-- CSV �`�������������m�F�i�񖼂̃X�y���~�X���j
-- �����G���R�[�f�B���O�� UTF-8 �ł��邱�Ƃ��m�F
-## ����̊g���\��
-- UI ����̃v���t�@�C���ҏW�@�\
-- �v���t�@�C���̐؂�ւ��@�\�i�ċN���s�v�j
-- �v���t�@�C���̎����ۑ��@�\
-- ���ڍׂȐݒ荀�ڂ̒ǉ�
-## �֘A�t�@�C��
-- `Core/Domain/ProfileModels.ps1` - �v���t�@�C���̃f�[�^���f��
-- `Core/Domain/ProfileService.ps1` - �v���t�@�C���Ǘ����W�b�N
-- `Core/Infrastructure/Repositories/ProfileRepository.ps1` - CSV �ǂݏ�������
-- `Config/profiles.csv` - �f�t�H���g�v���t�@�C��
-- `Instances/Example/profile.csv` - �C���X�^���X��p�v���t�@�C����
+使用するプロファイルを `profiles.csv` にコピーして使用します。
+## ベストプラクティス
+1. **バージョン管理**
+   - プロファイルファイルを Git などで管理
+   - チーム間で設定を共有
+2. **命名規則**
+   - シナリオファイル名は分かりやすい名前を使用
+   - インスタンス名とシナリオ名の対応を明確にする
+3. **段階的な適用**
+   - 新しいプロファイルは、まず `AutoConnect=false` でテスト
+   - 動作確認後、必要に応じて自動接続を有効化
+4. **ドキュメント化**
+   - 各プロファイルの用途をコメント（CSV の先頭行に `#` で記載）
+   - README などで設定の意図を説明
+## トラブルシューティング
+### シナリオが適用されない
+**原因と対処:**
+- ファイルパスが正しいか確認（大文字小文字を含む）
+- シナリオファイルが実際に存在するか確認
+- ログ出力を確認（`[Init]` タグ付きメッセージ）
+### 自動接続が失敗する
+**原因と対処:**
+- 接続先サーバーが起動しているか確認
+- インスタンス設定（`instance.psd1`）が正しいか確認
+- 手動接続を試して、エラーメッセージを確認
+### プロファイルが読み込まれない
+**原因と対処:**
+- `Config/profiles.csv` が存在するか確認
+- CSV 形式が正しいか確認（列名のスペルミス等）
+- 文字エンコーディングが UTF-8 であることを確認
+## 今後の拡張予定
+- UI からのプロファイル編集機能
+- プロファイルの切り替え機能（再起動不要）
+- プロファイルの自動保存機能
+- より詳細な設定項目の追加
+## 関連ファイル
+- `Core/Domain/ProfileModels.ps1` - プロファイルのデータモデル
+- `Core/Domain/ProfileService.ps1` - プロファイル管理ロジック
+- `Core/Infrastructure/Repositories/ProfileRepository.ps1` - CSV 読み書き処理
+- `Config/profiles.csv` - デフォルトプロファイル
+- `Instances/Example/profile.csv` - インスタンス専用プロファイル例

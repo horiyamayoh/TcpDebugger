@@ -393,12 +393,9 @@ function Read-PeriodicSendRules {
     }
 
     try {
-        # Shift-JIS で読み込み（PowerShell 5.1対応）
-        # Get-ContentでShift-JIS読み込み → ConvertFrom-Csvでパース
-        $encoding = [System.Text.Encoding]::GetEncoding("Shift_JIS")
-        $content = Get-Content -Path $FilePath -Encoding Byte -Raw
-        $text = $encoding.GetString($content)
-        $rules = $text | ConvertFrom-Csv
+        # UTF-8で読み込み
+        $content = Get-Content -Path $FilePath -Encoding UTF8 -Raw
+        $rules = $content | ConvertFrom-Csv
 
         $validRules = @()
         foreach ($rule in $rules) {

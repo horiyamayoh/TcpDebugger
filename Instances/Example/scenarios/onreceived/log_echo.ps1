@@ -1,18 +1,18 @@
-# log_echo.ps1
-# ƒGƒR[—v‹‚ğƒƒO‚É‹L˜^
+ï»¿# log_echo.ps1
+# ã‚¨ã‚³ãƒ¼è¦æ±‚ã‚’ãƒ­ã‚°ã«è¨˜éŒ²
 
 param($Context)
 
 . "$PSScriptRoot\..\..\..\..\Core\Domain\OnReceivedLibrary.ps1"
 
-Write-OnReceivedLog "ƒGƒR[—v‹‚ğóM‚µ‚Ü‚µ‚½"
+Write-OnReceivedLog "ã‚¨ã‚³ãƒ¼è¦æ±‚ã‚’å—ä¿¡ã—ã¾ã—ãŸ"
 
 $hexData = ConvertTo-HexString -Data $Context.ReceivedData -Separator " "
-Write-OnReceivedLog "ƒGƒR[ƒf[ƒ^: $hexData"
+Write-OnReceivedLog "ã‚¨ã‚³ãƒ¼ãƒ‡ãƒ¼ã‚¿: $hexData"
 
-# ƒGƒR[ƒJƒEƒ“ƒ^[‚ğƒCƒ“ƒNƒŠƒƒ“ƒg
+# ã‚¨ã‚³ãƒ¼ã‚«ã‚¦ãƒ³ã‚¿ãƒ¼ã‚’ã‚¤ãƒ³ã‚¯ãƒªãƒ¡ãƒ³ãƒˆ
 $echoCount = Get-ConnectionVariable -Connection $Context.Connection -Name "EchoCount" -Default 0
 $echoCount++
 Set-ConnectionVariable -Connection $Context.Connection -Name "EchoCount" -Value $echoCount
 
-Write-OnReceivedLog "ƒGƒR[‰ñ”: $echoCount ‰ñ"
+Write-OnReceivedLog "ã‚¨ã‚³ãƒ¼å›æ•°: $echoCount å›"

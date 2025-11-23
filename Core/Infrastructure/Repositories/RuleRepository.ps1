@@ -1,4 +1,4 @@
-# Core/Infrastructure/Repositories/RuleRepository.ps1
+﻿# Core/Infrastructure/Repositories/RuleRepository.ps1
 
 class RuleRepository {
     hidden [hashtable]$_cache

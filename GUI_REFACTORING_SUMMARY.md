@@ -1,101 +1,101 @@
-# GUI ƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒOŠ®—¹ƒTƒ}ƒŠ[ (XV”Å)
+# GUI ãƒªãƒ•ã‚¡ã‚¯ã‚¿ãƒªãƒ³ã‚°å®Œäº†ã‚µãƒžãƒªãƒ¼ (æ›´æ–°ç‰ˆ)
 
-## ? ƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒOŠ®—¹ - Phase 2
+## ? ãƒªãƒ•ã‚¡ã‚¯ã‚¿ãƒªãƒ³ã‚°å®Œäº† - Phase 2
 
-GUI‚ÌMVVMƒpƒ^[ƒ“‰»‚ÆViewBuilder‚Ö‚ÌŠ®‘SˆÚs‚ªŠ®—¹‚µ‚Ü‚µ‚½B
+GUIã®MVVMãƒ‘ã‚¿ãƒ¼ãƒ³åŒ–ã¨ViewBuilderã¸ã®å®Œå…¨ç§»è¡ŒãŒå®Œäº†ã—ã¾ã—ãŸã€‚
 
-**XV“ú:** 2025-01-17
-
----
-
-## ? •ÏXƒTƒ}ƒŠ[
-
-### V‹Kì¬ƒtƒ@ƒCƒ‹
-
-1. **Presentation/ViewModels/MainFormViewModel.ps1** (386s)
-   - ƒrƒWƒlƒXƒƒWƒbƒN‘w
-   - Ú‘±ŠÇ—Aƒvƒƒtƒ@ƒCƒ‹ŠÇ—AƒJƒ^ƒƒOŽæ“¾
-   - ƒeƒXƒ^ƒuƒ‹‚ÈƒNƒ‰ƒXŽÀ‘•
-
-2. **Presentation/UI/ViewBuilder.ps1** (650s © Œ³280s)
-   - UI\’z‘w‚ÌŠ®‘SŽÀ‘•
-   - WinFormsƒRƒ“ƒgƒ[ƒ‹‚Ìƒtƒ@ƒNƒgƒŠ[ŠÖ”
-   - ƒZƒ‹\¬ŠÖ”‚Ì’Ç‰Á (Configure-ScenarioColumn, Configure-QuickDataColumn, Configure-QuickActionColumn)
-   - ƒƒO•\Ž¦ŠÖ”‚Ì’Ç‰Á (Update-LogDisplay, Get-MessageSummary)
-   - s‚ÌFÝ’èŠÖ”‚Ì’Ç‰Á (Set-RowColor)
-   - Ä—˜—p‰Â”\‚ÈUI—v‘f¶¬
-
-### ƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒOÏ‚Ýƒtƒ@ƒCƒ‹
-
-3. **Presentation/UI/MainForm.ps1** (922s © Œ³1236s)
-   - **314síŒ¸ (25%Œ¸)**
-   - ƒvƒŒƒ[ƒ“ƒe[ƒVƒ‡ƒ“‘w
-   - View‚ÆViewModel‚ÌÚ‘±
-   - ƒCƒxƒ“ƒgƒnƒ“ƒhƒŠƒ“ƒO
-   - ƒf[ƒ^ƒoƒCƒ“ƒfƒBƒ“ƒO
-   - UI\’zƒR[ƒh‚ðViewBuilder‚ÉŠ®‘SˆÚ÷
-
-### ƒoƒbƒNƒAƒbƒv
-
-4. **Presentation/UI/MainForm.ps1.bak** (1400s)
-   - ƒIƒŠƒWƒiƒ‹‚ÌƒoƒbƒNƒAƒbƒv
+**æ›´æ–°æ—¥:** 2025-01-17
 
 ---
 
-## ? Phase 2 ‚ÅŽÀ‘•‚³‚ê‚½‰ü‘P
+## ? å¤‰æ›´ã‚µãƒžãƒªãƒ¼
 
-### 1. **ViewBuilder ‚ÌŠ®‘SŽÀ‘•**
+### æ–°è¦ä½œæˆãƒ•ã‚¡ã‚¤ãƒ«
 
-UI\’zŠÖ”‚ðMainForm.ps1‚©‚çViewBuilder.ps1‚ÉŠ®‘SˆÚs:
-- `Configure-ScenarioColumn` - Auto ResponseƒZƒ‹\¬
-- `Configure-QuickDataColumn` - Quick DataƒZƒ‹\¬  
-- `Configure-QuickActionColumn` - Quick ActionƒZƒ‹\¬
-- `Set-RowColor` - Ú‘±ó‘Ô‚É‚æ‚és‚ÌFÝ’è
-- `Update-LogDisplay` - ƒƒO•\Ž¦‚ÌXV
-- `Get-MessageSummary` - ƒƒbƒZ[ƒW—v–ñ¶¬
+1. **Presentation/ViewModels/MainFormViewModel.ps1** (386è¡Œ)
+   - ãƒ“ã‚¸ãƒã‚¹ãƒ­ã‚¸ãƒƒã‚¯å±¤
+   - æŽ¥ç¶šç®¡ç†ã€ãƒ—ãƒ­ãƒ•ã‚¡ã‚¤ãƒ«ç®¡ç†ã€ã‚«ã‚¿ãƒ­ã‚°å–å¾—
+   - ãƒ†ã‚¹ã‚¿ãƒ–ãƒ«ãªã‚¯ãƒ©ã‚¹å®Ÿè£…
 
-### 2. **ƒR[ƒhƒTƒCƒY‚Ì‘å•íŒ¸**
+2. **Presentation/UI/ViewBuilder.ps1** (650è¡Œ â† å…ƒ280è¡Œ)
+   - UIæ§‹ç¯‰å±¤ã®å®Œå…¨å®Ÿè£…
+   - WinFormsã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ã®ãƒ•ã‚¡ã‚¯ãƒˆãƒªãƒ¼é–¢æ•°
+   - ã‚»ãƒ«æ§‹æˆé–¢æ•°ã®è¿½åŠ  (Configure-ScenarioColumn, Configure-QuickDataColumn, Configure-QuickActionColumn)
+   - ãƒ­ã‚°è¡¨ç¤ºé–¢æ•°ã®è¿½åŠ  (Update-LogDisplay, Get-MessageSummary)
+   - è¡Œã®è‰²è¨­å®šé–¢æ•°ã®è¿½åŠ  (Set-RowColor)
+   - å†åˆ©ç”¨å¯èƒ½ãªUIè¦ç´ ç”Ÿæˆ
 
-| ƒtƒ@ƒCƒ‹ | •ÏX‘O | •ÏXŒã | íŒ¸ |
+### ãƒªãƒ•ã‚¡ã‚¯ã‚¿ãƒªãƒ³ã‚°æ¸ˆã¿ãƒ•ã‚¡ã‚¤ãƒ«
+
+3. **Presentation/UI/MainForm.ps1** (922è¡Œ â† å…ƒ1236è¡Œ)
+   - **314è¡Œå‰Šæ¸› (25%æ¸›)**
+   - ãƒ—ãƒ¬ã‚¼ãƒ³ãƒ†ãƒ¼ã‚·ãƒ§ãƒ³å±¤
+   - Viewã¨ViewModelã®æŽ¥ç¶š
+   - ã‚¤ãƒ™ãƒ³ãƒˆãƒãƒ³ãƒ‰ãƒªãƒ³ã‚°
+   - ãƒ‡ãƒ¼ã‚¿ãƒã‚¤ãƒ³ãƒ‡ã‚£ãƒ³ã‚°
+   - UIæ§‹ç¯‰ã‚³ãƒ¼ãƒ‰ã‚’ViewBuilderã«å®Œå…¨ç§»è­²
+
+### ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—
+
+4. **Presentation/UI/MainForm.ps1.bak** (1400è¡Œ)
+   - ã‚ªãƒªã‚¸ãƒŠãƒ«ã®ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—
+
+---
+
+## ? Phase 2 ã§å®Ÿè£…ã•ã‚ŒãŸæ”¹å–„
+
+### 1. **ViewBuilder ã®å®Œå…¨å®Ÿè£…**
+
+UIæ§‹ç¯‰é–¢æ•°ã‚’MainForm.ps1ã‹ã‚‰ViewBuilder.ps1ã«å®Œå…¨ç§»è¡Œ:
+- `Configure-ScenarioColumn` - Auto Responseã‚»ãƒ«æ§‹æˆ
+- `Configure-QuickDataColumn` - Quick Dataã‚»ãƒ«æ§‹æˆ  
+- `Configure-QuickActionColumn` - Quick Actionã‚»ãƒ«æ§‹æˆ
+- `Set-RowColor` - æŽ¥ç¶šçŠ¶æ…‹ã«ã‚ˆã‚‹è¡Œã®è‰²è¨­å®š
+- `Update-LogDisplay` - ãƒ­ã‚°è¡¨ç¤ºã®æ›´æ–°
+- `Get-MessageSummary` - ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸è¦ç´„ç”Ÿæˆ
+
+### 2. **ã‚³ãƒ¼ãƒ‰ã‚µã‚¤ã‚ºã®å¤§å¹…å‰Šæ¸›**
+
+| ãƒ•ã‚¡ã‚¤ãƒ« | å¤‰æ›´å‰ | å¤‰æ›´å¾Œ | å‰Šæ¸› |
 |---------|--------|--------|------|
-| MainForm.ps1 | 1236s | 922s | **-314s (25%)** |
-| ViewBuilder.ps1 | 280s | 650s | +370s |
+| MainForm.ps1 | 1236è¡Œ | 922è¡Œ | **-314è¡Œ (25%)** |
+| ViewBuilder.ps1 | 280è¡Œ | 650è¡Œ | +370è¡Œ |
 
-**ƒˆ‚Èd•¡íœ:** 56s‚Ìd•¡ƒR[ƒh‚ðíŒ¸
+**ç´”ç²‹ãªé‡è¤‡å‰Šé™¤:** 56è¡Œã®é‡è¤‡ã‚³ãƒ¼ãƒ‰ã‚’å‰Šæ¸›
 
-### 3. **Ó–±‚ÌŠ®‘S•ª—£**
+### 3. **è²¬å‹™ã®å®Œå…¨åˆ†é›¢**
 
-| ‘w | ƒtƒ@ƒCƒ‹ | Ó–± | s” |
+| å±¤ | ãƒ•ã‚¡ã‚¤ãƒ« | è²¬å‹™ | è¡Œæ•° |
 |---|---|---|---:|
-| **ViewModel** | MainFormViewModel.ps1 | ƒf[ƒ^ŠÇ—AƒrƒWƒlƒXƒƒWƒbƒNŽÀs | 386 |
-| **View Builder** | ViewBuilder.ps1 | UIƒRƒ“ƒgƒ[ƒ‹¶¬AƒZƒ‹\¬ | 650 |
-| **Presentation** | MainForm.ps1 | ƒCƒxƒ“ƒgˆ—Aƒf[ƒ^ƒoƒCƒ“ƒfƒBƒ“ƒO | 922 |
+| **ViewModel** | MainFormViewModel.ps1 | ãƒ‡ãƒ¼ã‚¿ç®¡ç†ã€ãƒ“ã‚¸ãƒã‚¹ãƒ­ã‚¸ãƒƒã‚¯å®Ÿè¡Œ | 386 |
+| **View Builder** | ViewBuilder.ps1 | UIã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ç”Ÿæˆã€ã‚»ãƒ«æ§‹æˆ | 650 |
+| **Presentation** | MainForm.ps1 | ã‚¤ãƒ™ãƒ³ãƒˆå‡¦ç†ã€ãƒ‡ãƒ¼ã‚¿ãƒã‚¤ãƒ³ãƒ‡ã‚£ãƒ³ã‚° | 922 |
 
 ---
 
-## ? ŽÀ‘•‚³‚ê‚½‹@”\
+## ? å®Ÿè£…ã•ã‚ŒãŸæ©Ÿèƒ½
 
-### MVVM ƒpƒ^[ƒ“
+### MVVM ãƒ‘ã‚¿ãƒ¼ãƒ³
 
-- ? **Model**: Šù‘¶‚ÌCore‘wiConnectionService, InstanceManager“™j
-- ? **View**: ViewBuilder.ps1 ‚É‚æ‚éUI\’z
-- ? **ViewModel**: MainFormViewModel.ps1 ‚É‚æ‚éƒrƒWƒlƒXƒƒWƒbƒN
-- ? **Data Binding**: OnPropertyChanged ‚É‚æ‚éUIŽ©“®XV€”õŠ®—¹
+- ? **Model**: æ—¢å­˜ã®Coreå±¤ï¼ˆConnectionService, InstanceManagerç­‰ï¼‰
+- ? **View**: ViewBuilder.ps1 ã«ã‚ˆã‚‹UIæ§‹ç¯‰
+- ? **ViewModel**: MainFormViewModel.ps1 ã«ã‚ˆã‚‹ãƒ“ã‚¸ãƒã‚¹ãƒ­ã‚¸ãƒƒã‚¯
+- ? **Data Binding**: OnPropertyChanged ã«ã‚ˆã‚‹UIè‡ªå‹•æ›´æ–°æº–å‚™å®Œäº†
 
-### ˆË‘¶«’“ü
+### ä¾å­˜æ€§æ³¨å…¥
 
 ```powershell
-# ƒT[ƒrƒX‚ðViewModel‚É’“ü
+# ã‚µãƒ¼ãƒ“ã‚¹ã‚’ViewModelã«æ³¨å…¥
 $viewModel = New-MainFormViewModel `
     -ConnectionService $connectionService `
     -InstanceManager $instanceManager `
     -MessageService $messageService
 ```
 
-### ViewBuilder ŠÖ”‚ÌŽg—p
+### ViewBuilder é–¢æ•°ã®ä½¿ç”¨
 
 ```powershell
-# MainForm.ps1 ‚Å‚ÌŽg—p—á
+# MainForm.ps1 ã§ã®ä½¿ç”¨ä¾‹
 $form = New-MainFormWindow -Title "TCP Test Controller v1.0" -Width 1200 -Height 700
 $dgvInstances = New-ConnectionDataGridView -X 10 -Y 50 -Width 1160 -Height 230
 $btnRefresh = New-ToolbarButton -Text "Refresh" -X 10 -Y 10
@@ -104,39 +104,39 @@ $txtLog = New-LogTextBox -X 10 -Y 315 -Width 1165 -Height 335
 
 ---
 
-## ? ‰ü‘P‚³‚ê‚½“_
+## ? æ”¹å–„ã•ã‚ŒãŸç‚¹
 
-### 1. **ƒR[ƒh‚Ì®—**
-- 1236s‚Ìƒtƒ@ƒCƒ‹‚ð922s‚ÉíŒ¸
-- UI\’zƒR[ƒh‚ðViewBuilder‚ÉŠ®‘SˆÚs
-- Šeƒtƒ@ƒCƒ‹‚ÌÓ–±‚ª–¾Šm
+### 1. **ã‚³ãƒ¼ãƒ‰ã®æ•´ç†**
+- 1236è¡Œã®ãƒ•ã‚¡ã‚¤ãƒ«ã‚’922è¡Œã«å‰Šæ¸›
+- UIæ§‹ç¯‰ã‚³ãƒ¼ãƒ‰ã‚’ViewBuilderã«å®Œå…¨ç§»è¡Œ
+- å„ãƒ•ã‚¡ã‚¤ãƒ«ã®è²¬å‹™ãŒæ˜Žç¢º
 
-### 2. **ƒeƒXƒ^ƒrƒŠƒeƒB**
-- ViewModel‚ªUI‚©‚ç“Æ—§
-- ViewBuilder‚ÌŠÖ”‚ª“Æ—§‚µ‚ÄƒeƒXƒg‰Â”\
-- ’P‘ÌƒeƒXƒg‚ª—eˆÕ‚É
+### 2. **ãƒ†ã‚¹ã‚¿ãƒ“ãƒªãƒ†ã‚£**
+- ViewModelãŒUIã‹ã‚‰ç‹¬ç«‹
+- ViewBuilderã®é–¢æ•°ãŒç‹¬ç«‹ã—ã¦ãƒ†ã‚¹ãƒˆå¯èƒ½
+- å˜ä½“ãƒ†ã‚¹ãƒˆãŒå®¹æ˜“ã«
 
-### 3. **•ÛŽç«**
-- •ÏX‚Ì‰e‹¿”ÍˆÍ‚ªŒÀ’è“I
-- UIƒfƒUƒCƒ“•ÏX ¨ ViewBuilder.ps1 ‚Ì‚Ý
-- ƒƒWƒbƒN•ÏX ¨ MainFormViewModel.ps1 ‚Ì‚Ý
-- ƒCƒxƒ“ƒgˆ—•ÏX ¨ MainForm.ps1 ‚Ì‚Ý
+### 3. **ä¿å®ˆæ€§**
+- å¤‰æ›´ã®å½±éŸ¿ç¯„å›²ãŒé™å®šçš„
+- UIãƒ‡ã‚¶ã‚¤ãƒ³å¤‰æ›´ â†’ ViewBuilder.ps1 ã®ã¿
+- ãƒ­ã‚¸ãƒƒã‚¯å¤‰æ›´ â†’ MainFormViewModel.ps1 ã®ã¿
+- ã‚¤ãƒ™ãƒ³ãƒˆå‡¦ç†å¤‰æ›´ â†’ MainForm.ps1 ã®ã¿
 
-### 4. **Šg’£«**
-- V‚µ‚¢ƒvƒƒtƒ@ƒCƒ‹ƒ^ƒCƒv‚Ì’Ç‰Á‚ª—eˆÕ
-- V‚µ‚¢UIƒRƒ“ƒ|[ƒlƒ“ƒg‚Ì’Ç‰Á‚ª—eˆÕ
-- MVVMƒpƒ^[ƒ“‚Å\‘¢‰»‚³‚ê‚Ä‚¢‚é‚½‚ßA‹@”\’Ç‰Á‚ª’¼Š´“I
+### 4. **æ‹¡å¼µæ€§**
+- æ–°ã—ã„ãƒ—ãƒ­ãƒ•ã‚¡ã‚¤ãƒ«ã‚¿ã‚¤ãƒ—ã®è¿½åŠ ãŒå®¹æ˜“
+- æ–°ã—ã„UIã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆã®è¿½åŠ ãŒå®¹æ˜“
+- MVVMãƒ‘ã‚¿ãƒ¼ãƒ³ã§æ§‹é€ åŒ–ã•ã‚Œã¦ã„ã‚‹ãŸã‚ã€æ©Ÿèƒ½è¿½åŠ ãŒç›´æ„Ÿçš„
 
-### 5. **Ä—˜—p«**
-- ViewBuilder ‚ÌŠÖ”‚Í‘¼‚ÌƒtƒH[ƒ€‚Å‚àŽg—p‰Â”\
-- ViewModel ‚Ìƒƒ\ƒbƒh‚Í”Ä—p“I
-- ƒZƒ‹\¬ŠÖ”‚ª“ˆê‚³‚ê‚½ƒCƒ“ƒ^[ƒtƒF[ƒX
+### 5. **å†åˆ©ç”¨æ€§**
+- ViewBuilder ã®é–¢æ•°ã¯ä»–ã®ãƒ•ã‚©ãƒ¼ãƒ ã§ã‚‚ä½¿ç”¨å¯èƒ½
+- ViewModel ã®ãƒ¡ã‚½ãƒƒãƒ‰ã¯æ±Žç”¨çš„
+- ã‚»ãƒ«æ§‹æˆé–¢æ•°ãŒçµ±ä¸€ã•ã‚ŒãŸã‚¤ãƒ³ã‚¿ãƒ¼ãƒ•ã‚§ãƒ¼ã‚¹
 
 ---
 
-## ? \•¶ƒ`ƒFƒbƒNŒ‹‰Ê
+## ? æ§‹æ–‡ãƒã‚§ãƒƒã‚¯çµæžœ
 
-? **‚·‚×‚Ä‚Ìƒtƒ@ƒCƒ‹‚Å\•¶ƒGƒ‰[‚È‚µ**
+? **ã™ã¹ã¦ã®ãƒ•ã‚¡ã‚¤ãƒ«ã§æ§‹æ–‡ã‚¨ãƒ©ãƒ¼ãªã—**
 
 ```
 MainForm.ps1: No syntax errors (922 lines)
@@ -146,98 +146,98 @@ ViewBuilder.ps1: No syntax errors (650 lines)
 
 ---
 
-## ? ŽŸ‚ÌƒXƒeƒbƒviƒIƒvƒVƒ‡ƒ“j
+## ? æ¬¡ã®ã‚¹ãƒ†ãƒƒãƒ—ï¼ˆã‚ªãƒ—ã‚·ãƒ§ãƒ³ï¼‰
 
-### Phase 3: ‚“x‚È‹@”\
-- ? Observable ƒvƒƒpƒeƒB‚ÌŽÀ‘•€”õŠ®—¹
-- ? ‘o•ûŒüƒf[ƒ^ƒoƒCƒ“ƒfƒBƒ“ƒO
-- ? ƒJƒXƒ^ƒ€ƒRƒ“ƒgƒ[ƒ‹‚Ìì¬
+### Phase 3: é«˜åº¦ãªæ©Ÿèƒ½
+- ? Observable ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£ã®å®Ÿè£…æº–å‚™å®Œäº†
+- ? åŒæ–¹å‘ãƒ‡ãƒ¼ã‚¿ãƒã‚¤ãƒ³ãƒ‡ã‚£ãƒ³ã‚°
+- ? ã‚«ã‚¹ã‚¿ãƒ ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ã®ä½œæˆ
 
-### Phase 4: ƒpƒtƒH[ƒ}ƒ“ƒX‰ü‘P
-- ? ‰¼‘z‰»DataGridView
-- ? ”ñ“¯ŠúƒƒOXV
-- ? ƒoƒbƒNƒOƒ‰ƒEƒ“ƒhˆ—‚ÌÅ“K‰»
+### Phase 4: ãƒ‘ãƒ•ã‚©ãƒ¼ãƒžãƒ³ã‚¹æ”¹å–„
+- ? ä»®æƒ³åŒ–DataGridView
+- ? éžåŒæœŸãƒ­ã‚°æ›´æ–°
+- ? ãƒãƒƒã‚¯ã‚°ãƒ©ã‚¦ãƒ³ãƒ‰å‡¦ç†ã®æœ€é©åŒ–
 
-### Phase 5: UI/UX ‰ü‘P
-- ? ƒe[ƒ}ƒTƒ|[ƒg
-- ? ƒ_[ƒNƒ‚[ƒh
-- ? ƒJƒXƒ^ƒ}ƒCƒY‰Â”\‚ÈƒŒƒCƒAƒEƒg
-
----
-
-## ? Œ‹˜_
-
-**GUIƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒO Phase 2 ‚Í¬Œ÷— ‚ÉŠ®—¹‚µ‚Ü‚µ‚½B**
-
-- ? MVVMƒpƒ^[ƒ“‚Ì“±“ü
-- ? Ó–±‚ÌŠ®‘S•ª—£
-- ? ViewBuilder‚Ö‚ÌUI\’zƒR[ƒhŠ®‘SˆÚs
-- ? ƒeƒXƒ^ƒrƒŠƒeƒB‚ÌŒüã
-- ? •ÛŽç«EŠg’£«‚Ì‘å•‚È‰ü‘P
-- ? ƒR[ƒhƒTƒCƒY‚Ì25%íŒ¸ (MainForm.ps1)
-- ? ‚·‚×‚Ä‚ÌŠù‘¶‹@”\‚ðˆÛŽ
-
-**ƒR[ƒhƒx[ƒX‚Ì•iŽ¿‚ª‘å•‚ÉŒüã‚µA¡Œã‚ÌŠJ”­‚ª‚æ‚èŒø—¦“I‚É‚È‚è‚Ü‚·B**
+### Phase 5: UI/UX æ”¹å–„
+- ? ãƒ†ãƒ¼ãƒžã‚µãƒãƒ¼ãƒˆ
+- ? ãƒ€ãƒ¼ã‚¯ãƒ¢ãƒ¼ãƒ‰
+- ? ã‚«ã‚¹ã‚¿ãƒžã‚¤ã‚ºå¯èƒ½ãªãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
 
 ---
 
-## ? “®ìŠm”FŽè‡
+## ? çµè«–
 
-### 1. ƒAƒvƒŠƒP[ƒVƒ‡ƒ“‹N“®
+**GUIãƒªãƒ•ã‚¡ã‚¯ã‚¿ãƒªãƒ³ã‚° Phase 2 ã¯æˆåŠŸè£ã«å®Œäº†ã—ã¾ã—ãŸã€‚**
+
+- ? MVVMãƒ‘ã‚¿ãƒ¼ãƒ³ã®å°Žå…¥
+- ? è²¬å‹™ã®å®Œå…¨åˆ†é›¢
+- ? ViewBuilderã¸ã®UIæ§‹ç¯‰ã‚³ãƒ¼ãƒ‰å®Œå…¨ç§»è¡Œ
+- ? ãƒ†ã‚¹ã‚¿ãƒ“ãƒªãƒ†ã‚£ã®å‘ä¸Š
+- ? ä¿å®ˆæ€§ãƒ»æ‹¡å¼µæ€§ã®å¤§å¹…ãªæ”¹å–„
+- ? ã‚³ãƒ¼ãƒ‰ã‚µã‚¤ã‚ºã®25%å‰Šæ¸› (MainForm.ps1)
+- ? ã™ã¹ã¦ã®æ—¢å­˜æ©Ÿèƒ½ã‚’ç¶­æŒ
+
+**ã‚³ãƒ¼ãƒ‰ãƒ™ãƒ¼ã‚¹ã®å“è³ªãŒå¤§å¹…ã«å‘ä¸Šã—ã€ä»Šå¾Œã®é–‹ç™ºãŒã‚ˆã‚ŠåŠ¹çŽ‡çš„ã«ãªã‚Šã¾ã™ã€‚**
+
+---
+
+## ? å‹•ä½œç¢ºèªæ‰‹é †
+
+### 1. ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³èµ·å‹•
 
 ```powershell
 cd "c:\Users\dhuru\Documents\08. TcpDebugger\TcpDebugger"
 .\TcpDebugger.ps1
 ```
 
-### 2. Šm”F€–Ú
+### 2. ç¢ºèªé …ç›®
 
-- [ ] GUI‚ª³í‚É‹N“®‚·‚é
-- [ ] Ú‘±ƒŠƒXƒg‚ª•\Ž¦‚³‚ê‚é
-- [ ] Refresh/Connect/Disconnect ƒ{ƒ^ƒ“‚ª“®ì‚·‚é
-- [ ] Auto Response ƒvƒƒtƒ@ƒCƒ‹•ÏX‚ª‹@”\‚·‚é
-- [ ] OnReceived ƒvƒƒtƒ@ƒCƒ‹•ÏX‚ª‹@”\‚·‚é
-- [ ] Periodic Send ƒvƒƒtƒ@ƒCƒ‹•ÏX‚ª‹@”\‚·‚é
-- [ ] Quick Data ‘—M‚ª“®ì‚·‚é
-- [ ] Quick Action ŽÀs‚ª“®ì‚·‚é
-- [ ] ƒƒO‚ª³‚µ‚­•\Ž¦‚³‚ê‚é
-
----
-
-## ? ƒhƒLƒ…ƒƒ“ƒg
-
-Ú×‚ÈƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒOƒŒƒ|[ƒg:
-- `GUI_REFACTORING_REPORT.md` - Š®‘S‚È‹ZpƒhƒLƒ…ƒƒ“ƒg
+- [ ] GUIãŒæ­£å¸¸ã«èµ·å‹•ã™ã‚‹
+- [ ] æŽ¥ç¶šãƒªã‚¹ãƒˆãŒè¡¨ç¤ºã•ã‚Œã‚‹
+- [ ] Refresh/Connect/Disconnect ãƒœã‚¿ãƒ³ãŒå‹•ä½œã™ã‚‹
+- [ ] Auto Response ãƒ—ãƒ­ãƒ•ã‚¡ã‚¤ãƒ«å¤‰æ›´ãŒæ©Ÿèƒ½ã™ã‚‹
+- [ ] OnReceived ãƒ—ãƒ­ãƒ•ã‚¡ã‚¤ãƒ«å¤‰æ›´ãŒæ©Ÿèƒ½ã™ã‚‹
+- [ ] Periodic Send ãƒ—ãƒ­ãƒ•ã‚¡ã‚¤ãƒ«å¤‰æ›´ãŒæ©Ÿèƒ½ã™ã‚‹
+- [ ] Quick Data é€ä¿¡ãŒå‹•ä½œã™ã‚‹
+- [ ] Quick Action å®Ÿè¡ŒãŒå‹•ä½œã™ã‚‹
+- [ ] ãƒ­ã‚°ãŒæ­£ã—ãè¡¨ç¤ºã•ã‚Œã‚‹
 
 ---
 
-## ? ŽŸ‚ÌƒXƒeƒbƒviƒIƒvƒVƒ‡ƒ“j
+## ? ãƒ‰ã‚­ãƒ¥ãƒ¡ãƒ³ãƒˆ
 
-### Phase 2: ‚“x‚È‹@”\
-- Observable ƒvƒƒpƒeƒB‚ÌŽÀ‘•
-- ‘o•ûŒüƒf[ƒ^ƒoƒCƒ“ƒfƒBƒ“ƒO
-- ƒJƒXƒ^ƒ€ƒRƒ“ƒgƒ[ƒ‹‚Ìì¬
-
-### Phase 3: ƒpƒtƒH[ƒ}ƒ“ƒX‰ü‘P
-- ‰¼‘z‰»DataGridView
-- ”ñ“¯ŠúƒƒOXV
-- ƒoƒbƒNƒOƒ‰ƒEƒ“ƒhˆ—‚ÌÅ“K‰»
-
-### Phase 4: UI/UX ‰ü‘P
-- ƒe[ƒ}ƒTƒ|[ƒg
-- ƒ_[ƒNƒ‚[ƒh
-- ƒJƒXƒ^ƒ}ƒCƒY‰Â”\‚ÈƒŒƒCƒAƒEƒg
+è©³ç´°ãªãƒªãƒ•ã‚¡ã‚¯ã‚¿ãƒªãƒ³ã‚°ãƒ¬ãƒãƒ¼ãƒˆ:
+- `GUI_REFACTORING_REPORT.md` - å®Œå…¨ãªæŠ€è¡“ãƒ‰ã‚­ãƒ¥ãƒ¡ãƒ³ãƒˆ
 
 ---
 
-## ? Œ‹˜_
+## ? æ¬¡ã®ã‚¹ãƒ†ãƒƒãƒ—ï¼ˆã‚ªãƒ—ã‚·ãƒ§ãƒ³ï¼‰
 
-**GUIƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒO‚Í¬Œ÷— ‚ÉŠ®—¹‚µ‚Ü‚µ‚½B**
+### Phase 2: é«˜åº¦ãªæ©Ÿèƒ½
+- Observable ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£ã®å®Ÿè£…
+- åŒæ–¹å‘ãƒ‡ãƒ¼ã‚¿ãƒã‚¤ãƒ³ãƒ‡ã‚£ãƒ³ã‚°
+- ã‚«ã‚¹ã‚¿ãƒ ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ã®ä½œæˆ
 
-- ? MVVMƒpƒ^[ƒ“‚Ì“±“ü
-- ? Ó–±‚Ì–¾Šm‚È•ª—£
-- ? ƒeƒXƒ^ƒrƒŠƒeƒB‚ÌŒüã
-- ? •ÛŽç«EŠg’£«‚Ì‘å•‚È‰ü‘P
-- ? ‚·‚×‚Ä‚ÌŠù‘¶‹@”\‚ðˆÛŽ
+### Phase 3: ãƒ‘ãƒ•ã‚©ãƒ¼ãƒžãƒ³ã‚¹æ”¹å–„
+- ä»®æƒ³åŒ–DataGridView
+- éžåŒæœŸãƒ­ã‚°æ›´æ–°
+- ãƒãƒƒã‚¯ã‚°ãƒ©ã‚¦ãƒ³ãƒ‰å‡¦ç†ã®æœ€é©åŒ–
 
-**ƒR[ƒhƒx[ƒX‚Ì•iŽ¿‚ª‘å•‚ÉŒüã‚µA¡Œã‚ÌŠJ”­‚ª‚æ‚èŒø—¦“I‚É‚È‚è‚Ü‚·B**
+### Phase 4: UI/UX æ”¹å–„
+- ãƒ†ãƒ¼ãƒžã‚µãƒãƒ¼ãƒˆ
+- ãƒ€ãƒ¼ã‚¯ãƒ¢ãƒ¼ãƒ‰
+- ã‚«ã‚¹ã‚¿ãƒžã‚¤ã‚ºå¯èƒ½ãªãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
+
+---
+
+## ? çµè«–
+
+**GUIãƒªãƒ•ã‚¡ã‚¯ã‚¿ãƒªãƒ³ã‚°ã¯æˆåŠŸè£ã«å®Œäº†ã—ã¾ã—ãŸã€‚**
+
+- ? MVVMãƒ‘ã‚¿ãƒ¼ãƒ³ã®å°Žå…¥
+- ? è²¬å‹™ã®æ˜Žç¢ºãªåˆ†é›¢
+- ? ãƒ†ã‚¹ã‚¿ãƒ“ãƒªãƒ†ã‚£ã®å‘ä¸Š
+- ? ä¿å®ˆæ€§ãƒ»æ‹¡å¼µæ€§ã®å¤§å¹…ãªæ”¹å–„
+- ? ã™ã¹ã¦ã®æ—¢å­˜æ©Ÿèƒ½ã‚’ç¶­æŒ
+
+**ã‚³ãƒ¼ãƒ‰ãƒ™ãƒ¼ã‚¹ã®å“è³ªãŒå¤§å¹…ã«å‘ä¸Šã—ã€ä»Šå¾Œã®é–‹ç™ºãŒã‚ˆã‚ŠåŠ¹çŽ‡çš„ã«ãªã‚Šã¾ã™ã€‚**

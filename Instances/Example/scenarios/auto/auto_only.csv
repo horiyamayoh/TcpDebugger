@@ -1,5 +1,5 @@
 RuleName,MatchOffset,MatchLength,MatchValue,ResponseMessageFile,Delay
-ƒƒOƒCƒ“‰“š,0,2,0001,login_response.csv,0
-ƒf[ƒ^‰“š,0,2,0010,data_response.csv,0
-ƒGƒR[‰“š,0,2,0020,echo_response.csv,0
-ƒXƒe[ƒ^ƒX‰“š,0,2,0030,status_response.csv,0
+ãƒ­ã‚°ã‚¤ãƒ³å¿œç­”,0,2,00 01,login_response.csv,0
+ãƒ‡ãƒ¼ã‚¿å¿œç­”,0,2,00 10,data_response.csv,0
+ã‚¨ã‚³ãƒ¼å¿œç­”,0,2,00 20,echo_response.csv,0
+ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹å¿œç­”,0,2,00 30,status_response.csv,0

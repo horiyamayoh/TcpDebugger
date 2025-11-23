@@ -1,4 +1,4 @@
-# MainFormViewModel.ps1
+﻿# MainFormViewModel.ps1
 # ViewModel for the main form - separates UI state and business logic from presentation
 
 class MainFormViewModel {

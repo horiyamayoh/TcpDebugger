@@ -1,4 +1,4 @@
-# MainForm.ps1
+ï»¿# MainForm.ps1
 # WinForms main window definition
 
 Add-Type -AssemblyName System.Windows.Forms
@@ -48,7 +48,7 @@ function Show-MainForm {
     $btnDisconnect = New-ToolbarButton -Text "Disconnect" -X 120 -Y 10
     $form.Controls.Add($btnDisconnect)
 
-    # Global profile combo box (ƒAƒvƒŠƒP[ƒVƒ‡ƒ“ƒvƒƒtƒ@ƒCƒ‹—p)
+    # Global profile combo box (ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ãƒ—ãƒ­ãƒ•ã‚¡ã‚¤ãƒ«ç”¨)
     $lblGlobalProfile = New-Object System.Windows.Forms.Label
     $lblGlobalProfile.Text = "App Profile:"
     $lblGlobalProfile.Location = New-Object System.Drawing.Point(230, 13)
@@ -73,7 +73,7 @@ function Show-MainForm {
     $txtLog = New-LogTextBox -X 10 -Y 315 -Width 1165 -Height 385
     $form.Controls.Add($txtLog)
     
-    # ƒAƒvƒŠƒP[ƒVƒ‡ƒ“ƒvƒƒtƒ@ƒCƒ‹ƒRƒ“ƒ{ƒ{ƒbƒNƒX‚Ì‰Šú‰»
+    # ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ãƒ—ãƒ­ãƒ•ã‚¡ã‚¤ãƒ«ã‚³ãƒ³ãƒœãƒœãƒƒã‚¯ã‚¹ã®åˆæœŸåŒ–
     function Initialize-ProfileComboBoxes {
         $script:cmbGlobalProfile.Items.Clear()
         $script:cmbGlobalProfile.Items.Add("(None)") | Out-Null
@@ -92,7 +92,7 @@ function Show-MainForm {
         }
     }
     
-    # ƒAƒvƒŠƒP[ƒVƒ‡ƒ“ƒvƒƒtƒ@ƒCƒ‹‘I‘ğƒCƒxƒ“ƒg
+    # ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ãƒ—ãƒ­ãƒ•ã‚¡ã‚¤ãƒ«é¸æŠã‚¤ãƒ™ãƒ³ãƒˆ
     $script:cmbGlobalProfile.Add_SelectedIndexChanged({
         $selectedProfile = $script:cmbGlobalProfile.SelectedItem
         if (-not $selectedProfile) {
@@ -123,7 +123,7 @@ function Show-MainForm {
     Register-GridEvents -DataGridView $dgvInstances -GridState $gridState
     Register-ButtonEvents -DataGridView $dgvInstances -BtnConnect $btnConnect -BtnDisconnect $btnDisconnect
 
-    # ƒƒbƒZ[ƒWˆ—ƒ^ƒCƒ}[ (100msŠÔŠu‚ÅRunspace‚©‚ç‚ÌƒƒbƒZ[ƒW‚ğˆ—)
+    # ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å‡¦ç†ã‚¿ã‚¤ãƒãƒ¼ (100msé–“éš”ã§Runspaceã‹ã‚‰ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’å‡¦ç†)
     $messageTimer = New-Object System.Windows.Forms.Timer
     $messageTimer.Interval = 100
     $messageTimer.Add_Tick({
@@ -133,12 +133,12 @@ function Show-MainForm {
             }
         }
         catch {
-            # ƒGƒ‰[‚Í’Êí‚ÌƒƒK[‚É”C‚¹‚é
+            # ã‚¨ãƒ©ãƒ¼ã¯é€šå¸¸ã®ãƒ­ã‚¬ãƒ¼ã«ä»»ã›ã‚‹
         }
     })
     $messageTimer.Start()
 
-    # Timer for periodic refresh (3•bŠÔŠu‚Å«”\Å“K‰»)
+    # Timer for periodic refresh (3ç§’é–“éš”ã§æ€§èƒ½æœ€é©åŒ–)
     $timer = New-RefreshTimer -IntervalMilliseconds 3000
     $timer.Add_Tick({
         try {
@@ -159,7 +159,7 @@ function Show-MainForm {
         $messageTimer.Stop()
         $timer.Stop()
         
-        # Loggerƒoƒbƒtƒ@‚ğƒtƒ‰ƒbƒVƒ…
+        # Loggerãƒãƒƒãƒ•ã‚¡ã‚’ãƒ•ãƒ©ãƒƒã‚·ãƒ¥
         if ($Global:Logger) {
             try {
                 $Global:Logger.Flush()
@@ -185,7 +185,7 @@ function Show-MainForm {
         }
     })
 
-    # ƒvƒƒtƒ@ƒCƒ‹ƒRƒ“ƒ{ƒ{ƒbƒNƒX‚ğ‰Šú‰»
+    # ãƒ—ãƒ­ãƒ•ã‚¡ã‚¤ãƒ«ã‚³ãƒ³ãƒœãƒœãƒƒã‚¯ã‚¹ã‚’åˆæœŸåŒ–
     try {
         Initialize-ProfileComboBoxes
     }
@@ -553,39 +553,39 @@ function Apply-PeriodicSendProfile {
             throw "Connection not found: $ConnectionId"
         }
 
-        # V‚µ‚¢ƒvƒƒtƒ@ƒCƒ‹‚ğİ’èiStart-PeriodicSend‚ª“à•”‚ÅStop-PeriodicSend‚ğŒÄ‚Ôj
+        # æ–°ã—ã„ãƒ—ãƒ­ãƒ•ã‚¡ã‚¤ãƒ«ã‚’è¨­å®šï¼ˆStart-PeriodicSendãŒå†…éƒ¨ã§Stop-PeriodicSendã‚’å‘¼ã¶ï¼‰
         if ($profilePath -and (Test-Path -LiteralPath $profilePath)) {
-            # ƒCƒ“ƒXƒ^ƒ“ƒXƒpƒX‚ğæ“¾
+            # ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ãƒ‘ã‚¹ã‚’å–å¾—
             $instancePath = $null
             if ($connection.Variables.ContainsKey('InstancePath')) {
                 $instancePath = $connection.Variables['InstancePath']
             }
 
-            # PeriodicSend‚ğŠJni“à•”‚ÅŠù‘¶ƒ^ƒCƒ}[‚ğ’â~j
+            # PeriodicSendã‚’é–‹å§‹ï¼ˆå†…éƒ¨ã§æ—¢å­˜ã‚¿ã‚¤ãƒãƒ¼ã‚’åœæ­¢ï¼‰
             Start-PeriodicSend -ConnectionId $ConnectionId -RuleFilePath $profilePath -InstancePath $instancePath
             
-            # Ú‘±ƒIƒuƒWƒFƒNƒg‚Éƒvƒƒtƒ@ƒCƒ‹–¼‚ğ•Û‘¶
+            # æ¥ç¶šã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã«ãƒ—ãƒ­ãƒ•ã‚¡ã‚¤ãƒ«åã‚’ä¿å­˜
             $connection.Variables['PeriodicSendProfile'] = $profileName
             $connection.Variables['PeriodicSendProfilePath'] = $profilePath
             
             Write-Host "[PeriodicSend] Applied profile: $profileName" -ForegroundColor Green
         }
         else {
-            # ƒvƒƒtƒ@ƒCƒ‹‚ğƒNƒŠƒAi–¾¦“I‚Éƒ^ƒCƒ}[‚ğ’â~j
+            # ãƒ—ãƒ­ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ã‚¯ãƒªã‚¢ï¼ˆæ˜ç¤ºçš„ã«ã‚¿ã‚¤ãƒãƒ¼ã‚’åœæ­¢ï¼‰
             Stop-PeriodicSend -ConnectionId $ConnectionId
             $connection.Variables.Remove('PeriodicSendProfile')
             $connection.Variables.Remove('PeriodicSendProfilePath')
             Write-Host "[PeriodicSend] Cleared profile" -ForegroundColor Yellow
         }
 
-        # Tag‚ğXV
+        # Tagã‚’æ›´æ–°
         $tagData = $Cell.Tag
         if ($tagData -is [System.Collections.IDictionary] -and $tagData.ContainsKey("PeriodicSendProfileKey")) {
             $tagData["PeriodicSendProfileKey"] = $Cell.Value
         }
     }
     catch {
-        # ƒGƒ‰[‚ÍŒ³‚Ì’l‚É–ß‚·
+        # ã‚¨ãƒ©ãƒ¼æ™‚ã¯å…ƒã®å€¤ã«æˆ»ã™
         if ($CurrentKey -ne $Cell.Value) {
             $script:suppressPeriodicSendEvent = $true
             try {
@@ -733,7 +733,7 @@ function Apply-ProfileToConnectionRow {
         return
     }
 
-    # ƒCƒ“ƒXƒ^ƒ“ƒX–¼‚ÆƒpƒX‚ğæ“¾
+    # ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹åã¨ãƒ‘ã‚¹ã‚’å–å¾—
     $instanceName = ""
     if ($connection.Variables -and $connection.Variables.ContainsKey('InstanceName')) {
         $instanceName = $connection.Variables['InstanceName']
@@ -797,10 +797,10 @@ function Apply-ApplicationProfile {
     }
 
     try {
-        # ƒAƒvƒŠƒP[ƒVƒ‡ƒ“ƒvƒƒtƒ@ƒCƒ‹‚ğ“K—pi‘SƒCƒ“ƒXƒ^ƒ“ƒX‚ÉˆêÄ“K—pj
+        # ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ãƒ—ãƒ­ãƒ•ã‚¡ã‚¤ãƒ«ã‚’é©ç”¨ï¼ˆå…¨ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã«ä¸€æ–‰é©ç”¨ï¼‰
         $Global:ProfileService.ApplyApplicationProfile($ProfileName)
         
-        # UI‚ğXV
+        # UIã‚’æ›´æ–°
         $script:suppressProfileEvent = $true
         $script:suppressScenarioEvent = $true
         $script:suppressOnReceivedEvent = $true
@@ -1019,7 +1019,7 @@ function Handle-EditingControlShowing {
         return
     }
 
-    # ƒhƒƒbƒvƒ_ƒEƒ“•\¦ˆ—
+    # ãƒ‰ãƒ­ãƒƒãƒ—ãƒ€ã‚¦ãƒ³è¡¨ç¤ºå‡¦ç†
     if ($GridState.PendingComboDropDown) {
         $currentCell = $Sender.CurrentCell
         if (-not $currentCell -or -not $currentCell.OwningColumn) {
@@ -1034,25 +1034,25 @@ function Handle-EditingControlShowing {
         $GridState.PendingComboDropDown = $null
     }
 
-    # ƒRƒ“ƒ{ƒ{ƒbƒNƒX‘I‘ğ•ÏX‚Ì‘¦À”½‰fiPeriodicSend‚âScenario—pj
+    # ã‚³ãƒ³ãƒœãƒœãƒƒã‚¯ã‚¹é¸æŠå¤‰æ›´ã®å³åº§åæ˜ ï¼ˆPeriodicSendã‚„Scenarioç”¨ï¼‰
     $currentCell = $Sender.CurrentCell
     if ($currentCell -and $currentCell.OwningColumn) {
         $columnName = $currentCell.OwningColumn.Name
         
-        # ˆÈ‘O‚ÌƒCƒxƒ“ƒgƒnƒ“ƒhƒ‰[‚ğíœid•¡“o˜^–h~j
+        # ä»¥å‰ã®ã‚¤ãƒ™ãƒ³ãƒˆãƒãƒ³ãƒ‰ãƒ©ãƒ¼ã‚’å‰Šé™¤ï¼ˆé‡è¤‡ç™»éŒ²é˜²æ­¢ï¼‰
         $control.remove_SelectedIndexChanged($script:comboSelectedIndexChangedHandler)
         
-        # V‚µ‚¢ƒCƒxƒ“ƒgƒnƒ“ƒhƒ‰[‚ğì¬
+        # æ–°ã—ã„ã‚¤ãƒ™ãƒ³ãƒˆãƒãƒ³ãƒ‰ãƒ©ãƒ¼ã‚’ä½œæˆ
         $script:comboSelectedIndexChangedHandler = {
             param($comboSender, $comboArgs)
             
-            # ƒRƒ“ƒ{ƒ{ƒbƒNƒX‚©‚çe‚ÌDataGridView‚ğæ“¾
+            # ã‚³ãƒ³ãƒœãƒœãƒƒã‚¯ã‚¹ã‹ã‚‰è¦ªã®DataGridViewã‚’å–å¾—
             $comboBox = $comboSender -as [System.Windows.Forms.ComboBox]
             if (-not $comboBox) {
                 return
             }
             
-            # eƒRƒ“ƒgƒ[ƒ‹‚ğ’H‚Á‚ÄDataGridView‚ğæ“¾
+            # è¦ªã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ã‚’è¾¿ã£ã¦DataGridViewã‚’å–å¾—
             $grid = $comboBox.Parent
             while ($grid -and $grid -isnot [System.Windows.Forms.DataGridView]) {
                 $grid = $grid.Parent
@@ -1070,10 +1070,10 @@ function Handle-EditingControlShowing {
                 $columnName = $cell.OwningColumn.Name
                 $rowIndex = $cell.RowIndex
                 
-                # s‚©‚çConnectionId‚ğæ“¾
+                # è¡Œã‹ã‚‰ConnectionIdã‚’å–å¾—
                 $row = $grid.Rows[$rowIndex]
                 
-                # —ñ‚Ì‘¶İŠm”FiˆÀ‘S‚È•û–@j
+                # åˆ—ã®å­˜åœ¨ç¢ºèªï¼ˆå®‰å…¨ãªæ–¹æ³•ï¼‰
                 $idCell = $null
                 try {
                     $idCell = $row.Cells["Id"]
@@ -1091,13 +1091,13 @@ function Handle-EditingControlShowing {
                     return
                 }
                 
-                # ƒZƒ‹‚Ì’l‚ğXV
+                # ã‚»ãƒ«ã®å€¤ã‚’æ›´æ–°
                 $cell.Value = $selectedValue
                 
-                # •ÒW‚ğI—¹
+                # ç·¨é›†ã‚’çµ‚äº†
                 $grid.EndEdit()
                 
-                # ƒJƒ‰ƒ€‚²‚Æ‚Ìˆ—‚ğÀs
+                # ã‚«ãƒ©ãƒ ã”ã¨ã®å‡¦ç†ã‚’å®Ÿè¡Œ
                 if ($columnName -eq "Profile") {
                     try {
                         Apply-ProfileToConnectionRow -DataGridView $grid -Row $row -ProfileName $selectedValue
@@ -1155,7 +1155,7 @@ function Handle-EditingControlShowing {
             }
         }
         
-        # ƒCƒxƒ“ƒgƒnƒ“ƒhƒ‰[“o˜^
+        # ã‚¤ãƒ™ãƒ³ãƒˆãƒãƒ³ãƒ‰ãƒ©ãƒ¼ç™»éŒ²
         $control.add_SelectedIndexChanged($script:comboSelectedIndexChangedHandler)
     }
 }
@@ -1222,14 +1222,14 @@ function Save-GridState {
         $firstDisplayedIndex = $null
     }
 
-    # ComboBox‚Ì‘I‘ğó‘Ô‚ğ•Û‘¶
+    # ComboBoxã®é¸æŠçŠ¶æ…‹ã‚’ä¿å­˜
     $comboStates = @{}
     foreach ($row in $DataGridView.Rows) {
         if ($row.Cells["Id"].Value) {
             $connId = $row.Cells["Id"].Value
             $comboStates[$connId] = @{}
             
-            # ŠeComboBox—ñ‚Ì‘I‘ğ’l‚ğ•Û‘¶
+            # å„ComboBoxåˆ—ã®é¸æŠå€¤ã‚’ä¿å­˜
             foreach ($colName in @('Profile', 'AutoResponse', 'OnReceived', 'PeriodicSend')) {
                 if ($DataGridView.Columns.Contains($colName)) {
                     $comboStates[$connId][$colName] = $row.Cells[$colName].Value

@@ -1,4 +1,4 @@
-# Fix Logger method names in Profile files
+﻿# Fix Logger method names in Profile files
 
 $files = @(
     "Core\Domain\ProfileService.ps1",

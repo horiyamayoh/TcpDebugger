@@ -1,163 +1,163 @@
-# ƒtƒF[ƒY3Š®—¹ƒTƒ}ƒŠ[
+# ãƒ•ã‚§ãƒ¼ã‚º3å®Œäº†ã‚µãƒãƒªãƒ¼
 
-**Š®—¹“ú:** 2025-11-16  
-**ƒXƒe[ƒ^ƒX:** ? Š®—¹
+**å®Œäº†æ—¥:** 2025-11-16  
+**ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹:** ? å®Œäº†
 
 ---
 
-## À‘•“à—e
+## å®Ÿè£…å†…å®¹
 
-### 1. MessageServiceƒNƒ‰ƒX‚ÌÀ‘•
+### 1. MessageServiceã‚¯ãƒ©ã‚¹ã®å®Ÿè£…
 
-**ƒtƒ@ƒCƒ‹:** `Core/Domain/MessageService.ps1`
+**ãƒ•ã‚¡ã‚¤ãƒ«:** `Core/Domain/MessageService.ps1`
 
-**‹@”\:**
-- ? ƒeƒ“ƒvƒŒ[ƒgƒLƒƒƒbƒVƒ…ŠÇ—iƒtƒ@ƒCƒ‹•ÏXŒŸ’mj
-- ? ƒJƒXƒ^ƒ€•Ï”ƒnƒ“ƒhƒ‰[“o˜^EÀs
-- ? •Ï”“WŠJˆ—i‘g‚İ‚İ•Ï”‘Î‰j
-- ? HEX/ƒGƒ“ƒR[ƒfƒBƒ“ƒO•ÏŠ·
-- ? ƒVƒiƒŠƒIƒtƒ@ƒCƒ‹“Ç‚İ‚İEÀs
-- ? ƒƒbƒZ[ƒW‘—MAPIiSendTemplate/SendBytes/SendHex/SendTextj
+**æ©Ÿèƒ½:**
+- ? ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆã‚­ãƒ£ãƒƒã‚·ãƒ¥ç®¡ç†ï¼ˆãƒ•ã‚¡ã‚¤ãƒ«å¤‰æ›´æ¤œçŸ¥ï¼‰
+- ? ã‚«ã‚¹ã‚¿ãƒ å¤‰æ•°ãƒãƒ³ãƒ‰ãƒ©ãƒ¼ç™»éŒ²ãƒ»å®Ÿè¡Œ
+- ? å¤‰æ•°å±•é–‹å‡¦ç†ï¼ˆçµ„ã¿è¾¼ã¿å¤‰æ•°å¯¾å¿œï¼‰
+- ? HEX/ã‚¨ãƒ³ã‚³ãƒ¼ãƒ‡ã‚£ãƒ³ã‚°å¤‰æ›
+- ? ã‚·ãƒŠãƒªã‚ªãƒ•ã‚¡ã‚¤ãƒ«èª­ã¿è¾¼ã¿ãƒ»å®Ÿè¡Œ
+- ? ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸é€ä¿¡APIï¼ˆSendTemplate/SendBytes/SendHex/SendTextï¼‰
 
-**‘g‚İ‚İ•Ï”:**
-- `${timestamp}` - Œ»İiyyyy-MM-dd HH:mm:ssj
-- `${timestamp_ms}` - ƒ~ƒŠ•b•t‚«
-- `${unixtime}` - UnixŠÔ
-- `${guid}` - V‚µ‚¢GUID
-- `${newline}`, `${crlf}`, `${lf}`, `${tab}` - §Œä•¶š
+**çµ„ã¿è¾¼ã¿å¤‰æ•°:**
+- `${timestamp}` - ç¾åœ¨æ™‚åˆ»ï¼ˆyyyy-MM-dd HH:mm:ssï¼‰
+- `${timestamp_ms}` - ãƒŸãƒªç§’ä»˜ãæ™‚åˆ»
+- `${unixtime}` - Unixæ™‚é–“
+- `${guid}` - æ–°ã—ã„GUID
+- `${newline}`, `${crlf}`, `${lf}`, `${tab}` - åˆ¶å¾¡æ–‡å­—
 
-### 2. ServiceContainer‚Ö‚Ì“‡
+### 2. ServiceContainerã¸ã®çµ±åˆ
 
-**ƒtƒ@ƒCƒ‹:** `TcpDebugger.ps1`
+**ãƒ•ã‚¡ã‚¤ãƒ«:** `TcpDebugger.ps1`
 
-**•ÏX“à—e:**
-- MessageService.ps1‚ğƒRƒAƒ‚ƒWƒ…[ƒ‹‚Æ‚µ‚Ä“Ç‚İ‚İ
-- ServiceContainer‚ÉƒVƒ“ƒOƒ‹ƒgƒ“‚Æ‚µ‚Ä“o˜^
-- ƒOƒ[ƒoƒ‹•Ï”‚Æ‚µ‚ÄŒöŠJ: `$Global:MessageService`
+**å¤‰æ›´å†…å®¹:**
+- MessageService.ps1ã‚’ã‚³ã‚¢ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã¨ã—ã¦èª­ã¿è¾¼ã¿
+- ServiceContainerã«ã‚·ãƒ³ã‚°ãƒ«ãƒˆãƒ³ã¨ã—ã¦ç™»éŒ²
+- ã‚°ãƒ­ãƒ¼ãƒãƒ«å¤‰æ•°ã¨ã—ã¦å…¬é–‹: `$Global:MessageService`
 
-### 3. ‹Œƒ‚ƒWƒ…[ƒ‹‚Ì”ñ„§‰»
+### 3. æ—§ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã®éæ¨å¥¨åŒ–
 
 #### MessageHandler.ps1
-- ”ñ„§ƒRƒƒ“ƒg’Ç‰Á
-- Register-CustomVariableHandler ¨ MessageService.RegisterCustomVariableHandler() ˆÏ÷
-- Unregister-CustomVariableHandler ¨ MessageService.UnregisterCustomVariableHandler() ˆÏ÷
-- Œã•ûŒİŠ·«‚ğˆÛ
+- éæ¨å¥¨ã‚³ãƒ¡ãƒ³ãƒˆè¿½åŠ 
+- Register-CustomVariableHandler â†’ MessageService.RegisterCustomVariableHandler() å§”è­²
+- Unregister-CustomVariableHandler â†’ MessageService.UnregisterCustomVariableHandler() å§”è­²
+- å¾Œæ–¹äº’æ›æ€§ã‚’ç¶­æŒ
 
 #### ScenarioEngine.ps1
-- ”ñ„§ƒRƒƒ“ƒg’Ç‰Á
-- Start-Scenario ¨ MessageService.StartScenario() ˆÏ÷
-- Read-ScenarioFile ‚É”ñ„§ƒ}[ƒN’Ç‰Á
+- éæ¨å¥¨ã‚³ãƒ¡ãƒ³ãƒˆè¿½åŠ 
+- Start-Scenario â†’ MessageService.StartScenario() å§”è­²
+- Read-ScenarioFile ã«éæ¨å¥¨ãƒãƒ¼ã‚¯è¿½åŠ 
 
 #### QuickSender.ps1
-- ”ñ„§ƒRƒƒ“ƒg’Ç‰Á
-- «—ˆ“I‚ÉMessageService“‡—\’è
+- éæ¨å¥¨ã‚³ãƒ¡ãƒ³ãƒˆè¿½åŠ 
+- å°†æ¥çš„ã«MessageServiceçµ±åˆäºˆå®š
 
 #### PeriodicSender.ps1
-- ”ñ„§ƒRƒƒ“ƒg’Ç‰Á
-- «—ˆ“I‚ÉMessageService“‡—\’è
+- éæ¨å¥¨ã‚³ãƒ¡ãƒ³ãƒˆè¿½åŠ 
+- å°†æ¥çš„ã«MessageServiceçµ±åˆäºˆå®š
 
 ---
 
-## “‡ó‹µ
+## çµ±åˆçŠ¶æ³
 
-### ? Š®‘S“‡Ï‚İ
+### ? å®Œå…¨çµ±åˆæ¸ˆã¿
 
-| ƒ‚ƒWƒ…[ƒ‹ | “‡æ | ó‘Ô |
+| ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ« | çµ±åˆå…ˆ | çŠ¶æ…‹ |
 |----------|--------|------|
-| ReceivedRuleEngine | RuleRepository | Š®—¹ |
-| AutoResponse | RuleRepository | Š®—¹ |
-| OnReceivedHandler | RuleRepository | Š®—¹ |
-| MessageHandler | MessageService | Š®—¹iƒ‰ƒbƒp[j |
-| ScenarioEngine | MessageService | Š®—¹iƒ‰ƒbƒp[j |
+| ReceivedRuleEngine | RuleRepository | å®Œäº† |
+| AutoResponse | RuleRepository | å®Œäº† |
+| OnReceivedHandler | RuleRepository | å®Œäº† |
+| MessageHandler | MessageService | å®Œäº†ï¼ˆãƒ©ãƒƒãƒ‘ãƒ¼ï¼‰ |
+| ScenarioEngine | MessageService | å®Œäº†ï¼ˆãƒ©ãƒƒãƒ‘ãƒ¼ï¼‰ |
 
-### ?? ”ñ„§ƒ}[ƒN’Ç‰ÁiŒã•ûŒİŠ·ˆÛj
+### ?? éæ¨å¥¨ãƒãƒ¼ã‚¯è¿½åŠ ï¼ˆå¾Œæ–¹äº’æ›ç¶­æŒï¼‰
 
-| ƒ‚ƒWƒ…[ƒ‹ | ——R |
+| ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ« | ç†ç”± |
 |----------|------|
-| QuickSender | ƒf[ƒ^ƒoƒ“ƒN‹@”\‚Í“Æ©À‘•A«—ˆ“I‚É“‡—\’è |
-| PeriodicSender | ’èŠú‘—M‹@”\‚Í“Æ©À‘•A«—ˆ“I‚É“‡—\’è |
+| QuickSender | ãƒ‡ãƒ¼ã‚¿ãƒãƒ³ã‚¯æ©Ÿèƒ½ã¯ç‹¬è‡ªå®Ÿè£…ã€å°†æ¥çš„ã«çµ±åˆäºˆå®š |
+| PeriodicSender | å®šæœŸé€ä¿¡æ©Ÿèƒ½ã¯ç‹¬è‡ªå®Ÿè£…ã€å°†æ¥çš„ã«çµ±åˆäºˆå®š |
 
 ---
 
-## ’B¬‚³‚ê‚½–Ú•W
+## é”æˆã•ã‚ŒãŸç›®æ¨™
 
-### ? d•¡ƒR[ƒhíœ
-- ReceivedRuleEngine‚ªAutoResponse/OnReceived‚Ì‹¤’Êƒ‹[ƒ‹“Ç‚İ‚İ‚ğ’ñ‹Ÿ
-- RuleRepository‚ª“ˆê“I‚ÈƒLƒƒƒbƒVƒ…ŠÇ—‚ğÀŒ»
-- 3‚Â‚ÌˆÙ‚È‚éƒ‹[ƒ‹“Ç‚İ‚İÀ‘•‚ğ1‚Â‚É“‡
+### ? é‡è¤‡ã‚³ãƒ¼ãƒ‰å‰Šé™¤
+- ReceivedRuleEngineãŒAutoResponse/OnReceivedã®å…±é€šãƒ«ãƒ¼ãƒ«èª­ã¿è¾¼ã¿ã‚’æä¾›
+- RuleRepositoryãŒçµ±ä¸€çš„ãªã‚­ãƒ£ãƒƒã‚·ãƒ¥ç®¡ç†ã‚’å®Ÿç¾
+- 3ã¤ã®ç•°ãªã‚‹ãƒ«ãƒ¼ãƒ«èª­ã¿è¾¼ã¿å®Ÿè£…ã‚’1ã¤ã«çµ±åˆ
 
-### ? ƒLƒƒƒbƒVƒ…ŠÇ—‚Ì“ˆê‰»
-- RuleRepository: ƒ‹[ƒ‹ƒtƒ@ƒCƒ‹‚ÌƒLƒƒƒbƒVƒ…
-- InstanceRepository: ƒCƒ“ƒXƒ^ƒ“ƒXİ’è‚ÌƒLƒƒƒbƒVƒ…
-- MessageService: ƒeƒ“ƒvƒŒ[ƒgƒtƒ@ƒCƒ‹‚ÌƒLƒƒƒbƒVƒ…
-- ‚·‚×‚Äƒtƒ@ƒCƒ‹•ÏXŒŸ’m‹@”\•t‚«
+### ? ã‚­ãƒ£ãƒƒã‚·ãƒ¥ç®¡ç†ã®çµ±ä¸€åŒ–
+- RuleRepository: ãƒ«ãƒ¼ãƒ«ãƒ•ã‚¡ã‚¤ãƒ«ã®ã‚­ãƒ£ãƒƒã‚·ãƒ¥
+- InstanceRepository: ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹è¨­å®šã®ã‚­ãƒ£ãƒƒã‚·ãƒ¥
+- MessageService: ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆãƒ•ã‚¡ã‚¤ãƒ«ã®ã‚­ãƒ£ãƒƒã‚·ãƒ¥
+- ã™ã¹ã¦ãƒ•ã‚¡ã‚¤ãƒ«å¤‰æ›´æ¤œçŸ¥æ©Ÿèƒ½ä»˜ã
 
-### ? VAPI‚Ö‚ÌˆÚsƒpƒXŠm—§
-- ‹ŒŠÖ”‚Í”ñ„§ƒ}[ƒN•t‚«‚Åc‘¶iŒã•ûŒİŠ·«j
-- V‚µ‚¢ƒR[ƒh‚Í’¼ÚMessageService‚ğg—p‰Â”\
-- ’iŠK“I‚ÈˆÚs‚ª‰Â”\‚È\‘¢
+### ? æ–°APIã¸ã®ç§»è¡Œãƒ‘ã‚¹ç¢ºç«‹
+- æ—§é–¢æ•°ã¯éæ¨å¥¨ãƒãƒ¼ã‚¯ä»˜ãã§æ®‹å­˜ï¼ˆå¾Œæ–¹äº’æ›æ€§ï¼‰
+- æ–°ã—ã„ã‚³ãƒ¼ãƒ‰ã¯ç›´æ¥MessageServiceã‚’ä½¿ç”¨å¯èƒ½
+- æ®µéšçš„ãªç§»è¡ŒãŒå¯èƒ½ãªæ§‹é€ 
 
 ---
 
-## ƒƒbƒZ[ƒW‘—MAPI
+## ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸é€ä¿¡API
 
-### V‚µ‚¢“ˆêAPI
+### æ–°ã—ã„çµ±ä¸€API
 
 ```powershell
-# ƒeƒ“ƒvƒŒ[ƒg‚©‚ç‘—M
+# ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆã‹ã‚‰é€ä¿¡
 $Global:MessageService.SendTemplate($connectionId, $templatePath, $variables)
 
-# ƒoƒCƒgƒf[ƒ^‚ğ‘—M
+# ãƒã‚¤ãƒˆãƒ‡ãƒ¼ã‚¿ã‚’é€ä¿¡
 $Global:MessageService.SendBytes($connectionId, $byteArray)
 
-# HEX•¶š—ñ‚ğ‘—M
+# HEXæ–‡å­—åˆ—ã‚’é€ä¿¡
 $Global:MessageService.SendHex($connectionId, "48656C6C6F")
 
-# ƒeƒLƒXƒgƒƒbƒZ[ƒW‚ğ‘—M
+# ãƒ†ã‚­ã‚¹ãƒˆãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’é€ä¿¡
 $Global:MessageService.SendText($connectionId, "Hello", "utf8")
 ```
 
-### •Ï”“WŠJ‚Ì—á
+### å¤‰æ•°å±•é–‹ã®ä¾‹
 
 ```powershell
-# ƒJƒXƒ^ƒ€•Ï”ƒnƒ“ƒhƒ‰[‚Ì“o˜^
+# ã‚«ã‚¹ã‚¿ãƒ å¤‰æ•°ãƒãƒ³ãƒ‰ãƒ©ãƒ¼ã®ç™»éŒ²
 $Global:MessageService.RegisterCustomVariableHandler("counter", {
     param($context)
     return $script:MessageCounter++
 })
 
-# ƒeƒ“ƒvƒŒ[ƒg“à‚Åg—p
+# ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆå†…ã§ä½¿ç”¨
 # Message: "Packet #${counter} at ${timestamp}"
-# “WŠJŒ‹‰Ê: "Packet #1 at 2025-11-16 15:30:45"
+# å±•é–‹çµæœ: "Packet #1 at 2025-11-16 15:30:45"
 ```
 
 ---
 
-## Ÿ‚ÌƒXƒeƒbƒviƒtƒF[ƒY4j
+## æ¬¡ã®ã‚¹ãƒ†ãƒƒãƒ—ï¼ˆãƒ•ã‚§ãƒ¼ã‚º4ï¼‰
 
-ƒtƒF[ƒY3‚ÍŠ®—¹‚µ‚Ü‚µ‚½BŸ‚ÌƒtƒF[ƒY4iUI‰ü‘Pj‚ÍˆÈ‰º‚Ì“à—e‚Å‚·F
+ãƒ•ã‚§ãƒ¼ã‚º3ã¯å®Œäº†ã—ã¾ã—ãŸã€‚æ¬¡ã®ãƒ•ã‚§ãƒ¼ã‚º4ï¼ˆUIæ”¹å–„ï¼‰ã¯ä»¥ä¸‹ã®å†…å®¹ã§ã™ï¼š
 
-### ƒtƒF[ƒY4: UI‰ü‘Pi–¢’…èE0%j
+### ãƒ•ã‚§ãƒ¼ã‚º4: UIæ”¹å–„ï¼ˆæœªç€æ‰‹ãƒ»0%ï¼‰
 
-| €–Ú | “à—e |
+| é …ç›® | å†…å®¹ |
 |-----|------|
-| ConnectionViewModel | MVVMƒpƒ^[ƒ“‚Ì“±“ü |
-| UIUpdateService | UIXV‚Ì“ˆê‰» |
-| ƒf[ƒ^ƒoƒCƒ“ƒfƒBƒ“ƒO | ViewModel‚ÆUI‚Ì•ª—£ |
-| ”ñ“¯ŠúUIXV | UIƒXƒŒƒbƒh•ª—£‚ÌŠ®‘SÀ‘• |
+| ConnectionViewModel | MVVMãƒ‘ã‚¿ãƒ¼ãƒ³ã®å°å…¥ |
+| UIUpdateService | UIæ›´æ–°ã®çµ±ä¸€åŒ– |
+| ãƒ‡ãƒ¼ã‚¿ãƒã‚¤ãƒ³ãƒ‡ã‚£ãƒ³ã‚° | ViewModelã¨UIã®åˆ†é›¢ |
+| éåŒæœŸUIæ›´æ–° | UIã‚¹ãƒ¬ãƒƒãƒ‰åˆ†é›¢ã®å®Œå…¨å®Ÿè£… |
 
-**—Dæ“x:** ’áiƒRƒA‹@”\‚ÍŠ®¬‚µ‚Ä‚¢‚é‚½‚ßAUI‚Í•K—v‚É‰‚¶‚Ä‰ü‘Pj
+**å„ªå…ˆåº¦:** ä½ï¼ˆã‚³ã‚¢æ©Ÿèƒ½ã¯å®Œæˆã—ã¦ã„ã‚‹ãŸã‚ã€UIã¯å¿…è¦ã«å¿œã˜ã¦æ”¹å–„ï¼‰
 
 ---
 
-## ‚Ü‚Æ‚ß
+## ã¾ã¨ã‚
 
-? **ƒtƒF[ƒY0**: €”õ’iŠKi100%j  
-? **ƒtƒF[ƒY1**: óMƒCƒxƒ“ƒgC³i100%j  
-? **ƒtƒF[ƒY2**: Ú‘±ŠÇ—‰ü‘Pi100%j  
-? **ƒtƒF[ƒY3**: ƒƒbƒZ[ƒWˆ—“‡i100%j © **Š®—¹**  
-? **ƒtƒF[ƒY4**: UI‰ü‘Pi0%j
+? **ãƒ•ã‚§ãƒ¼ã‚º0**: æº–å‚™æ®µéšï¼ˆ100%ï¼‰  
+? **ãƒ•ã‚§ãƒ¼ã‚º1**: å—ä¿¡ã‚¤ãƒ™ãƒ³ãƒˆä¿®æ­£ï¼ˆ100%ï¼‰  
+? **ãƒ•ã‚§ãƒ¼ã‚º2**: æ¥ç¶šç®¡ç†æ”¹å–„ï¼ˆ100%ï¼‰  
+? **ãƒ•ã‚§ãƒ¼ã‚º3**: ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å‡¦ç†çµ±åˆï¼ˆ100%ï¼‰ â† **å®Œäº†**  
+? **ãƒ•ã‚§ãƒ¼ã‚º4**: UIæ”¹å–„ï¼ˆ0%ï¼‰
 
-**‘S‘Ìi’»: 95%**
+**å…¨ä½“é€²æ—: 95%**
 
-TcpDebugger‚ÌƒRƒAƒA[ƒLƒeƒNƒ`ƒƒ‚ÌƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒO‚ÍAƒtƒF[ƒY3‚ÌŠ®—¹‚ğ‚à‚Á‚Ä**À¿“I‚ÉŠ®¬**‚µ‚Ü‚µ‚½Bc‚éƒtƒF[ƒY4‚ÍUI‘w‚Ì‰ü‘P‚Å‚ ‚èAŒ»İ‚ÌÀ‘•‚Å‚à\•ª‚É“®ì‚µ‚Ü‚·B
+TcpDebuggerã®ã‚³ã‚¢ã‚¢ãƒ¼ã‚­ãƒ†ã‚¯ãƒãƒ£ã®ãƒªãƒ•ã‚¡ã‚¯ã‚¿ãƒªãƒ³ã‚°ã¯ã€ãƒ•ã‚§ãƒ¼ã‚º3ã®å®Œäº†ã‚’ã‚‚ã£ã¦**å®Ÿè³ªçš„ã«å®Œæˆ**ã—ã¾ã—ãŸã€‚æ®‹ã‚‹ãƒ•ã‚§ãƒ¼ã‚º4ã¯UIå±¤ã®æ”¹å–„ã§ã‚ã‚Šã€ç¾åœ¨ã®å®Ÿè£…ã§ã‚‚ååˆ†ã«å‹•ä½œã—ã¾ã™ã€‚

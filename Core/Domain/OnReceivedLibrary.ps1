@@ -1,10 +1,10 @@
-# OnReceivedLibrary.ps1
-# OnReceivedƒXƒNƒŠƒvƒg—p‚Ìƒwƒ‹ƒp[ŠÖ”ƒ‰ƒCƒuƒ‰ƒŠ
+ï»¿# OnReceivedLibrary.ps1
+# OnReceivedã‚¹ã‚¯ãƒªãƒ—ãƒˆç”¨ã®ãƒ˜ãƒ«ãƒ‘ãƒ¼é–¢æ•°ãƒ©ã‚¤ãƒ–ãƒ©ãƒª
 
 function Get-ByteSlice {
     <#
     .SYNOPSIS
-    ƒoƒCƒg”z—ñ‚©‚çw’è”ÍˆÍ‚ğƒXƒ‰ƒCƒX
+    ãƒã‚¤ãƒˆé…åˆ—ã‹ã‚‰æŒ‡å®šç¯„å›²ã‚’ã‚¹ãƒ©ã‚¤ã‚¹
     
     .EXAMPLE
     $data = Get-ByteSlice -Data $ReceivedData -Offset 0 -Length 2
@@ -36,7 +36,7 @@ function Get-ByteSlice {
 function Set-ByteSlice {
     <#
     .SYNOPSIS
-    ƒoƒCƒg”z—ñ‚Ìw’èˆÊ’u‚Éƒf[ƒ^‚ğƒRƒs[
+    ãƒã‚¤ãƒˆé…åˆ—ã®æŒ‡å®šä½ç½®ã«ãƒ‡ãƒ¼ã‚¿ã‚’ã‚³ãƒ”ãƒ¼
     
     .EXAMPLE
     Set-ByteSlice -Target $messageData -Offset 4 -Source $idBytes
@@ -66,7 +66,7 @@ function Set-ByteSlice {
 function Read-MessageFile {
     <#
     .SYNOPSIS
-    “d•¶’è‹`ƒtƒ@ƒCƒ‹‚ğ“Ç‚İ‚ñ‚ÅƒoƒCƒg”z—ñ‚ğæ“¾
+    é›»æ–‡å®šç¾©ãƒ•ã‚¡ã‚¤ãƒ«ã‚’èª­ã¿è¾¼ã‚“ã§ãƒã‚¤ãƒˆé…åˆ—ã‚’å–å¾—
     
     .EXAMPLE
     $responseData = Read-MessageFile -FilePath "response.csv"
@@ -82,7 +82,7 @@ function Read-MessageFile {
 
     $resolvedPath = $FilePath
 
-    # ‘Š‘ÎƒpƒX‚Ìê‡AƒCƒ“ƒXƒ^ƒ“ƒX‚ÌtemplatesƒtƒHƒ‹ƒ_‚©‚ç‰ğŒˆ
+    # ç›¸å¯¾ãƒ‘ã‚¹ã®å ´åˆã€ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®templatesãƒ•ã‚©ãƒ«ãƒ€ã‹ã‚‰è§£æ±º
     if (-not [System.IO.Path]::IsPathRooted($resolvedPath)) {
         if ($InstancePath) {
             $resolvedPath = Join-Path $InstancePath "templates\$FilePath"
@@ -93,7 +93,7 @@ function Read-MessageFile {
         throw "Message file not found: $resolvedPath"
     }
 
-    # “d•¶ƒeƒ“ƒvƒŒ[ƒg‚ğ“Ç‚İ‚İ
+    # é›»æ–‡ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆã‚’èª­ã¿è¾¼ã¿
     $templates = Get-MessageTemplateCache -FilePath $resolvedPath -ThrowOnMissing
 
     if (-not $templates.ContainsKey('DEFAULT')) {
@@ -102,7 +102,7 @@ function Read-MessageFile {
 
     $template = $templates['DEFAULT']
     
-    # 16i”ƒXƒgƒŠ[ƒ€‚ğƒoƒCƒg”z—ñ‚É•ÏŠ·
+    # 16é€²æ•°ã‚¹ãƒˆãƒªãƒ¼ãƒ ã‚’ãƒã‚¤ãƒˆé…åˆ—ã«å¤‰æ›
     $bytes = ConvertTo-ByteArray -Data $template.Format -Encoding 'HEX'
     
     return $bytes
@@ -111,7 +111,7 @@ function Read-MessageFile {
 function Write-MessageFile {
     <#
     .SYNOPSIS
-    ƒoƒCƒg”z—ñ‚ğ“d•¶’è‹`ƒtƒ@ƒCƒ‹‚É‘‚«‚İ
+    ãƒã‚¤ãƒˆé…åˆ—ã‚’é›»æ–‡å®šç¾©ãƒ•ã‚¡ã‚¤ãƒ«ã«æ›¸ãè¾¼ã¿
     
     .EXAMPLE
     Write-MessageFile -Data $messageData -FilePath "output.csv" -InstancePath $Context.InstancePath
@@ -132,20 +132,20 @@ function Write-MessageFile {
 
     $resolvedPath = $FilePath
 
-    # ‘Š‘ÎƒpƒX‚Ìê‡AƒCƒ“ƒXƒ^ƒ“ƒX‚ÌtemplatesƒtƒHƒ‹ƒ_‚©‚ç‰ğŒˆ
+    # ç›¸å¯¾ãƒ‘ã‚¹ã®å ´åˆã€ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®templatesãƒ•ã‚©ãƒ«ãƒ€ã‹ã‚‰è§£æ±º
     if (-not [System.IO.Path]::IsPathRooted($resolvedPath)) {
         if ($InstancePath) {
             $resolvedPath = Join-Path $InstancePath "templates\$FilePath"
         }
     }
 
-    # ƒfƒBƒŒƒNƒgƒŠ‚ª‘¶İ‚µ‚È‚¢ê‡‚Íì¬
+    # ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªãŒå­˜åœ¨ã—ãªã„å ´åˆã¯ä½œæˆ
     $directory = [System.IO.Path]::GetDirectoryName($resolvedPath)
     if (-not (Test-Path -LiteralPath $directory)) {
         New-Item -Path $directory -ItemType Directory -Force | Out-Null
     }
 
-    # ƒoƒCƒg”z—ñ‚ğ16i”•¶š—ñ‚É•ÏŠ·‚µA“KØ‚Ès‚É•ªŠ„
+    # ãƒã‚¤ãƒˆé…åˆ—ã‚’16é€²æ•°æ–‡å­—åˆ—ã«å¤‰æ›ã—ã€é©åˆ‡ãªè¡Œã«åˆ†å‰²
     $hexString = ($Data | ForEach-Object { $_.ToString("X2") }) -join ''
     
     $lines = @()
@@ -160,15 +160,15 @@ function Write-MessageFile {
         $rowNumber++
     }
 
-    # Shift-JIS‚Å‘‚«‚İ
-    $sjisEncoding = [System.Text.Encoding]::GetEncoding("Shift_JIS")
-    [System.IO.File]::WriteAllLines($resolvedPath, $lines, $sjisEncoding)
+    # UTF-8ã§æ›¸ãè¾¼ã¿
+    $utf8Encoding = [System.Text.UTF8Encoding]::new($false)  # BOMãªã—
+    [System.IO.File]::WriteAllLines($resolvedPath, $lines, $utf8Encoding)
 }
 
 function Send-MessageFile {
     <#
     .SYNOPSIS
-    “d•¶’è‹`ƒtƒ@ƒCƒ‹‚ğ“Ç‚İ‚ñ‚Å‘—M
+    é›»æ–‡å®šç¾©ãƒ•ã‚¡ã‚¤ãƒ«ã‚’èª­ã¿è¾¼ã‚“ã§é€ä¿¡
     
     .EXAMPLE
     Send-MessageFile -ConnectionId $Context.ConnectionId -FilePath "response.csv" -InstancePath $Context.InstancePath
@@ -197,7 +197,7 @@ function Send-MessageFile {
 function Send-MessageData {
     <#
     .SYNOPSIS
-    ƒoƒCƒg”z—ñ‚ğ‘—M
+    ãƒã‚¤ãƒˆé…åˆ—ã‚’é€ä¿¡
     
     .EXAMPLE
     Send-MessageData -ConnectionId $Context.ConnectionId -Data $messageBytes
@@ -222,7 +222,7 @@ function Send-MessageData {
 function ConvertTo-HexString {
     <#
     .SYNOPSIS
-    ƒoƒCƒg”z—ñ‚ğ16i”•¶š—ñ‚É•ÏŠ·
+    ãƒã‚¤ãƒˆé…åˆ—ã‚’16é€²æ•°æ–‡å­—åˆ—ã«å¤‰æ›
     
     .EXAMPLE
     $hex = ConvertTo-HexString -Data $bytes
@@ -242,7 +242,7 @@ function ConvertTo-HexString {
 function ConvertFrom-HexString {
     <#
     .SYNOPSIS
-    16i”•¶š—ñ‚ğƒoƒCƒg”z—ñ‚É•ÏŠ·
+    16é€²æ•°æ–‡å­—åˆ—ã‚’ãƒã‚¤ãƒˆé…åˆ—ã«å¤‰æ›
     
     .EXAMPLE
     $bytes = ConvertFrom-HexString -HexString "0102030A"
@@ -270,7 +270,7 @@ function ConvertFrom-HexString {
 function Get-ConnectionVariable {
     <#
     .SYNOPSIS
-    ƒRƒlƒNƒVƒ‡ƒ“•Ï”‚ğæ“¾
+    ã‚³ãƒã‚¯ã‚·ãƒ§ãƒ³å¤‰æ•°ã‚’å–å¾—
     
     .EXAMPLE
     $counter = Get-ConnectionVariable -Connection $Context.Connection -Name "Counter" -Default 0
@@ -296,7 +296,7 @@ function Get-ConnectionVariable {
 function Set-ConnectionVariable {
     <#
     .SYNOPSIS
-    ƒRƒlƒNƒVƒ‡ƒ“•Ï”‚ğİ’è
+    ã‚³ãƒã‚¯ã‚·ãƒ§ãƒ³å¤‰æ•°ã‚’è¨­å®š
     
     .EXAMPLE
     Set-ConnectionVariable -Connection $Context.Connection -Name "Counter" -Value 1
@@ -318,7 +318,7 @@ function Set-ConnectionVariable {
 function Write-OnReceivedLog {
     <#
     .SYNOPSIS
-    OnReceivedƒXƒNƒŠƒvƒg‚©‚çƒƒOo—Í
+    OnReceivedã‚¹ã‚¯ãƒªãƒ—ãƒˆã‹ã‚‰ãƒ­ã‚°å‡ºåŠ›
     
     .EXAMPLE
     Write-OnReceivedLog "Processing message ID: $messageId"

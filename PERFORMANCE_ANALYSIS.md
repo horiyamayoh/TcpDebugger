@@ -1,106 +1,106 @@
-# TCP Test Controller - «”\•ªÍE‰ü‘PİŒv‘
+# TCP Test Controller - æ€§èƒ½åˆ†æãƒ»æ”¹å–„è¨­è¨ˆæ›¸
 
-**ì¬“ú**: 2025”N11Œ20“ú  
-**ƒo[ƒWƒ‡ƒ“**: 1.0  
-**‘ÎÛƒAƒvƒŠƒP[ƒVƒ‡ƒ“**: TCP Test Controller v1.0
-
----
-
-## –ÚŸ
-
-1. [’²¸ŠT—v](#’²¸ŠT—v)
-2. [«”\ƒ{ƒgƒ‹ƒlƒbƒN•ªÍ](#«”\ƒ{ƒgƒ‹ƒlƒbƒN•ªÍ)
-3. [‰ü‘PİŒv](#‰ü‘PİŒv)
-4. [À‘•Œv‰æ](#À‘•Œv‰æ)
-5. [Šú‘Ò‚³‚ê‚éŒø‰Ê](#Šú‘Ò‚³‚ê‚éŒø‰Ê)
+**ä½œæˆæ—¥**: 2025å¹´11æœˆ20æ—¥  
+**ãƒãƒ¼ã‚¸ãƒ§ãƒ³**: 1.0  
+**å¯¾è±¡ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³**: TCP Test Controller v1.0
 
 ---
 
-## ’²¸ŠT—v
+## ç›®æ¬¡
 
-### ’²¸–Ú“I
-PowerShellƒx[ƒX‚ÌTCP/UDP’ÊMŒ±ƒc[ƒ‹‚Ì«”\ƒ{ƒgƒ‹ƒlƒbƒN‚ğ“Á’è‚µA‰ü‘Pô‚ğİŒv‚·‚éB
-
-### ’²¸‘ÎÛƒRƒ“ƒ|[ƒlƒ“ƒg
-- **Presentation‘w**: UIXVƒƒWƒbƒNiMainForm.ps1, ViewBuilder.ps1j
-- **Core‘w**: LoggerAMessageServiceARunspaceMessageProcessor
-- **Infrastructure‘w**: ’ÊMƒAƒ_ƒvƒ^[AƒƒbƒZ[ƒWƒLƒ…[
-
-### ’²¸•û–@
-- ƒR[ƒhƒŒƒrƒ…[‚É‚æ‚éÃ“I•ªÍ
-- ƒA[ƒLƒeƒNƒ`ƒƒ\‘¢‚Ì•]‰¿
-- ˆ—ƒtƒ[E•p“x‚Ì•ªÍ
+1. [èª¿æŸ»æ¦‚è¦](#èª¿æŸ»æ¦‚è¦)
+2. [æ€§èƒ½ãƒœãƒˆãƒ«ãƒãƒƒã‚¯åˆ†æ](#æ€§èƒ½ãƒœãƒˆãƒ«ãƒãƒƒã‚¯åˆ†æ)
+3. [æ”¹å–„è¨­è¨ˆ](#æ”¹å–„è¨­è¨ˆ)
+4. [å®Ÿè£…è¨ˆç”»](#å®Ÿè£…è¨ˆç”»)
+5. [æœŸå¾…ã•ã‚Œã‚‹åŠ¹æœ](#æœŸå¾…ã•ã‚Œã‚‹åŠ¹æœ)
 
 ---
 
-## «”\ƒ{ƒgƒ‹ƒlƒbƒN•ªÍ
+## èª¿æŸ»æ¦‚è¦
 
-### 1. UIXVˆ—‚Ì‘SsÄ•`‰æ yd‘åz
+### èª¿æŸ»ç›®çš„
+PowerShellãƒ™ãƒ¼ã‚¹ã®TCP/UDPé€šä¿¡è©¦é¨“ãƒ„ãƒ¼ãƒ«ã®æ€§èƒ½ãƒœãƒˆãƒ«ãƒãƒƒã‚¯ã‚’ç‰¹å®šã—ã€æ”¹å–„ç­–ã‚’è¨­è¨ˆã™ã‚‹ã€‚
 
-#### ‰e‹¿“x
-- **CPUg—p—¦**: ššššš (Å‘å)
-- **UI‰“š«**: ššššš (Å‘å)
-- **ƒ†[ƒU[‘ÌŒ±**: šššš™ (‘å)
+### èª¿æŸ»å¯¾è±¡ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆ
+- **Presentationå±¤**: UIæ›´æ–°ãƒ­ã‚¸ãƒƒã‚¯ï¼ˆMainForm.ps1, ViewBuilder.ps1ï¼‰
+- **Coreå±¤**: Loggerã€MessageServiceã€RunspaceMessageProcessor
+- **Infrastructureå±¤**: é€šä¿¡ã‚¢ãƒ€ãƒ—ã‚¿ãƒ¼ã€ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚­ãƒ¥ãƒ¼
 
-#### –â‘è‚ÌÚ×
+### èª¿æŸ»æ–¹æ³•
+- ã‚³ãƒ¼ãƒ‰ãƒ¬ãƒ“ãƒ¥ãƒ¼ã«ã‚ˆã‚‹é™çš„åˆ†æ
+- ã‚¢ãƒ¼ã‚­ãƒ†ã‚¯ãƒãƒ£æ§‹é€ ã®è©•ä¾¡
+- å‡¦ç†ãƒ•ãƒ­ãƒ¼ãƒ»é »åº¦ã®åˆ†æ
 
-**êŠ**: `Presentation/UI/MainForm.ps1` (93-106s, 928-1100s)
+---
+
+## æ€§èƒ½ãƒœãƒˆãƒ«ãƒãƒƒã‚¯åˆ†æ
+
+### 1. UIæ›´æ–°å‡¦ç†ã®å…¨è¡Œå†æç”» ã€é‡å¤§ã€‘
+
+#### å½±éŸ¿åº¦
+- **CPUä½¿ç”¨ç‡**: â˜…â˜…â˜…â˜…â˜… (æœ€å¤§)
+- **UIå¿œç­”æ€§**: â˜…â˜…â˜…â˜…â˜… (æœ€å¤§)
+- **ãƒ¦ãƒ¼ã‚¶ãƒ¼ä½“é¨“**: â˜…â˜…â˜…â˜…â˜† (å¤§)
+
+#### å•é¡Œã®è©³ç´°
+
+**å ´æ‰€**: `Presentation/UI/MainForm.ps1` (93-106è¡Œ, 928-1100è¡Œ)
 
 ```powershell
-# Œ»İ‚ÌÀ‘•
+# ç¾åœ¨ã®å®Ÿè£…
 $timer = New-RefreshTimer -IntervalMilliseconds 2000
 $timer.Add_Tick({
     if (-not $gridState.EditingInProgress -and -not $dgvInstances.IsCurrentCellInEditMode) {
-        Update-InstanceList -DataGridView $dgvInstances  # –â‘è‰ÓŠ
+        Update-InstanceList -DataGridView $dgvInstances  # å•é¡Œç®‡æ‰€
     }
     Update-LogDisplay -TextBox $txtLog -GetConnectionsCallback { Get-UiConnections }
 })
 ```
 
-**–â‘è“_**:
-1. **2•b‚²‚Æ‚É‘Ss‚ğíœEÄì¬**
+**å•é¡Œç‚¹**:
+1. **2ç§’ã”ã¨ã«å…¨è¡Œã‚’å‰Šé™¤ãƒ»å†ä½œæˆ**
    ```powershell
-   $DataGridView.Rows.Clear()  # ‘Síœ
+   $DataGridView.Rows.Clear()  # å…¨å‰Šé™¤
    foreach ($conn in $connections) {
-       Add-ConnectionRow -DataGridView $DataGridView -Connection $conn  # ‘S’Ç‰Á
+       Add-ConnectionRow -DataGridView $DataGridView -Connection $conn  # å…¨è¿½åŠ 
    }
    ```
 
-2. **Šes‚Å•¡G‚ÈComboBoxƒZƒ‹‚ğÄ\’z**
-   - Scenario—ñiAutoResponsej
-   - OnReceived—ñ
-   - PeriodicSend—ñ
-   - QuickData—ñ
-   - QuickAction—ñ
+2. **å„è¡Œã§è¤‡é›‘ãªComboBoxã‚»ãƒ«ã‚’å†æ§‹ç¯‰**
+   - Scenarioåˆ—ï¼ˆAutoResponseï¼‰
+   - OnReceivedåˆ—
+   - PeriodicSendåˆ—
+   - QuickDataåˆ—
+   - QuickActionåˆ—
 
-3. **‰e‹¿**:
-   - ‰æ–Ê‚Ì‚¿‚ç‚Â‚«
-   - •ÒW’†‚ÌƒZƒ‹‘I‘ğ‚ª¸‚í‚ê‚é
-   - CPUg—p—¦‚Ì–³‘Ê‚Èã¸
-   - Ú‘±”‚ª‘‚¦‚é‚Ù‚Ç•‰‰×‚ªüŒ`‘‰Á
+3. **å½±éŸ¿**:
+   - ç”»é¢ã®ã¡ã‚‰ã¤ã
+   - ç·¨é›†ä¸­ã®ã‚»ãƒ«é¸æŠãŒå¤±ã‚ã‚Œã‚‹
+   - CPUä½¿ç”¨ç‡ã®ç„¡é§„ãªä¸Šæ˜‡
+   - æ¥ç¶šæ•°ãŒå¢—ãˆã‚‹ã»ã©è² è·ãŒç·šå½¢å¢—åŠ 
 
-#### ª–{Œ´ˆö
-- **ó‘ÔŠÇ—‚ÌŒ‡”@**: ‘O‰ñ‚Ì•`‰æó‘Ô‚ÆŒ»İ‚Ìó‘Ô‚ğ”äŠr‚µ‚Ä‚¢‚È‚¢
-- **—±“x‚Ì‘e‚³**: •ÏX‚ª‚È‚¢s‚àŠÜ‚ß‚Ä‘S‚ÄÄ•`‰æ
+#### æ ¹æœ¬åŸå› 
+- **çŠ¶æ…‹ç®¡ç†ã®æ¬ å¦‚**: å‰å›ã®æç”»çŠ¶æ…‹ã¨ç¾åœ¨ã®çŠ¶æ…‹ã‚’æ¯”è¼ƒã—ã¦ã„ãªã„
+- **ç²’åº¦ã®ç²—ã•**: å¤‰æ›´ãŒãªã„è¡Œã‚‚å«ã‚ã¦å…¨ã¦å†æç”»
 
 ---
 
-### 2. ƒƒO•\¦‚Ì”ñŒø—¦‚È‘S‘ÌÄ\’z yd‘åz
+### 2. ãƒ­ã‚°è¡¨ç¤ºã®éåŠ¹ç‡ãªå…¨ä½“å†æ§‹ç¯‰ ã€é‡å¤§ã€‘
 
-#### ‰e‹¿“x
-- **CPUg—p—¦**: šššš™ (‘å)
-- **UI‰“š«**: ššš™™ (’†)
-- **ƒƒ‚ƒŠg—p—Ê**: ššš™™ (’†)
+#### å½±éŸ¿åº¦
+- **CPUä½¿ç”¨ç‡**: â˜…â˜…â˜…â˜…â˜† (å¤§)
+- **UIå¿œç­”æ€§**: â˜…â˜…â˜…â˜†â˜† (ä¸­)
+- **ãƒ¡ãƒ¢ãƒªä½¿ç”¨é‡**: â˜…â˜…â˜…â˜†â˜† (ä¸­)
 
-#### –â‘è‚ÌÚ×
+#### å•é¡Œã®è©³ç´°
 
-**êŠ**: `Presentation/UI/ViewBuilder.ps1` (714-770s)
+**å ´æ‰€**: `Presentation/UI/ViewBuilder.ps1` (714-770è¡Œ)
 
 ```powershell
 function Update-LogDisplay {
-    # ‘SÚ‘±‚ÌRecvBuffer‚ğƒXƒLƒƒƒ“
+    # å…¨æ¥ç¶šã®RecvBufferã‚’ã‚¹ã‚­ãƒ£ãƒ³
     foreach ($conn in $connections) {
-        # Thread-SafeƒƒbƒNæ“¾iÚ‘±”•ªŒJ‚è•Ô‚µj
+        # Thread-Safeãƒ­ãƒƒã‚¯å–å¾—ï¼ˆæ¥ç¶šæ•°åˆ†ç¹°ã‚Šè¿”ã—ï¼‰
         [System.Threading.Monitor]::Enter($syncRoot)
         try {
             $snapshot = $conn.RecvBuffer.ToArray()
@@ -108,40 +108,40 @@ function Update-LogDisplay {
             [System.Threading.Monitor]::Exit($syncRoot)
         }
         
-        # ŠeÚ‘±‚ÌÅV10Œ‚ğ•¶š—ñ‰»
+        # å„æ¥ç¶šã®æœ€æ–°10ä»¶ã‚’æ–‡å­—åˆ—åŒ–
         for ($i = $startIndex; $i -lt $count; $i++) {
             $summary = Get-MessageSummary -Data $recv.Data -MaxLength 40
-            $logLines += "[$timeStr] $($conn.DisplayName) © $summary"
+            $logLines += "[$timeStr] $($conn.DisplayName) â† $summary"
         }
     }
     
-    # ‘S‘Ì‚ğ•¶š—ñŒ‹‡‚µ‚ÄÄİ’è
+    # å…¨ä½“ã‚’æ–‡å­—åˆ—çµåˆã—ã¦å†è¨­å®š
     $TextBox.Text = $logLines -join "`r`n"
 }
 ```
 
-**–â‘è“_**:
-1. **2•b‚²‚Æ‚É‘SƒƒO‚ğÄ\’z**
-2. **•¡”‚ÌƒƒbƒNæ“¾‚É‚æ‚éƒRƒ“ƒeƒ“ƒVƒ‡ƒ“**
-3. **”z—ñ‚Ì•¶š—ñŒ‹‡iO(n?)‚Ì‰Â”\«j**
-4. **•s—v‚Èd•¡ˆ—**: ‘O‰ñ•\¦Ï‚İ‚ÌƒGƒ“ƒgƒŠ‚àÄˆ—
+**å•é¡Œç‚¹**:
+1. **2ç§’ã”ã¨ã«å…¨ãƒ­ã‚°ã‚’å†æ§‹ç¯‰**
+2. **è¤‡æ•°ã®ãƒ­ãƒƒã‚¯å–å¾—ã«ã‚ˆã‚‹ã‚³ãƒ³ãƒ†ãƒ³ã‚·ãƒ§ãƒ³**
+3. **é…åˆ—ã®æ–‡å­—åˆ—çµåˆï¼ˆO(n?)ã®å¯èƒ½æ€§ï¼‰**
+4. **ä¸è¦ãªé‡è¤‡å‡¦ç†**: å‰å›è¡¨ç¤ºæ¸ˆã¿ã®ã‚¨ãƒ³ãƒˆãƒªã‚‚å†å‡¦ç†
 
-#### ‘ª’èƒf[ƒ^i‘z’èj
-- 10Ú‘± ~ 10ƒGƒ“ƒgƒŠ = 100s‚Ìˆ—
-- Ú‘±”‚ª‘‚¦‚é‚Æˆ—ŠÔ‚ªüŒ`‘‰Á
+#### æ¸¬å®šãƒ‡ãƒ¼ã‚¿ï¼ˆæƒ³å®šï¼‰
+- 10æ¥ç¶š Ã— 10ã‚¨ãƒ³ãƒˆãƒª = 100è¡Œã®å‡¦ç†
+- æ¥ç¶šæ•°ãŒå¢—ãˆã‚‹ã¨å‡¦ç†æ™‚é–“ãŒç·šå½¢å¢—åŠ 
 
 ---
 
-### 3. Logger ‚Ìƒtƒ@ƒCƒ‹I/O•p“x y’†z
+### 3. Logger ã®ãƒ•ã‚¡ã‚¤ãƒ«I/Oé »åº¦ ã€ä¸­ã€‘
 
-#### ‰e‹¿“x
-- **ƒfƒBƒXƒNI/O**: šššš™ (‘å)
-- **CPUg—p—¦**: ššš™™ (’†)
-- **‘S‘Ì«”\**: šš™™™ (¬)
+#### å½±éŸ¿åº¦
+- **ãƒ‡ã‚£ã‚¹ã‚¯I/O**: â˜…â˜…â˜…â˜…â˜† (å¤§)
+- **CPUä½¿ç”¨ç‡**: â˜…â˜…â˜…â˜†â˜† (ä¸­)
+- **å…¨ä½“æ€§èƒ½**: â˜…â˜…â˜†â˜†â˜† (å°)
 
-#### –â‘è‚ÌÚ×
+#### å•é¡Œã®è©³ç´°
 
-**êŠ**: `Core/Common/Logger.ps1` (90-96s)
+**å ´æ‰€**: `Core/Common/Logger.ps1` (90-96è¡Œ)
 
 ```powershell
 hidden [void] Log([string]$level, [string]$message, [hashtable]$context) {
@@ -152,200 +152,200 @@ hidden [void] Log([string]$level, [string]$message, [hashtable]$context) {
         Context = $context
     }
     
-    $json = $entry | ConvertTo-Json -Compress  # JSON•ÏŠ·
+    $json = $entry | ConvertTo-Json -Compress  # JSONå¤‰æ›
     
     [System.Threading.Monitor]::Enter($this._lock)
     try {
-        Add-Content -Path $this.LogPath -Value $json  # ƒtƒ@ƒCƒ‹I/O
+        Add-Content -Path $this.LogPath -Value $json  # ãƒ•ã‚¡ã‚¤ãƒ«I/O
     } finally {
         [System.Threading.Monitor]::Exit($this._lock)
     }
 }
 ```
 
-**–â‘è“_**:
-1. **ƒƒOƒGƒ“ƒgƒŠ‚²‚Æ‚Éƒtƒ@ƒCƒ‹Open/Close**
-2. **JSON•ÏŠ·‚ÌƒI[ƒo[ƒwƒbƒh**
-3. **ƒƒbƒN‹£‡**: •¡”ƒXƒŒƒbƒh‚©‚ç‚Ì“¯‘‚«‚İ
+**å•é¡Œç‚¹**:
+1. **ãƒ­ã‚°ã‚¨ãƒ³ãƒˆãƒªã”ã¨ã«ãƒ•ã‚¡ã‚¤ãƒ«Open/Close**
+2. **JSONå¤‰æ›ã®ã‚ªãƒ¼ãƒãƒ¼ãƒ˜ãƒƒãƒ‰**
+3. **ãƒ­ãƒƒã‚¯ç«¶åˆ**: è¤‡æ•°ã‚¹ãƒ¬ãƒƒãƒ‰ã‹ã‚‰ã®åŒæ™‚æ›¸ãè¾¼ã¿
 
-#### ‰e‹¿”ÍˆÍ
-- ’ÊM—Ê‚ª‘½‚¢ê‡ióMƒƒOA‘—MƒƒOj
-- ƒfƒoƒbƒOƒŒƒxƒ‹‚ÌƒƒO‚ª‘½‚¢ê‡
+#### å½±éŸ¿ç¯„å›²
+- é€šä¿¡é‡ãŒå¤šã„å ´åˆï¼ˆå—ä¿¡ãƒ­ã‚°ã€é€ä¿¡ãƒ­ã‚°ï¼‰
+- ãƒ‡ãƒãƒƒã‚°ãƒ¬ãƒ™ãƒ«ã®ãƒ­ã‚°ãŒå¤šã„å ´åˆ
 
 ---
 
-### 4. CSV/ƒeƒ“ƒvƒŒ[ƒgƒtƒ@ƒCƒ‹‚Ì“Ç‚İ‚İ y’†z
+### 4. CSV/ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆãƒ•ã‚¡ã‚¤ãƒ«ã®èª­ã¿è¾¼ã¿ ã€ä¸­ã€‘
 
-#### ‰e‹¿“x
-- **ƒfƒBƒXƒNI/O**: ššš™™ (’†)
-- **CPUg—p—¦**: šš™™™ (¬)
-- **‰“š«**: ššš™™ (’†)
+#### å½±éŸ¿åº¦
+- **ãƒ‡ã‚£ã‚¹ã‚¯I/O**: â˜…â˜…â˜…â˜†â˜† (ä¸­)
+- **CPUä½¿ç”¨ç‡**: â˜…â˜…â˜†â˜†â˜† (å°)
+- **å¿œç­”æ€§**: â˜…â˜…â˜…â˜†â˜† (ä¸­)
 
-#### –â‘è‚ÌÚ×
+#### å•é¡Œã®è©³ç´°
 
-**êŠ**: •¡”ƒtƒ@ƒCƒ‹
-- `Core/Domain/MessageService.ps1` (83s, 224s, 342s)
-- `Core/Domain/ReceivedRuleEngine.ps1` (33s)
-- `Core/Domain/ConnectionManager.ps1` (388s)
+**å ´æ‰€**: è¤‡æ•°ãƒ•ã‚¡ã‚¤ãƒ«
+- `Core/Domain/MessageService.ps1` (83è¡Œ, 224è¡Œ, 342è¡Œ)
+- `Core/Domain/ReceivedRuleEngine.ps1` (33è¡Œ)
+- `Core/Domain/ConnectionManager.ps1` (388è¡Œ)
 
 ```powershell
-# ƒpƒ^[ƒ“1: ƒeƒ“ƒvƒŒ[ƒg“Ç‚İ‚İiƒLƒƒƒbƒVƒ…‚ ‚è - —Ç‚¢À‘•j
+# ãƒ‘ã‚¿ãƒ¼ãƒ³1: ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆèª­ã¿è¾¼ã¿ï¼ˆã‚­ãƒ£ãƒƒã‚·ãƒ¥ã‚ã‚Š - è‰¯ã„å®Ÿè£…ï¼‰
 $content = Get-Content -Path $filePath -Encoding Default -Raw | ConvertFrom-Csv
 
-# ƒpƒ^[ƒ“2: ƒVƒiƒŠƒI“Ç‚İ‚İiƒLƒƒƒbƒVƒ…‚È‚µj
+# ãƒ‘ã‚¿ãƒ¼ãƒ³2: ã‚·ãƒŠãƒªã‚ªèª­ã¿è¾¼ã¿ï¼ˆã‚­ãƒ£ãƒƒã‚·ãƒ¥ãªã—ï¼‰
 $content = Get-Content -Path $scenarioPath -Encoding Default -Raw
 $steps = $content | ConvertFrom-Csv
 
-# ƒpƒ^[ƒ“3: ƒ‹[ƒ‹ƒtƒ@ƒCƒ‹“Ç‚İ‚İiƒLƒƒƒbƒVƒ…‚È‚µj
+# ãƒ‘ã‚¿ãƒ¼ãƒ³3: ãƒ«ãƒ¼ãƒ«ãƒ•ã‚¡ã‚¤ãƒ«èª­ã¿è¾¼ã¿ï¼ˆã‚­ãƒ£ãƒƒã‚·ãƒ¥ãªã—ï¼‰
 $content = Get-Content -Path $FilePath -Encoding Default -Raw
 $rules = $content | ConvertFrom-Csv
 ```
 
-**–â‘è“_**:
-1. **ƒGƒ“ƒR[ƒfƒBƒ“ƒO•ÏŠ·‚ÌƒI[ƒo[ƒwƒbƒh** (Shift-JIS Ì Unicode)
-2. **CSV‰ğÍ‚ÌŒJ‚è•Ô‚µÀs**
-3. **ˆê•”ƒLƒƒƒbƒVƒ…–¢À‘•**
+**å•é¡Œç‚¹**:
+1. **ã‚¨ãƒ³ã‚³ãƒ¼ãƒ‡ã‚£ãƒ³ã‚°å¤‰æ›ã®ã‚ªãƒ¼ãƒãƒ¼ãƒ˜ãƒƒãƒ‰** (Shift-JIS â‡” Unicode)
+2. **CSVè§£æã®ç¹°ã‚Šè¿”ã—å®Ÿè¡Œ**
+3. **ä¸€éƒ¨ã‚­ãƒ£ãƒƒã‚·ãƒ¥æœªå®Ÿè£…**
 
-**—Ç‚¢À‘•—á**:
+**è‰¯ã„å®Ÿè£…ä¾‹**:
 ```powershell
-# MessageService.LoadTemplate ‚É‚ÍƒLƒƒƒbƒVƒ…‹@”\‚ ‚è
+# MessageService.LoadTemplate ã«ã¯ã‚­ãƒ£ãƒƒã‚·ãƒ¥æ©Ÿèƒ½ã‚ã‚Š
 if ($this._templateCache.ContainsKey($filePath)) {
     $cached = $this._templateCache[$filePath]
     if ($fileInfo.LastWriteTime -eq $cached.LastModified) {
-        return $cached.Data  # ƒLƒƒƒbƒVƒ…ƒqƒbƒg
+        return $cached.Data  # ã‚­ãƒ£ãƒƒã‚·ãƒ¥ãƒ’ãƒƒãƒˆ
     }
 }
 ```
 
 ---
 
-### 5. RunspaceMessageProcessor ‚Ìˆ—•p“x y’áz
+### 5. RunspaceMessageProcessor ã®å‡¦ç†é »åº¦ ã€ä½ã€‘
 
-#### ‰e‹¿“x
-- **CPUg—p—¦**: šš™™™ (¬)
-- **‰“š«**: ššš™™ (’†)
+#### å½±éŸ¿åº¦
+- **CPUä½¿ç”¨ç‡**: â˜…â˜…â˜†â˜†â˜† (å°)
+- **å¿œç­”æ€§**: â˜…â˜…â˜…â˜†â˜† (ä¸­)
 
-#### –â‘è‚ÌÚ×
+#### å•é¡Œã®è©³ç´°
 
-**êŠ**: `Presentation/UI/MainForm.ps1` (78-90s)
+**å ´æ‰€**: `Presentation/UI/MainForm.ps1` (78-90è¡Œ)
 
 ```powershell
 $messageTimer = New-Object System.Windows.Forms.Timer
-$messageTimer.Interval = 100  # 100msŠÔŠu
+$messageTimer.Interval = 100  # 100msé–“éš”
 $messageTimer.Add_Tick({
     if ($Global:MessageProcessor) {
-        $processed = $Global:MessageProcessor.ProcessMessages(50)  # Å‘å50Œ
+        $processed = $Global:MessageProcessor.ProcessMessages(50)  # æœ€å¤§50ä»¶
     }
 })
 ```
 
-**–â‘è“_**:
-1. **ŒÅ’èŠÔŠu**: ƒƒbƒZ[ƒW—Ê‚ÉŠÖ‚í‚ç‚¸100ms‚²‚Æ‚É‹N“®
-2. **ŒÅ’èƒoƒbƒ`ƒTƒCƒY**: í‚ÉÅ‘å50Œ‚ğˆ—
+**å•é¡Œç‚¹**:
+1. **å›ºå®šé–“éš”**: ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸é‡ã«é–¢ã‚ã‚‰ãš100msã”ã¨ã«èµ·å‹•
+2. **å›ºå®šãƒãƒƒãƒã‚µã‚¤ã‚º**: å¸¸ã«æœ€å¤§50ä»¶ã‚’å‡¦ç†
 
-#### Å“K‰»‚Ì—]’n
-- ƒƒbƒZ[ƒW—Ê‚ª­‚È‚¢‚ÍŠÔŠu‚ğ’·‚­‚·‚é
-- ƒƒbƒZ[ƒW—Ê‚ª‘½‚¢‚Íƒoƒbƒ`ƒTƒCƒY‚ğ‘‚â‚·
+#### æœ€é©åŒ–ã®ä½™åœ°
+- ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸é‡ãŒå°‘ãªã„æ™‚ã¯é–“éš”ã‚’é•·ãã™ã‚‹
+- ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸é‡ãŒå¤šã„æ™‚ã¯ãƒãƒƒãƒã‚µã‚¤ã‚ºã‚’å¢—ã‚„ã™
 
 ---
 
-### 6. RecvBuffer ‚Ì–³§ŒÀ¬’· yöİ“IƒŠƒXƒNz
+### 6. RecvBuffer ã®ç„¡åˆ¶é™æˆé•· ã€æ½œåœ¨çš„ãƒªã‚¹ã‚¯ã€‘
 
-#### ‰e‹¿“x
-- **ƒƒ‚ƒŠg—p—Ê**: šššš™ (‘å - ’·Šú‰^—p)
-- **GCˆ³—Í**: ššš™™ (’†)
+#### å½±éŸ¿åº¦
+- **ãƒ¡ãƒ¢ãƒªä½¿ç”¨é‡**: â˜…â˜…â˜…â˜…â˜† (å¤§ - é•·æœŸé‹ç”¨æ™‚)
+- **GCåœ§åŠ›**: â˜…â˜…â˜…â˜†â˜† (ä¸­)
 
-#### –â‘è‚ÌÚ×
+#### å•é¡Œã®è©³ç´°
 
-**êŠ**: `Core/Domain/ReceivedEventPipeline.ps1` (59-60s)
+**å ´æ‰€**: `Core/Domain/ReceivedEventPipeline.ps1` (59-60è¡Œ)
 
 ```powershell
 if ($connection.RecvBuffer) {
-    [void]$connection.RecvBuffer.Add($entry)  # –³§ŒÀ‚É’Ç‰Á
+    [void]$connection.RecvBuffer.Add($entry)  # ç„¡åˆ¶é™ã«è¿½åŠ 
 }
 ```
 
-**–â‘è“_**:
-1. **ƒTƒCƒY§ŒÀ‚È‚µ**: ’·ŠÔ‰^—p‚Å–³ŒÀ‚É‘‰Á
-2. **ŒÃ‚¢ƒf[ƒ^‚Ìíœ‚È‚µ**
+**å•é¡Œç‚¹**:
+1. **ã‚µã‚¤ã‚ºåˆ¶é™ãªã—**: é•·æ™‚é–“é‹ç”¨ã§ç„¡é™ã«å¢—åŠ 
+2. **å¤ã„ãƒ‡ãƒ¼ã‚¿ã®å‰Šé™¤ãªã—**
 
-#### öİ“I‰e‹¿
-- ’·ŠÔ‰^—p‚Ìƒƒ‚ƒŠƒŠ[ƒN
-- GCiƒKƒx[ƒWƒRƒŒƒNƒVƒ‡ƒ“j‚Ì•p“x‘‰Á
+#### æ½œåœ¨çš„å½±éŸ¿
+- é•·æ™‚é–“é‹ç”¨æ™‚ã®ãƒ¡ãƒ¢ãƒªãƒªãƒ¼ã‚¯
+- GCï¼ˆã‚¬ãƒ™ãƒ¼ã‚¸ã‚³ãƒ¬ã‚¯ã‚·ãƒ§ãƒ³ï¼‰ã®é »åº¦å¢—åŠ 
 
 ---
 
-### 7. Auto Response ‚Ìƒ‹[ƒ‹ƒ}ƒbƒ`ƒ“ƒOˆ— yd—vz
+### 7. Auto Response ã®ãƒ«ãƒ¼ãƒ«ãƒãƒƒãƒãƒ³ã‚°å‡¦ç† ã€é‡è¦ã€‘
 
-#### ‰e‹¿“x
-- **‰“š«**: ššššš (Å‘å)
-- **CPUg—p—¦**: šššš™ (‘å)
-- **ƒXƒ‹[ƒvƒbƒg**: šššš™ (‘å)
+#### å½±éŸ¿åº¦
+- **å¿œç­”æ€§**: â˜…â˜…â˜…â˜…â˜… (æœ€å¤§)
+- **CPUä½¿ç”¨ç‡**: â˜…â˜…â˜…â˜…â˜† (å¤§)
+- **ã‚¹ãƒ«ãƒ¼ãƒ—ãƒƒãƒˆ**: â˜…â˜…â˜…â˜…â˜† (å¤§)
 
-#### –â‘è‚ÌÚ×
+#### å•é¡Œã®è©³ç´°
 
-**êŠ**: `Core/Domain/ReceivedRuleEngine.ps1` (305-470s)
+**å ´æ‰€**: `Core/Domain/ReceivedRuleEngine.ps1` (305-470è¡Œ)
 
 ```powershell
 function Invoke-AutoResponse {
     foreach ($rule in $Rules) {
-        # –â‘è1: –ˆ‰ñ‘Sƒ‹[ƒ‹‚ğƒXƒLƒƒƒ“
+        # å•é¡Œ1: æ¯å›å…¨ãƒ«ãƒ¼ãƒ«ã‚’ã‚¹ã‚­ãƒ£ãƒ³
         if (-not (Test-ReceivedRuleMatch -ReceivedData $ReceivedData -Rule $rule)) {
             continue
         }
         
-        # –â‘è2: ƒ}ƒbƒ`‚²‚Æ‚Éƒeƒ“ƒvƒŒ[ƒgƒtƒ@ƒCƒ‹“Ç‚İ‚İ
+        # å•é¡Œ2: ãƒãƒƒãƒã”ã¨ã«ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆãƒ•ã‚¡ã‚¤ãƒ«èª­ã¿è¾¼ã¿
         $templates = Get-MessageTemplateCache -FilePath $messageFilePath
         
-        # –â‘è3: –ˆ‰ñHEX•ÏŠ·ˆ—
+        # å•é¡Œ3: æ¯å›HEXå¤‰æ›å‡¦ç†
         $responseBytes = ConvertTo-ByteArray -Data $template.Format -Encoding 'HEX'
         
-        # •¡”ƒ‹[ƒ‹‘Î‰: break‚¹‚¸‚ÉŒp‘±
+        # è¤‡æ•°ãƒ«ãƒ¼ãƒ«å¯¾å¿œ: breakã›ãšã«ç¶™ç¶š
     }
 }
 ```
 
-**–â‘è“_**:
+**å•é¡Œç‚¹**:
 
-1. **‘Sƒ‹[ƒ‹‚ÌüŒ`ƒXƒLƒƒƒ“**
-   - ƒ‹[ƒ‹”‚ª‘‚¦‚é‚Ù‚Ç’x‰„‚ª‘‰Á
-   - ƒ}ƒbƒ`‚µ‚È‚¢ƒ‹[ƒ‹‚à‘S‚Äƒ`ƒFƒbƒN
-   - O(n)‚ÌŒvZ—Ê
+1. **å…¨ãƒ«ãƒ¼ãƒ«ã®ç·šå½¢ã‚¹ã‚­ãƒ£ãƒ³**
+   - ãƒ«ãƒ¼ãƒ«æ•°ãŒå¢—ãˆã‚‹ã»ã©é…å»¶ãŒå¢—åŠ 
+   - ãƒãƒƒãƒã—ãªã„ãƒ«ãƒ¼ãƒ«ã‚‚å…¨ã¦ãƒã‚§ãƒƒã‚¯
+   - O(n)ã®è¨ˆç®—é‡
 
-2. **ƒeƒ“ƒvƒŒ[ƒgƒtƒ@ƒCƒ‹‚Ìd•¡“Ç‚İ‚İ**
+2. **ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆãƒ•ã‚¡ã‚¤ãƒ«ã®é‡è¤‡èª­ã¿è¾¼ã¿**
    ```powershell
-   # Get-MessageTemplateCache ‚ÉƒLƒƒƒbƒVƒ…‹@”\‚È‚µI
-   $rawBytes = Get-Content -Path $FilePath -Encoding Byte -Raw  # ƒtƒ@ƒCƒ‹I/O
-   $csvText = $sjisEncoding.GetString($rawBytes)                # ƒGƒ“ƒR[ƒfƒBƒ“ƒO•ÏŠ·
-   $rows = $csvText | ConvertFrom-Csv                           # CSV‰ğÍ
+   # Get-MessageTemplateCache ã«ã‚­ãƒ£ãƒƒã‚·ãƒ¥æ©Ÿèƒ½ãªã—ï¼
+   $rawBytes = Get-Content -Path $FilePath -Encoding Byte -Raw  # ãƒ•ã‚¡ã‚¤ãƒ«I/O
+   $csvText = $sjisEncoding.GetString($rawBytes)                # ã‚¨ãƒ³ã‚³ãƒ¼ãƒ‡ã‚£ãƒ³ã‚°å¤‰æ›
+   $rows = $csvText | ConvertFrom-Csv                           # CSVè§£æ
    
-   # –ˆ‰ñHEX•¶š—ñ‚ğŒ‹‡
+   # æ¯å›HEXæ–‡å­—åˆ—ã‚’çµåˆ
    foreach ($row in $rows) {
-       $hexStream += $row.$hexValue  # •¶š—ñŒ‹‡iO(n?)‚Ì‰Â”\«j
+       $hexStream += $row.$hexValue  # æ–‡å­—åˆ—çµåˆï¼ˆO(n?)ã®å¯èƒ½æ€§ï¼‰
    }
    ```
 
-3. **HEX•ÏŠ·‚ÌŒJ‚è•Ô‚µÀs**
+3. **HEXå¤‰æ›ã®ç¹°ã‚Šè¿”ã—å®Ÿè¡Œ**
    ```powershell
-   # ƒ}ƒbƒ`‚Ì‚½‚Ñ‚ÉÀs
+   # ãƒãƒƒãƒã®ãŸã³ã«å®Ÿè¡Œ
    $responseBytes = ConvertTo-ByteArray -Data $hexStream -Encoding 'HEX'
-   # «
+   # â†“
    for ($i = 0; $i -lt $hex.Length; $i += 2) {
        $hexByte = $hex.Substring($i, 2)
        $bytes += [Convert]::ToByte($hexByte, 16)
    }
    ```
 
-4. **ƒoƒCƒiƒŠƒ}ƒbƒ`ƒ“ƒO‚Ì”ñŒø—¦«**
+4. **ãƒã‚¤ãƒŠãƒªãƒãƒƒãƒãƒ³ã‚°ã®éåŠ¹ç‡æ€§**
    ```powershell
    function Test-BinaryRuleMatch {
-       # –ˆ‰ñHEX•¶š—ñ‚ğƒoƒCƒg”z—ñ‚É•ÏŠ·
+       # æ¯å›HEXæ–‡å­—åˆ—ã‚’ãƒã‚¤ãƒˆé…åˆ—ã«å¤‰æ›
        for ($i = 0; $i -lt $hexValue.Length; $i += 2) {
            $hexByte = $hexValue.Substring($i, 2)
-           $matchBytes += [Convert]::ToByte($hexByte, 16)  # –ˆ‰ñ•ÏŠ·
+           $matchBytes += [Convert]::ToByte($hexByte, 16)  # æ¯å›å¤‰æ›
        }
        
-       # ƒoƒCƒg’PˆÊ‚Å”äŠr
+       # ãƒã‚¤ãƒˆå˜ä½ã§æ¯”è¼ƒ
        for ($i = 0; $i -lt $length; $i++) {
            if ($ReceivedData[$offset + $i] -ne $matchBytes[$i]) {
                return $false
@@ -354,32 +354,32 @@ function Invoke-AutoResponse {
    }
    ```
 
-#### ‘ª’èƒf[ƒ^i„’èj
+#### æ¸¬å®šãƒ‡ãƒ¼ã‚¿ï¼ˆæ¨å®šï¼‰
 
-| ƒ‹[ƒ‹” | ‰“šŠÔ | ”õl |
+| ãƒ«ãƒ¼ãƒ«æ•° | å¿œç­”æ™‚é–“ | å‚™è€ƒ |
 |---------|---------|------|
-| 1ŒÂ | 10-20ms | ƒeƒ“ƒvƒŒ[ƒg“Ç‚İ‚İ + HEX•ÏŠ· |
-| 5ŒÂ | 30-60ms | ‘Sƒ‹[ƒ‹ƒXƒLƒƒƒ“ |
-| 10ŒÂ | 60-120ms | üŒ`‘‰Á |
-| 20ŒÂ | 120-240ms | **À—pã‚Ì’x‰„‚ª”­¶** |
+| 1å€‹ | 10-20ms | ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆèª­ã¿è¾¼ã¿ + HEXå¤‰æ› |
+| 5å€‹ | 30-60ms | å…¨ãƒ«ãƒ¼ãƒ«ã‚¹ã‚­ãƒ£ãƒ³ |
+| 10å€‹ | 60-120ms | ç·šå½¢å¢—åŠ  |
+| 20å€‹ | 120-240ms | **å®Ÿç”¨ä¸Šã®é…å»¶ãŒç™ºç”Ÿ** |
 
-**‰e‹¿ƒVƒiƒŠƒI**:
-- ‚•p“x’ÊMi100msg/secj~ ƒ‹[ƒ‹”10ŒÂ = Å‘å12•b/•b‚Ìˆ—’x‰„
-- ƒŠƒAƒ‹ƒ^ƒCƒ€«‚ª‹‚ß‚ç‚ê‚é’ÊM‚ÅŒ°’˜
-- CPUƒRƒA1‚Â‚ª80-100%g—p‚³‚ê‚é‰Â”\«
+**å½±éŸ¿ã‚·ãƒŠãƒªã‚ª**:
+- é«˜é »åº¦é€šä¿¡ï¼ˆ100msg/secï¼‰Ã— ãƒ«ãƒ¼ãƒ«æ•°10å€‹ = æœ€å¤§12ç§’/ç§’ã®å‡¦ç†é…å»¶
+- ãƒªã‚¢ãƒ«ã‚¿ã‚¤ãƒ æ€§ãŒæ±‚ã‚ã‚‰ã‚Œã‚‹é€šä¿¡ã§é¡•è‘—
+- CPUã‚³ã‚¢1ã¤ãŒ80-100%ä½¿ç”¨ã•ã‚Œã‚‹å¯èƒ½æ€§
 
 ---
 
-### 8. ƒVƒiƒŠƒIÀs‚ÌƒLƒƒƒbƒVƒ…‚È‚µ y’†z
+### 8. ã‚·ãƒŠãƒªã‚ªå®Ÿè¡Œã®ã‚­ãƒ£ãƒƒã‚·ãƒ¥ãªã— ã€ä¸­ã€‘
 
-#### ‰e‹¿“x
-- **‰“š«**: ššš™™ (’†)
-- **ƒfƒBƒXƒNI/O**: ššš™™ (’†)
-- **•À—ñ«**: ššš™™ (’†)
+#### å½±éŸ¿åº¦
+- **å¿œç­”æ€§**: â˜…â˜…â˜…â˜†â˜† (ä¸­)
+- **ãƒ‡ã‚£ã‚¹ã‚¯I/O**: â˜…â˜…â˜…â˜†â˜† (ä¸­)
+- **ä¸¦åˆ—æ€§**: â˜…â˜…â˜…â˜†â˜† (ä¸­)
 
-#### –â‘è‚ÌÚ×
+#### å•é¡Œã®è©³ç´°
 
-**êŠ**: `Core/Domain/MessageService.ps1` (217-270s)
+**å ´æ‰€**: `Core/Domain/MessageService.ps1` (217-270è¡Œ)
 
 ```powershell
 [object[]] LoadScenario([string]$scenarioPath) {
@@ -387,7 +387,7 @@ function Invoke-AutoResponse {
         throw "Scenario file not found: $scenarioPath"
     }
     
-    # –â‘è: ƒLƒƒƒbƒVƒ…‹@”\‚È‚µ
+    # å•é¡Œ: ã‚­ãƒ£ãƒƒã‚·ãƒ¥æ©Ÿèƒ½ãªã—
     $content = Get-Content -Path $scenarioPath -Encoding Default -Raw
     $steps = $content | ConvertFrom-Csv
     $this._logger.LogInfo("Scenario loaded: $scenarioPath")
@@ -395,134 +395,134 @@ function Invoke-AutoResponse {
 }
 
 [void] StartScenario([string]$connectionId, [string]$scenarioPath) {
-    // –ˆ‰ñƒtƒ@ƒCƒ‹“Ç‚İ‚İ
+    // æ¯å›ãƒ•ã‚¡ã‚¤ãƒ«èª­ã¿è¾¼ã¿
     $scenarioSteps = $this.LoadScenario($scenarioPath)
     
     $scriptBlock = {
         param($connId, $steps, $svc, $log)
-        # ƒVƒiƒŠƒIÀsiÚ×À‘•‚Í•Ê‰ÓŠj
+        # ã‚·ãƒŠãƒªã‚ªå®Ÿè¡Œï¼ˆè©³ç´°å®Ÿè£…ã¯åˆ¥ç®‡æ‰€ï¼‰
     }
     
     $runspace = [powershell]::Create()
-    $null = $runspace.BeginInvoke()  # Fire and forget - ŠÇ—‚È‚µ
+    $null = $runspace.BeginInvoke()  # Fire and forget - ç®¡ç†ãªã—
 }
 ```
 
-**–â‘è“_**:
+**å•é¡Œç‚¹**:
 
-1. **ƒVƒiƒŠƒIƒtƒ@ƒCƒ‹‚ÌƒLƒƒƒbƒVƒ…‚È‚µ**
-   - “¯‚¶ƒVƒiƒŠƒI‚ğŒJ‚è•Ô‚µÀs‚É–ˆ‰ñ“Ç‚İ‚İ
-   - CSV‰ğÍ‚Ìd•¡Às
-   - ƒeƒ“ƒvƒŒ[ƒg‚É‚ÍƒLƒƒƒbƒVƒ…‚ª‚ ‚é‚Ì‚ÉƒVƒiƒŠƒI‚É‚Í‚È‚¢
+1. **ã‚·ãƒŠãƒªã‚ªãƒ•ã‚¡ã‚¤ãƒ«ã®ã‚­ãƒ£ãƒƒã‚·ãƒ¥ãªã—**
+   - åŒã˜ã‚·ãƒŠãƒªã‚ªã‚’ç¹°ã‚Šè¿”ã—å®Ÿè¡Œæ™‚ã«æ¯å›èª­ã¿è¾¼ã¿
+   - CSVè§£æã®é‡è¤‡å®Ÿè¡Œ
+   - ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆã«ã¯ã‚­ãƒ£ãƒƒã‚·ãƒ¥ãŒã‚ã‚‹ã®ã«ã‚·ãƒŠãƒªã‚ªã«ã¯ãªã„
 
-2. **RunspaceŠÇ—‚ÌŒ‡”@**
-   - ì¬‚µ‚½Runspace‚ğ’ÇÕ‚µ‚Ä‚¢‚È‚¢
-   - ƒŠƒ\[ƒXƒŠ[ƒN‚Ì‰Â”\«
-   - •¡”ƒVƒiƒŠƒI“¯Às‚Ì§Œä‚È‚µ
+2. **Runspaceç®¡ç†ã®æ¬ å¦‚**
+   - ä½œæˆã—ãŸRunspaceã‚’è¿½è·¡ã—ã¦ã„ãªã„
+   - ãƒªã‚½ãƒ¼ã‚¹ãƒªãƒ¼ã‚¯ã®å¯èƒ½æ€§
+   - è¤‡æ•°ã‚·ãƒŠãƒªã‚ªåŒæ™‚å®Ÿè¡Œæ™‚ã®åˆ¶å¾¡ãªã—
 
-3. **i’»EƒLƒƒƒ“ƒZƒ‹‹@”\‚È‚µ**
-   - Às’†‚ÌƒVƒiƒŠƒI‚ğ’â~‚Å‚«‚È‚¢
-   - i’»ó‹µ‚ª•s–¾
+3. **é€²æ—ãƒ»ã‚­ãƒ£ãƒ³ã‚»ãƒ«æ©Ÿèƒ½ãªã—**
+   - å®Ÿè¡Œä¸­ã®ã‚·ãƒŠãƒªã‚ªã‚’åœæ­¢ã§ããªã„
+   - é€²æ—çŠ¶æ³ãŒä¸æ˜
 
 ---
 
-### 9. Get-MessageTemplateCache ‚ÌƒLƒƒƒbƒVƒ…–¢À‘• yd‘åz
+### 9. Get-MessageTemplateCache ã®ã‚­ãƒ£ãƒƒã‚·ãƒ¥æœªå®Ÿè£… ã€é‡å¤§ã€‘
 
-#### ‰e‹¿“x
-- **‰“š«**: ššššš (Å‘å - Auto Response‚É’¼Œ‹)
-- **ƒfƒBƒXƒNI/O**: šššš™ (‘å)
-- **CPUg—p—¦**: šššš™ (‘å)
+#### å½±éŸ¿åº¦
+- **å¿œç­”æ€§**: â˜…â˜…â˜…â˜…â˜… (æœ€å¤§ - Auto Responseã«ç›´çµ)
+- **ãƒ‡ã‚£ã‚¹ã‚¯I/O**: â˜…â˜…â˜…â˜…â˜† (å¤§)
+- **CPUä½¿ç”¨ç‡**: â˜…â˜…â˜…â˜…â˜† (å¤§)
 
-#### –â‘è‚ÌÚ×
+#### å•é¡Œã®è©³ç´°
 
-**êŠ**: `Core/Domain/MessageService.ps1` (314-370s)
+**å ´æ‰€**: `Core/Domain/MessageService.ps1` (314-370è¡Œ)
 
 ```powershell
 function Get-MessageTemplateCache {
-    # –â‘è: ŠÖ”–¼‚ÍuCachev‚¾‚ªƒLƒƒƒbƒVƒ…‹@”\‚È‚µI
+    # å•é¡Œ: é–¢æ•°åã¯ã€ŒCacheã€ã ãŒã‚­ãƒ£ãƒƒã‚·ãƒ¥æ©Ÿèƒ½ãªã—ï¼
     param([string]$FilePath, [switch]$ThrowOnMissing)
     
     if (-not (Test-Path -LiteralPath $FilePath)) {
-        # ƒGƒ‰[ˆ—
+        # ã‚¨ãƒ©ãƒ¼å‡¦ç†
     }
     
-    # –ˆ‰ñƒtƒ@ƒCƒ‹‚ğ“Ç‚İ‚Ş
+    # æ¯å›ãƒ•ã‚¡ã‚¤ãƒ«ã‚’èª­ã¿è¾¼ã‚€
     $sjisEncoding = [System.Text.Encoding]::GetEncoding("Shift_JIS")
     $rawBytes = Get-Content -Path $FilePath -Encoding Byte -Raw
     $csvText = $sjisEncoding.GetString($rawBytes)
     $rows = $csvText | ConvertFrom-Csv
     
-    # –ˆ‰ñHEX•¶š—ñ‚ğŒ‹‡
+    # æ¯å›HEXæ–‡å­—åˆ—ã‚’çµåˆ
     $hexStream = ""
     foreach ($row in $rows) {
-        $hexStream += $row.$hexValue  # •¶š—ñŒ‹‡
+        $hexStream += $row.$hexValue  # æ–‡å­—åˆ—çµåˆ
     }
     
     return @{ 'DEFAULT' = $template }
 }
 ```
 
-**–â‘è“_**:
+**å•é¡Œç‚¹**:
 
-1. **ŠÖ”–¼¼‹\**: –¼‘O‚Í`Cache`‚¾‚ªƒLƒƒƒbƒVƒ…‚µ‚Ä‚¢‚È‚¢
-2. **Auto Response‚Ì‚½‚Ñ‚Éƒtƒ@ƒCƒ‹I/O**
-   - “¯‚¶ƒeƒ“ƒvƒŒ[ƒg‚ğ‰½“x‚à“Ç‚İ‚Ş
-   - 1•bŠÔ‚É100‰ñóM = 100‰ñ‚Ìƒtƒ@ƒCƒ‹I/O
-3. **ƒGƒ“ƒR[ƒfƒBƒ“ƒO•ÏŠ·‚ÌŒJ‚è•Ô‚µ**
-   - Shift-JIS ¨ Unicode•ÏŠ·‚ÌƒI[ƒo[ƒwƒbƒh
-4. **HEX•¶š—ñŒ‹‡‚Ì”ñŒø—¦«**
-   - •¶š—ñŒ‹‡‚ÍO(n?)‚Ì‰Â”\«
-   - StringBuilder‚ğg—p‚µ‚Ä‚¢‚È‚¢
+1. **é–¢æ•°åè©æ¬º**: åå‰ã¯`Cache`ã ãŒã‚­ãƒ£ãƒƒã‚·ãƒ¥ã—ã¦ã„ãªã„
+2. **Auto Responseã®ãŸã³ã«ãƒ•ã‚¡ã‚¤ãƒ«I/O**
+   - åŒã˜ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆã‚’ä½•åº¦ã‚‚èª­ã¿è¾¼ã‚€
+   - 1ç§’é–“ã«100å›å—ä¿¡ = 100å›ã®ãƒ•ã‚¡ã‚¤ãƒ«I/O
+3. **ã‚¨ãƒ³ã‚³ãƒ¼ãƒ‡ã‚£ãƒ³ã‚°å¤‰æ›ã®ç¹°ã‚Šè¿”ã—**
+   - Shift-JIS â†’ Unicodeå¤‰æ›ã®ã‚ªãƒ¼ãƒãƒ¼ãƒ˜ãƒƒãƒ‰
+4. **HEXæ–‡å­—åˆ—çµåˆã®éåŠ¹ç‡æ€§**
+   - æ–‡å­—åˆ—çµåˆã¯O(n?)ã®å¯èƒ½æ€§
+   - StringBuilderã‚’ä½¿ç”¨ã—ã¦ã„ãªã„
 
-#### À‘ª‰e‹¿—ái„’èj
+#### å®Ÿæ¸¬å½±éŸ¿ä¾‹ï¼ˆæ¨å®šï¼‰
 
 ```powershell
-# ƒVƒiƒŠƒI: 10 Auto Responseƒ‹[ƒ‹AŠeƒ‹[ƒ‹‚ªˆÙ‚È‚éƒeƒ“ƒvƒŒ[ƒgg—p
-# 1‰ñ‚ÌóM‚Å10‰ñ‚Ìƒeƒ“ƒvƒŒ[ƒg“Ç‚İ‚İ
+# ã‚·ãƒŠãƒªã‚ª: 10 Auto Responseãƒ«ãƒ¼ãƒ«ã€å„ãƒ«ãƒ¼ãƒ«ãŒç•°ãªã‚‹ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆä½¿ç”¨
+# 1å›ã®å—ä¿¡ã§10å›ã®ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆèª­ã¿è¾¼ã¿
 
-# 1ƒeƒ“ƒvƒŒ[ƒg“Ç‚İ‚İ = 5-10msiƒtƒ@ƒCƒ‹I/O + CSV‰ğÍ + HEXŒ‹‡j
-# 10ƒ‹[ƒ‹ ~ 10ms = 100ms/óM
+# 1ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆèª­ã¿è¾¼ã¿ = 5-10msï¼ˆãƒ•ã‚¡ã‚¤ãƒ«I/O + CSVè§£æ + HEXçµåˆï¼‰
+# 10ãƒ«ãƒ¼ãƒ« Ã— 10ms = 100ms/å—ä¿¡
 
-# 100msg/sec ~ 100ms = 10•b/•b ¨ ˆ—‚ªŠÔ‚É‡‚í‚È‚¢I
+# 100msg/sec Ã— 100ms = 10ç§’/ç§’ â†’ å‡¦ç†ãŒé–“ã«åˆã‚ãªã„ï¼
 ```
 
 ---
 
-## ‰ü‘PİŒv
+## æ”¹å–„è¨­è¨ˆ
 
-### ‰ü‘P•ûj
+### æ”¹å–„æ–¹é‡
 
-#### İŒvŒ´‘¥
-1. **·•ªXV**: •ÏX‚ª‚ ‚Á‚½•”•ª‚Ì‚İXV
-2. **’x‰„•]‰¿**: •K—v‚É‚È‚é‚Ü‚Åˆ—‚ğ’x‰„
-3. **ƒoƒbƒ`ˆ—**: •¡”‚Ì‘€ì‚ğ‚Ü‚Æ‚ß‚ÄÀs
-4. **ƒLƒƒƒbƒVƒ…Šˆ—p**: d•¡ŒvZEI/O‚ğíŒ¸
-5. **ƒŠƒ\[ƒX§ŒÀ**: ƒƒ‚ƒŠECPUg—p—Ê‚ÌãŒÀİ’è
-6. **–‘OƒRƒ“ƒpƒCƒ‹**: ƒpƒ^[ƒ“ƒ}ƒbƒ`ƒ“ƒOE•ÏŠ·‚ğ–‘Oˆ—
+#### è¨­è¨ˆåŸå‰‡
+1. **å·®åˆ†æ›´æ–°**: å¤‰æ›´ãŒã‚ã£ãŸéƒ¨åˆ†ã®ã¿æ›´æ–°
+2. **é…å»¶è©•ä¾¡**: å¿…è¦ã«ãªã‚‹ã¾ã§å‡¦ç†ã‚’é…å»¶
+3. **ãƒãƒƒãƒå‡¦ç†**: è¤‡æ•°ã®æ“ä½œã‚’ã¾ã¨ã‚ã¦å®Ÿè¡Œ
+4. **ã‚­ãƒ£ãƒƒã‚·ãƒ¥æ´»ç”¨**: é‡è¤‡è¨ˆç®—ãƒ»I/Oã‚’å‰Šæ¸›
+5. **ãƒªã‚½ãƒ¼ã‚¹åˆ¶é™**: ãƒ¡ãƒ¢ãƒªãƒ»CPUä½¿ç”¨é‡ã®ä¸Šé™è¨­å®š
+6. **äº‹å‰ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«**: ãƒ‘ã‚¿ãƒ¼ãƒ³ãƒãƒƒãƒãƒ³ã‚°ãƒ»å¤‰æ›ã‚’äº‹å‰å‡¦ç†
 
 ---
 
-### ‰ü‘PˆÄ 1: UIXV‚Ì·•ª•`‰æ y—Dæ“x: ‚z
+### æ”¹å–„æ¡ˆ 1: UIæ›´æ–°ã®å·®åˆ†æç”» ã€å„ªå…ˆåº¦: é«˜ã€‘
 
-#### İŒv
+#### è¨­è¨ˆ
 
-**–Ú“I**: DataGridView‚Ì‘SsÄ•`‰æ‚ğ·•ªXV‚É•ÏX
+**ç›®çš„**: DataGridViewã®å…¨è¡Œå†æç”»ã‚’å·®åˆ†æ›´æ–°ã«å¤‰æ›´
 
-**ƒAƒvƒ[ƒ`**:
-1. ‘O‰ñ‚Ì•`‰æó‘Ô‚ğƒLƒƒƒbƒVƒ…
-2. Œ»İ‚Ìó‘Ô‚Æ”äŠr
-3. •ÏX‚ª‚ ‚Á‚½s‚Ì‚İXV
+**ã‚¢ãƒ—ãƒ­ãƒ¼ãƒ**:
+1. å‰å›ã®æç”»çŠ¶æ…‹ã‚’ã‚­ãƒ£ãƒƒã‚·ãƒ¥
+2. ç¾åœ¨ã®çŠ¶æ…‹ã¨æ¯”è¼ƒ
+3. å¤‰æ›´ãŒã‚ã£ãŸè¡Œã®ã¿æ›´æ–°
 
-#### À‘•İŒv
+#### å®Ÿè£…è¨­è¨ˆ
 
 ```powershell
-# V‹KŠÖ”: Update-InstanceListIncremental
+# æ–°è¦é–¢æ•°: Update-InstanceListIncremental
 function Update-InstanceListIncremental {
     param(
         [System.Windows.Forms.DataGridView]$DataGridView
     )
     
-    # 1. Œ»İ‚ÌƒOƒŠƒbƒhó‘Ô‚ğƒ}ƒbƒv‚É•ÏŠ·
+    # 1. ç¾åœ¨ã®ã‚°ãƒªãƒƒãƒ‰çŠ¶æ…‹ã‚’ãƒãƒƒãƒ—ã«å¤‰æ›
     $currentRowMap = @{}
     foreach ($row in $DataGridView.Rows) {
         $connId = $row.Cells["Id"].Value
@@ -531,25 +531,25 @@ function Update-InstanceListIncremental {
         }
     }
     
-    # 2. ÅV‚ÌÚ‘±ƒŠƒXƒg‚ğæ“¾
+    # 2. æœ€æ–°ã®æ¥ç¶šãƒªã‚¹ãƒˆã‚’å–å¾—
     $connections = Get-UiConnections
     $newConnIds = [System.Collections.Generic.HashSet[string]]::new()
     
-    # 3. Ú‘±‚²‚Æ‚Éˆ—
+    # 3. æ¥ç¶šã”ã¨ã«å‡¦ç†
     foreach ($conn in $connections) {
         $connId = $conn.Id
         [void]$newConnIds.Add($connId)
         
         if ($currentRowMap.ContainsKey($connId)) {
-            # Šù‘¶s ¨ ’l‚Ì‚İXV
+            # æ—¢å­˜è¡Œ â†’ å€¤ã®ã¿æ›´æ–°
             Update-ConnectionRow -Row $currentRowMap[$connId] -Connection $conn
         } else {
-            # V‹Ks ¨ ’Ç‰Á
+            # æ–°è¦è¡Œ â†’ è¿½åŠ 
             Add-ConnectionRow -DataGridView $DataGridView -Connection $conn
         }
     }
     
-    # 4. íœ‚³‚ê‚½Ú‘±‚Ìs‚ğíœ
+    # 4. å‰Šé™¤ã•ã‚ŒãŸæ¥ç¶šã®è¡Œã‚’å‰Šé™¤
     $rowsToRemove = [System.Collections.Generic.List[object]]::new()
     foreach ($row in $DataGridView.Rows) {
         $connId = $row.Cells["Id"].Value
@@ -563,15 +563,15 @@ function Update-InstanceListIncremental {
     }
 }
 
-# V‹KŠÖ”: Update-ConnectionRowiŠù‘¶s‚Ì’l‚Ì‚İXVj
+# æ–°è¦é–¢æ•°: Update-ConnectionRowï¼ˆæ—¢å­˜è¡Œã®å€¤ã®ã¿æ›´æ–°ï¼‰
 function Update-ConnectionRow {
     param($Row, $Connection)
     
-    # ƒXƒe[ƒ^ƒX‚Ì‚İXViComboBox‚Í•ÏX‚µ‚È‚¢j
+    # ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã®ã¿æ›´æ–°ï¼ˆComboBoxã¯å¤‰æ›´ã—ãªã„ï¼‰
     $endpoint = Get-ConnectionEndpoint -Connection $Connection
     $status = $Connection.Status
     
-    # ’l‚ª•ÏX‚³‚ê‚½ê‡‚Ì‚İƒZƒ‹‚ğXV
+    # å€¤ãŒå¤‰æ›´ã•ã‚ŒãŸå ´åˆã®ã¿ã‚»ãƒ«ã‚’æ›´æ–°
     if ($Row.Cells["Status"].Value -ne $status) {
         $Row.Cells["Status"].Value = $status
         Set-RowColor -Row $Row -Status $status
@@ -581,32 +581,32 @@ function Update-ConnectionRow {
         $Row.Cells["Endpoint"].Value = $endpoint
     }
     
-    # ComboBox‚Ì‘I‘ğ’l‚Í•Ûiƒ†[ƒU[‚ª•ÏX‚µ‚½‰Â”\«‚ª‚ ‚é‚½‚ßj
+    # ComboBoxã®é¸æŠå€¤ã¯ä¿æŒï¼ˆãƒ¦ãƒ¼ã‚¶ãƒ¼ãŒå¤‰æ›´ã—ãŸå¯èƒ½æ€§ãŒã‚ã‚‹ãŸã‚ï¼‰
 }
 ```
 
-#### Šú‘Ò‚³‚ê‚éŒø‰Ê
-- **CPUíŒ¸**: –ñ70-80%iÚ‘±”10‚Ìê‡j
-- **‚¿‚ç‚Â‚«íŒ¸**: Š®‘S‚É‰ğÁ
-- **‰“š«Œüã**: ‘ÌŠ´‚Å–¾Šm‚É‰ü‘P
+#### æœŸå¾…ã•ã‚Œã‚‹åŠ¹æœ
+- **CPUå‰Šæ¸›**: ç´„70-80%ï¼ˆæ¥ç¶šæ•°10ã®å ´åˆï¼‰
+- **ã¡ã‚‰ã¤ãå‰Šæ¸›**: å®Œå…¨ã«è§£æ¶ˆ
+- **å¿œç­”æ€§å‘ä¸Š**: ä½“æ„Ÿã§æ˜ç¢ºã«æ”¹å–„
 
 ---
 
-### ‰ü‘PˆÄ 2: ƒƒO•\¦‚Ì‘•ªXV y—Dæ“x: ‚z
+### æ”¹å–„æ¡ˆ 2: ãƒ­ã‚°è¡¨ç¤ºã®å¢—åˆ†æ›´æ–° ã€å„ªå…ˆåº¦: é«˜ã€‘
 
-#### İŒv
+#### è¨­è¨ˆ
 
-**–Ú“I**: ƒƒO‘S‘Ì‚ÌÄ\’z‚ğ‘•ª’Ç‰Á‚É•ÏX
+**ç›®çš„**: ãƒ­ã‚°å…¨ä½“ã®å†æ§‹ç¯‰ã‚’å¢—åˆ†è¿½åŠ ã«å¤‰æ›´
 
-**ƒAƒvƒ[ƒ`**:
-1. ‘O‰ñ‚Ì•\¦ˆÊ’u‚ğ‹L‰¯
-2. V‹KƒGƒ“ƒgƒŠ‚Ì‚İ‚ğ’Ç‰Á
-3. ŒÃ‚¢ƒGƒ“ƒgƒŠ‚Í©“®íœiƒŠƒ“ƒOƒoƒbƒtƒ@•û®j
+**ã‚¢ãƒ—ãƒ­ãƒ¼ãƒ**:
+1. å‰å›ã®è¡¨ç¤ºä½ç½®ã‚’è¨˜æ†¶
+2. æ–°è¦ã‚¨ãƒ³ãƒˆãƒªã®ã¿ã‚’è¿½åŠ 
+3. å¤ã„ã‚¨ãƒ³ãƒˆãƒªã¯è‡ªå‹•å‰Šé™¤ï¼ˆãƒªãƒ³ã‚°ãƒãƒƒãƒ•ã‚¡æ–¹å¼ï¼‰
 
-#### À‘•İŒv
+#### å®Ÿè£…è¨­è¨ˆ
 
 ```powershell
-# ƒ‚ƒWƒ…[ƒ‹ƒŒƒxƒ‹•Ï”
+# ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ãƒ¬ãƒ™ãƒ«å¤‰æ•°
 $script:LogDisplayState = @{
     LastUpdateTime = [DateTime]::MinValue
     DisplayedEntryIds = [System.Collections.Generic.HashSet[string]]::new()
@@ -629,7 +629,7 @@ function Update-LogDisplayIncremental {
             continue
         }
         
-        # ÅVƒGƒ“ƒgƒŠ‚Ì‚İ‚ğæ“¾i‘O‰ñˆÈ~j
+        # æœ€æ–°ã‚¨ãƒ³ãƒˆãƒªã®ã¿ã‚’å–å¾—ï¼ˆå‰å›ä»¥é™ï¼‰
         $syncRoot = $conn.RecvBuffer.SyncRoot
         [System.Threading.Monitor]::Enter($syncRoot)
         try {
@@ -639,33 +639,33 @@ function Update-LogDisplayIncremental {
         }
         
         foreach ($recv in $snapshot) {
-            # ƒ^ƒCƒ€ƒXƒ^ƒ“ƒvƒx[ƒX‚ÌƒtƒBƒ‹ƒ^ƒŠƒ“ƒO
+            # ã‚¿ã‚¤ãƒ ã‚¹ã‚¿ãƒ³ãƒ—ãƒ™ãƒ¼ã‚¹ã®ãƒ•ã‚£ãƒ«ã‚¿ãƒªãƒ³ã‚°
             if ($recv.Timestamp -le $script:LogDisplayState.LastUpdateTime) {
                 continue
             }
             
             $summary = Get-MessageSummary -Data $recv.Data -MaxLength 40
             $timeStr = $recv.Timestamp.ToString("HH:mm:ss")
-            $line = "[$timeStr] $($conn.DisplayName) © $summary ($($recv.Length) bytes)"
+            $line = "[$timeStr] $($conn.DisplayName) â† $summary ($($recv.Length) bytes)"
             [void]$newLines.Add($line)
         }
     }
     
     if ($newLines.Count -gt 0) {
-        # V‹Ks‚ğ’Ç‰Á
+        # æ–°è¦è¡Œã‚’è¿½åŠ 
         $currentLines = if ($TextBox.Text) {
             $TextBox.Text -split "`r`n"
         } else {
             @()
         }
         
-        # StringBuilderg—p‚Å‚‘¬‰»
+        # StringBuilderä½¿ç”¨ã§é«˜é€ŸåŒ–
         $sb = [System.Text.StringBuilder]::new()
         
-        # ŒÃ‚¢s + V‚µ‚¢s
+        # å¤ã„è¡Œ + æ–°ã—ã„è¡Œ
         $allLines = $currentLines + $newLines
         
-        # Å‘ås”‚ğ’´‚¦‚½ê‡‚ÍŒÃ‚¢s‚ğíœ
+        # æœ€å¤§è¡Œæ•°ã‚’è¶…ãˆãŸå ´åˆã¯å¤ã„è¡Œã‚’å‰Šé™¤
         $startIndex = [Math]::Max(0, $allLines.Count - $script:LogDisplayState.MaxLines)
         for ($i = $startIndex; $i -lt $allLines.Count; $i++) {
             [void]$sb.AppendLine($allLines[$i])
@@ -680,25 +680,25 @@ function Update-LogDisplayIncremental {
 }
 ```
 
-#### Šú‘Ò‚³‚ê‚éŒø‰Ê
-- **CPUíŒ¸**: –ñ60-70%
-- **•¶š—ñˆ—‚‘¬‰»**: StringBuilderg—p‚Å2-3”{‚‘¬
-- **ƒƒbƒN‹£‡íŒ¸**: V‹KƒGƒ“ƒgƒŠ‚Ì‚İƒXƒLƒƒƒ“
+#### æœŸå¾…ã•ã‚Œã‚‹åŠ¹æœ
+- **CPUå‰Šæ¸›**: ç´„60-70%
+- **æ–‡å­—åˆ—å‡¦ç†é«˜é€ŸåŒ–**: StringBuilderä½¿ç”¨ã§2-3å€é«˜é€Ÿ
+- **ãƒ­ãƒƒã‚¯ç«¶åˆå‰Šæ¸›**: æ–°è¦ã‚¨ãƒ³ãƒˆãƒªã®ã¿ã‚¹ã‚­ãƒ£ãƒ³
 
 ---
 
-### ‰ü‘PˆÄ 3: Logger ‚Ìƒoƒbƒtƒ@ƒŠƒ“ƒO y—Dæ“x: ’†z
+### æ”¹å–„æ¡ˆ 3: Logger ã®ãƒãƒƒãƒ•ã‚¡ãƒªãƒ³ã‚° ã€å„ªå…ˆåº¦: ä¸­ã€‘
 
-#### İŒv
+#### è¨­è¨ˆ
 
-**–Ú“I**: ƒtƒ@ƒCƒ‹I/O•p“x‚ğíŒ¸
+**ç›®çš„**: ãƒ•ã‚¡ã‚¤ãƒ«I/Oé »åº¦ã‚’å‰Šæ¸›
 
-**ƒAƒvƒ[ƒ`**:
-1. ƒƒOƒGƒ“ƒgƒŠ‚ğƒƒ‚ƒŠƒoƒbƒtƒ@‚É’~Ï
-2. ˆê’èŒ”‚Ü‚½‚Íˆê’èŠÔ‚²‚Æ‚É‚Ü‚Æ‚ß‚Ä‘‚«‚İ
-3. ƒAƒvƒŠƒP[ƒVƒ‡ƒ“I—¹‚Éƒtƒ‰ƒbƒVƒ…
+**ã‚¢ãƒ—ãƒ­ãƒ¼ãƒ**:
+1. ãƒ­ã‚°ã‚¨ãƒ³ãƒˆãƒªã‚’ãƒ¡ãƒ¢ãƒªãƒãƒƒãƒ•ã‚¡ã«è“„ç©
+2. ä¸€å®šä»¶æ•°ã¾ãŸã¯ä¸€å®šæ™‚é–“ã”ã¨ã«ã¾ã¨ã‚ã¦æ›¸ãè¾¼ã¿
+3. ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³çµ‚äº†æ™‚ã«ãƒ•ãƒ©ãƒƒã‚·ãƒ¥
 
-#### À‘•İŒv
+#### å®Ÿè£…è¨­è¨ˆ
 
 ```powershell
 class BufferedLogger : Logger {
@@ -710,14 +710,14 @@ class BufferedLogger : Logger {
     BufferedLogger(
         [string]$logPath,
         [string]$name = "TcpDebugger",
-        [int]$flushThreshold = 50,      # 50Œ‚Åƒtƒ‰ƒbƒVƒ…
-        [int]$flushIntervalMs = 5000    # 5•b‚Åƒtƒ‰ƒbƒVƒ…
+        [int]$flushThreshold = 50,      # 50ä»¶ã§ãƒ•ãƒ©ãƒƒã‚·ãƒ¥
+        [int]$flushIntervalMs = 5000    # 5ç§’ã§ãƒ•ãƒ©ãƒƒã‚·ãƒ¥
     ) : base($logPath, $name) {
         $this._buffer = [System.Collections.Concurrent.ConcurrentQueue[string]]::new()
         $this._bufferSize = 0
         $this._flushThreshold = $flushThreshold
         
-        # ’èŠúƒtƒ‰ƒbƒVƒ…ƒ^ƒCƒ}[
+        # å®šæœŸãƒ•ãƒ©ãƒƒã‚·ãƒ¥ã‚¿ã‚¤ãƒãƒ¼
         $this._flushTimer = [System.Timers.Timer]::new($flushIntervalMs)
         $this._flushTimer.AutoReset = $true
         $this._flushTimer.add_Elapsed({
@@ -740,10 +740,10 @@ class BufferedLogger : Logger {
         $json = $entry | ConvertTo-Json -Compress
         $this._buffer.Enqueue($json)
         
-        # ƒCƒ“ƒNƒŠƒƒ“ƒgiƒXƒŒƒbƒhƒZ[ƒtj
+        # ã‚¤ãƒ³ã‚¯ãƒªãƒ¡ãƒ³ãƒˆï¼ˆã‚¹ãƒ¬ãƒƒãƒ‰ã‚»ãƒ¼ãƒ•ï¼‰
         [System.Threading.Interlocked]::Increment([ref]$this._bufferSize)
         
-        # è‡’lƒ`ƒFƒbƒN
+        # é–¾å€¤ãƒã‚§ãƒƒã‚¯
         if ($this._bufferSize -ge $this._flushThreshold) {
             $this.Flush()
         }
@@ -757,7 +757,7 @@ class BufferedLogger : Logger {
         $entries = [System.Collections.Generic.List[string]]::new()
         $item = $null
         
-        # ƒoƒbƒtƒ@‚©‚ç‘S‚Äæ‚èo‚µ
+        # ãƒãƒƒãƒ•ã‚¡ã‹ã‚‰å…¨ã¦å–ã‚Šå‡ºã—
         while ($this._buffer.TryDequeue([ref]$item)) {
             $entries.Add($item)
             [System.Threading.Interlocked]::Decrement([ref]$this._bufferSize)
@@ -767,7 +767,7 @@ class BufferedLogger : Logger {
             return
         }
         
-        # ˆêŠ‡‘‚«‚İ
+        # ä¸€æ‹¬æ›¸ãè¾¼ã¿
         [System.Threading.Monitor]::Enter($this._lock)
         try {
             $content = $entries -join "`n"
@@ -781,35 +781,35 @@ class BufferedLogger : Logger {
     [void] Dispose() {
         $this._flushTimer.Stop()
         $this._flushTimer.Dispose()
-        $this.Flush()  # ÅŒã‚Éƒtƒ‰ƒbƒVƒ…
+        $this.Flush()  # æœ€å¾Œã«ãƒ•ãƒ©ãƒƒã‚·ãƒ¥
     }
 }
 ```
 
-#### Šú‘Ò‚³‚ê‚éŒø‰Ê
-- **ƒfƒBƒXƒNI/OíŒ¸**: –ñ90%i50Œ ¨ 1‰ñj
-- **ƒƒbƒN‹£‡íŒ¸**: ‘å•‚ÉíŒ¸
-- **ƒXƒ‹[ƒvƒbƒgŒüã**: 2-3”{
+#### æœŸå¾…ã•ã‚Œã‚‹åŠ¹æœ
+- **ãƒ‡ã‚£ã‚¹ã‚¯I/Oå‰Šæ¸›**: ç´„90%ï¼ˆ50ä»¶ â†’ 1å›ï¼‰
+- **ãƒ­ãƒƒã‚¯ç«¶åˆå‰Šæ¸›**: å¤§å¹…ã«å‰Šæ¸›
+- **ã‚¹ãƒ«ãƒ¼ãƒ—ãƒƒãƒˆå‘ä¸Š**: 2-3å€
 
 ---
 
-### ‰ü‘PˆÄ 4: UIXVƒ^ƒCƒ}[ŠÔŠu‚ÌÅ“K‰» y—Dæ“x: ‚z
+### æ”¹å–„æ¡ˆ 4: UIæ›´æ–°ã‚¿ã‚¤ãƒãƒ¼é–“éš”ã®æœ€é©åŒ– ã€å„ªå…ˆåº¦: é«˜ã€‘
 
-#### İŒv
+#### è¨­è¨ˆ
 
-**Œ»ó**: 2•bŒÅ’è
-**‰ü‘P**: 3-5•b‚É‰„’·i‚Ü‚½‚Í“K‰“I’²®j
+**ç¾çŠ¶**: 2ç§’å›ºå®š
+**æ”¹å–„**: 3-5ç§’ã«å»¶é•·ï¼ˆã¾ãŸã¯é©å¿œçš„èª¿æ•´ï¼‰
 
-#### À‘•İŒv
+#### å®Ÿè£…è¨­è¨ˆ
 
 ```powershell
-# ‘¦À‚É“K—p‰Â”\‚È•ÏX
-$timer = New-RefreshTimer -IntervalMilliseconds 3000  # 2•b ¨ 3•b
+# å³åº§ã«é©ç”¨å¯èƒ½ãªå¤‰æ›´
+$timer = New-RefreshTimer -IntervalMilliseconds 3000  # 2ç§’ â†’ 3ç§’
 
-# ‚Ü‚½‚ÍA“K‰“I‚ÈŠÔŠu’²®
+# ã¾ãŸã¯ã€é©å¿œçš„ãªé–“éš”èª¿æ•´
 $script:AdaptiveTimerState = @{
-    MinInterval = 2000   # Å¬2•b
-    MaxInterval = 10000  # Å‘å10•b
+    MinInterval = 2000   # æœ€å°2ç§’
+    MaxInterval = 10000  # æœ€å¤§10ç§’
     CurrentInterval = 3000
     LastChangeCount = 0
 }
@@ -817,14 +817,14 @@ $script:AdaptiveTimerState = @{
 function Adjust-TimerInterval {
     param($Timer, $ChangeCount)
     
-    # •ÏX‚ª‘½‚¢ ¨ ŠÔŠu‚ğ’Z‚­
+    # å¤‰æ›´ãŒå¤šã„ â†’ é–“éš”ã‚’çŸ­ã
     if ($ChangeCount -gt 5) {
         $newInterval = [Math]::Max(
             $script:AdaptiveTimerState.MinInterval,
             $script:AdaptiveTimerState.CurrentInterval - 500
         )
     }
-    # •ÏX‚ª­‚È‚¢ ¨ ŠÔŠu‚ğ’·‚­
+    # å¤‰æ›´ãŒå°‘ãªã„ â†’ é–“éš”ã‚’é•·ã
     elseif ($ChangeCount -eq 0) {
         $newInterval = [Math]::Min(
             $script:AdaptiveTimerState.MaxInterval,
@@ -832,7 +832,7 @@ function Adjust-TimerInterval {
         )
     }
     else {
-        return  # •ÏX‚È‚µ
+        return  # å¤‰æ›´ãªã—
     }
     
     if ($newInterval -ne $script:AdaptiveTimerState.CurrentInterval) {
@@ -842,39 +842,39 @@ function Adjust-TimerInterval {
 }
 ```
 
-#### Šú‘Ò‚³‚ê‚éŒø‰Ê
-- **CPUíŒ¸**: –ñ30-40%i‘¦Œø«j
-- **ƒoƒbƒeƒŠ[õ–½Œüã**: ƒm[ƒgPCg—p
+#### æœŸå¾…ã•ã‚Œã‚‹åŠ¹æœ
+- **CPUå‰Šæ¸›**: ç´„30-40%ï¼ˆå³åŠ¹æ€§ï¼‰
+- **ãƒãƒƒãƒ†ãƒªãƒ¼å¯¿å‘½å‘ä¸Š**: ãƒãƒ¼ãƒˆPCä½¿ç”¨æ™‚
 
 ---
 
-### ‰ü‘PˆÄ 5: RecvBuffer ‚ÌƒTƒCƒY§ŒÀ y—Dæ“x: ’†z
+### æ”¹å–„æ¡ˆ 5: RecvBuffer ã®ã‚µã‚¤ã‚ºåˆ¶é™ ã€å„ªå…ˆåº¦: ä¸­ã€‘
 
-#### İŒv
+#### è¨­è¨ˆ
 
-**–Ú“I**: ƒƒ‚ƒŠƒŠ[ƒN‚ğ–h~
+**ç›®çš„**: ãƒ¡ãƒ¢ãƒªãƒªãƒ¼ã‚¯ã‚’é˜²æ­¢
 
-**ƒAƒvƒ[ƒ`**: ƒŠƒ“ƒOƒoƒbƒtƒ@•û®iFIFOj
+**ã‚¢ãƒ—ãƒ­ãƒ¼ãƒ**: ãƒªãƒ³ã‚°ãƒãƒƒãƒ•ã‚¡æ–¹å¼ï¼ˆFIFOï¼‰
 
-#### À‘•İŒv
+#### å®Ÿè£…è¨­è¨ˆ
 
 ```powershell
-# ReceivedEventPipeline.ProcessEvent “à
+# ReceivedEventPipeline.ProcessEvent å†…
 [void] ProcessEvent([string]$connectionId, [byte[]]$data, [hashtable]$metadata) {
-    # ... (Šù‘¶ˆ—)
+    # ... (æ—¢å­˜å‡¦ç†)
     
     try {
         if ($connection.RecvBuffer) {
-            # ƒTƒCƒY§ŒÀƒ`ƒFƒbƒN
-            $maxBufferSize = 1000  # Å‘å1000ƒGƒ“ƒgƒŠ
+            # ã‚µã‚¤ã‚ºåˆ¶é™ãƒã‚§ãƒƒã‚¯
+            $maxBufferSize = 1000  # æœ€å¤§1000ã‚¨ãƒ³ãƒˆãƒª
             
             $syncRoot = $connection.RecvBuffer.SyncRoot
             [System.Threading.Monitor]::Enter($syncRoot)
             try {
-                # ’Ç‰Á
+                # è¿½åŠ 
                 [void]$connection.RecvBuffer.Add($entry)
                 
-                # ƒTƒCƒY’´‰ß‚ÍŒÃ‚¢ƒGƒ“ƒgƒŠ‚ğíœ
+                # ã‚µã‚¤ã‚ºè¶…éæ™‚ã¯å¤ã„ã‚¨ãƒ³ãƒˆãƒªã‚’å‰Šé™¤
                 while ($connection.RecvBuffer.Count -gt $maxBufferSize) {
                     $connection.RecvBuffer.RemoveAt(0)
                 }
@@ -893,83 +893,83 @@ function Adjust-TimerInterval {
 }
 ```
 
-#### İ’è‚ÌŠO•”‰»
+#### è¨­å®šã®å¤–éƒ¨åŒ–
 
 ```powershell
-# Config/defaults.psd1 ‚É’Ç‰Á
+# Config/defaults.psd1 ã«è¿½åŠ 
 @{
     Performance = @{
-        MaxRecvBufferSize = 1000     # óMƒoƒbƒtƒ@‚ÌÅ‘åƒGƒ“ƒgƒŠ”
-        MaxLogDisplayLines = 100      # ƒƒO•\¦‚ÌÅ‘ås”
-        UIRefreshIntervalMs = 3000    # UIXVŠÔŠuiƒ~ƒŠ•bj
-        LogFlushThreshold = 50        # ƒƒOƒtƒ‰ƒbƒVƒ…è‡’l
-        LogFlushIntervalMs = 5000     # ƒƒOƒtƒ‰ƒbƒVƒ…ŠÔŠuiƒ~ƒŠ•bj
+        MaxRecvBufferSize = 1000     # å—ä¿¡ãƒãƒƒãƒ•ã‚¡ã®æœ€å¤§ã‚¨ãƒ³ãƒˆãƒªæ•°
+        MaxLogDisplayLines = 100      # ãƒ­ã‚°è¡¨ç¤ºã®æœ€å¤§è¡Œæ•°
+        UIRefreshIntervalMs = 3000    # UIæ›´æ–°é–“éš”ï¼ˆãƒŸãƒªç§’ï¼‰
+        LogFlushThreshold = 50        # ãƒ­ã‚°ãƒ•ãƒ©ãƒƒã‚·ãƒ¥é–¾å€¤
+        LogFlushIntervalMs = 5000     # ãƒ­ã‚°ãƒ•ãƒ©ãƒƒã‚·ãƒ¥é–“éš”ï¼ˆãƒŸãƒªç§’ï¼‰
     }
 }
 ```
 
-#### Šú‘Ò‚³‚ê‚éŒø‰Ê
-- **ƒƒ‚ƒŠg—p—ÊíŒ¸**: ˆê’è‚É•Û‚½‚ê‚é
-- **’·Šú‰^—p‚ÌˆÀ’è«**: Œüã
+#### æœŸå¾…ã•ã‚Œã‚‹åŠ¹æœ
+- **ãƒ¡ãƒ¢ãƒªä½¿ç”¨é‡å‰Šæ¸›**: ä¸€å®šã«ä¿ãŸã‚Œã‚‹
+- **é•·æœŸé‹ç”¨ã®å®‰å®šæ€§**: å‘ä¸Š
 
 ---
 
-### ‰ü‘PˆÄ 6: Auto Response ƒeƒ“ƒvƒŒ[ƒgƒLƒƒƒbƒVƒ…‚ÌÀ‘• y—Dæ“x: Å‚z
+### æ”¹å–„æ¡ˆ 6: Auto Response ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆã‚­ãƒ£ãƒƒã‚·ãƒ¥ã®å®Ÿè£… ã€å„ªå…ˆåº¦: æœ€é«˜ã€‘
 
-#### İŒv
+#### è¨­è¨ˆ
 
-**–Ú“I**: Get-MessageTemplateCache‚É^‚ÌƒLƒƒƒbƒVƒ…‹@”\‚ğÀ‘•
+**ç›®çš„**: Get-MessageTemplateCacheã«çœŸã®ã‚­ãƒ£ãƒƒã‚·ãƒ¥æ©Ÿèƒ½ã‚’å®Ÿè£…
 
-**ƒAƒvƒ[ƒ`**:
-1. **ƒtƒ@ƒCƒ‹XVŒŸ’m**: `LastWriteTimeUtc`‚Åƒtƒ@ƒCƒ‹•ÏX‚ğ©“®ŒŸ’m
-2. **©“®ƒLƒƒƒbƒVƒ…–³Œø‰»**: ƒtƒ@ƒCƒ‹XV‚É©“®“I‚ÉƒLƒƒƒbƒVƒ…‚ğÄ“Ç‚İ‚İ
-3. **–‘O•ÏŠ·**: ƒeƒ“ƒvƒŒ[ƒg“Ç‚İ‚İ‚ÉƒoƒCƒg”z—ñ‚Ü‚Å–‘O•ÏŠ·
-4. **HEXŒ‹‡‚‘¬‰»**: StringBuilder‚Å‚‘¬‰»
+**ã‚¢ãƒ—ãƒ­ãƒ¼ãƒ**:
+1. **ãƒ•ã‚¡ã‚¤ãƒ«æ›´æ–°æ¤œçŸ¥**: `LastWriteTimeUtc`ã§ãƒ•ã‚¡ã‚¤ãƒ«å¤‰æ›´ã‚’è‡ªå‹•æ¤œçŸ¥
+2. **è‡ªå‹•ã‚­ãƒ£ãƒƒã‚·ãƒ¥ç„¡åŠ¹åŒ–**: ãƒ•ã‚¡ã‚¤ãƒ«æ›´æ–°æ™‚ã«è‡ªå‹•çš„ã«ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã‚’å†èª­ã¿è¾¼ã¿
+3. **äº‹å‰å¤‰æ›**: ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆèª­ã¿è¾¼ã¿æ™‚ã«ãƒã‚¤ãƒˆé…åˆ—ã¾ã§äº‹å‰å¤‰æ›
+4. **HEXçµåˆé«˜é€ŸåŒ–**: StringBuilderã§é«˜é€ŸåŒ–
 
-**Šù‘¶À‘•‚Ì—¬—p**: `RuleRepository.ps1`‚Æ“¯‚¶ƒpƒ^[ƒ“iÀÑ‚ ‚èj
+**æ—¢å­˜å®Ÿè£…ã®æµç”¨**: `RuleRepository.ps1`ã¨åŒã˜ãƒ‘ã‚¿ãƒ¼ãƒ³ï¼ˆå®Ÿç¸¾ã‚ã‚Šï¼‰
 
-#### ƒtƒ@ƒCƒ‹XVŒŸ’m‚Ìd‘g‚İ
+#### ãƒ•ã‚¡ã‚¤ãƒ«æ›´æ–°æ¤œçŸ¥ã®ä»•çµ„ã¿
 
 ```plaintext
-¡ ‰‰ñƒAƒNƒZƒX
-1. ƒtƒ@ƒCƒ‹‚ğ“Ç‚İ‚İi5-10msj
-2. LastWriteTimeUtc = 2025-11-20 10:00:00 ‚Æ‚µ‚Ä•Û‘¶
-3. ƒLƒƒƒbƒVƒ…‚É•Û‘¶
+â–  åˆå›ã‚¢ã‚¯ã‚»ã‚¹
+1. ãƒ•ã‚¡ã‚¤ãƒ«ã‚’èª­ã¿è¾¼ã¿ï¼ˆ5-10msï¼‰
+2. LastWriteTimeUtc = 2025-11-20 10:00:00 ã¨ã—ã¦ä¿å­˜
+3. ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã«ä¿å­˜
 
-¡ 2‰ñ–ÚƒAƒNƒZƒXiƒtƒ@ƒCƒ‹–¢XVj
-1. ƒLƒƒƒbƒVƒ…‚ğƒ`ƒFƒbƒN
-2. LastWriteTimeUtcˆê’v ¨ ƒLƒƒƒbƒVƒ…HITi0.1msj© ‚‘¬I
-3. ƒLƒƒƒbƒVƒ…‚©‚ç•Ô‚·
+â–  2å›ç›®ã‚¢ã‚¯ã‚»ã‚¹ï¼ˆãƒ•ã‚¡ã‚¤ãƒ«æœªæ›´æ–°ï¼‰
+1. ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã‚’ãƒã‚§ãƒƒã‚¯
+2. LastWriteTimeUtcä¸€è‡´ â†’ ã‚­ãƒ£ãƒƒã‚·ãƒ¥HITï¼ˆ0.1msï¼‰â† é«˜é€Ÿï¼
+3. ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã‹ã‚‰è¿”ã™
 
-¡ ƒtƒ@ƒCƒ‹XVŒã
-1. ƒGƒfƒBƒ^‚Åƒtƒ@ƒCƒ‹•Û‘¶ ¨ LastWriteTimeUtc = 2025-11-20 10:05:00 ‚ÉXV
-2. ƒLƒƒƒbƒVƒ…‚ğƒ`ƒFƒbƒN
-3. LastWriteTimeUtc•sˆê’v ¨ ƒLƒƒƒbƒVƒ…MISS
-4. ƒtƒ@ƒCƒ‹‚ğÄ“Ç‚İ‚İi5-10msj© ©“®“I‚ÉÅV”Å‚ğæ“¾
-5. V‚µ‚¢LastWriteTimeUtc‚ÅƒLƒƒƒbƒVƒ…XV
+â–  ãƒ•ã‚¡ã‚¤ãƒ«æ›´æ–°å¾Œ
+1. ã‚¨ãƒ‡ã‚£ã‚¿ã§ãƒ•ã‚¡ã‚¤ãƒ«ä¿å­˜ â†’ LastWriteTimeUtc = 2025-11-20 10:05:00 ã«æ›´æ–°
+2. ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã‚’ãƒã‚§ãƒƒã‚¯
+3. LastWriteTimeUtcä¸ä¸€è‡´ â†’ ã‚­ãƒ£ãƒƒã‚·ãƒ¥MISS
+4. ãƒ•ã‚¡ã‚¤ãƒ«ã‚’å†èª­ã¿è¾¼ã¿ï¼ˆ5-10msï¼‰â† è‡ªå‹•çš„ã«æœ€æ–°ç‰ˆã‚’å–å¾—
+5. æ–°ã—ã„LastWriteTimeUtcã§ã‚­ãƒ£ãƒƒã‚·ãƒ¥æ›´æ–°
 ```
 
-#### À‘•İŒv
+#### å®Ÿè£…è¨­è¨ˆ
 
 ```powershell
-# ƒOƒ[ƒoƒ‹ƒLƒƒƒbƒVƒ…iƒ‚ƒWƒ…[ƒ‹ƒŒƒxƒ‹j
+# ã‚°ãƒ­ãƒ¼ãƒãƒ«ã‚­ãƒ£ãƒƒã‚·ãƒ¥ï¼ˆãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ãƒ¬ãƒ™ãƒ«ï¼‰
 $script:MessageTemplateCache = @{}
 $script:MessageTemplateCacheLock = [object]::new()
 
 function Get-MessageTemplateCache {
     <#
     .SYNOPSIS
-    “d•¶ƒeƒ“ƒvƒŒ[ƒg‚ğƒtƒ@ƒCƒ‹XVŒŸ’m•t‚«ƒLƒƒƒbƒVƒ…‚Å“Ç‚İ‚Ş
+    é›»æ–‡ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆã‚’ãƒ•ã‚¡ã‚¤ãƒ«æ›´æ–°æ¤œçŸ¥ä»˜ãã‚­ãƒ£ãƒƒã‚·ãƒ¥ã§èª­ã¿è¾¼ã‚€
     
     .DESCRIPTION
-    ƒtƒ@ƒCƒ‹‚ÌLastWriteTimeUtc‚ğŠÄ‹‚µAXV‚Í©“®“I‚ÉƒLƒƒƒbƒVƒ…‚ğ–³Œø‰»‚µ‚ÄÄ“Ç‚İ‚İB
-    ƒAƒvƒŠÀs’†‚Éƒeƒ“ƒvƒŒ[ƒgƒtƒ@ƒCƒ‹‚ğ•ÒW‚µ‚Ä‚àAŸ‰ñƒAƒNƒZƒX‚ÉÅV”Å‚ª”½‰f‚³‚ê‚éB
+    ãƒ•ã‚¡ã‚¤ãƒ«ã®LastWriteTimeUtcã‚’ç›£è¦–ã—ã€æ›´æ–°æ™‚ã¯è‡ªå‹•çš„ã«ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã‚’ç„¡åŠ¹åŒ–ã—ã¦å†èª­ã¿è¾¼ã¿ã€‚
+    ã‚¢ãƒ—ãƒªå®Ÿè¡Œä¸­ã«ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆãƒ•ã‚¡ã‚¤ãƒ«ã‚’ç·¨é›†ã—ã¦ã‚‚ã€æ¬¡å›ã‚¢ã‚¯ã‚»ã‚¹æ™‚ã«æœ€æ–°ç‰ˆãŒåæ˜ ã•ã‚Œã‚‹ã€‚
     
     .PARAMETER FilePath
-    ƒeƒ“ƒvƒŒ[ƒgƒtƒ@ƒCƒ‹‚ÌƒpƒX
+    ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒ‘ã‚¹
     
     .PARAMETER ThrowOnMissing
-    ƒtƒ@ƒCƒ‹‚ªŒ©‚Â‚©‚ç‚È‚¢ê‡‚ÉƒGƒ‰[‚ğƒXƒ[
+    ãƒ•ã‚¡ã‚¤ãƒ«ãŒè¦‹ã¤ã‹ã‚‰ãªã„å ´åˆã«ã‚¨ãƒ©ãƒ¼ã‚’ã‚¹ãƒ­ãƒ¼
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -986,21 +986,21 @@ function Get-MessageTemplateCache {
     
     $resolvedPath = (Resolve-Path -LiteralPath $FilePath).Path
     $fileInfo = Get-Item -LiteralPath $resolvedPath
-    $lastWriteTime = $fileInfo.LastWriteTimeUtc  # © ƒtƒ@ƒCƒ‹XV‚ğæ“¾
+    $lastWriteTime = $fileInfo.LastWriteTimeUtc  # â† ãƒ•ã‚¡ã‚¤ãƒ«æ›´æ–°æ™‚åˆ»ã‚’å–å¾—
     $cacheKey = $resolvedPath.ToLowerInvariant()
     
-    # ƒLƒƒƒbƒVƒ…ƒ`ƒFƒbƒNiƒXƒŒƒbƒhƒZ[ƒtj
+    # ã‚­ãƒ£ãƒƒã‚·ãƒ¥ãƒã‚§ãƒƒã‚¯ï¼ˆã‚¹ãƒ¬ãƒƒãƒ‰ã‚»ãƒ¼ãƒ•ï¼‰
     [System.Threading.Monitor]::Enter($script:MessageTemplateCacheLock)
     try {
         if ($script:MessageTemplateCache.ContainsKey($cacheKey)) {
             $cached = $script:MessageTemplateCache[$cacheKey]
-            # ƒtƒ@ƒCƒ‹XV‚ªˆê’v‚·‚ê‚ÎƒLƒƒƒbƒVƒ…—LŒø
+            # ãƒ•ã‚¡ã‚¤ãƒ«æ›´æ–°æ™‚åˆ»ãŒä¸€è‡´ã™ã‚Œã°ã‚­ãƒ£ãƒƒã‚·ãƒ¥æœ‰åŠ¹
             if ($cached.LastWriteTimeUtc -eq $lastWriteTime) {
-                # ƒLƒƒƒbƒVƒ…HITIi0.1msj
+                # ã‚­ãƒ£ãƒƒã‚·ãƒ¥HITï¼ï¼ˆ0.1msï¼‰
                 Write-Debug "[TemplateCache] HIT: $FilePath"
                 return $cached.Templates
             }
-            # XV•sˆê’v ¨ ƒtƒ@ƒCƒ‹‚ªXV‚³‚ê‚½ ¨ ƒLƒƒƒbƒVƒ…–³Œø
+            # æ›´æ–°æ™‚åˆ»ä¸ä¸€è‡´ â†’ ãƒ•ã‚¡ã‚¤ãƒ«ãŒæ›´æ–°ã•ã‚ŒãŸ â†’ ã‚­ãƒ£ãƒƒã‚·ãƒ¥ç„¡åŠ¹
             Write-Debug "[TemplateCache] INVALIDATED (file updated): $FilePath"
         }
     }
@@ -1008,7 +1008,7 @@ function Get-MessageTemplateCache {
         [System.Threading.Monitor]::Exit($script:MessageTemplateCacheLock)
     }
     
-    # ƒLƒƒƒbƒVƒ…MISS - ƒtƒ@ƒCƒ‹“Ç‚İ‚İi5-10msj
+    # ã‚­ãƒ£ãƒƒã‚·ãƒ¥MISS - ãƒ•ã‚¡ã‚¤ãƒ«èª­ã¿è¾¼ã¿ï¼ˆ5-10msï¼‰
     Write-Debug "[TemplateCache] MISS: $FilePath (loading from disk)"
     
     $sjisEncoding = [System.Text.Encoding]::GetEncoding("Shift_JIS")
@@ -1020,7 +1020,7 @@ function Get-MessageTemplateCache {
         return @{}
     }
     
-    # StringBuilderg—p‚ÅHEX•¶š—ñŒ‹‡‚ğ‚‘¬‰»
+    # StringBuilderä½¿ç”¨ã§HEXæ–‡å­—åˆ—çµåˆã‚’é«˜é€ŸåŒ–
     $sb = [System.Text.StringBuilder]::new()
     foreach ($row in $rows) {
         $properties = $row.PSObject.Properties.Name
@@ -1031,22 +1031,22 @@ function Get-MessageTemplateCache {
     }
     $hexStream = $sb.ToString()
     
-    # –‘O‚ÉƒoƒCƒg”z—ñ‚É•ÏŠ·iHEX•ÏŠ·‚ÌƒI[ƒo[ƒwƒbƒhíŒ¸j
+    # äº‹å‰ã«ãƒã‚¤ãƒˆé…åˆ—ã«å¤‰æ›ï¼ˆHEXå¤‰æ›ã®ã‚ªãƒ¼ãƒãƒ¼ãƒ˜ãƒƒãƒ‰å‰Šæ¸›ï¼‰
     $responseBytes = ConvertTo-ByteArray -Data $hexStream -Encoding 'HEX'
     
     $template = [PSCustomObject]@{
         Name = 'DEFAULT'
-        Format = $hexStream        # HEX•¶š—ñiƒfƒoƒbƒO—pj
-        Bytes = $responseBytes     # –‘O•ÏŠ·Ï‚İƒoƒCƒg”z—ñi‚‘¬‘—M—pj
+        Format = $hexStream        # HEXæ–‡å­—åˆ—ï¼ˆãƒ‡ãƒãƒƒã‚°ç”¨ï¼‰
+        Bytes = $responseBytes     # äº‹å‰å¤‰æ›æ¸ˆã¿ãƒã‚¤ãƒˆé…åˆ—ï¼ˆé«˜é€Ÿé€ä¿¡ç”¨ï¼‰
     }
     
     $templates = @{ 'DEFAULT' = $template }
     
-    # ƒLƒƒƒbƒVƒ…‚É•Û‘¶iXV•t‚«j
+    # ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã«ä¿å­˜ï¼ˆæ›´æ–°æ™‚åˆ»ä»˜ãï¼‰
     [System.Threading.Monitor]::Enter($script:MessageTemplateCacheLock)
     try {
         $script:MessageTemplateCache[$cacheKey] = @{
-            LastWriteTimeUtc = $lastWriteTime  # © XV‚ğ•Û‘¶
+            LastWriteTimeUtc = $lastWriteTime  # â† æ›´æ–°æ™‚åˆ»ã‚’ä¿å­˜
             Templates = $templates
         }
     }
@@ -1057,14 +1057,14 @@ function Get-MessageTemplateCache {
     return $templates
 }
 
-# ŠJ”­—p: è“®ƒLƒƒƒbƒVƒ…ƒNƒŠƒAŠÖ”
+# é–‹ç™ºæ™‚ç”¨: æ‰‹å‹•ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã‚¯ãƒªã‚¢é–¢æ•°
 function Clear-MessageTemplateCache {
     <#
     .SYNOPSIS
-    ƒeƒ“ƒvƒŒ[ƒgƒLƒƒƒbƒVƒ…‚ğè“®‚ÅƒNƒŠƒAiŠJ”­EƒfƒoƒbƒO—pj
+    ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆã‚­ãƒ£ãƒƒã‚·ãƒ¥ã‚’æ‰‹å‹•ã§ã‚¯ãƒªã‚¢ï¼ˆé–‹ç™ºãƒ»ãƒ‡ãƒãƒƒã‚°ç”¨ï¼‰
     
     .PARAMETER FilePath
-    ƒNƒŠƒA‚·‚éƒtƒ@ƒCƒ‹ƒpƒXiÈ—ª‚Í‘SƒLƒƒƒbƒVƒ…ƒNƒŠƒAj
+    ã‚¯ãƒªã‚¢ã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«ãƒ‘ã‚¹ï¼ˆçœç•¥æ™‚ã¯å…¨ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã‚¯ãƒªã‚¢ï¼‰
     #>
     param(
         [Parameter(Mandatory=$false)]
@@ -1074,13 +1074,13 @@ function Clear-MessageTemplateCache {
     [System.Threading.Monitor]::Enter($script:MessageTemplateCacheLock)
     try {
         if ([string]::IsNullOrWhiteSpace($FilePath)) {
-            # ‘SƒLƒƒƒbƒVƒ…ƒNƒŠƒA
+            # å…¨ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã‚¯ãƒªã‚¢
             $count = $script:MessageTemplateCache.Count
             $script:MessageTemplateCache.Clear()
             Write-Host "All template cache cleared ($count entries)" -ForegroundColor Yellow
         }
         else {
-            # “Á’èƒtƒ@ƒCƒ‹‚ÌƒLƒƒƒbƒVƒ…ƒNƒŠƒA
+            # ç‰¹å®šãƒ•ã‚¡ã‚¤ãƒ«ã®ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã‚¯ãƒªã‚¢
             $resolvedPath = (Resolve-Path -LiteralPath $FilePath -ErrorAction SilentlyContinue).Path
             if ($resolvedPath) {
                 $key = $resolvedPath.ToLowerInvariant()
@@ -1096,7 +1096,7 @@ function Clear-MessageTemplateCache {
     }
 }
 
-# Invoke-BinaryAutoResponse ‚ğ‰ü‘P
+# Invoke-BinaryAutoResponse ã‚’æ”¹å–„
 function Invoke-BinaryAutoResponse {
     param(
         [string]$ConnectionId,
@@ -1104,69 +1104,69 @@ function Invoke-BinaryAutoResponse {
         [object]$Connection
     )
     
-    # ... (ƒpƒX‰ğŒˆ‚Í“¯‚¶)
+    # ... (ãƒ‘ã‚¹è§£æ±ºã¯åŒã˜)
     
-    # ƒeƒ“ƒvƒŒ[ƒgæ“¾iƒLƒƒƒbƒVƒ…—˜—pj
+    # ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆå–å¾—ï¼ˆã‚­ãƒ£ãƒƒã‚·ãƒ¥åˆ©ç”¨ï¼‰
     $templates = Get-MessageTemplateCache -FilePath $messageFilePath -ThrowOnMissing
     $template = $templates['DEFAULT']
     
-    # –‘O•ÏŠ·Ï‚İƒoƒCƒg”z—ñ‚ğ’¼Úg—p
-    $responseBytes = $template.Bytes  # HEX•ÏŠ·•s—vI
+    # äº‹å‰å¤‰æ›æ¸ˆã¿ãƒã‚¤ãƒˆé…åˆ—ã‚’ç›´æ¥ä½¿ç”¨
+    $responseBytes = $template.Bytes  # HEXå¤‰æ›ä¸è¦ï¼
     
-    # ‘—M
+    # é€ä¿¡
     Send-Data -ConnectionId $ConnectionId -Data $responseBytes
 }
 ```
 
-#### Šú‘Ò‚³‚ê‚éŒø‰Ê
-- **‰“šŠÔíŒ¸**: –ñ80-90%
-  - 10-20ms ¨ 2-3msiƒLƒƒƒbƒVƒ…ƒqƒbƒgj
-  - ‰‰ñ‚Ì‚İ5-10msiƒtƒ@ƒCƒ‹“Ç‚İ‚İj
-  - ƒtƒ@ƒCƒ‹XVŒã‚à©“®“I‚ÉÅV”Å‚ğ“Ç‚İ‚İ
-- **ƒfƒBƒXƒNI/OíŒ¸**: –ñ99%i“¯ˆêƒeƒ“ƒvƒŒ[ƒgg—pj
-- **CPUg—p—¦íŒ¸**: –ñ70%iHEX•ÏŠ·‚Ì–‘OÀsj
-- **ŠJ”­Œø—¦Œüã**: ƒAƒvƒŠÄ‹N“®•s—v‚Åƒeƒ“ƒvƒŒ[ƒg•ÒW‚ª‘¦”½‰f
+#### æœŸå¾…ã•ã‚Œã‚‹åŠ¹æœ
+- **å¿œç­”æ™‚é–“å‰Šæ¸›**: ç´„80-90%
+  - 10-20ms â†’ 2-3msï¼ˆã‚­ãƒ£ãƒƒã‚·ãƒ¥ãƒ’ãƒƒãƒˆæ™‚ï¼‰
+  - åˆå›ã®ã¿5-10msï¼ˆãƒ•ã‚¡ã‚¤ãƒ«èª­ã¿è¾¼ã¿ï¼‰
+  - ãƒ•ã‚¡ã‚¤ãƒ«æ›´æ–°å¾Œã‚‚è‡ªå‹•çš„ã«æœ€æ–°ç‰ˆã‚’èª­ã¿è¾¼ã¿
+- **ãƒ‡ã‚£ã‚¹ã‚¯I/Oå‰Šæ¸›**: ç´„99%ï¼ˆåŒä¸€ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆä½¿ç”¨æ™‚ï¼‰
+- **CPUä½¿ç”¨ç‡å‰Šæ¸›**: ç´„70%ï¼ˆHEXå¤‰æ›ã®äº‹å‰å®Ÿè¡Œï¼‰
+- **é–‹ç™ºåŠ¹ç‡å‘ä¸Š**: ã‚¢ãƒ—ãƒªå†èµ·å‹•ä¸è¦ã§ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆç·¨é›†ãŒå³åæ˜ 
 
 ---
 
 
-### ‰ü‘PˆÄ 7: ƒ‹[ƒ‹ƒ}ƒbƒ`ƒ“ƒOˆ—‚ÌÅ“K‰» y—Dæ“x: ‚z
+### æ”¹å–„æ¡ˆ 7: ãƒ«ãƒ¼ãƒ«ãƒãƒƒãƒãƒ³ã‚°å‡¦ç†ã®æœ€é©åŒ– ã€å„ªå…ˆåº¦: é«˜ã€‘
 
-#### İŒv
+#### è¨­è¨ˆ
 
-**–Ú“I**: ƒoƒCƒiƒŠƒ}ƒbƒ`ƒ“ƒOˆ—‚Ì‚‘¬‰»
+**ç›®çš„**: ãƒã‚¤ãƒŠãƒªãƒãƒƒãƒãƒ³ã‚°å‡¦ç†ã®é«˜é€ŸåŒ–
 
-**ƒAƒvƒ[ƒ`**:
-1. ƒ}ƒbƒ`ƒ“ƒOƒpƒ^[ƒ“‚Ì–‘OƒRƒ“ƒpƒCƒ‹iƒoƒCƒg”z—ñ‰»j
-2. ‘ŠúƒŠƒ^[ƒ“iƒ}ƒbƒ`Œã‚Ì•s—v‚ÈƒXƒLƒƒƒ“’â~ƒIƒvƒVƒ‡ƒ“j
-3. ƒ}ƒbƒ`ƒ“ƒO•p“x‚Ì‚‚¢ƒ‹[ƒ‹‚ğ—Dæ
+**ã‚¢ãƒ—ãƒ­ãƒ¼ãƒ**:
+1. ãƒãƒƒãƒãƒ³ã‚°ãƒ‘ã‚¿ãƒ¼ãƒ³ã®äº‹å‰ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«ï¼ˆãƒã‚¤ãƒˆé…åˆ—åŒ–ï¼‰
+2. æ—©æœŸãƒªã‚¿ãƒ¼ãƒ³ï¼ˆãƒãƒƒãƒå¾Œã®ä¸è¦ãªã‚¹ã‚­ãƒ£ãƒ³åœæ­¢ã‚ªãƒ—ã‚·ãƒ§ãƒ³ï¼‰
+3. ãƒãƒƒãƒãƒ³ã‚°é »åº¦ã®é«˜ã„ãƒ«ãƒ¼ãƒ«ã‚’å„ªå…ˆ
 
-#### À‘•İŒv
+#### å®Ÿè£…è¨­è¨ˆ
 
 ```powershell
-# Read-ReceivedRules ‚Åƒ‹[ƒ‹‚ğ–‘OƒRƒ“ƒpƒCƒ‹
+# Read-ReceivedRules ã§ãƒ«ãƒ¼ãƒ«ã‚’äº‹å‰ã‚³ãƒ³ãƒ‘ã‚¤ãƒ«
 function Read-ReceivedRules {
     param([string]$FilePath, [string]$RuleType = "Auto")
     
-    # ... (Šù‘¶‚ÌCSV“Ç‚İ‚İ)
+    # ... (æ—¢å­˜ã®CSVèª­ã¿è¾¼ã¿)
     
     foreach ($rule in $rules) {
-        # ... (Šù‘¶‚Ìƒƒ^ƒf[ƒ^’Ç‰Á)
+        # ... (æ—¢å­˜ã®ãƒ¡ã‚¿ãƒ‡ãƒ¼ã‚¿è¿½åŠ )
         
-        # ƒoƒCƒiƒŠƒ}ƒbƒ`ƒ“ƒOƒpƒ^[ƒ“‚ğ–‘O•ÏŠ·
+        # ãƒã‚¤ãƒŠãƒªãƒãƒƒãƒãƒ³ã‚°ãƒ‘ã‚¿ãƒ¼ãƒ³ã‚’äº‹å‰å¤‰æ›
         if ($rule.__MatchType -eq 'Binary' -and 
             -not [string]::IsNullOrWhiteSpace($rule.MatchValue)) {
             
             $hexValue = $rule.MatchValue.Trim() -replace '\s', '' -replace '0x', ''
             
-            # –‘O‚ÉƒoƒCƒg”z—ñ‚É•ÏŠ·
+            # äº‹å‰ã«ãƒã‚¤ãƒˆé…åˆ—ã«å¤‰æ›
             $matchBytes = @()
             for ($i = 0; $i -lt $hexValue.Length; $i += 2) {
                 $hexByte = $hexValue.Substring($i, 2)
                 $matchBytes += [Convert]::ToByte($hexByte, 16)
             }
             
-            # ƒ‹[ƒ‹‚É–‘O•ÏŠ·Ï‚İƒoƒCƒg”z—ñ‚ğ’Ç‰Á
+            # ãƒ«ãƒ¼ãƒ«ã«äº‹å‰å¤‰æ›æ¸ˆã¿ãƒã‚¤ãƒˆé…åˆ—ã‚’è¿½åŠ 
             $rule | Add-Member -NotePropertyName '__MatchBytes' `
                                -NotePropertyValue $matchBytes `
                                -Force
@@ -1176,22 +1176,22 @@ function Read-ReceivedRules {
     return $rules
 }
 
-# Test-BinaryRuleMatch ‚ğ‚‘¬‰»
+# Test-BinaryRuleMatch ã‚’é«˜é€ŸåŒ–
 function Test-BinaryRuleMatch {
     param(
         [byte[]]$ReceivedData,
         [object]$Rule
     )
     
-    # ... (Šù‘¶‚ÌƒoƒŠƒf[ƒVƒ‡ƒ“)
+    # ... (æ—¢å­˜ã®ãƒãƒªãƒ‡ãƒ¼ã‚·ãƒ§ãƒ³)
     
     $offset = [int]($Rule.MatchOffset)
     $length = [int]($Rule.MatchLength)
     
-    # –‘O•ÏŠ·Ï‚İƒoƒCƒg”z—ñ‚ğg—piHEX•ÏŠ·•s—vIj
+    # äº‹å‰å¤‰æ›æ¸ˆã¿ãƒã‚¤ãƒˆé…åˆ—ã‚’ä½¿ç”¨ï¼ˆHEXå¤‰æ›ä¸è¦ï¼ï¼‰
     $matchBytes = $Rule.__MatchBytes
     
-    # ƒoƒCƒg”äŠri‚‘¬j
+    # ãƒã‚¤ãƒˆæ¯”è¼ƒï¼ˆé«˜é€Ÿï¼‰
     for ($i = 0; $i -lt $length; $i++) {
         if ($ReceivedData[$offset + $i] -ne $matchBytes[$i]) {
             return $false
@@ -1202,29 +1202,29 @@ function Test-BinaryRuleMatch {
 }
 ```
 
-#### Šú‘Ò‚³‚ê‚éŒø‰Ê
-- **ƒ}ƒbƒ`ƒ“ƒOŠÔíŒ¸**: –ñ50-60%
-  - 5-10ms ¨ 2-4msiHEX•ÏŠ·‚Ì–‘OÀsj
-- **ƒ‹[ƒ‹”10ŒÂ‚Ìê‡**: ‰“šŠÔ 60-120ms ¨ 20-40ms
+#### æœŸå¾…ã•ã‚Œã‚‹åŠ¹æœ
+- **ãƒãƒƒãƒãƒ³ã‚°æ™‚é–“å‰Šæ¸›**: ç´„50-60%
+  - 5-10ms â†’ 2-4msï¼ˆHEXå¤‰æ›ã®äº‹å‰å®Ÿè¡Œï¼‰
+- **ãƒ«ãƒ¼ãƒ«æ•°10å€‹ã®å ´åˆ**: å¿œç­”æ™‚é–“ 60-120ms â†’ 20-40ms
 
 ---
 
-### ‰ü‘PˆÄ 8: CSV“Ç‚İ‚İƒLƒƒƒbƒVƒ…‚ÌŠg[ y—Dæ“x: ’†z
+### æ”¹å–„æ¡ˆ 8: CSVèª­ã¿è¾¼ã¿ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã®æ‹¡å…… ã€å„ªå…ˆåº¦: ä¸­ã€‘
 
-#### İŒv
+#### è¨­è¨ˆ
 
-**–Ú“I**: ƒVƒiƒŠƒIƒtƒ@ƒCƒ‹‚Ìd•¡“Ç‚İ‚İíŒ¸iƒ‹[ƒ‹ƒtƒ@ƒCƒ‹‚ÍŠù‚ÉƒLƒƒƒbƒVƒ…À‘•Ï‚İj
+**ç›®çš„**: ã‚·ãƒŠãƒªã‚ªãƒ•ã‚¡ã‚¤ãƒ«ã®é‡è¤‡èª­ã¿è¾¼ã¿å‰Šæ¸›ï¼ˆãƒ«ãƒ¼ãƒ«ãƒ•ã‚¡ã‚¤ãƒ«ã¯æ—¢ã«ã‚­ãƒ£ãƒƒã‚·ãƒ¥å®Ÿè£…æ¸ˆã¿ï¼‰
 
-**‘ÎÛ**:
-- ƒVƒiƒŠƒIƒtƒ@ƒCƒ‹i`LoadScenario` - Œ»İƒLƒƒƒbƒVƒ…‚È‚µj
-- ~~ƒ‹[ƒ‹ƒtƒ@ƒCƒ‹~~i`RuleRepository` - Šù‚Éƒtƒ@ƒCƒ‹XVŒŸ’m•t‚«ƒLƒƒƒbƒVƒ…À‘•Ï‚İj
+**å¯¾è±¡**:
+- ã‚·ãƒŠãƒªã‚ªãƒ•ã‚¡ã‚¤ãƒ«ï¼ˆ`LoadScenario` - ç¾åœ¨ã‚­ãƒ£ãƒƒã‚·ãƒ¥ãªã—ï¼‰
+- ~~ãƒ«ãƒ¼ãƒ«ãƒ•ã‚¡ã‚¤ãƒ«~~ï¼ˆ`RuleRepository` - æ—¢ã«ãƒ•ã‚¡ã‚¤ãƒ«æ›´æ–°æ¤œçŸ¥ä»˜ãã‚­ãƒ£ãƒƒã‚·ãƒ¥å®Ÿè£…æ¸ˆã¿ï¼‰
 
-**Šù‘¶À‘•‚Ì—¬—p**: `RuleRepository.ps1`‚Æ“¯‚¶ƒpƒ^[ƒ“‚ğ“K—p
+**æ—¢å­˜å®Ÿè£…ã®æµç”¨**: `RuleRepository.ps1`ã¨åŒã˜ãƒ‘ã‚¿ãƒ¼ãƒ³ã‚’é©ç”¨
 
-#### À‘•İŒviƒVƒiƒŠƒIƒtƒ@ƒCƒ‹j
+#### å®Ÿè£…è¨­è¨ˆï¼ˆã‚·ãƒŠãƒªã‚ªãƒ•ã‚¡ã‚¤ãƒ«ï¼‰
 
 ```powershell
-# MessageService ƒNƒ‰ƒX‚ÉƒVƒiƒŠƒIƒLƒƒƒbƒVƒ…‚ğ’Ç‰Á
+# MessageService ã‚¯ãƒ©ã‚¹ã«ã‚·ãƒŠãƒªã‚ªã‚­ãƒ£ãƒƒã‚·ãƒ¥ã‚’è¿½åŠ 
 class MessageService {
     hidden [hashtable]$_scenarioCache
     hidden [object]$_scenarioCacheLock
@@ -1233,12 +1233,12 @@ class MessageService {
         $this._logger = $logger
         $this._connectionService = $connectionService
         $this._templateCache = @{}
-        $this._scenarioCache = @{}  # © ƒVƒiƒŠƒIƒLƒƒƒbƒVƒ…’Ç‰Á
+        $this._scenarioCache = @{}  # â† ã‚·ãƒŠãƒªã‚ªã‚­ãƒ£ãƒƒã‚·ãƒ¥è¿½åŠ 
         $this._scenarioCacheLock = [object]::new()
         $this._customVariableHandlers = @{}
     }
     
-    # ƒtƒ@ƒCƒ‹XVŒŸ’m•t‚«ƒVƒiƒŠƒI“Ç‚İ‚İ
+    # ãƒ•ã‚¡ã‚¤ãƒ«æ›´æ–°æ¤œçŸ¥ä»˜ãã‚·ãƒŠãƒªã‚ªèª­ã¿è¾¼ã¿
     [object[]] LoadScenario([string]$scenarioPath) {
         if (-not (Test-Path -LiteralPath $scenarioPath)) {
             throw "Scenario file not found: $scenarioPath"
@@ -1246,23 +1246,23 @@ class MessageService {
         
         $resolved = (Resolve-Path -LiteralPath $scenarioPath).Path
         $fileInfo = Get-Item -LiteralPath $resolved
-        $lastWrite = $fileInfo.LastWriteTimeUtc  # © ƒtƒ@ƒCƒ‹XVæ“¾
+        $lastWrite = $fileInfo.LastWriteTimeUtc  # â† ãƒ•ã‚¡ã‚¤ãƒ«æ›´æ–°æ™‚åˆ»å–å¾—
         $key = $resolved.ToLowerInvariant()
         
-        # ƒLƒƒƒbƒVƒ…ƒ`ƒFƒbƒN
+        # ã‚­ãƒ£ãƒƒã‚·ãƒ¥ãƒã‚§ãƒƒã‚¯
         $cached = $this.TryGetCachedScenario($key, $lastWrite)
         if ($cached) {
             $this._logger.LogDebug("Scenario cache HIT: $scenarioPath")
-            return $cached  # ƒtƒ@ƒCƒ‹–¢XV‚È‚çƒLƒƒƒbƒVƒ…‚©‚ç•Ô‚·
+            return $cached  # ãƒ•ã‚¡ã‚¤ãƒ«æœªæ›´æ–°ãªã‚‰ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã‹ã‚‰è¿”ã™
         }
         
         $this._logger.LogDebug("Scenario cache MISS: $scenarioPath (loading from file)")
         
-        # ƒtƒ@ƒCƒ‹“Ç‚İ‚İiŠù‘¶ƒƒWƒbƒNj
+        # ãƒ•ã‚¡ã‚¤ãƒ«èª­ã¿è¾¼ã¿ï¼ˆæ—¢å­˜ãƒ­ã‚¸ãƒƒã‚¯ï¼‰
         $content = Get-Content -Path $resolved -Encoding Default -Raw
         $steps = $content | ConvertFrom-Csv
         
-        # ƒLƒƒƒbƒVƒ…‚É•Û‘¶iXV•t‚«j
+        # ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã«ä¿å­˜ï¼ˆæ›´æ–°æ™‚åˆ»ä»˜ãï¼‰
         $this.SetScenarioCache($key, $lastWrite, $steps)
         
         $this._logger.LogInfo("Scenario loaded: $scenarioPath ($($steps.Count) steps)")
@@ -1274,11 +1274,11 @@ class MessageService {
         try {
             if ($this._scenarioCache.ContainsKey($key)) {
                 $entry = $this._scenarioCache[$key]
-                # ƒtƒ@ƒCƒ‹XV‚ªˆê’v‚·‚ê‚ÎƒLƒƒƒbƒVƒ…—LŒø
+                # ãƒ•ã‚¡ã‚¤ãƒ«æ›´æ–°æ™‚åˆ»ãŒä¸€è‡´ã™ã‚Œã°ã‚­ãƒ£ãƒƒã‚·ãƒ¥æœ‰åŠ¹
                 if ($entry.LastWriteTimeUtc -eq $lastWrite) {
                     return $entry.Steps
                 }
-                # XV•sˆê’v ¨ ƒtƒ@ƒCƒ‹‚ªXV‚³‚ê‚½ ¨ ƒLƒƒƒbƒVƒ…–³Œø
+                # æ›´æ–°æ™‚åˆ»ä¸ä¸€è‡´ â†’ ãƒ•ã‚¡ã‚¤ãƒ«ãŒæ›´æ–°ã•ã‚ŒãŸ â†’ ã‚­ãƒ£ãƒƒã‚·ãƒ¥ç„¡åŠ¹
             }
         }
         finally {
@@ -1291,7 +1291,7 @@ class MessageService {
         [System.Threading.Monitor]::Enter($this._scenarioCacheLock)
         try {
             $this._scenarioCache[$key] = @{
-                LastWriteTimeUtc = $lastWrite  # © XV‚ğ•Û‘¶
+                LastWriteTimeUtc = $lastWrite  # â† æ›´æ–°æ™‚åˆ»ã‚’ä¿å­˜
                 Steps = $steps
             }
         }
@@ -1300,7 +1300,7 @@ class MessageService {
         }
     }
     
-    # ŠJ”­—p: ƒVƒiƒŠƒIƒLƒƒƒbƒVƒ…ƒNƒŠƒA
+    # é–‹ç™ºæ™‚ç”¨: ã‚·ãƒŠãƒªã‚ªã‚­ãƒ£ãƒƒã‚·ãƒ¥ã‚¯ãƒªã‚¢
     [void] ClearScenarioCache([string]$scenarioPath) {
         if ([string]::IsNullOrWhiteSpace($scenarioPath)) {
             return
@@ -1325,16 +1325,16 @@ class MessageService {
     }
 }
 class MessageService {
-    hidden [hashtable]$_templateCache      # Šù‘¶
-    hidden [hashtable]$_scenarioCache      # V‹K
+    hidden [hashtable]$_templateCache      # æ—¢å­˜
+    hidden [hashtable]$_scenarioCache      # æ–°è¦
     
-    # ƒVƒiƒŠƒI‚Ìƒ[ƒhiƒLƒƒƒbƒVƒ…•t‚«j
+    # ã‚·ãƒŠãƒªã‚ªã®ãƒ­ãƒ¼ãƒ‰ï¼ˆã‚­ãƒ£ãƒƒã‚·ãƒ¥ä»˜ãï¼‰
     [object] LoadScenario([string]$filePath) {
         if ($this._scenarioCache.ContainsKey($filePath)) {
             $cached = $this._scenarioCache[$filePath]
             $fileInfo = Get-Item -LiteralPath $filePath -ErrorAction SilentlyContinue
             if ($fileInfo -and $fileInfo.LastWriteTime -eq $cached.LastModified) {
-                return $cached.Data  # ƒLƒƒƒbƒVƒ…ƒqƒbƒg
+                return $cached.Data  # ã‚­ãƒ£ãƒƒã‚·ãƒ¥ãƒ’ãƒƒãƒˆ
             }
         }
         
@@ -1356,248 +1356,248 @@ class MessageService {
 }
 ```
 
-#### Šú‘Ò‚³‚ê‚éŒø‰Ê
-- **ƒfƒBƒXƒNI/OíŒ¸**: –ñ50-70%i“¯ˆêƒVƒiƒŠƒIŒJ‚è•Ô‚µÀsj
-- **‰“š«Œüã**: ƒVƒiƒŠƒIŠJn‚ª‘¦À‚É
+#### æœŸå¾…ã•ã‚Œã‚‹åŠ¹æœ
+- **ãƒ‡ã‚£ã‚¹ã‚¯I/Oå‰Šæ¸›**: ç´„50-70%ï¼ˆåŒä¸€ã‚·ãƒŠãƒªã‚ªç¹°ã‚Šè¿”ã—å®Ÿè¡Œæ™‚ï¼‰
+- **å¿œç­”æ€§å‘ä¸Š**: ã‚·ãƒŠãƒªã‚ªé–‹å§‹ãŒå³åº§ã«
 
 ---
 
-## À‘•Œv‰æ
+## å®Ÿè£…è¨ˆç”»
 
-### ƒtƒF[ƒY1: ‘¦Œø«‚Ì‚‚¢‰ü‘Pi1-2“új
+### ãƒ•ã‚§ãƒ¼ã‚º1: å³åŠ¹æ€§ã®é«˜ã„æ”¹å–„ï¼ˆ1-2æ—¥ï¼‰
 
-#### Phase 1.1: ƒ^ƒCƒ}[ŠÔŠu’²® y‘¦Àz
-- **ì‹ÆŠÔ**: 5•ª
-- **‘ÎÛƒtƒ@ƒCƒ‹**: `Presentation/UI/MainForm.ps1`
-- **•ÏX“à—e**:
+#### Phase 1.1: ã‚¿ã‚¤ãƒãƒ¼é–“éš”èª¿æ•´ ã€å³åº§ã€‘
+- **ä½œæ¥­æ™‚é–“**: 5åˆ†
+- **å¯¾è±¡ãƒ•ã‚¡ã‚¤ãƒ«**: `Presentation/UI/MainForm.ps1`
+- **å¤‰æ›´å†…å®¹**:
   ```powershell
-  # 93s–Ú
+  # 93è¡Œç›®
   - $timer = New-RefreshTimer -IntervalMilliseconds 2000
   + $timer = New-RefreshTimer -IntervalMilliseconds 3000
   ```
-- **ƒeƒXƒg**: “®ìŠm”F‚Ì‚İ
-- **ƒŠƒXƒN**: ‹É’á
+- **ãƒ†ã‚¹ãƒˆ**: å‹•ä½œç¢ºèªã®ã¿
+- **ãƒªã‚¹ã‚¯**: æ¥µä½
 
-#### Phase 1.2: ƒƒO•\¦‚Ì‘•ªXV y1ŠÔz
-- **ì‹ÆŠÔ**: 1-2ŠÔ
-- **‘ÎÛƒtƒ@ƒCƒ‹**: `Presentation/UI/ViewBuilder.ps1`
-- **•ÏX“à—e**: `Update-LogDisplay` ¨ `Update-LogDisplayIncremental`
-- **ƒeƒXƒg**: 
-  - •¡”Ú‘±‚Å‚ÌƒƒO•\¦Šm”F
-  - ƒƒ‚ƒŠƒŠ[ƒNŠm”F
-- **ƒŠƒXƒN**: ’á
+#### Phase 1.2: ãƒ­ã‚°è¡¨ç¤ºã®å¢—åˆ†æ›´æ–° ã€1æ™‚é–“ã€‘
+- **ä½œæ¥­æ™‚é–“**: 1-2æ™‚é–“
+- **å¯¾è±¡ãƒ•ã‚¡ã‚¤ãƒ«**: `Presentation/UI/ViewBuilder.ps1`
+- **å¤‰æ›´å†…å®¹**: `Update-LogDisplay` â†’ `Update-LogDisplayIncremental`
+- **ãƒ†ã‚¹ãƒˆ**: 
+  - è¤‡æ•°æ¥ç¶šã§ã®ãƒ­ã‚°è¡¨ç¤ºç¢ºèª
+  - ãƒ¡ãƒ¢ãƒªãƒªãƒ¼ã‚¯ç¢ºèª
+- **ãƒªã‚¹ã‚¯**: ä½
 
-#### Phase 1.3: UI·•ªXV y2-3ŠÔz
-- **ì‹ÆŠÔ**: 3-4ŠÔ
-- **‘ÎÛƒtƒ@ƒCƒ‹**: `Presentation/UI/MainForm.ps1`
-- **•ÏX“à—e**: 
-  - `Update-InstanceListIncremental` ŠÖ”’Ç‰Á
-  - `Update-ConnectionRow` ŠÖ”’Ç‰Á
-  - ƒ^ƒCƒ}[ƒnƒ“ƒhƒ‰[‚Ì•ÏX
-- **ƒeƒXƒg**:
-  - Ú‘±’Ç‰ÁEíœ‚ÌŠm”F
-  - ƒXƒe[ƒ^ƒX•ÏX‚Ì”½‰fŠm”F
-  - ComboBox‘I‘ğ‚Ì•ÛŠm”F
-  - •ÒW’†‚Ì“®ìŠm”F
-- **ƒŠƒXƒN**: ’†
+#### Phase 1.3: UIå·®åˆ†æ›´æ–° ã€2-3æ™‚é–“ã€‘
+- **ä½œæ¥­æ™‚é–“**: 3-4æ™‚é–“
+- **å¯¾è±¡ãƒ•ã‚¡ã‚¤ãƒ«**: `Presentation/UI/MainForm.ps1`
+- **å¤‰æ›´å†…å®¹**: 
+  - `Update-InstanceListIncremental` é–¢æ•°è¿½åŠ 
+  - `Update-ConnectionRow` é–¢æ•°è¿½åŠ 
+  - ã‚¿ã‚¤ãƒãƒ¼ãƒãƒ³ãƒ‰ãƒ©ãƒ¼ã®å¤‰æ›´
+- **ãƒ†ã‚¹ãƒˆ**:
+  - æ¥ç¶šè¿½åŠ ãƒ»å‰Šé™¤ã®ç¢ºèª
+  - ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹å¤‰æ›´ã®åæ˜ ç¢ºèª
+  - ComboBoxé¸æŠã®ä¿æŒç¢ºèª
+  - ç·¨é›†ä¸­ã®å‹•ä½œç¢ºèª
+- **ãƒªã‚¹ã‚¯**: ä¸­
 
-#### Phase 1.4: ƒeƒ“ƒvƒŒ[ƒgƒLƒƒƒbƒVƒ…À‘• yÅ—DæE2-3ŠÔz
-- **ì‹ÆŠÔ**: 2-3ŠÔ
-- **‘ÎÛƒtƒ@ƒCƒ‹**: `Core/Domain/MessageService.ps1`
-- **•ÏX“à—e**: 
-  - `Get-MessageTemplateCache` ‚ÉƒLƒƒƒbƒVƒ…‹@”\’Ç‰Á
-  - HEX•¶š—ñŒ‹‡‚ğStringBuilder‰»
-  - ƒoƒCƒg”z—ñ‚Ì–‘O•ÏŠ·
-- **ƒeƒXƒg**:
-  - Auto Response‰“šŠÔ‘ª’è
-  - ƒLƒƒƒbƒVƒ…ƒqƒbƒg—¦Šm”F
-  - ƒtƒ@ƒCƒ‹XV‚ÌƒLƒƒƒbƒVƒ…–³Œø‰»Šm”F
-- **ƒŠƒXƒN**: ’á
-- **Œø‰Ê**: **‰“šŠÔ 80-90%íŒ¸iÅ‘å‚Ì‰ü‘PŒø‰Êj**
+#### Phase 1.4: ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆã‚­ãƒ£ãƒƒã‚·ãƒ¥å®Ÿè£… ã€æœ€å„ªå…ˆãƒ»2-3æ™‚é–“ã€‘
+- **ä½œæ¥­æ™‚é–“**: 2-3æ™‚é–“
+- **å¯¾è±¡ãƒ•ã‚¡ã‚¤ãƒ«**: `Core/Domain/MessageService.ps1`
+- **å¤‰æ›´å†…å®¹**: 
+  - `Get-MessageTemplateCache` ã«ã‚­ãƒ£ãƒƒã‚·ãƒ¥æ©Ÿèƒ½è¿½åŠ 
+  - HEXæ–‡å­—åˆ—çµåˆã‚’StringBuilderåŒ–
+  - ãƒã‚¤ãƒˆé…åˆ—ã®äº‹å‰å¤‰æ›
+- **ãƒ†ã‚¹ãƒˆ**:
+  - Auto Responseå¿œç­”æ™‚é–“æ¸¬å®š
+  - ã‚­ãƒ£ãƒƒã‚·ãƒ¥ãƒ’ãƒƒãƒˆç‡ç¢ºèª
+  - ãƒ•ã‚¡ã‚¤ãƒ«æ›´æ–°æ™‚ã®ã‚­ãƒ£ãƒƒã‚·ãƒ¥ç„¡åŠ¹åŒ–ç¢ºèª
+- **ãƒªã‚¹ã‚¯**: ä½
+- **åŠ¹æœ**: **å¿œç­”æ™‚é–“ 80-90%å‰Šæ¸›ï¼ˆæœ€å¤§ã®æ”¹å–„åŠ¹æœï¼‰**
 
-#### Phase 1.5: ƒ‹[ƒ‹ƒ}ƒbƒ`ƒ“ƒOÅ“K‰» y‚—DæE2ŠÔz
-- **ì‹ÆŠÔ**: 2-3ŠÔ
-- **‘ÎÛƒtƒ@ƒCƒ‹**: `Core/Domain/ReceivedRuleEngine.ps1`
-- **•ÏX“à—e**:
-  - `Read-ReceivedRules` ‚Åƒ}ƒbƒ`ƒ“ƒOƒpƒ^[ƒ“–‘O•ÏŠ·
-  - `Test-BinaryRuleMatch` ‚Ì‚‘¬‰»
-- **ƒeƒXƒg**:
-  - ƒ‹[ƒ‹ƒ}ƒbƒ`ƒ“ƒOŠÔ‘ª’è
-  - •¡”ƒ‹[ƒ‹‚Å‚Ì“®ìŠm”F
-- **ƒŠƒXƒN**: ’á
-- **Œø‰Ê**: **ƒ}ƒbƒ`ƒ“ƒOŠÔ 50-60%íŒ¸**
+#### Phase 1.5: ãƒ«ãƒ¼ãƒ«ãƒãƒƒãƒãƒ³ã‚°æœ€é©åŒ– ã€é«˜å„ªå…ˆãƒ»2æ™‚é–“ã€‘
+- **ä½œæ¥­æ™‚é–“**: 2-3æ™‚é–“
+- **å¯¾è±¡ãƒ•ã‚¡ã‚¤ãƒ«**: `Core/Domain/ReceivedRuleEngine.ps1`
+- **å¤‰æ›´å†…å®¹**:
+  - `Read-ReceivedRules` ã§ãƒãƒƒãƒãƒ³ã‚°ãƒ‘ã‚¿ãƒ¼ãƒ³äº‹å‰å¤‰æ›
+  - `Test-BinaryRuleMatch` ã®é«˜é€ŸåŒ–
+- **ãƒ†ã‚¹ãƒˆ**:
+  - ãƒ«ãƒ¼ãƒ«ãƒãƒƒãƒãƒ³ã‚°æ™‚é–“æ¸¬å®š
+  - è¤‡æ•°ãƒ«ãƒ¼ãƒ«ã§ã®å‹•ä½œç¢ºèª
+- **ãƒªã‚¹ã‚¯**: ä½
+- **åŠ¹æœ**: **ãƒãƒƒãƒãƒ³ã‚°æ™‚é–“ 50-60%å‰Šæ¸›**
 
-### ƒtƒF[ƒY2: ’†Šú“I‰ü‘Pi3-5“új
+### ãƒ•ã‚§ãƒ¼ã‚º2: ä¸­æœŸçš„æ”¹å–„ï¼ˆ3-5æ—¥ï¼‰
 
-#### Phase 2.1: RecvBufferƒTƒCƒY§ŒÀ y1ŠÔz
-- **ì‹ÆŠÔ**: 1-2ŠÔ
-- **‘ÎÛƒtƒ@ƒCƒ‹**: 
+#### Phase 2.1: RecvBufferã‚µã‚¤ã‚ºåˆ¶é™ ã€1æ™‚é–“ã€‘
+- **ä½œæ¥­æ™‚é–“**: 1-2æ™‚é–“
+- **å¯¾è±¡ãƒ•ã‚¡ã‚¤ãƒ«**: 
   - `Core/Domain/ReceivedEventPipeline.ps1`
   - `Config/defaults.psd1`
-- **•ÏX“à—e**: ƒŠƒ“ƒOƒoƒbƒtƒ@À‘•
-- **ƒeƒXƒg**: ’·ŠÔ‰^—pƒeƒXƒg
-- **ƒŠƒXƒN**: ’á
+- **å¤‰æ›´å†…å®¹**: ãƒªãƒ³ã‚°ãƒãƒƒãƒ•ã‚¡å®Ÿè£…
+- **ãƒ†ã‚¹ãƒˆ**: é•·æ™‚é–“é‹ç”¨ãƒ†ã‚¹ãƒˆ
+- **ãƒªã‚¹ã‚¯**: ä½
 
-#### Phase 2.2: Loggerƒoƒbƒtƒ@ƒŠƒ“ƒO y3-4ŠÔz
-- **ì‹ÆŠÔ**: 4-5ŠÔ
-- **‘ÎÛƒtƒ@ƒCƒ‹**: `Core/Common/Logger.ps1`
-- **•ÏX“à—e**: `BufferedLogger` ƒNƒ‰ƒX’Ç‰Á
-- **ƒeƒXƒg**:
-  - ƒƒO‘‚«‚İŠm”F
-  - ƒtƒ‰ƒbƒVƒ…“®ìŠm”F
-  - ƒAƒvƒŠƒP[ƒVƒ‡ƒ“I—¹‚Ì“®ìŠm”F
-  - •À—ñ‘‚«‚İƒeƒXƒg
-- **ƒŠƒXƒN**: ’†iƒf[ƒ^ƒƒXƒg‚Ì‰Â”\«j
+#### Phase 2.2: Loggerãƒãƒƒãƒ•ã‚¡ãƒªãƒ³ã‚° ã€3-4æ™‚é–“ã€‘
+- **ä½œæ¥­æ™‚é–“**: 4-5æ™‚é–“
+- **å¯¾è±¡ãƒ•ã‚¡ã‚¤ãƒ«**: `Core/Common/Logger.ps1`
+- **å¤‰æ›´å†…å®¹**: `BufferedLogger` ã‚¯ãƒ©ã‚¹è¿½åŠ 
+- **ãƒ†ã‚¹ãƒˆ**:
+  - ãƒ­ã‚°æ›¸ãè¾¼ã¿ç¢ºèª
+  - ãƒ•ãƒ©ãƒƒã‚·ãƒ¥å‹•ä½œç¢ºèª
+  - ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³çµ‚äº†æ™‚ã®å‹•ä½œç¢ºèª
+  - ä¸¦åˆ—æ›¸ãè¾¼ã¿ãƒ†ã‚¹ãƒˆ
+- **ãƒªã‚¹ã‚¯**: ä¸­ï¼ˆãƒ‡ãƒ¼ã‚¿ãƒ­ã‚¹ãƒˆã®å¯èƒ½æ€§ï¼‰
 
-### ƒtƒF[ƒY3: Å“K‰»i1-2“új
+### ãƒ•ã‚§ãƒ¼ã‚º3: æœ€é©åŒ–ï¼ˆ1-2æ—¥ï¼‰
 
-#### Phase 3.1: CSVƒLƒƒƒbƒVƒ…Šg[ y2ŠÔz
-- **ì‹ÆŠÔ**: 2-3ŠÔ
-- **‘ÎÛƒtƒ@ƒCƒ‹**: `Core/Domain/MessageService.ps1`
-- **•ÏX“à—e**: ƒVƒiƒŠƒIƒLƒƒƒbƒVƒ…’Ç‰Á
-- **ƒeƒXƒg**: ƒVƒiƒŠƒIÀsŠm”F
-- **ƒŠƒXƒN**: ’á
+#### Phase 3.1: CSVã‚­ãƒ£ãƒƒã‚·ãƒ¥æ‹¡å…… ã€2æ™‚é–“ã€‘
+- **ä½œæ¥­æ™‚é–“**: 2-3æ™‚é–“
+- **å¯¾è±¡ãƒ•ã‚¡ã‚¤ãƒ«**: `Core/Domain/MessageService.ps1`
+- **å¤‰æ›´å†…å®¹**: ã‚·ãƒŠãƒªã‚ªã‚­ãƒ£ãƒƒã‚·ãƒ¥è¿½åŠ 
+- **ãƒ†ã‚¹ãƒˆ**: ã‚·ãƒŠãƒªã‚ªå®Ÿè¡Œç¢ºèª
+- **ãƒªã‚¹ã‚¯**: ä½
 
-#### Phase 3.2: “K‰“Iƒ^ƒCƒ}[ y2ŠÔz
-- **ì‹ÆŠÔ**: 2-3ŠÔ
-- **‘ÎÛƒtƒ@ƒCƒ‹**: `Presentation/UI/MainForm.ps1`
-- **•ÏX“à—e**: ƒ^ƒCƒ}[ŠÔŠu‚Ì“®“I’²®
-- **ƒeƒXƒg**: —lX‚È•‰‰×ó‹µ‚Å‚ÌŠm”F
-- **ƒŠƒXƒN**: ’á
+#### Phase 3.2: é©å¿œçš„ã‚¿ã‚¤ãƒãƒ¼ ã€2æ™‚é–“ã€‘
+- **ä½œæ¥­æ™‚é–“**: 2-3æ™‚é–“
+- **å¯¾è±¡ãƒ•ã‚¡ã‚¤ãƒ«**: `Presentation/UI/MainForm.ps1`
+- **å¤‰æ›´å†…å®¹**: ã‚¿ã‚¤ãƒãƒ¼é–“éš”ã®å‹•çš„èª¿æ•´
+- **ãƒ†ã‚¹ãƒˆ**: æ§˜ã€…ãªè² è·çŠ¶æ³ã§ã®ç¢ºèª
+- **ãƒªã‚¹ã‚¯**: ä½
 
-### À‘•—Dæ‡ˆÊƒ}ƒgƒŠƒNƒX
+### å®Ÿè£…å„ªå…ˆé †ä½ãƒãƒˆãƒªã‚¯ã‚¹
 
-| ‰ü‘PˆÄ | Œø‰Ê | H” | —Dæ“x | ƒtƒF[ƒY |
+| æ”¹å–„æ¡ˆ | åŠ¹æœ | å·¥æ•° | å„ªå…ˆåº¦ | ãƒ•ã‚§ãƒ¼ã‚º |
 |--------|------|------|--------|----------|
-| **ƒeƒ“ƒvƒŒ[ƒgƒLƒƒƒbƒVƒ…À‘•** | **Å‘å** | **¬** | **ššššš** | **Phase 1.4** |
-| **ƒ‹[ƒ‹ƒ}ƒbƒ`ƒ“ƒOÅ“K‰»** | **‘å** | **¬** | **ššššš** | **Phase 1.5** |
-| ƒ^ƒCƒ}[ŠÔŠu’²® | ’† | ‹É¬ | ššššš | Phase 1.1 |
-| ƒƒO‘•ªXV | ‘å | ¬ | ššššš | Phase 1.2 |
-| UI·•ªXV | ‘å | ’† | ššššš | Phase 1.3 |
-| RecvBufferƒTƒCƒY§ŒÀ | ’† | ¬ | šššš™ | Phase 2.1 |
-| Loggerƒoƒbƒtƒ@ƒŠƒ“ƒO | ’† | ’† | ššš™™ | Phase 2.2 |
-| ƒVƒiƒŠƒIƒLƒƒƒbƒVƒ… | ¬ | ¬ | šš™™™ | Phase 3.1 |
-| “K‰“Iƒ^ƒCƒ}[ | ¬ | ¬ | šš™™™ | Phase 3.2 |
+| **ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆã‚­ãƒ£ãƒƒã‚·ãƒ¥å®Ÿè£…** | **æœ€å¤§** | **å°** | **â˜…â˜…â˜…â˜…â˜…** | **Phase 1.4** |
+| **ãƒ«ãƒ¼ãƒ«ãƒãƒƒãƒãƒ³ã‚°æœ€é©åŒ–** | **å¤§** | **å°** | **â˜…â˜…â˜…â˜…â˜…** | **Phase 1.5** |
+| ã‚¿ã‚¤ãƒãƒ¼é–“éš”èª¿æ•´ | ä¸­ | æ¥µå° | â˜…â˜…â˜…â˜…â˜… | Phase 1.1 |
+| ãƒ­ã‚°å¢—åˆ†æ›´æ–° | å¤§ | å° | â˜…â˜…â˜…â˜…â˜… | Phase 1.2 |
+| UIå·®åˆ†æ›´æ–° | å¤§ | ä¸­ | â˜…â˜…â˜…â˜…â˜… | Phase 1.3 |
+| RecvBufferã‚µã‚¤ã‚ºåˆ¶é™ | ä¸­ | å° | â˜…â˜…â˜…â˜…â˜† | Phase 2.1 |
+| Loggerãƒãƒƒãƒ•ã‚¡ãƒªãƒ³ã‚° | ä¸­ | ä¸­ | â˜…â˜…â˜…â˜†â˜† | Phase 2.2 |
+| ã‚·ãƒŠãƒªã‚ªã‚­ãƒ£ãƒƒã‚·ãƒ¥ | å° | å° | â˜…â˜…â˜†â˜†â˜† | Phase 3.1 |
+| é©å¿œçš„ã‚¿ã‚¤ãƒãƒ¼ | å° | å° | â˜…â˜…â˜†â˜†â˜† | Phase 3.2 |
 
-**’‹L**: Auto ResponseŠÖ˜AiPhase 1.4, 1.5j‚Í‰“š«‚ÉÅ‚à‰e‹¿‚ª‘å‚«‚¢‚½‚ßÅ—Dæ‚ÅÀ‘•„§
+**æ³¨è¨˜**: Auto Responseé–¢é€£ï¼ˆPhase 1.4, 1.5ï¼‰ã¯å¿œç­”æ€§ã«æœ€ã‚‚å½±éŸ¿ãŒå¤§ãã„ãŸã‚æœ€å„ªå…ˆã§å®Ÿè£…æ¨å¥¨
 
 ---
 
-## Šú‘Ò‚³‚ê‚éŒø‰Ê
+## æœŸå¾…ã•ã‚Œã‚‹åŠ¹æœ
 
-### «”\‰ü‘PŒø‰Êi„’èj
+### æ€§èƒ½æ”¹å–„åŠ¹æœï¼ˆæ¨å®šï¼‰
 
-#### CPUg—p—¦
-- **Œ»ó**: ƒAƒCƒhƒ‹ 5-10%, ’ÊM 20-40%, Auto Response 50-80%
-- **‰ü‘PŒã**: ƒAƒCƒhƒ‹ 1-3%, ’ÊM 10-20%, Auto Response 10-20%
-- **íŒ¸—¦**: –ñ50-70%iAuto Response‚Í–ñ80%j
+#### CPUä½¿ç”¨ç‡
+- **ç¾çŠ¶**: ã‚¢ã‚¤ãƒ‰ãƒ«æ™‚ 5-10%, é€šä¿¡æ™‚ 20-40%, Auto Responseæ™‚ 50-80%
+- **æ”¹å–„å¾Œ**: ã‚¢ã‚¤ãƒ‰ãƒ«æ™‚ 1-3%, é€šä¿¡æ™‚ 10-20%, Auto Responseæ™‚ 10-20%
+- **å‰Šæ¸›ç‡**: ç´„50-70%ï¼ˆAuto Responseæ™‚ã¯ç´„80%ï¼‰
 
-#### ƒƒ‚ƒŠg—p—Ê
-- **Œ»ó**: ’·ŠÔ‰^—p‚Å‘‰ÁŒXŒüi100MB ¨ 300MB+j
-- **‰ü‘PŒã**: ˆê’è”ÍˆÍ“à‚Éû‘©i100MB ¨ 150MB’ö“xj
-- **íŒ¸—¦**: ’·Šú‰^—p –ñ50%
+#### ãƒ¡ãƒ¢ãƒªä½¿ç”¨é‡
+- **ç¾çŠ¶**: é•·æ™‚é–“é‹ç”¨ã§å¢—åŠ å‚¾å‘ï¼ˆ100MB â†’ 300MB+ï¼‰
+- **æ”¹å–„å¾Œ**: ä¸€å®šç¯„å›²å†…ã«åæŸï¼ˆ100MB â†’ 150MBç¨‹åº¦ï¼‰
+- **å‰Šæ¸›ç‡**: é•·æœŸé‹ç”¨æ™‚ ç´„50%
 
-#### Auto Response‰“šŠÔ
-- **Œ»ó**: 10-20msi1ƒ‹[ƒ‹jA60-120msi10ƒ‹[ƒ‹jA120-240msi20ƒ‹[ƒ‹j
-- **‰ü‘PŒã**: 2-3msi1ƒ‹[ƒ‹jA10-20msi10ƒ‹[ƒ‹jA20-40msi20ƒ‹[ƒ‹j
-- **íŒ¸—¦**: –ñ80-85%
+#### Auto Responseå¿œç­”æ™‚é–“
+- **ç¾çŠ¶**: 10-20msï¼ˆ1ãƒ«ãƒ¼ãƒ«ï¼‰ã€60-120msï¼ˆ10ãƒ«ãƒ¼ãƒ«ï¼‰ã€120-240msï¼ˆ20ãƒ«ãƒ¼ãƒ«ï¼‰
+- **æ”¹å–„å¾Œ**: 2-3msï¼ˆ1ãƒ«ãƒ¼ãƒ«ï¼‰ã€10-20msï¼ˆ10ãƒ«ãƒ¼ãƒ«ï¼‰ã€20-40msï¼ˆ20ãƒ«ãƒ¼ãƒ«ï¼‰
+- **å‰Šæ¸›ç‡**: ç´„80-85%
 
-#### UI‰“š«
-- **Œ»ó**: Ú‘±”‘‰Á‚Å’x‰„A‚¿‚ç‚Â‚«”­¶
-- **‰ü‘PŒã**: Ú‘±”‚ÉŠÖ‚í‚ç‚¸‰õ“K
-- **‘ÌŠ´**: ‘å•‰ü‘P
+#### UIå¿œç­”æ€§
+- **ç¾çŠ¶**: æ¥ç¶šæ•°å¢—åŠ ã§é…å»¶ã€ã¡ã‚‰ã¤ãç™ºç”Ÿ
+- **æ”¹å–„å¾Œ**: æ¥ç¶šæ•°ã«é–¢ã‚ã‚‰ãšå¿«é©
+- **ä½“æ„Ÿ**: å¤§å¹…æ”¹å–„
 
-#### ƒfƒBƒXƒNI/O
-- **Œ»ó**: ƒƒO‘‚«‚İ + ƒeƒ“ƒvƒŒ[ƒg“Ç‚İ‚İ‚Å‚•p“x
-- **‰ü‘PŒã**: –ñ90-95%íŒ¸
-- **•›ŸŒø‰Ê**: SSDõ–½‰„’·
+#### ãƒ‡ã‚£ã‚¹ã‚¯I/O
+- **ç¾çŠ¶**: ãƒ­ã‚°æ›¸ãè¾¼ã¿ + ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆèª­ã¿è¾¼ã¿ã§é«˜é »åº¦
+- **æ”¹å–„å¾Œ**: ç´„90-95%å‰Šæ¸›
+- **å‰¯æ¬¡åŠ¹æœ**: SSDå¯¿å‘½å»¶é•·
 
-### ƒ†[ƒU[‘ÌŒ±‚Ì‰ü‘P
+### ãƒ¦ãƒ¼ã‚¶ãƒ¼ä½“é¨“ã®æ”¹å–„
 
-#### BeforeiŒ»ój
-- ? ‰æ–Ê‚Ì‚¿‚ç‚Â‚«
-- ? ƒZƒ‹•ÒW‚ª’†’f‚³‚ê‚é
-- ? Ú‘±”‚ª‘‚¦‚é‚Æ’x‚­‚È‚é
-- ? ’·ŠÔ‰^—p‚Åƒƒ‚ƒŠ‘‰Á
+#### Beforeï¼ˆç¾çŠ¶ï¼‰
+- ? ç”»é¢ã®ã¡ã‚‰ã¤ã
+- ? ã‚»ãƒ«ç·¨é›†ãŒä¸­æ–­ã•ã‚Œã‚‹
+- ? æ¥ç¶šæ•°ãŒå¢—ãˆã‚‹ã¨é…ããªã‚‹
+- ? é•·æ™‚é–“é‹ç”¨ã§ãƒ¡ãƒ¢ãƒªå¢—åŠ 
 
-#### Afteri‰ü‘PŒãj
-- ? ƒXƒ€[ƒY‚È‰æ–ÊXV
-- ? •ÒW’†‚à‰õ“K
-- ? ‘½”Ú‘±‚Å‚à‰õ“K
-- ? ’·ŠÔ‰^—p‚Å‚àˆÀ’è
+#### Afterï¼ˆæ”¹å–„å¾Œï¼‰
+- ? ã‚¹ãƒ ãƒ¼ã‚ºãªç”»é¢æ›´æ–°
+- ? ç·¨é›†ä¸­ã‚‚å¿«é©
+- ? å¤šæ•°æ¥ç¶šã§ã‚‚å¿«é©
+- ? é•·æ™‚é–“é‹ç”¨ã§ã‚‚å®‰å®š
 
-### ƒxƒ“ƒ`ƒ}[ƒN–Ú•W
+### ãƒ™ãƒ³ãƒãƒãƒ¼ã‚¯ç›®æ¨™
 
-| €–Ú | Œ»ó | –Ú•W | ‘ª’è•û–@ |
+| é …ç›® | ç¾çŠ¶ | ç›®æ¨™ | æ¸¬å®šæ–¹æ³• |
 |------|------|------|----------|
-| UIXVŠÔ | 200-500ms | 50-100ms | Measure-Command |
-| ƒƒOXVŠÔ | 100-200ms | 20-50ms | Measure-Command |
-| **Auto Response‰“šŠÔi1ƒ‹[ƒ‹j** | **10-20ms** | **2-3ms** | **Measure-Command** |
-| **Auto Response‰“šŠÔi10ƒ‹[ƒ‹j** | **60-120ms** | **10-20ms** | **Measure-Command** |
-| **ƒeƒ“ƒvƒŒ[ƒg“Ç‚İ‚İŠÔ** | **5-10ms** | **0.1-0.5ms** | **Measure-CommandiƒLƒƒƒbƒVƒ…ƒqƒbƒgj** |
-| CPUg—p—¦iƒAƒCƒhƒ‹j | 5-10% | 1-3% | ƒ^ƒXƒNƒ}ƒl[ƒWƒƒ[ |
-| CPUg—p—¦i’ÊM’†j | 20-40% | 10-20% | ƒ^ƒXƒNƒ}ƒl[ƒWƒƒ[ |
-| CPUg—p—¦iAuto Responsej | 50-80% | 10-20% | ƒ^ƒXƒNƒ}ƒl[ƒWƒƒ[ |
-| ƒƒ‚ƒŠg—p—Êi1ŠÔŒãj | 150-200MB | 120-150MB | ƒ^ƒXƒNƒ}ƒl[ƒWƒƒ[ |
-| ƒfƒBƒXƒNI/Oi1•ªŠÔj | 50-100‰ñ | 5-10‰ñ | Process Monitor |
+| UIæ›´æ–°æ™‚é–“ | 200-500ms | 50-100ms | Measure-Command |
+| ãƒ­ã‚°æ›´æ–°æ™‚é–“ | 100-200ms | 20-50ms | Measure-Command |
+| **Auto Responseå¿œç­”æ™‚é–“ï¼ˆ1ãƒ«ãƒ¼ãƒ«ï¼‰** | **10-20ms** | **2-3ms** | **Measure-Command** |
+| **Auto Responseå¿œç­”æ™‚é–“ï¼ˆ10ãƒ«ãƒ¼ãƒ«ï¼‰** | **60-120ms** | **10-20ms** | **Measure-Command** |
+| **ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆèª­ã¿è¾¼ã¿æ™‚é–“** | **5-10ms** | **0.1-0.5ms** | **Measure-Commandï¼ˆã‚­ãƒ£ãƒƒã‚·ãƒ¥ãƒ’ãƒƒãƒˆï¼‰** |
+| CPUä½¿ç”¨ç‡ï¼ˆã‚¢ã‚¤ãƒ‰ãƒ«ï¼‰ | 5-10% | 1-3% | ã‚¿ã‚¹ã‚¯ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼ |
+| CPUä½¿ç”¨ç‡ï¼ˆé€šä¿¡ä¸­ï¼‰ | 20-40% | 10-20% | ã‚¿ã‚¹ã‚¯ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼ |
+| CPUä½¿ç”¨ç‡ï¼ˆAuto Responseæ™‚ï¼‰ | 50-80% | 10-20% | ã‚¿ã‚¹ã‚¯ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼ |
+| ãƒ¡ãƒ¢ãƒªä½¿ç”¨é‡ï¼ˆ1æ™‚é–“å¾Œï¼‰ | 150-200MB | 120-150MB | ã‚¿ã‚¹ã‚¯ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼ |
+| ãƒ‡ã‚£ã‚¹ã‚¯I/Oï¼ˆ1åˆ†é–“ï¼‰ | 50-100å› | 5-10å› | Process Monitor |
 
 ---
 
-## ƒŠƒXƒN•]‰¿‚Æ‘Îô
+## ãƒªã‚¹ã‚¯è©•ä¾¡ã¨å¯¾ç­–
 
-### ƒŠƒXƒN1: ·•ªXV‚ÌƒoƒO
-- **“à—e**: s‚Ì’Ç‰ÁEíœEXV‚ÌƒƒWƒbƒN‚ÉƒoƒO
-- **‰e‹¿**: UI•\¦‚Ì•s®‡
-- **‘Îô**: 
-  - \•ª‚È’P‘ÌƒeƒXƒg
-  - ƒtƒH[ƒ‹ƒoƒbƒN‹@”\i‘SXVƒ‚[ƒhj
-  - ƒƒOo—Í‚É‚æ‚éŒŸØ
+### ãƒªã‚¹ã‚¯1: å·®åˆ†æ›´æ–°ã®ãƒã‚°
+- **å†…å®¹**: è¡Œã®è¿½åŠ ãƒ»å‰Šé™¤ãƒ»æ›´æ–°ã®ãƒ­ã‚¸ãƒƒã‚¯ã«ãƒã‚°
+- **å½±éŸ¿**: UIè¡¨ç¤ºã®ä¸æ•´åˆ
+- **å¯¾ç­–**: 
+  - ååˆ†ãªå˜ä½“ãƒ†ã‚¹ãƒˆ
+  - ãƒ•ã‚©ãƒ¼ãƒ«ãƒãƒƒã‚¯æ©Ÿèƒ½ï¼ˆå…¨æ›´æ–°ãƒ¢ãƒ¼ãƒ‰ï¼‰
+  - ãƒ­ã‚°å‡ºåŠ›ã«ã‚ˆã‚‹æ¤œè¨¼
 
-### ƒŠƒXƒN2: Loggerƒoƒbƒtƒ@‚Ìƒf[ƒ^ƒƒXƒg
-- **“à—e**: ƒAƒvƒŠƒP[ƒVƒ‡ƒ“ˆÙíI—¹‚Éƒoƒbƒtƒ@“à—e‚ª¸‚í‚ê‚é
-- **‰e‹¿**: ƒƒO‚ÌŒ‡‘¹
-- **‘Îô**:
-  - —áŠOƒnƒ“ƒhƒ‰[‚ÅFlushÀs
-  - ƒoƒbƒtƒ@ƒTƒCƒY‚ğ“KØ‚Éİ’èi50Œ’ö“xj
-  - ƒNƒŠƒeƒBƒJƒ‹‚ÈƒƒO‚Í‘¦À‚Éƒtƒ‰ƒbƒVƒ…
+### ãƒªã‚¹ã‚¯2: Loggerãƒãƒƒãƒ•ã‚¡ã®ãƒ‡ãƒ¼ã‚¿ãƒ­ã‚¹ãƒˆ
+- **å†…å®¹**: ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ç•°å¸¸çµ‚äº†æ™‚ã«ãƒãƒƒãƒ•ã‚¡å†…å®¹ãŒå¤±ã‚ã‚Œã‚‹
+- **å½±éŸ¿**: ãƒ­ã‚°ã®æ¬ æ
+- **å¯¾ç­–**:
+  - ä¾‹å¤–ãƒãƒ³ãƒ‰ãƒ©ãƒ¼ã§Flushå®Ÿè¡Œ
+  - ãƒãƒƒãƒ•ã‚¡ã‚µã‚¤ã‚ºã‚’é©åˆ‡ã«è¨­å®šï¼ˆ50ä»¶ç¨‹åº¦ï¼‰
+  - ã‚¯ãƒªãƒ†ã‚£ã‚«ãƒ«ãªãƒ­ã‚°ã¯å³åº§ã«ãƒ•ãƒ©ãƒƒã‚·ãƒ¥
 
-### ƒŠƒXƒN3: ƒLƒƒƒbƒVƒ…‚Ì–³Œø‰»ƒ^ƒCƒ~ƒ“ƒO
-- **“à—e**: ƒtƒ@ƒCƒ‹XV‚ÉƒLƒƒƒbƒVƒ…‚ªXV‚³‚ê‚È‚¢
-- **‰e‹¿**: ŒÃ‚¢ƒf[ƒ^‚ğg—p
-- **‘Îô**:
-  - ƒtƒ@ƒCƒ‹XV‚ÅƒLƒƒƒbƒVƒ…ŒŸØiÀ‘•Ï‚İj
-  - è“®ƒLƒƒƒbƒVƒ…ƒNƒŠƒA‹@”\‚Ì’ñ‹Ÿ
+### ãƒªã‚¹ã‚¯3: ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã®ç„¡åŠ¹åŒ–ã‚¿ã‚¤ãƒŸãƒ³ã‚°
+- **å†…å®¹**: ãƒ•ã‚¡ã‚¤ãƒ«æ›´æ–°æ™‚ã«ã‚­ãƒ£ãƒƒã‚·ãƒ¥ãŒæ›´æ–°ã•ã‚Œãªã„
+- **å½±éŸ¿**: å¤ã„ãƒ‡ãƒ¼ã‚¿ã‚’ä½¿ç”¨
+- **å¯¾ç­–**:
+  - ãƒ•ã‚¡ã‚¤ãƒ«æ›´æ–°æ™‚åˆ»ã§ã‚­ãƒ£ãƒƒã‚·ãƒ¥æ¤œè¨¼ï¼ˆå®Ÿè£…æ¸ˆã¿ï¼‰
+  - æ‰‹å‹•ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã‚¯ãƒªã‚¢æ©Ÿèƒ½ã®æä¾›
 
-### ƒŠƒXƒN4: Auto ResponseƒLƒƒƒbƒVƒ…‚Ì®‡«
-- **“à—e**: ƒeƒ“ƒvƒŒ[ƒgƒtƒ@ƒCƒ‹XV‚ÉƒLƒƒƒbƒVƒ…‚ªŒÃ‚¢‚Ü‚Ü
-- **‰e‹¿**: ŒÃ‚¢‰“šƒf[ƒ^‚ğ‘—M
-- **‘Îô**:
-  - ƒtƒ@ƒCƒ‹XV‚ÅƒLƒƒƒbƒVƒ…–³Œø‰»iİŒv‚ÉŠÜ‚Şj
-  - ŠJ”­‚Íè“®ƒLƒƒƒbƒVƒ…ƒNƒŠƒA‹@”\‚ğ’ñ‹Ÿ
-  - ƒƒO‚ÉuCache Hit/Missv‚ğo—Í
+### ãƒªã‚¹ã‚¯4: Auto Responseã‚­ãƒ£ãƒƒã‚·ãƒ¥ã®æ•´åˆæ€§
+- **å†…å®¹**: ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆãƒ•ã‚¡ã‚¤ãƒ«æ›´æ–°æ™‚ã«ã‚­ãƒ£ãƒƒã‚·ãƒ¥ãŒå¤ã„ã¾ã¾
+- **å½±éŸ¿**: å¤ã„å¿œç­”ãƒ‡ãƒ¼ã‚¿ã‚’é€ä¿¡
+- **å¯¾ç­–**:
+  - ãƒ•ã‚¡ã‚¤ãƒ«æ›´æ–°æ™‚åˆ»ã§ã‚­ãƒ£ãƒƒã‚·ãƒ¥ç„¡åŠ¹åŒ–ï¼ˆè¨­è¨ˆã«å«ã‚€ï¼‰
+  - é–‹ç™ºæ™‚ã¯æ‰‹å‹•ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã‚¯ãƒªã‚¢æ©Ÿèƒ½ã‚’æä¾›
+  - ãƒ­ã‚°ã«ã€ŒCache Hit/Missã€ã‚’å‡ºåŠ›
 
-### ƒŠƒXƒN5: ƒpƒtƒH[ƒ}ƒ“ƒX‰ü‘P‚ÌŒŸØ•s‘«
-- **“à—e**: ‰ü‘PŒø‰Ê‚ª‘z’è‚æ‚è’á‚¢
-- **‰e‹¿**: Šú‘ÒŠO‚ê
-- **‘Îô**:
-  - ‰ü‘P‘OŒã‚Ìƒxƒ“ƒ`ƒ}[ƒN‘ª’è
-  - ŠeƒtƒF[ƒY‚Å‚ÌŒø‰Ê‘ª’è
-  - ’iŠK“I‚Èƒ[ƒ‹ƒAƒEƒg
-- **‰e‹¿**: Šú‘ÒŠO‚ê
-- **‘Îô**:
-  - ‰ü‘P‘OŒã‚Ìƒxƒ“ƒ`ƒ}[ƒN‘ª’è
-  - ŠeƒtƒF[ƒY‚Å‚ÌŒø‰Ê‘ª’è
-  - ’iŠK“I‚Èƒ[ƒ‹ƒAƒEƒg
+### ãƒªã‚¹ã‚¯5: ãƒ‘ãƒ•ã‚©ãƒ¼ãƒãƒ³ã‚¹æ”¹å–„ã®æ¤œè¨¼ä¸è¶³
+- **å†…å®¹**: æ”¹å–„åŠ¹æœãŒæƒ³å®šã‚ˆã‚Šä½ã„
+- **å½±éŸ¿**: æœŸå¾…å¤–ã‚Œ
+- **å¯¾ç­–**:
+  - æ”¹å–„å‰å¾Œã®ãƒ™ãƒ³ãƒãƒãƒ¼ã‚¯æ¸¬å®š
+  - å„ãƒ•ã‚§ãƒ¼ã‚ºã§ã®åŠ¹æœæ¸¬å®š
+  - æ®µéšçš„ãªãƒ­ãƒ¼ãƒ«ã‚¢ã‚¦ãƒˆ
+- **å½±éŸ¿**: æœŸå¾…å¤–ã‚Œ
+- **å¯¾ç­–**:
+  - æ”¹å–„å‰å¾Œã®ãƒ™ãƒ³ãƒãƒãƒ¼ã‚¯æ¸¬å®š
+  - å„ãƒ•ã‚§ãƒ¼ã‚ºã§ã®åŠ¹æœæ¸¬å®š
+  - æ®µéšçš„ãªãƒ­ãƒ¼ãƒ«ã‚¢ã‚¦ãƒˆ
 
 ---
 
-## ŒŸØŒv‰æ
+## æ¤œè¨¼è¨ˆç”»
 
-### «”\‘ª’è€–Ú
+### æ€§èƒ½æ¸¬å®šé …ç›®
 
-#### 1. UIXV«”\
+#### 1. UIæ›´æ–°æ€§èƒ½
 ```powershell
-# ‘ª’èƒR[ƒh—á
+# æ¸¬å®šã‚³ãƒ¼ãƒ‰ä¾‹
 $iterations = 10
 $times = @()
 
@@ -1612,78 +1612,78 @@ $average = ($times | Measure-Object -Average).Average
 Write-Host "Average UI update time: $average ms"
 ```
 
-#### 2. ƒƒ‚ƒŠg—p—Ê
-- **‘ª’èŠÔŠu**: 5•ª
-- **‘ª’èŠúŠÔ**: 1ŠÔ
-- **‘ª’è•û–@**: `Get-Process | Select-Object WorkingSet64`
+#### 2. ãƒ¡ãƒ¢ãƒªä½¿ç”¨é‡
+- **æ¸¬å®šé–“éš”**: 5åˆ†
+- **æ¸¬å®šæœŸé–“**: 1æ™‚é–“
+- **æ¸¬å®šæ–¹æ³•**: `Get-Process | Select-Object WorkingSet64`
 
-#### 3. CPUg—p—¦
-- **‘ª’èƒc[ƒ‹**: Windows Performance Monitor
-- **‘ª’è€–Ú**: `% Processor Time`
-- **‘ª’èŠúŠÔ**: 10•ªi’Êí‰^—pƒVƒiƒŠƒIj
+#### 3. CPUä½¿ç”¨ç‡
+- **æ¸¬å®šãƒ„ãƒ¼ãƒ«**: Windows Performance Monitor
+- **æ¸¬å®šé …ç›®**: `% Processor Time`
+- **æ¸¬å®šæœŸé–“**: 10åˆ†ï¼ˆé€šå¸¸é‹ç”¨ã‚·ãƒŠãƒªã‚ªï¼‰
 
-#### 4. ƒfƒBƒXƒNI/O
-- **‘ª’èƒc[ƒ‹**: Process Monitor (SysInternals)
-- **‘ª’è€–Ú**: Write‘€ì‚Ì‰ñ”
-- **‘ª’èŠúŠÔ**: 1•ªŠÔ
+#### 4. ãƒ‡ã‚£ã‚¹ã‚¯I/O
+- **æ¸¬å®šãƒ„ãƒ¼ãƒ«**: Process Monitor (SysInternals)
+- **æ¸¬å®šé …ç›®**: Writeæ“ä½œã®å›æ•°
+- **æ¸¬å®šæœŸé–“**: 1åˆ†é–“
 
-### •‰‰×ƒeƒXƒgƒVƒiƒŠƒI
+### è² è·ãƒ†ã‚¹ãƒˆã‚·ãƒŠãƒªã‚ª
 
-#### ƒVƒiƒŠƒI1: Œy•‰‰×
-- Ú‘±”: 3
-- ’ÊM•p“x: 10•b‚É1‰ñ
-- ŠúŠÔ: 10•ª
+#### ã‚·ãƒŠãƒªã‚ª1: è»½è² è·
+- æ¥ç¶šæ•°: 3
+- é€šä¿¡é »åº¦: 10ç§’ã«1å›
+- æœŸé–“: 10åˆ†
 
-#### ƒVƒiƒŠƒI2: ’†•‰‰×
-- Ú‘±”: 10
-- ’ÊM•p“x: 1•b‚É1‰ñ
-- ŠúŠÔ: 30•ª
+#### ã‚·ãƒŠãƒªã‚ª2: ä¸­è² è·
+- æ¥ç¶šæ•°: 10
+- é€šä¿¡é »åº¦: 1ç§’ã«1å›
+- æœŸé–“: 30åˆ†
 
-#### ƒVƒiƒŠƒI3: ‚•‰‰×
-- Ú‘±”: 20
-- ’ÊM•p“x: 0.1•b‚É1‰ñi10Hzj
-- ŠúŠÔ: 5•ª
+#### ã‚·ãƒŠãƒªã‚ª3: é«˜è² è·
+- æ¥ç¶šæ•°: 20
+- é€šä¿¡é »åº¦: 0.1ç§’ã«1å›ï¼ˆ10Hzï¼‰
+- æœŸé–“: 5åˆ†
 
-#### ƒVƒiƒŠƒI4: ’·Šú‰^—p
-- Ú‘±”: 5
-- ’ÊM•p“x: 30•b‚É1‰ñ
-- ŠúŠÔ: 4ŠÔ
+#### ã‚·ãƒŠãƒªã‚ª4: é•·æœŸé‹ç”¨
+- æ¥ç¶šæ•°: 5
+- é€šä¿¡é »åº¦: 30ç§’ã«1å›
+- æœŸé–“: 4æ™‚é–“
 
 ---
 
-## Ql‘—¿
+## å‚è€ƒè³‡æ–™
 
-### PowerShell «”\Å“K‰»ƒxƒXƒgƒvƒ‰ƒNƒeƒBƒX
+### PowerShell æ€§èƒ½æœ€é©åŒ–ãƒ™ã‚¹ãƒˆãƒ—ãƒ©ã‚¯ãƒ†ã‚£ã‚¹
 
-1. **”z—ñ‘€ì**:
-   - `+=` ‚ğ”ğ‚¯‚é ¨ `ArrayList` ‚Ü‚½‚Í `List<T>` ‚ğg—p
-   - `foreach` ‚æ‚è `for` ‚ª‚‘¬iƒCƒ“ƒfƒbƒNƒXƒAƒNƒZƒXj
+1. **é…åˆ—æ“ä½œ**:
+   - `+=` ã‚’é¿ã‘ã‚‹ â†’ `ArrayList` ã¾ãŸã¯ `List<T>` ã‚’ä½¿ç”¨
+   - `foreach` ã‚ˆã‚Š `for` ãŒé«˜é€Ÿï¼ˆã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚¢ã‚¯ã‚»ã‚¹ï¼‰
 
-2. **•¶š—ñ‘€ì**:
-   - •¡”‚Ì•¶š—ñŒ‹‡‚Í `StringBuilder` ‚ğg—p
-   - `-join` ‰‰Zq‚ğŠˆ—p
+2. **æ–‡å­—åˆ—æ“ä½œ**:
+   - è¤‡æ•°ã®æ–‡å­—åˆ—çµåˆã¯ `StringBuilder` ã‚’ä½¿ç”¨
+   - `-join` æ¼”ç®—å­ã‚’æ´»ç”¨
 
-3. **ƒtƒ@ƒCƒ‹I/O**:
-   - `Add-Content` ‚æ‚è `[System.IO.File]::AppendAllLines` ‚ª‚‘¬
-   - ƒoƒbƒtƒ@ƒŠƒ“ƒO‚Å‘‚«‚İ‰ñ”‚ğíŒ¸
+3. **ãƒ•ã‚¡ã‚¤ãƒ«I/O**:
+   - `Add-Content` ã‚ˆã‚Š `[System.IO.File]::AppendAllLines` ãŒé«˜é€Ÿ
+   - ãƒãƒƒãƒ•ã‚¡ãƒªãƒ³ã‚°ã§æ›¸ãè¾¼ã¿å›æ•°ã‚’å‰Šæ¸›
 
 4. **WinForms**:
-   - `SuspendLayout()` / `ResumeLayout()` ‚ÅÄ•`‰æ‚ğ—}§
-   - `BeginUpdate()` / `EndUpdate()` ‚ÅƒŠƒXƒgXV‚ğÅ“K‰»
-   - ‰¼‘zƒ‚[ƒh (VirtualMode) ‚Å‘å—Êƒf[ƒ^‚ğˆµ‚¤
+   - `SuspendLayout()` / `ResumeLayout()` ã§å†æç”»ã‚’æŠ‘åˆ¶
+   - `BeginUpdate()` / `EndUpdate()` ã§ãƒªã‚¹ãƒˆæ›´æ–°ã‚’æœ€é©åŒ–
+   - ä»®æƒ³ãƒ¢ãƒ¼ãƒ‰ (VirtualMode) ã§å¤§é‡ãƒ‡ãƒ¼ã‚¿ã‚’æ‰±ã†
 
-### ŠÖ˜AƒhƒLƒ…ƒƒ“ƒg
-- `ARCHITECTURE_REFACTORING.md`: ƒA[ƒLƒeƒNƒ`ƒƒİŒv
-- `DESIGN.md`: ‘S‘ÌİŒv
-- `GUI_REFACTORING_PHASE2_REPORT.md`: GUI‰ü‘P—š—ğ
+### é–¢é€£ãƒ‰ã‚­ãƒ¥ãƒ¡ãƒ³ãƒˆ
+- `ARCHITECTURE_REFACTORING.md`: ã‚¢ãƒ¼ã‚­ãƒ†ã‚¯ãƒãƒ£è¨­è¨ˆ
+- `DESIGN.md`: å…¨ä½“è¨­è¨ˆ
+- `GUI_REFACTORING_PHASE2_REPORT.md`: GUIæ”¹å–„å±¥æ­´
 
 ---
 
-## ‰ü’ù—š—ğ
+## æ”¹è¨‚å±¥æ­´
 
-| ƒo[ƒWƒ‡ƒ“ | “ú•t | •ÏX“à—e | ì¬Ò |
+| ãƒãƒ¼ã‚¸ãƒ§ãƒ³ | æ—¥ä»˜ | å¤‰æ›´å†…å®¹ | ä½œæˆè€… |
 |-----------|------|----------|--------|
-| 1.0 | 2025-11-20 | ‰”Åì¬ | Performance Analysis Team |
+| 1.0 | 2025-11-20 | åˆç‰ˆä½œæˆ | Performance Analysis Team |
 
 ---
 

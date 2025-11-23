@@ -1,35 +1,35 @@
-# ƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒOó‹µƒTƒ}ƒŠ[
+# ãƒªãƒ•ã‚¡ã‚¯ã‚¿ãƒªãƒ³ã‚°çŠ¶æ³ã‚µãƒžãƒªãƒ¼
 
-**ÅIXV:** 2025-11-17  
-**‘‡•]‰¿:** ? **¬Œ÷**
+**æœ€çµ‚æ›´æ–°:** 2025-11-17  
+**ç·åˆè©•ä¾¡:** ? **æˆåŠŸ**
 
 ---
 
-## i’»ó‹µ
+## é€²æ—çŠ¶æ³
 
-| ƒtƒF[ƒY | ó‘Ô | i’»—¦ |
+| ãƒ•ã‚§ãƒ¼ã‚º | çŠ¶æ…‹ | é€²æ—çŽ‡ |
 |---------|------|--------|
-| ƒtƒF[ƒY0: €”õ’iŠK | ? Š®—¹ | 100% |
-| ƒtƒF[ƒY1: ŽóMƒCƒxƒ“ƒgC³ | ? Š®—¹ | 100% |
-| ƒtƒF[ƒY2: Ú‘±ŠÇ—‰ü‘P | ? Š®—¹ | 100% |
-| ƒtƒF[ƒY3: ƒƒbƒZ[ƒWˆ—“‡ | ? Š®—¹ | 100% |
-| ƒŒƒKƒV[ƒR[ƒhíœ | ? Š®—¹ | 100% |
-| ƒtƒF[ƒY4: UI‰ü‘P | ? –¢’…Žè | 0% |
-| **‘S‘Ì** | **? ‚Ù‚ÚŠ®—¹** | **98%** |
+| ãƒ•ã‚§ãƒ¼ã‚º0: æº–å‚™æ®µéšŽ | ? å®Œäº† | 100% |
+| ãƒ•ã‚§ãƒ¼ã‚º1: å—ä¿¡ã‚¤ãƒ™ãƒ³ãƒˆä¿®æ­£ | ? å®Œäº† | 100% |
+| ãƒ•ã‚§ãƒ¼ã‚º2: æŽ¥ç¶šç®¡ç†æ”¹å–„ | ? å®Œäº† | 100% |
+| ãƒ•ã‚§ãƒ¼ã‚º3: ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å‡¦ç†çµ±åˆ | ? å®Œäº† | 100% |
+| ãƒ¬ã‚¬ã‚·ãƒ¼ã‚³ãƒ¼ãƒ‰å‰Šé™¤ | ? å®Œäº† | 100% |
+| ãƒ•ã‚§ãƒ¼ã‚º4: UIæ”¹å–„ | ? æœªç€æ‰‹ | 0% |
+| **å…¨ä½“** | **? ã»ã¼å®Œäº†** | **98%** |
 
 ---
 
-## ŒŸØŒ‹‰Ê
+## æ¤œè¨¼çµæžœ
 
-### ? ƒA[ƒLƒeƒNƒ`ƒƒ
+### ? ã‚¢ãƒ¼ã‚­ãƒ†ã‚¯ãƒãƒ£
 
-- **ƒtƒ@ƒCƒ‹\¬**: ‡ŠiiModules/íœACore/\’zŠ®—¹j
-- **ŠÖ”ˆÚA**: ‡Šii‚·‚×‚Ä‚ÌŠÖ”‚ª“KØ‚ÉˆÚAÏ‚Ýj
-- **\•¶ƒGƒ‰[**: ‚È‚µ
+- **ãƒ•ã‚¡ã‚¤ãƒ«æ§‹æˆ**: åˆæ ¼ï¼ˆModules/å‰Šé™¤ã€Core/æ§‹ç¯‰å®Œäº†ï¼‰
+- **é–¢æ•°ç§»æ¤**: åˆæ ¼ï¼ˆã™ã¹ã¦ã®é–¢æ•°ãŒé©åˆ‡ã«ç§»æ¤æ¸ˆã¿ï¼‰
+- **æ§‹æ–‡ã‚¨ãƒ©ãƒ¼**: ãªã—
 
-### ? ˆÚA‚³‚ê‚½ŠÖ”iŠm”FÏ‚Ýj
+### ? ç§»æ¤ã•ã‚ŒãŸé–¢æ•°ï¼ˆç¢ºèªæ¸ˆã¿ï¼‰
 
-| ŠÖ”–¼ | ‹Œƒtƒ@ƒCƒ‹ | Vƒtƒ@ƒCƒ‹ | s”Ô† |
+| é–¢æ•°å | æ—§ãƒ•ã‚¡ã‚¤ãƒ« | æ–°ãƒ•ã‚¡ã‚¤ãƒ« | è¡Œç•ªå· |
 |--------|----------|----------|--------|
 | `Start-PeriodicSend` | Modules/PeriodicSender.ps1 | Core/Domain/ConnectionManager.ps1 | L384 |
 | `Stop-PeriodicSend` | Modules/PeriodicSender.ps1 | Core/Domain/ConnectionManager.ps1 | L488 |
@@ -37,57 +37,57 @@
 | `Set-ConnectionOnReceivedProfile` | Modules/OnReceivedHandler.ps1 | Core/Domain/ConnectionManager.ps1 | L588 |
 | `Get-QuickDataCatalog` | Modules/QuickSender.ps1 | Core/Application/InstanceManager.ps1 | L351 |
 
-### ? “®ìŠm”F„§‹@”\
+### ? å‹•ä½œç¢ºèªæŽ¨å¥¨æ©Ÿèƒ½
 
-‚·‚×‚Ä‚ÌŽå—v‹@”\‚ª“®ì‰Â”\‚Å‚·:
+ã™ã¹ã¦ã®ä¸»è¦æ©Ÿèƒ½ãŒå‹•ä½œå¯èƒ½ã§ã™:
 
-- ? TCP/UDPÚ‘±‚ÌŠm—§‚Æ’ÊM
-- ? ƒf[ƒ^‘—ŽóM
-- ? AutoResponse‹@”\
-- ? OnReceived‹@”\
-- ? ’èŽüŠú‘—MiPeriodic Sendj
-- ? UI‚©‚ç‚Ìƒvƒƒtƒ@ƒCƒ‹•ÏX
-- ? Quick DataƒJƒ^ƒƒO
+- ? TCP/UDPæŽ¥ç¶šã®ç¢ºç«‹ã¨é€šä¿¡
+- ? ãƒ‡ãƒ¼ã‚¿é€å—ä¿¡
+- ? AutoResponseæ©Ÿèƒ½
+- ? OnReceivedæ©Ÿèƒ½
+- ? å®šå‘¨æœŸé€ä¿¡ï¼ˆPeriodic Sendï¼‰
+- ? UIã‹ã‚‰ã®ãƒ—ãƒ­ãƒ•ã‚¡ã‚¤ãƒ«å¤‰æ›´
+- ? Quick Dataã‚«ã‚¿ãƒ­ã‚°
 
 ---
 
-## V‚µ‚¢ƒA[ƒLƒeƒNƒ`ƒƒ
+## æ–°ã—ã„ã‚¢ãƒ¼ã‚­ãƒ†ã‚¯ãƒãƒ£
 
 ```
 TcpDebugger/
-„¥„Ÿ„Ÿ Core/
-„    „¥„Ÿ„Ÿ Common/          # Logger, ErrorHandler, ThreadSafeCollections
-„    „¥„Ÿ„Ÿ Domain/          # ƒrƒWƒlƒXƒƒWƒbƒNi9ƒtƒ@ƒCƒ‹j
-„    „¥„Ÿ„Ÿ Application/     # InstanceManager, NetworkAnalyzer
-„    „¤„Ÿ„Ÿ Infrastructure/
-„        „¥„Ÿ„Ÿ Adapters/    # TcpClient, TcpServer, Udp
-„        „¤„Ÿ„Ÿ Repositories/# Instance, Rule
-„¥„Ÿ„Ÿ Presentation/
-„    „¤„Ÿ„Ÿ UI/              # MainForm.ps1
-„¥„Ÿ„Ÿ Config/              # defaults.psd1
-„¥„Ÿ„Ÿ Instances/           # ƒCƒ“ƒXƒ^ƒ“ƒX’è‹`
-„¤„Ÿ„Ÿ Logs/                # ƒƒOƒtƒ@ƒCƒ‹
+â”œâ”€â”€ Core/
+â”‚   â”œâ”€â”€ Common/          # Logger, ErrorHandler, ThreadSafeCollections
+â”‚   â”œâ”€â”€ Domain/          # ãƒ“ã‚¸ãƒã‚¹ãƒ­ã‚¸ãƒƒã‚¯ï¼ˆ9ãƒ•ã‚¡ã‚¤ãƒ«ï¼‰
+â”‚   â”œâ”€â”€ Application/     # InstanceManager, NetworkAnalyzer
+â”‚   â””â”€â”€ Infrastructure/
+â”‚       â”œâ”€â”€ Adapters/    # TcpClient, TcpServer, Udp
+â”‚       â””â”€â”€ Repositories/# Instance, Rule
+â”œâ”€â”€ Presentation/
+â”‚   â””â”€â”€ UI/              # MainForm.ps1
+â”œâ”€â”€ Config/              # defaults.psd1
+â”œâ”€â”€ Instances/           # ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹å®šç¾©
+â””â”€â”€ Logs/                # ãƒ­ã‚°ãƒ•ã‚¡ã‚¤ãƒ«
 ```
 
 ---
 
-## Žc‚è‚Ìƒ^ƒXƒN
+## æ®‹ã‚Šã®ã‚¿ã‚¹ã‚¯
 
-### ƒtƒF[ƒY4: UI‰ü‘Pi—Dæ“x: ’áj
+### ãƒ•ã‚§ãƒ¼ã‚º4: UIæ”¹å–„ï¼ˆå„ªå…ˆåº¦: ä½Žï¼‰
 
-- UI‚ÌMVVMƒpƒ^[ƒ“‰»
-- ƒf[ƒ^ƒoƒCƒ“ƒfƒBƒ“ƒO‚Ì“±“ü
-- ”ñ“¯ŠúUIXV‚ÌŠ®‘SŽÀ‘•
+- UIã®MVVMãƒ‘ã‚¿ãƒ¼ãƒ³åŒ–
+- ãƒ‡ãƒ¼ã‚¿ãƒã‚¤ãƒ³ãƒ‡ã‚£ãƒ³ã‚°ã®å°Žå…¥
+- éžåŒæœŸUIæ›´æ–°ã®å®Œå…¨å®Ÿè£…
 
-**’**: ƒRƒA‹@”\‚ÍŠ®‘S‚É“®ì‚·‚é‚½‚ßAƒtƒF[ƒY4‚Í”CˆÓ‚Å‚·B
+**æ³¨**: ã‚³ã‚¢æ©Ÿèƒ½ã¯å®Œå…¨ã«å‹•ä½œã™ã‚‹ãŸã‚ã€ãƒ•ã‚§ãƒ¼ã‚º4ã¯ä»»æ„ã§ã™ã€‚
 
 ---
 
-## Œ‹˜_
+## çµè«–
 
-**ƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒO‚Í¬Œ÷— ‚ÉŠ®—¹‚µ‚Ü‚µ‚½B** ‚·‚×‚Ä‚Ìd—v‚È‹@”\‚ªVƒA[ƒLƒeƒNƒ`ƒƒ‚ÉˆÚA‚³‚êA“®ì‰Â”\‚Èó‘Ô‚Å‚·B
+**ãƒªãƒ•ã‚¡ã‚¯ã‚¿ãƒªãƒ³ã‚°ã¯æˆåŠŸè£ã«å®Œäº†ã—ã¾ã—ãŸã€‚** ã™ã¹ã¦ã®é‡è¦ãªæ©Ÿèƒ½ãŒæ–°ã‚¢ãƒ¼ã‚­ãƒ†ã‚¯ãƒãƒ£ã«ç§»æ¤ã•ã‚Œã€å‹•ä½œå¯èƒ½ãªçŠ¶æ…‹ã§ã™ã€‚
 
-Ú×‚ÍˆÈ‰º‚ÌƒhƒLƒ…ƒƒ“ƒg‚ðŽQÆ‚µ‚Ä‚­‚¾‚³‚¢:
-- `REFACTORING_PROGRESS.md` - Ú×‚Èi’»ó‹µ
-- `REFACTORING_REVIEW_REPORT.md` - ŒŸØŒ‹‰Ê
-- `ARCHITECTURE_REFACTORING.md` - ÝŒv‘
+è©³ç´°ã¯ä»¥ä¸‹ã®ãƒ‰ã‚­ãƒ¥ãƒ¡ãƒ³ãƒˆã‚’å‚ç…§ã—ã¦ãã ã•ã„:
+- `REFACTORING_PROGRESS.md` - è©³ç´°ãªé€²æ—çŠ¶æ³
+- `REFACTORING_REVIEW_REPORT.md` - æ¤œè¨¼çµæžœ
+- `ARCHITECTURE_REFACTORING.md` - è¨­è¨ˆæ›¸

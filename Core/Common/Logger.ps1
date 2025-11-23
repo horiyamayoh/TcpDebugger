@@ -1,4 +1,4 @@
-# Core/Common/Logger.ps1
+ï»¿# Core/Common/Logger.ps1
 # Thread-safe JSON logger with buffering
 
 class Logger {
@@ -23,7 +23,7 @@ class Logger {
         $this.LogPath = $logPath
         
         if (-not $enabled) {
-            # ƒƒO–³Œø‚Íƒ_ƒ~[‰Šú‰»
+            # ãƒ­ã‚°ç„¡åŠ¹æ™‚ã¯ãƒ€ãƒŸãƒ¼åˆæœŸåŒ–
             $this._lock = [object]::new()
             $this._buffer = $null
             $this._bufferSize = 0
@@ -87,7 +87,7 @@ class Logger {
         $context['ConnectionId'] = $connectionId
         $context['Length'] = if ($data) { $data.Length } else { 0 }
         
-        # HEX•ÏŠ·‚ğ‚‘¬‰»iStringBuilderg—pj
+        # HEXå¤‰æ›ã‚’é«˜é€ŸåŒ–ï¼ˆStringBuilderä½¿ç”¨ï¼‰
         if ($data -and $data.Length -gt 0) {
             $previewLength = [Math]::Min(32, $data.Length)
             $sb = [System.Text.StringBuilder]::new($previewLength * 3)
@@ -154,24 +154,24 @@ class Logger {
 
         [System.Threading.Monitor]::Enter($this._lock)
         try {
-            # ƒoƒbƒtƒ@‚É’Ç‰Á
+            # ãƒãƒƒãƒ•ã‚¡ã«è¿½åŠ 
             $this._buffer.Add($json)
             
-            # ƒtƒ‰ƒbƒVƒ…ğŒƒ`ƒFƒbƒN
+            # ãƒ•ãƒ©ãƒƒã‚·ãƒ¥æ¡ä»¶ãƒã‚§ãƒƒã‚¯
             $shouldFlush = $false
             
-            # ğŒ1: ƒoƒbƒtƒ@ƒTƒCƒY’´‰ß
+            # æ¡ä»¶1: ãƒãƒƒãƒ•ã‚¡ã‚µã‚¤ã‚ºè¶…é
             if ($this._buffer.Count -ge $this._bufferSize) {
                 $shouldFlush = $true
             }
             
-            # ğŒ2: ŠÔŒo‰ß
+            # æ¡ä»¶2: æ™‚é–“çµŒé
             $elapsed = (Get-Date) - $this._lastFlush
             if ($elapsed.TotalSeconds -ge $this._flushIntervalSeconds) {
                 $shouldFlush = $true
             }
             
-            # ğŒ3: ƒGƒ‰[ƒŒƒxƒ‹‚Í‘¦À‚Éƒtƒ‰ƒbƒVƒ…
+            # æ¡ä»¶3: ã‚¨ãƒ©ãƒ¼ãƒ¬ãƒ™ãƒ«ã¯å³åº§ã«ãƒ•ãƒ©ãƒƒã‚·ãƒ¥
             if ($level -eq "ERROR") {
                 $shouldFlush = $true
             }
@@ -186,13 +186,13 @@ class Logger {
     }
     
     hidden [void] FlushBuffer() {
-        # ƒƒbƒNÏ‚İ‘O’ñ‚ÅŒÄ‚Ño‚³‚ê‚é
+        # ãƒ­ãƒƒã‚¯æ¸ˆã¿å‰æã§å‘¼ã³å‡ºã•ã‚Œã‚‹
         if (-not $this._enabled -or $this._buffer.Count -eq 0) {
             return
         }
         
         try {
-            # ƒoƒbƒtƒ@“à—e‚ğˆêŠ‡‘‚«‚İ
+            # ãƒãƒƒãƒ•ã‚¡å†…å®¹ã‚’ä¸€æ‹¬æ›¸ãè¾¼ã¿
             $content = $this._buffer -join "`n"
             Add-Content -Path $this.LogPath -Value $content -NoNewline
             Add-Content -Path $this.LogPath -Value "`n"
@@ -201,13 +201,13 @@ class Logger {
             $this._lastFlush = Get-Date
         }
         catch {
-            # ƒtƒ‰ƒbƒVƒ…¸”s‚Íƒoƒbƒtƒ@‚ğƒNƒŠƒA‚µ‚Ä‘±s
+            # ãƒ•ãƒ©ãƒƒã‚·ãƒ¥å¤±æ•—æ™‚ã¯ãƒãƒƒãƒ•ã‚¡ã‚’ã‚¯ãƒªã‚¢ã—ã¦ç¶šè¡Œ
             Write-Warning "Failed to flush log buffer: $_"
             $this._buffer.Clear()
         }
     }
     
-    # –¾¦“Iƒtƒ‰ƒbƒVƒ…iƒAƒvƒŠI—¹‚È‚Çj
+    # æ˜ç¤ºçš„ãƒ•ãƒ©ãƒƒã‚·ãƒ¥ï¼ˆã‚¢ãƒ—ãƒªçµ‚äº†æ™‚ãªã©ï¼‰
     [void] Flush() {
         [System.Threading.Monitor]::Enter($this._lock)
         try {
@@ -222,22 +222,22 @@ class Logger {
 function New-FileLogger {
     <#
     .SYNOPSIS
-    ƒtƒ@ƒCƒ‹ƒƒK[‚ğì¬
+    ãƒ•ã‚¡ã‚¤ãƒ«ãƒ­ã‚¬ãƒ¼ã‚’ä½œæˆ
     
     .PARAMETER Path
-    ƒƒOƒtƒ@ƒCƒ‹‚ÌƒpƒX
+    ãƒ­ã‚°ãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒ‘ã‚¹
     
     .PARAMETER Name
-    ƒƒK[–¼
+    ãƒ­ã‚¬ãƒ¼å
     
     .PARAMETER BufferSize
-    ƒoƒbƒtƒ@ƒTƒCƒYiƒfƒtƒHƒ‹ƒg: 50j
+    ãƒãƒƒãƒ•ã‚¡ã‚µã‚¤ã‚ºï¼ˆãƒ‡ãƒ•ã‚©ãƒ«ãƒˆ: 50ï¼‰
     
     .PARAMETER FlushIntervalSeconds
-    ƒtƒ‰ƒbƒVƒ…ŠÔŠui•bjiƒfƒtƒHƒ‹ƒg: 5j
+    ãƒ•ãƒ©ãƒƒã‚·ãƒ¥é–“éš”ï¼ˆç§’ï¼‰ï¼ˆãƒ‡ãƒ•ã‚©ãƒ«ãƒˆ: 5ï¼‰
     
     .PARAMETER Enabled
-    ƒƒOo—Í‚ğ—LŒø‚É‚·‚é‚©iƒfƒtƒHƒ‹ƒg: $truej
+    ãƒ­ã‚°å‡ºåŠ›ã‚’æœ‰åŠ¹ã«ã™ã‚‹ã‹ï¼ˆãƒ‡ãƒ•ã‚©ãƒ«ãƒˆ: $trueï¼‰
     #>
     param(
         [Parameter(Mandatory = $true)]

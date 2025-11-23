@@ -1,8 +1,8 @@
 RuleName,MatchOffset,MatchLength,MatchValue,ResponseMessageFile,ScriptFile,Delay
-ƒƒOƒCƒ“—v‹-‰“š,0,2,0001,login_response.csv,,0
-ƒƒOƒCƒ“—v‹-ƒƒO‹L˜^,0,2,0001,,log_login.ps1,10
-ƒf[ƒ^—v‹-‰“š‘—M,0,2,0010,data_response.csv,,0
-ƒf[ƒ^—v‹-ƒf[ƒ^•Û‘¶,0,2,0010,,save_data.ps1,50
-ƒf[ƒ^—v‹-“ŒvXV,0,2,0010,,update_stats.ps1,100
-ƒGƒR[—v‹-—¼•ûÀs,0,2,0020,echo_response.csv,log_echo.ps1,0
-ƒXƒe[ƒ^ƒX—v‹-‰“š‚Ì‚İ,0,2,0030,status_response.csv,,0
+ãƒ­ã‚°ã‚¤ãƒ³è¦æ±‚-å¿œç­”,0,2,00 01,login_response.csv,,0
+ãƒ­ã‚°ã‚¤ãƒ³è¦æ±‚-ãƒ­ã‚°è¨˜éŒ²,0,2,00 01,,log_login.ps1,10
+ãƒ‡ãƒ¼ã‚¿è¦æ±‚-å¿œç­”é€ä¿¡,0,2,00 10,data_response.csv,,0
+ãƒ‡ãƒ¼ã‚¿è¦æ±‚-ãƒ‡ãƒ¼ã‚¿ä¿å­˜,0,2,00 10,,save_data.ps1,50
+ãƒ‡ãƒ¼ã‚¿è¦æ±‚-çµ±è¨ˆæ›´æ–°,0,2,00 10,,update_stats.ps1,100
+ã‚¨ã‚³ãƒ¼è¦æ±‚-ä¸¡æ–¹å®Ÿè¡Œ,0,2,00 20,echo_response.csv,log_echo.ps1,0
+ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹è¦æ±‚-å¿œç­”ã®ã¿,0,2,00 30,status_response.csv,,0

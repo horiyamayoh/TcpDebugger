@@ -1,37 +1,37 @@
-# process_sequence.ps1
-# ƒV[ƒPƒ“ƒX”Ô†‚ğƒCƒ“ƒNƒŠƒƒ“ƒg‚µ‚Ä‰“š
+ï»¿# process_sequence.ps1
+# ã‚·ãƒ¼ã‚±ãƒ³ã‚¹ç•ªå·ã‚’ã‚¤ãƒ³ã‚¯ãƒªãƒ¡ãƒ³ãƒˆã—ã¦å¿œç­”
 
 param($Context)
 
-# ƒ‰ƒCƒuƒ‰ƒŠŠÖ”‚ğ“Ç‚İ‚İ
+# ãƒ©ã‚¤ãƒ–ãƒ©ãƒªé–¢æ•°ã‚’èª­ã¿è¾¼ã¿
 . "$PSScriptRoot\..\..\..\..\Core\Domain\OnReceivedLibrary.ps1"
 
-Write-OnReceivedLog "ƒV[ƒPƒ“ƒX”Ô†‚ğˆ—‚µ‚Ü‚·"
+Write-OnReceivedLog "ã‚·ãƒ¼ã‚±ãƒ³ã‚¹ç•ªå·ã‚’å‡¦ç†ã—ã¾ã™"
 
-# ƒRƒlƒNƒVƒ‡ƒ“•Ï”‚©‚çƒV[ƒPƒ“ƒX”Ô†‚ğæ“¾i‰‰ñ‚Í0j
+# ã‚³ãƒã‚¯ã‚·ãƒ§ãƒ³å¤‰æ•°ã‹ã‚‰ã‚·ãƒ¼ã‚±ãƒ³ã‚¹ç•ªå·ã‚’å–å¾—ï¼ˆåˆå›ã¯0ï¼‰
 $sequence = Get-ConnectionVariable -Connection $Context.Connection -Name "SequenceNumber" -Default 0
 
-# ƒCƒ“ƒNƒŠƒƒ“ƒg
-$sequence = ($sequence + 1) % 65536  # 16ƒrƒbƒg”ÍˆÍ‚Åƒ‹[ƒv
+# ã‚¤ãƒ³ã‚¯ãƒªãƒ¡ãƒ³ãƒˆ
+$sequence = ($sequence + 1) % 65536  # 16ãƒ“ãƒƒãƒˆç¯„å›²ã§ãƒ«ãƒ¼ãƒ—
 
-# ƒRƒlƒNƒVƒ‡ƒ“•Ï”‚É•Û‘¶
+# ã‚³ãƒã‚¯ã‚·ãƒ§ãƒ³å¤‰æ•°ã«ä¿å­˜
 Set-ConnectionVariable -Connection $Context.Connection -Name "SequenceNumber" -Value $sequence
 
-Write-OnReceivedLog "Œ»İ‚ÌƒV[ƒPƒ“ƒX”Ô†: $sequence"
+Write-OnReceivedLog "ç¾åœ¨ã®ã‚·ãƒ¼ã‚±ãƒ³ã‚¹ç•ªå·: $sequence"
 
-# ‰“š“d•¶‚ğ“Ç‚İ‚İ
+# å¿œç­”é›»æ–‡ã‚’èª­ã¿è¾¼ã¿
 $responseData = Read-MessageFile -FilePath "sequence_response.csv" -InstancePath $Context.InstancePath
 
-# ƒV[ƒPƒ“ƒX”Ô†‚ğ2ƒoƒCƒg(Big Endian)‚É•ÏŠ·
+# ã‚·ãƒ¼ã‚±ãƒ³ã‚¹ç•ªå·ã‚’2ãƒã‚¤ãƒˆ(Big Endian)ã«å¤‰æ›
 $seqBytes = [byte[]]@(
     [byte](($sequence -shr 8) -band 0xFF),
     [byte]($sequence -band 0xFF)
 )
 
-# ‰“š“d•¶‚ÌƒIƒtƒZƒbƒg6‚ÉƒV[ƒPƒ“ƒX”Ô†‚ğƒZƒbƒg
+# å¿œç­”é›»æ–‡ã®ã‚ªãƒ•ã‚»ãƒƒãƒˆ6ã«ã‚·ãƒ¼ã‚±ãƒ³ã‚¹ç•ªå·ã‚’ã‚»ãƒƒãƒˆ
 Set-ByteSlice -Target $responseData -Offset 6 -Source $seqBytes
 
-# ‰“š“d•¶‚ğ‘—M
+# å¿œç­”é›»æ–‡ã‚’é€ä¿¡
 Send-MessageData -ConnectionId $Context.ConnectionId -Data $responseData
 
-Write-OnReceivedLog "ƒV[ƒPƒ“ƒX”Ô†ˆ—Š®—¹"
+Write-OnReceivedLog "ã‚·ãƒ¼ã‚±ãƒ³ã‚¹ç•ªå·å‡¦ç†å®Œäº†"

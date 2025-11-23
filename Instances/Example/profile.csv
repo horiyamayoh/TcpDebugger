@@ -1,17 +1,17 @@
 # Example Instance Profile
-# ‚±‚Ìƒtƒ@ƒCƒ‹‚Í Example ƒCƒ“ƒXƒ^ƒ“ƒX‚Ìƒvƒƒtƒ@ƒCƒ‹İ’è—á‚Å‚·
+# ã“ã®ãƒ•ã‚¡ã‚¤ãƒ«ã¯ Example ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®ãƒ—ãƒ­ãƒ•ã‚¡ã‚¤ãƒ«è¨­å®šä¾‹ã§ã™
 
-# —ñ‚Ìà–¾:
-# InstanceName          : ƒCƒ“ƒXƒ^ƒ“ƒX–¼ (•K‚¸‚±‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ÌƒtƒHƒ‹ƒ_–¼‚Æˆê’v‚³‚¹‚é)
-# AutoResponseScenario  : Auto Response ƒVƒiƒŠƒIƒtƒ@ƒCƒ‹–¼ (scenarios/auto/ ”z‰º)
-# OnReceivedScenario    : On Received ƒVƒiƒŠƒIƒtƒ@ƒCƒ‹–¼ (scenarios/onreceived/ ”z‰º)
-# PeriodicScenario      : Periodic ƒVƒiƒŠƒIƒtƒ@ƒCƒ‹–¼ (scenarios/periodic/ ”z‰º)
-# AutoConnect           : ‹N“®‚É©“®Ú‘±‚·‚é‚© (true/false)
+# åˆ—ã®èª¬æ˜:
+# InstanceName          : ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹å (å¿…ãšã“ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã®ãƒ•ã‚©ãƒ«ãƒ€åã¨ä¸€è‡´ã•ã›ã‚‹)
+# AutoResponseScenario  : Auto Response ã‚·ãƒŠãƒªã‚ªãƒ•ã‚¡ã‚¤ãƒ«å (scenarios/auto/ é…ä¸‹)
+# OnReceivedScenario    : On Received ã‚·ãƒŠãƒªã‚ªãƒ•ã‚¡ã‚¤ãƒ«å (scenarios/onreceived/ é…ä¸‹)
+# PeriodicScenario      : Periodic ã‚·ãƒŠãƒªã‚ªãƒ•ã‚¡ã‚¤ãƒ«å (scenarios/periodic/ é…ä¸‹)
+# AutoConnect           : èµ·å‹•æ™‚ã«è‡ªå‹•æ¥ç¶šã™ã‚‹ã‹ (true/false)
 
-# g—p—á:
-# 1. ƒeƒXƒgŠÂ‹«: unified_rules ‚Å©“®‰“šArules.csv ‚ÅóMˆ—Aheartbeat ‚Å’èŠú‘—M
-# 2. –{”ÔŠÂ‹«: ©“®Ú‘±‚ğ—LŒø‚É‚µ‚ÄA‹N“®Œã‚·‚®‚É“®ìŠJn
-# 3. ŠJ”­ŠÂ‹«: ƒVƒiƒŠƒI‚Íİ’è‚·‚é‚ª©“®Ú‘±‚Í‚¹‚¸Aè“®‚ÅÚ‘±
+# ä½¿ç”¨ä¾‹:
+# 1. ãƒ†ã‚¹ãƒˆç’°å¢ƒ: unified_rules ã§è‡ªå‹•å¿œç­”ã€rules.csv ã§å—ä¿¡å‡¦ç†ã€heartbeat ã§å®šæœŸé€ä¿¡
+# 2. æœ¬ç•ªç’°å¢ƒ: è‡ªå‹•æ¥ç¶šã‚’æœ‰åŠ¹ã«ã—ã¦ã€èµ·å‹•å¾Œã™ãã«å‹•ä½œé–‹å§‹
+# 3. é–‹ç™ºç’°å¢ƒ: ã‚·ãƒŠãƒªã‚ªã¯è¨­å®šã™ã‚‹ãŒè‡ªå‹•æ¥ç¶šã¯ã›ãšã€æ‰‹å‹•ã§æ¥ç¶š
 
 InstanceName,AutoResponseScenario,OnReceivedScenario,PeriodicScenario,AutoConnect
 Example,unified_rules.csv,rules.csv,heartbeat.csv,false

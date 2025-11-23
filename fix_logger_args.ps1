@@ -1,4 +1,4 @@
-# Fix Logger calls - add explicit @{} context parameter
+﻿# Fix Logger calls - add explicit @{} context parameter
 
 $files = @(
     "Core\Domain\ProfileService.ps1",

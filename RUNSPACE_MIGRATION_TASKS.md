@@ -1,305 +1,305 @@
 # Runspace Migration Task List
 
-## ƒvƒƒWƒFƒNƒgŠT—v
-- **–Ú“I**: PowerShellƒXƒŒƒbƒh‚©‚çRunspaceƒx[ƒX‚Ö‚ÌˆÚs‚É‚æ‚éƒAƒvƒŠƒP[ƒVƒ‡ƒ“ˆÀ’è‰»
-- **ŠJŽn“ú**: 2025-11-19
-- **—\’èH”**: 12-17ŽžŠÔ
-- **Œ»Ý‚ÌƒXƒe[ƒ^ƒX**: Phase 0 Š®—¹APhase 1 €”õ’†
+## ãƒ—ãƒ­ã‚¸ã‚§ã‚¯ãƒˆæ¦‚è¦
+- **ç›®çš„**: PowerShellã‚¹ãƒ¬ãƒƒãƒ‰ã‹ã‚‰Runspaceãƒ™ãƒ¼ã‚¹ã¸ã®ç§»è¡Œã«ã‚ˆã‚‹ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³å®‰å®šåŒ–
+- **é–‹å§‹æ—¥**: 2025-11-19
+- **äºˆå®šå·¥æ•°**: 12-17æ™‚é–“
+- **ç¾åœ¨ã®ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹**: Phase 0 å®Œäº†ã€Phase 1 æº–å‚™ä¸­
 
 ---
 
-## Phase 0: €”õEÝŒv ? Š®—¹
+## Phase 0: æº–å‚™ãƒ»è¨­è¨ˆ ? å®Œäº†
 
-### Task 0.1: ÝŒv‘ì¬ ?
-- **’S“–**: Agent
-- **ŠúŒÀ**: 2025-11-19
-- **ó‘Ô**: Š®—¹
-- **¬‰Ê•¨**: `RUNSPACE_MIGRATION_DESIGN.md`
-- **Ú×**: ƒA[ƒLƒeƒNƒ`ƒƒAƒRƒ“ƒ|[ƒlƒ“ƒgÝŒvAƒf[ƒ^ƒtƒ[AˆÚsŽè‡‚ð•¶‘‰»
+### Task 0.1: è¨­è¨ˆæ›¸ä½œæˆ ?
+- **æ‹…å½“**: Agent
+- **æœŸé™**: 2025-11-19
+- **çŠ¶æ…‹**: å®Œäº†
+- **æˆæžœç‰©**: `RUNSPACE_MIGRATION_DESIGN.md`
+- **è©³ç´°**: ã‚¢ãƒ¼ã‚­ãƒ†ã‚¯ãƒãƒ£ã€ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆè¨­è¨ˆã€ãƒ‡ãƒ¼ã‚¿ãƒ•ãƒ­ãƒ¼ã€ç§»è¡Œæ‰‹é †ã‚’æ–‡æ›¸åŒ–
 
-### Task 0.2: ƒ^ƒXƒNƒŠƒXƒgì¬ ?
-- **’S“–**: Agent
-- **ŠúŒÀ**: 2025-11-19
-- **ó‘Ô**: Š®—¹
-- **¬‰Ê•¨**: `RUNSPACE_MIGRATION_TASKS.md` (–{ƒtƒ@ƒCƒ‹)
-- **Ú×**: ‘SƒtƒF[ƒY‚Ìƒ^ƒXƒN’è‹`Ai’»ŠÇ—ƒtƒŒ[ƒ€ƒ[ƒN\’z
+### Task 0.2: ã‚¿ã‚¹ã‚¯ãƒªã‚¹ãƒˆä½œæˆ ?
+- **æ‹…å½“**: Agent
+- **æœŸé™**: 2025-11-19
+- **çŠ¶æ…‹**: å®Œäº†
+- **æˆæžœç‰©**: `RUNSPACE_MIGRATION_TASKS.md` (æœ¬ãƒ•ã‚¡ã‚¤ãƒ«)
+- **è©³ç´°**: å…¨ãƒ•ã‚§ãƒ¼ã‚ºã®ã‚¿ã‚¹ã‚¯å®šç¾©ã€é€²æ—ç®¡ç†ãƒ•ãƒ¬ãƒ¼ãƒ ãƒ¯ãƒ¼ã‚¯æ§‹ç¯‰
 
 ---
 
-## Phase 1: Šî”ÕŽÀ‘• (2-3ŽžŠÔ)
+## Phase 1: åŸºç›¤å®Ÿè£… (2-3æ™‚é–“)
 
-### Task 1.1: ƒƒbƒZ[ƒWŒ^’è‹`‚ÌŽÀ‘• ?
-- **’S“–**: Agent
-- **—\’èH”**: 30•ª
-- **ó‘Ô**: –¢’…Žè
-- **ƒtƒ@ƒCƒ‹**: `Core/Domain/RunspaceMessages.ps1` (V‹Kì¬)
-- **“à—e**:
-  - [ ] `MessageType` enum’è‹`
-  - [ ] `RunspaceMessage` ƒNƒ‰ƒXŽÀ‘•
-  - [ ] ƒwƒ‹ƒp[ŠÖ”ŽÀ‘•
+### Task 1.1: ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸åž‹å®šç¾©ã®å®Ÿè£… ?
+- **æ‹…å½“**: Agent
+- **äºˆå®šå·¥æ•°**: 30åˆ†
+- **çŠ¶æ…‹**: æœªç€æ‰‹
+- **ãƒ•ã‚¡ã‚¤ãƒ«**: `Core/Domain/RunspaceMessages.ps1` (æ–°è¦ä½œæˆ)
+- **å†…å®¹**:
+  - [ ] `MessageType` enumå®šç¾©
+  - [ ] `RunspaceMessage` ã‚¯ãƒ©ã‚¹å®Ÿè£…
+  - [ ] ãƒ˜ãƒ«ãƒ‘ãƒ¼é–¢æ•°å®Ÿè£…
     - [ ] `New-StatusUpdateMessage`
     - [ ] `New-DataReceivedMessage`
     - [ ] `New-ErrorMessage`
     - [ ] `New-ActivityMessage`
     - [ ] `New-LogMessage`
-- **ˆË‘¶ŠÖŒW**: ‚È‚µ
-- **ŒŸØ•û–@**: ƒƒbƒZ[ƒWì¬‚ÆƒvƒƒpƒeƒBŠm”F
+- **ä¾å­˜é–¢ä¿‚**: ãªã—
+- **æ¤œè¨¼æ–¹æ³•**: ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ä½œæˆã¨ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£ç¢ºèª
 
-### Task 1.2: ƒƒbƒZ[ƒWƒLƒ…[‚ÌŽÀ‘• ?
-- **’S“–**: Agent
-- **—\’èH”**: 30•ª
-- **ó‘Ô**: –¢’…Žè
-- **ƒtƒ@ƒCƒ‹**: `Core/Infrastructure/RunspaceMessageQueue.ps1` (V‹Kì¬)
-- **“à—e**:
-  - [ ] `RunspaceMessageQueue` ƒNƒ‰ƒXŽÀ‘•
-  - [ ] `Enqueue()` ƒƒ\ƒbƒh
-  - [ ] `TryDequeue()` ƒƒ\ƒbƒh
-  - [ ] `GetCount()` ƒƒ\ƒbƒh
-  - [ ] `Clear()` ƒƒ\ƒbƒh
-- **ˆË‘¶ŠÖŒW**: Task 1.1
-- **ŒŸØ•û–@**: Enqueue/Dequeue“®ìŠm”F
+### Task 1.2: ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚­ãƒ¥ãƒ¼ã®å®Ÿè£… ?
+- **æ‹…å½“**: Agent
+- **äºˆå®šå·¥æ•°**: 30åˆ†
+- **çŠ¶æ…‹**: æœªç€æ‰‹
+- **ãƒ•ã‚¡ã‚¤ãƒ«**: `Core/Infrastructure/RunspaceMessageQueue.ps1` (æ–°è¦ä½œæˆ)
+- **å†…å®¹**:
+  - [ ] `RunspaceMessageQueue` ã‚¯ãƒ©ã‚¹å®Ÿè£…
+  - [ ] `Enqueue()` ãƒ¡ã‚½ãƒƒãƒ‰
+  - [ ] `TryDequeue()` ãƒ¡ã‚½ãƒƒãƒ‰
+  - [ ] `GetCount()` ãƒ¡ã‚½ãƒƒãƒ‰
+  - [ ] `Clear()` ãƒ¡ã‚½ãƒƒãƒ‰
+- **ä¾å­˜é–¢ä¿‚**: Task 1.1
+- **æ¤œè¨¼æ–¹æ³•**: Enqueue/Dequeueå‹•ä½œç¢ºèª
 
-### Task 1.3: ƒƒbƒZ[ƒWƒvƒƒZƒbƒT‚ÌŽÀ‘• ?
-- **’S“–**: Agent
-- **—\’èH”**: 1ŽžŠÔ
-- **ó‘Ô**: –¢’…Žè
-- **ƒtƒ@ƒCƒ‹**: `Core/Infrastructure/RunspaceMessageProcessor.ps1` (V‹Kì¬)
-- **“à—e**:
-  - [ ] `RunspaceMessageProcessor` ƒNƒ‰ƒXŽÀ‘•
-  - [ ] `ProcessMessages([int]$maxCount)` ƒƒ\ƒbƒh
-  - [ ] `ProcessMessage([RunspaceMessage])` ƒƒ\ƒbƒh
-  - [ ] ŠeƒƒbƒZ[ƒWƒ^ƒCƒv‚Ìˆ—ƒƒWƒbƒN
+### Task 1.3: ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãƒ—ãƒ­ã‚»ãƒƒã‚µã®å®Ÿè£… ?
+- **æ‹…å½“**: Agent
+- **äºˆå®šå·¥æ•°**: 1æ™‚é–“
+- **çŠ¶æ…‹**: æœªç€æ‰‹
+- **ãƒ•ã‚¡ã‚¤ãƒ«**: `Core/Infrastructure/RunspaceMessageProcessor.ps1` (æ–°è¦ä½œæˆ)
+- **å†…å®¹**:
+  - [ ] `RunspaceMessageProcessor` ã‚¯ãƒ©ã‚¹å®Ÿè£…
+  - [ ] `ProcessMessages([int]$maxCount)` ãƒ¡ã‚½ãƒƒãƒ‰
+  - [ ] `ProcessMessage([RunspaceMessage])` ãƒ¡ã‚½ãƒƒãƒ‰
+  - [ ] å„ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚¿ã‚¤ãƒ—ã®å‡¦ç†ãƒ­ã‚¸ãƒƒã‚¯
     - [ ] StatusUpdate
     - [ ] DataReceived
     - [ ] ErrorOccurred
     - [ ] ActivityMarker
     - [ ] SocketUpdate
     - [ ] LogMessage
-- **ˆË‘¶ŠÖŒW**: Task 1.2
-- **ŒŸØ•û–@**: ŠeƒƒbƒZ[ƒWƒ^ƒCƒv‚Ìˆ—Šm”F
+- **ä¾å­˜é–¢ä¿‚**: Task 1.2
+- **æ¤œè¨¼æ–¹æ³•**: å„ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚¿ã‚¤ãƒ—ã®å‡¦ç†ç¢ºèª
 
-### Task 1.4: ServiceContainer‚Ö‚Ì“o˜^ ?
-- **’S“–**: Agent
-- **—\’èH”**: 30•ª
-- **ó‘Ô**: –¢’…Žè
-- **ƒtƒ@ƒCƒ‹**: `TcpDebugger.ps1` (•ÏX)
-- **“à—e**:
-  - [ ] `RunspaceMessageQueue` ‚ÌƒVƒ“ƒOƒ‹ƒgƒ““o˜^
-  - [ ] `MessageProcessor` ‚ÌƒVƒ“ƒOƒ‹ƒgƒ““o˜^
-  - [ ] ƒOƒ[ƒoƒ‹•Ï” `$Global:MessageProcessor` ‚ÌÝ’è
-- **ˆË‘¶ŠÖŒW**: Task 1.3
-- **ŒŸØ•û–@**: DIƒRƒ“ƒeƒi‚©‚ç‚Ì‰ðŒˆŠm”F
+### Task 1.4: ServiceContainerã¸ã®ç™»éŒ² ?
+- **æ‹…å½“**: Agent
+- **äºˆå®šå·¥æ•°**: 30åˆ†
+- **çŠ¶æ…‹**: æœªç€æ‰‹
+- **ãƒ•ã‚¡ã‚¤ãƒ«**: `TcpDebugger.ps1` (å¤‰æ›´)
+- **å†…å®¹**:
+  - [ ] `RunspaceMessageQueue` ã®ã‚·ãƒ³ã‚°ãƒ«ãƒˆãƒ³ç™»éŒ²
+  - [ ] `MessageProcessor` ã®ã‚·ãƒ³ã‚°ãƒ«ãƒˆãƒ³ç™»éŒ²
+  - [ ] ã‚°ãƒ­ãƒ¼ãƒãƒ«å¤‰æ•° `$Global:MessageProcessor` ã®è¨­å®š
+- **ä¾å­˜é–¢ä¿‚**: Task 1.3
+- **æ¤œè¨¼æ–¹æ³•**: DIã‚³ãƒ³ãƒ†ãƒŠã‹ã‚‰ã®è§£æ±ºç¢ºèª
 
 ---
 
-## Phase 2: TcpClientAdapterˆÚs (3-4ŽžŠÔ)
+## Phase 2: TcpClientAdapterç§»è¡Œ (3-4æ™‚é–“)
 
-### Task 2.1: TcpClientAdapter (Runspace”Å) ŽÀ‘• ?
-- **’S“–**: Agent
-- **—\’èH”**: 2ŽžŠÔ
-- **ó‘Ô**: –¢’…Žè
-- **ƒtƒ@ƒCƒ‹**: `Core/Infrastructure/Adapters/TcpClientAdapter.ps1` (‘å••ÏX)
-- **“à—e**:
-  - [ ] ƒRƒ“ƒXƒgƒ‰ƒNƒ^‚É `MessageQueue` ƒpƒ‰ƒ[ƒ^’Ç‰Á
-  - [ ] `Start()` ƒƒ\ƒbƒh‚ÌRunspaceŽÀ‘•
-    - [ ] `System.Threading.Thread` ‚Ìíœ
-    - [ ] `[PowerShell]::Create()` ‚ÌŽg—p
-    - [ ] Runspace‚Ì‰Šú‰»
-    - [ ] ScriptBlock‚Ì€”õ
-    - [ ] •Ï”‚ÌÝ’è (`ConnectionId`, `RemoteIP`, `MessageQueue` ‚È‚Ç)
-    - [ ] `BeginInvoke()` ‚ÌŒÄ‚Ño‚µ
-    - [ ] Runspace/PowerShell/AsyncHandle‚Ì•Û‘¶
-  - [ ] `Stop()` ƒƒ\ƒbƒh‚ÌXV
-    - [ ] `PowerShell.Stop()` ‚ÌŒÄ‚Ño‚µ
-    - [ ] `EndInvoke()` ‚ÌŒÄ‚Ño‚µ
-    - [ ] Runspace/PowerShell‚ÌDispose
-  - [ ] ScriptBlock“à‚ÌŽÀ‘•
-    - [ ] Ú‘±ˆ—
-    - [ ] ‘—ŽóMƒ‹[ƒv
-    - [ ] ƒƒbƒZ[ƒWƒLƒ…[‚Ö‚Ì‘—M
-    - [ ] ƒGƒ‰[ƒnƒ“ƒhƒŠƒ“ƒO
-    - [ ] ƒNƒŠ[ƒ“ƒAƒbƒvˆ—
-- **ˆË‘¶ŠÖŒW**: Task 1.4
-- **ŒŸØ•û–@**: ’PˆêTCPÚ‘±‚Å‚Ì‘—ŽóMƒeƒXƒg
+### Task 2.1: TcpClientAdapter (Runspaceç‰ˆ) å®Ÿè£… ?
+- **æ‹…å½“**: Agent
+- **äºˆå®šå·¥æ•°**: 2æ™‚é–“
+- **çŠ¶æ…‹**: æœªç€æ‰‹
+- **ãƒ•ã‚¡ã‚¤ãƒ«**: `Core/Infrastructure/Adapters/TcpClientAdapter.ps1` (å¤§å¹…å¤‰æ›´)
+- **å†…å®¹**:
+  - [ ] ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã« `MessageQueue` ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿è¿½åŠ 
+  - [ ] `Start()` ãƒ¡ã‚½ãƒƒãƒ‰ã®Runspaceå®Ÿè£…
+    - [ ] `System.Threading.Thread` ã®å‰Šé™¤
+    - [ ] `[PowerShell]::Create()` ã®ä½¿ç”¨
+    - [ ] Runspaceã®åˆæœŸåŒ–
+    - [ ] ScriptBlockã®æº–å‚™
+    - [ ] å¤‰æ•°ã®è¨­å®š (`ConnectionId`, `RemoteIP`, `MessageQueue` ãªã©)
+    - [ ] `BeginInvoke()` ã®å‘¼ã³å‡ºã—
+    - [ ] Runspace/PowerShell/AsyncHandleã®ä¿å­˜
+  - [ ] `Stop()` ãƒ¡ã‚½ãƒƒãƒ‰ã®æ›´æ–°
+    - [ ] `PowerShell.Stop()` ã®å‘¼ã³å‡ºã—
+    - [ ] `EndInvoke()` ã®å‘¼ã³å‡ºã—
+    - [ ] Runspace/PowerShellã®Dispose
+  - [ ] ScriptBlockå†…ã®å®Ÿè£…
+    - [ ] æŽ¥ç¶šå‡¦ç†
+    - [ ] é€å—ä¿¡ãƒ«ãƒ¼ãƒ—
+    - [ ] ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚­ãƒ¥ãƒ¼ã¸ã®é€ä¿¡
+    - [ ] ã‚¨ãƒ©ãƒ¼ãƒãƒ³ãƒ‰ãƒªãƒ³ã‚°
+    - [ ] ã‚¯ãƒªãƒ¼ãƒ³ã‚¢ãƒƒãƒ—å‡¦ç†
+- **ä¾å­˜é–¢ä¿‚**: Task 1.4
+- **æ¤œè¨¼æ–¹æ³•**: å˜ä¸€TCPæŽ¥ç¶šã§ã®é€å—ä¿¡ãƒ†ã‚¹ãƒˆ
 
-### Task 2.2: Ú‘±ƒIƒuƒWƒFƒNƒg‚Ì•ÏX‘Î‰ž ?
-- **’S“–**: Agent
-- **—\’èH”**: 30•ª
-- **ó‘Ô**: –¢’…Žè
-- **ƒtƒ@ƒCƒ‹**: `Core/Domain/ConnectionModels.ps1` (•ÏX)
-- **“à—e**:
-  - [ ] `Variables` ‚Ö‚Ì RunspaceŠÖ˜AƒIƒuƒWƒFƒNƒg•Û‘¶‚ÌŠm”F
+### Task 2.2: æŽ¥ç¶šã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®å¤‰æ›´å¯¾å¿œ ?
+- **æ‹…å½“**: Agent
+- **äºˆå®šå·¥æ•°**: 30åˆ†
+- **çŠ¶æ…‹**: æœªç€æ‰‹
+- **ãƒ•ã‚¡ã‚¤ãƒ«**: `Core/Domain/ConnectionModels.ps1` (å¤‰æ›´)
+- **å†…å®¹**:
+  - [ ] `Variables` ã¸ã® Runspaceé–¢é€£ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆä¿å­˜ã®ç¢ºèª
     - `_Runspace`
     - `_PowerShell`
     - `_AsyncHandle`
-  - [ ] Šù‘¶‚Ì `State.WorkerThread` ‚Æ‚ÌŒÝŠ·«Šm”F
-- **ˆË‘¶ŠÖŒW**: Task 2.1
-- **ŒŸØ•û–@**: ƒIƒuƒWƒFƒNƒg•Û‘¶EŽæ“¾Šm”F
+  - [ ] æ—¢å­˜ã® `State.WorkerThread` ã¨ã®äº’æ›æ€§ç¢ºèª
+- **ä¾å­˜é–¢ä¿‚**: Task 2.1
+- **æ¤œè¨¼æ–¹æ³•**: ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆä¿å­˜ãƒ»å–å¾—ç¢ºèª
 
-### Task 2.3: UIƒƒbƒZ[ƒWƒ^ƒCƒ}[‚ÌŽÀ‘• ?
-- **’S“–**: Agent
-- **—\’èH”**: 30•ª
-- **ó‘Ô**: –¢’…Žè
-- **ƒtƒ@ƒCƒ‹**: `Presentation/UI/MainForm.ps1` (•ÏX)
-- **“à—e**:
-  - [ ] ƒƒbƒZ[ƒWˆ—ƒ^ƒCƒ}[‚Ì’Ç‰Á (100msŠÔŠu)
-  - [ ] `MessageProcessor.ProcessMessages()` ‚ÌŒÄ‚Ño‚µ
-  - [ ] ƒGƒ‰[ƒnƒ“ƒhƒŠƒ“ƒO
-  - [ ] ƒtƒH[ƒ€CloseŽž‚Ìƒ^ƒCƒ}[’âŽ~
-- **ˆË‘¶ŠÖŒW**: Task 1.4
-- **ŒŸØ•û–@**: ƒƒbƒZ[ƒWˆ—ƒƒO‚ÌŠm”F
+### Task 2.3: UIãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚¿ã‚¤ãƒžãƒ¼ã®å®Ÿè£… ?
+- **æ‹…å½“**: Agent
+- **äºˆå®šå·¥æ•°**: 30åˆ†
+- **çŠ¶æ…‹**: æœªç€æ‰‹
+- **ãƒ•ã‚¡ã‚¤ãƒ«**: `Presentation/UI/MainForm.ps1` (å¤‰æ›´)
+- **å†…å®¹**:
+  - [ ] ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å‡¦ç†ã‚¿ã‚¤ãƒžãƒ¼ã®è¿½åŠ  (100msé–“éš”)
+  - [ ] `MessageProcessor.ProcessMessages()` ã®å‘¼ã³å‡ºã—
+  - [ ] ã‚¨ãƒ©ãƒ¼ãƒãƒ³ãƒ‰ãƒªãƒ³ã‚°
+  - [ ] ãƒ•ã‚©ãƒ¼ãƒ Closeæ™‚ã®ã‚¿ã‚¤ãƒžãƒ¼åœæ­¢
+- **ä¾å­˜é–¢ä¿‚**: Task 1.4
+- **æ¤œè¨¼æ–¹æ³•**: ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å‡¦ç†ãƒ­ã‚°ã®ç¢ºèª
 
-### Task 2.4: TcpClientAdapter“‡ƒeƒXƒg ?
-- **’S“–**: Agent
-- **—\’èH”**: 1ŽžŠÔ
-- **ó‘Ô**: –¢’…Žè
-- **ƒeƒXƒgƒP[ƒX**:
-  - [ ] TCP ClientÚ‘±¬Œ÷
-  - [ ] ƒf[ƒ^ŽóM
-  - [ ] ƒf[ƒ^‘—M
-  - [ ] Ú‘±Ø’f
-  - [ ] ƒGƒ‰[”­¶Žž‚Ì“®ì
-  - [ ] •¡”Ú‘±‚Ì“¯Žž“®ì
-- **ŒŸØ•û–@**: ExampleƒCƒ“ƒXƒ^ƒ“ƒX‚Å‚ÌŽÀ‹@ƒeƒXƒg
-- **¬Œ÷Šî€**: 5•ªˆÈãƒNƒ‰ƒbƒVƒ…‚¹‚¸“®ì
-
----
-
-## Phase 3: Žc‚è‚ÌAdapterˆÚs (2-3ŽžŠÔ)
-
-### Task 3.1: TcpServerAdapter (Runspace”Å) ŽÀ‘• ?
-- **’S“–**: Agent
-- **—\’èH”**: 1.5ŽžŠÔ
-- **ó‘Ô**: –¢’…Žè
-- **ƒtƒ@ƒCƒ‹**: `Core/Infrastructure/Adapters/TcpServerAdapter.ps1` (‘å••ÏX)
-- **“à—e**:
-  - [ ] TcpClientAdapter‚Æ“¯—l‚ÌRunspaceŽÀ‘•
-  - [ ] ƒŠƒXƒi[‹N“®ˆ—
-  - [ ] ƒNƒ‰ƒCƒAƒ“ƒgÚ‘±‘Ò‹@ƒ‹[ƒv
-  - [ ] ƒVƒ“ƒOƒ‹Ú‘±ƒ‚[ƒh‚ÌˆÛŽ
-  - [ ] ƒƒbƒZ[ƒWƒLƒ…[“‡
-- **ˆË‘¶ŠÖŒW**: Task 2.4
-- **ŒŸØ•û–@**: TCP ServerÚ‘±‚Å‚Ì‘—ŽóMƒeƒXƒg
-
-### Task 3.2: UdpAdapter (Runspace”Å) ŽÀ‘• ?
-- **’S“–**: Agent
-- **—\’èH”**: 1ŽžŠÔ
-- **ó‘Ô**: –¢’…Žè
-- **ƒtƒ@ƒCƒ‹**: `Core/Infrastructure/Adapters/UdpAdapter.ps1` (‘å••ÏX)
-- **“à—e**:
-  - [ ] RunspaceŽÀ‘•
-  - [ ] UDP‘—ŽóMˆ—
-  - [ ] ƒuƒ[ƒhƒLƒƒƒXƒg‘Î‰ž
-  - [ ] ƒƒbƒZ[ƒWƒLƒ…[“‡
-- **ˆË‘¶ŠÖŒW**: Task 3.1
-- **ŒŸØ•û–@**: UDP‘—ŽóMƒeƒXƒg
-
-### Task 3.3: ‘SAdapter“‡ƒeƒXƒg ?
-- **’S“–**: Agent
-- **—\’èH”**: 30•ª
-- **ó‘Ô**: –¢’…Žè
-- **ƒeƒXƒgƒP[ƒX**:
-  - [ ] TCP Client“®ìŠm”F
-  - [ ] TCP Server“®ìŠm”F
-  - [ ] UDP“®ìŠm”F
-  - [ ] •¡”Ží—Þ‚ÌAdapter‚Ì“¯Žž“®ì
-- **ŒŸØ•û–@**: ExampleƒCƒ“ƒXƒ^ƒ“ƒX‚Å‚ÌŽÀ‹@ƒeƒXƒg
+### Task 2.4: TcpClientAdapterçµ±åˆãƒ†ã‚¹ãƒˆ ?
+- **æ‹…å½“**: Agent
+- **äºˆå®šå·¥æ•°**: 1æ™‚é–“
+- **çŠ¶æ…‹**: æœªç€æ‰‹
+- **ãƒ†ã‚¹ãƒˆã‚±ãƒ¼ã‚¹**:
+  - [ ] TCP ClientæŽ¥ç¶šæˆåŠŸ
+  - [ ] ãƒ‡ãƒ¼ã‚¿å—ä¿¡
+  - [ ] ãƒ‡ãƒ¼ã‚¿é€ä¿¡
+  - [ ] æŽ¥ç¶šåˆ‡æ–­
+  - [ ] ã‚¨ãƒ©ãƒ¼ç™ºç”Ÿæ™‚ã®å‹•ä½œ
+  - [ ] è¤‡æ•°æŽ¥ç¶šã®åŒæ™‚å‹•ä½œ
+- **æ¤œè¨¼æ–¹æ³•**: Exampleã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã§ã®å®Ÿæ©Ÿãƒ†ã‚¹ãƒˆ
+- **æˆåŠŸåŸºæº–**: 5åˆ†ä»¥ä¸Šã‚¯ãƒ©ãƒƒã‚·ãƒ¥ã›ãšå‹•ä½œ
 
 ---
 
-## Phase 4: ƒNƒŠ[ƒ“ƒAƒbƒvEÅ“K‰» (1-2ŽžŠÔ)
+## Phase 3: æ®‹ã‚Šã®Adapterç§»è¡Œ (2-3æ™‚é–“)
 
-### Task 4.1: ŒÃ‚¢ƒXƒŒƒbƒhƒR[ƒh‚Ìíœ ?
-- **’S“–**: Agent
-- **—\’èH”**: 30•ª
-- **ó‘Ô**: –¢’…Žè
-- **‘ÎÛƒtƒ@ƒCƒ‹**:
+### Task 3.1: TcpServerAdapter (Runspaceç‰ˆ) å®Ÿè£… ?
+- **æ‹…å½“**: Agent
+- **äºˆå®šå·¥æ•°**: 1.5æ™‚é–“
+- **çŠ¶æ…‹**: æœªç€æ‰‹
+- **ãƒ•ã‚¡ã‚¤ãƒ«**: `Core/Infrastructure/Adapters/TcpServerAdapter.ps1` (å¤§å¹…å¤‰æ›´)
+- **å†…å®¹**:
+  - [ ] TcpClientAdapterã¨åŒæ§˜ã®Runspaceå®Ÿè£…
+  - [ ] ãƒªã‚¹ãƒŠãƒ¼èµ·å‹•å‡¦ç†
+  - [ ] ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆæŽ¥ç¶šå¾…æ©Ÿãƒ«ãƒ¼ãƒ—
+  - [ ] ã‚·ãƒ³ã‚°ãƒ«æŽ¥ç¶šãƒ¢ãƒ¼ãƒ‰ã®ç¶­æŒ
+  - [ ] ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚­ãƒ¥ãƒ¼çµ±åˆ
+- **ä¾å­˜é–¢ä¿‚**: Task 2.4
+- **æ¤œè¨¼æ–¹æ³•**: TCP ServeræŽ¥ç¶šã§ã®é€å—ä¿¡ãƒ†ã‚¹ãƒˆ
+
+### Task 3.2: UdpAdapter (Runspaceç‰ˆ) å®Ÿè£… ?
+- **æ‹…å½“**: Agent
+- **äºˆå®šå·¥æ•°**: 1æ™‚é–“
+- **çŠ¶æ…‹**: æœªç€æ‰‹
+- **ãƒ•ã‚¡ã‚¤ãƒ«**: `Core/Infrastructure/Adapters/UdpAdapter.ps1` (å¤§å¹…å¤‰æ›´)
+- **å†…å®¹**:
+  - [ ] Runspaceå®Ÿè£…
+  - [ ] UDPé€å—ä¿¡å‡¦ç†
+  - [ ] ãƒ–ãƒ­ãƒ¼ãƒ‰ã‚­ãƒ£ã‚¹ãƒˆå¯¾å¿œ
+  - [ ] ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚­ãƒ¥ãƒ¼çµ±åˆ
+- **ä¾å­˜é–¢ä¿‚**: Task 3.1
+- **æ¤œè¨¼æ–¹æ³•**: UDPé€å—ä¿¡ãƒ†ã‚¹ãƒˆ
+
+### Task 3.3: å…¨Adapterçµ±åˆãƒ†ã‚¹ãƒˆ ?
+- **æ‹…å½“**: Agent
+- **äºˆå®šå·¥æ•°**: 30åˆ†
+- **çŠ¶æ…‹**: æœªç€æ‰‹
+- **ãƒ†ã‚¹ãƒˆã‚±ãƒ¼ã‚¹**:
+  - [ ] TCP Clientå‹•ä½œç¢ºèª
+  - [ ] TCP Serverå‹•ä½œç¢ºèª
+  - [ ] UDPå‹•ä½œç¢ºèª
+  - [ ] è¤‡æ•°ç¨®é¡žã®Adapterã®åŒæ™‚å‹•ä½œ
+- **æ¤œè¨¼æ–¹æ³•**: Exampleã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã§ã®å®Ÿæ©Ÿãƒ†ã‚¹ãƒˆ
+
+---
+
+## Phase 4: ã‚¯ãƒªãƒ¼ãƒ³ã‚¢ãƒƒãƒ—ãƒ»æœ€é©åŒ– (1-2æ™‚é–“)
+
+### Task 4.1: å¤ã„ã‚¹ãƒ¬ãƒƒãƒ‰ã‚³ãƒ¼ãƒ‰ã®å‰Šé™¤ ?
+- **æ‹…å½“**: Agent
+- **äºˆå®šå·¥æ•°**: 30åˆ†
+- **çŠ¶æ…‹**: æœªç€æ‰‹
+- **å¯¾è±¡ãƒ•ã‚¡ã‚¤ãƒ«**:
   - `ConnectionManager.ps1`
   - `ConnectionModels.ps1`
-- **“à—e**:
-  - [ ] `System.Threading.Thread` ŠÖ˜AƒR[ƒh‚Ìíœ
-  - [ ] `State.WorkerThread` ‚Ìíœi•s—v‚Èê‡j
-  - [ ] `CancellationTokenSource` ‚ÌŽg‚¢•ûŒ©’¼‚µ
-  - [ ] •s—v‚ÈƒƒbƒN‹@\‚Ìíœ
-- **ˆË‘¶ŠÖŒW**: Task 3.3
-- **ŒŸØ•û–@**: GrepŒŸõ‚ÅŽc‘¶ƒR[ƒhŠm”F
+- **å†…å®¹**:
+  - [ ] `System.Threading.Thread` é–¢é€£ã‚³ãƒ¼ãƒ‰ã®å‰Šé™¤
+  - [ ] `State.WorkerThread` ã®å‰Šé™¤ï¼ˆä¸è¦ãªå ´åˆï¼‰
+  - [ ] `CancellationTokenSource` ã®ä½¿ã„æ–¹è¦‹ç›´ã—
+  - [ ] ä¸è¦ãªãƒ­ãƒƒã‚¯æ©Ÿæ§‹ã®å‰Šé™¤
+- **ä¾å­˜é–¢ä¿‚**: Task 3.3
+- **æ¤œè¨¼æ–¹æ³•**: Grepæ¤œç´¢ã§æ®‹å­˜ã‚³ãƒ¼ãƒ‰ç¢ºèª
 
-### Task 4.2: ƒƒOƒƒbƒZ[ƒW‚Ì“ˆê ?
-- **’S“–**: Agent
-- **—\’èH”**: 30•ª
-- **ó‘Ô**: –¢’…Žè
-- **“à—e**:
-  - [ ] Runspace“à‚ÌƒƒO‚ðƒƒbƒZ[ƒWŒo—R‚É•ÏX
-  - [ ] Adapter“à‚ÌƒƒOƒŒƒxƒ‹Šm”F
-  - [ ] ƒƒOƒRƒ“ƒeƒLƒXƒgî•ñ‚Ì“ˆê
-- **ˆË‘¶ŠÖŒW**: Task 4.1
-- **ŒŸØ•û–@**: ƒƒOƒtƒ@ƒCƒ‹Šm”F
+### Task 4.2: ãƒ­ã‚°ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã®çµ±ä¸€ ?
+- **æ‹…å½“**: Agent
+- **äºˆå®šå·¥æ•°**: 30åˆ†
+- **çŠ¶æ…‹**: æœªç€æ‰‹
+- **å†…å®¹**:
+  - [ ] Runspaceå†…ã®ãƒ­ã‚°ã‚’ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸çµŒç”±ã«å¤‰æ›´
+  - [ ] Adapterå†…ã®ãƒ­ã‚°ãƒ¬ãƒ™ãƒ«ç¢ºèª
+  - [ ] ãƒ­ã‚°ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆæƒ…å ±ã®çµ±ä¸€
+- **ä¾å­˜é–¢ä¿‚**: Task 4.1
+- **æ¤œè¨¼æ–¹æ³•**: ãƒ­ã‚°ãƒ•ã‚¡ã‚¤ãƒ«ç¢ºèª
 
-### Task 4.3: ƒpƒtƒH[ƒ}ƒ“ƒXƒeƒXƒg ?
-- **’S“–**: Agent
-- **—\’èH”**: 30•ª
-- **ó‘Ô**: –¢’…Žè
-- **ƒeƒXƒgƒP[ƒX**:
-  - [ ] ’·ŽžŠÔ‰Ò“­ƒeƒXƒgi1ŽžŠÔj
-  - [ ] ‚•p“xÚ‘±EØ’fƒeƒXƒgi100‰ñj
-  - [ ] ‘å—Êƒf[ƒ^‘—ŽóMƒeƒXƒgi10MB+j
-  - [ ] CPU/ƒƒ‚ƒŠŽg—p—¦‚ÌŠÄŽ‹
-- **ŒŸØ•û–@**: Task Manager‚Å‚ÌƒŠƒ\[ƒXŠÄŽ‹
-- **¬Œ÷Šî€**: ƒNƒ‰ƒbƒVƒ…‚È‚µAƒƒ‚ƒŠƒŠ[ƒN‚È‚µ
-
----
-
-## Phase 5: ƒhƒLƒ…ƒƒ“ƒgEƒŠƒŠ[ƒX (1ŽžŠÔ)
-
-### Task 5.1: ÝŒv‘‚ÌXV ?
-- **’S“–**: Agent
-- **—\’èH”**: 20•ª
-- **ó‘Ô**: –¢’…Žè
-- **ƒtƒ@ƒCƒ‹**: `RUNSPACE_MIGRATION_DESIGN.md`
-- **“à—e**:
-  - [ ] ŽÀ‘•Žž‚Ì•ÏX“_‚Ì”½‰f
-  - [ ] ÅI“I‚ÈƒR[ƒh—á‚Ì’Ç‰Á
-  - [ ] ƒgƒ‰ƒuƒ‹ƒVƒ…[ƒeƒBƒ“ƒOî•ñ‚Ì’Ç‰Á
-- **ˆË‘¶ŠÖŒW**: Task 4.3
-- **ŒŸØ•û–@**: ƒŒƒrƒ…[
-
-### Task 5.2: READMEXV ?
-- **’S“–**: Agent
-- **—\’èH”**: 20•ª
-- **ó‘Ô**: –¢’…Žè
-- **ƒtƒ@ƒCƒ‹**: `README.md`
-- **“à—e**:
-  - [ ] ƒA[ƒLƒeƒNƒ`ƒƒƒZƒNƒVƒ‡ƒ“‚ÌXV
-  - [ ] “®ìŠÂ‹«‚ÌŠm”F
-  - [ ] ƒgƒ‰ƒuƒ‹ƒVƒ…[ƒeƒBƒ“ƒO‚Ì’Ç‰Á
-- **ˆË‘¶ŠÖŒW**: Task 5.1
-- **ŒŸØ•û–@**: ƒŒƒrƒ…[
-
-### Task 5.3: ÅI“®ìŠm”F ?
-- **’S“–**: Agent + User
-- **—\’èH”**: 20•ª
-- **ó‘Ô**: –¢’…Žè
-- **“à—e**:
-  - [ ] ‘SƒVƒiƒŠƒI‚Ì“®ìŠm”F
-  - [ ] Šù’m‚Ì–â‘è‚Ì•¶‘‰»
-  - [ ] ƒŠƒŠ[ƒXƒm[ƒg‚Ìì¬
-- **ˆË‘¶ŠÖŒW**: Task 5.2
-- **ŒŸØ•û–@**: ƒ†[ƒU[³”F
+### Task 4.3: ãƒ‘ãƒ•ã‚©ãƒ¼ãƒžãƒ³ã‚¹ãƒ†ã‚¹ãƒˆ ?
+- **æ‹…å½“**: Agent
+- **äºˆå®šå·¥æ•°**: 30åˆ†
+- **çŠ¶æ…‹**: æœªç€æ‰‹
+- **ãƒ†ã‚¹ãƒˆã‚±ãƒ¼ã‚¹**:
+  - [ ] é•·æ™‚é–“ç¨¼åƒãƒ†ã‚¹ãƒˆï¼ˆ1æ™‚é–“ï¼‰
+  - [ ] é«˜é »åº¦æŽ¥ç¶šãƒ»åˆ‡æ–­ãƒ†ã‚¹ãƒˆï¼ˆ100å›žï¼‰
+  - [ ] å¤§é‡ãƒ‡ãƒ¼ã‚¿é€å—ä¿¡ãƒ†ã‚¹ãƒˆï¼ˆ10MB+ï¼‰
+  - [ ] CPU/ãƒ¡ãƒ¢ãƒªä½¿ç”¨çŽ‡ã®ç›£è¦–
+- **æ¤œè¨¼æ–¹æ³•**: Task Managerã§ã®ãƒªã‚½ãƒ¼ã‚¹ç›£è¦–
+- **æˆåŠŸåŸºæº–**: ã‚¯ãƒ©ãƒƒã‚·ãƒ¥ãªã—ã€ãƒ¡ãƒ¢ãƒªãƒªãƒ¼ã‚¯ãªã—
 
 ---
 
-## i’»ŠÇ—
+## Phase 5: ãƒ‰ã‚­ãƒ¥ãƒ¡ãƒ³ãƒˆãƒ»ãƒªãƒªãƒ¼ã‚¹ (1æ™‚é–“)
 
-### ƒXƒe[ƒ^ƒX–}—á
-- ? **Š®—¹**: ƒ^ƒXƒNI—¹AŒŸØÏ‚Ý
-- ? **is’†**: Œ»ÝŽÀ‘•EƒeƒXƒg’†
-- ? **–¢’…Žè**: ‚Ü‚¾ŠJŽn‚µ‚Ä‚¢‚È‚¢
-- ?? **ƒuƒƒbƒN**: ˆË‘¶ŠÖŒW‚É‚æ‚è’âŽ~’†
-- ? **Ž¸”s**: ŽÀ‘•Ž¸”sAÄŒŸ“¢•K—v
+### Task 5.1: è¨­è¨ˆæ›¸ã®æ›´æ–° ?
+- **æ‹…å½“**: Agent
+- **äºˆå®šå·¥æ•°**: 20åˆ†
+- **çŠ¶æ…‹**: æœªç€æ‰‹
+- **ãƒ•ã‚¡ã‚¤ãƒ«**: `RUNSPACE_MIGRATION_DESIGN.md`
+- **å†…å®¹**:
+  - [ ] å®Ÿè£…æ™‚ã®å¤‰æ›´ç‚¹ã®åæ˜ 
+  - [ ] æœ€çµ‚çš„ãªã‚³ãƒ¼ãƒ‰ä¾‹ã®è¿½åŠ 
+  - [ ] ãƒˆãƒ©ãƒ–ãƒ«ã‚·ãƒ¥ãƒ¼ãƒ†ã‚£ãƒ³ã‚°æƒ…å ±ã®è¿½åŠ 
+- **ä¾å­˜é–¢ä¿‚**: Task 4.3
+- **æ¤œè¨¼æ–¹æ³•**: ãƒ¬ãƒ“ãƒ¥ãƒ¼
 
-### ‘S‘Ìi’»
+### Task 5.2: READMEæ›´æ–° ?
+- **æ‹…å½“**: Agent
+- **äºˆå®šå·¥æ•°**: 20åˆ†
+- **çŠ¶æ…‹**: æœªç€æ‰‹
+- **ãƒ•ã‚¡ã‚¤ãƒ«**: `README.md`
+- **å†…å®¹**:
+  - [ ] ã‚¢ãƒ¼ã‚­ãƒ†ã‚¯ãƒãƒ£ã‚»ã‚¯ã‚·ãƒ§ãƒ³ã®æ›´æ–°
+  - [ ] å‹•ä½œç’°å¢ƒã®ç¢ºèª
+  - [ ] ãƒˆãƒ©ãƒ–ãƒ«ã‚·ãƒ¥ãƒ¼ãƒ†ã‚£ãƒ³ã‚°ã®è¿½åŠ 
+- **ä¾å­˜é–¢ä¿‚**: Task 5.1
+- **æ¤œè¨¼æ–¹æ³•**: ãƒ¬ãƒ“ãƒ¥ãƒ¼
 
-| Phase | ƒ^ƒXƒN” | Š®—¹ | is’† | –¢’…Žè | i’»—¦ |
+### Task 5.3: æœ€çµ‚å‹•ä½œç¢ºèª ?
+- **æ‹…å½“**: Agent + User
+- **äºˆå®šå·¥æ•°**: 20åˆ†
+- **çŠ¶æ…‹**: æœªç€æ‰‹
+- **å†…å®¹**:
+  - [ ] å…¨ã‚·ãƒŠãƒªã‚ªã®å‹•ä½œç¢ºèª
+  - [ ] æ—¢çŸ¥ã®å•é¡Œã®æ–‡æ›¸åŒ–
+  - [ ] ãƒªãƒªãƒ¼ã‚¹ãƒŽãƒ¼ãƒˆã®ä½œæˆ
+- **ä¾å­˜é–¢ä¿‚**: Task 5.2
+- **æ¤œè¨¼æ–¹æ³•**: ãƒ¦ãƒ¼ã‚¶ãƒ¼æ‰¿èª
+
+---
+
+## é€²æ—ç®¡ç†
+
+### ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹å‡¡ä¾‹
+- ? **å®Œäº†**: ã‚¿ã‚¹ã‚¯çµ‚äº†ã€æ¤œè¨¼æ¸ˆã¿
+- ? **é€²è¡Œä¸­**: ç¾åœ¨å®Ÿè£…ãƒ»ãƒ†ã‚¹ãƒˆä¸­
+- ? **æœªç€æ‰‹**: ã¾ã é–‹å§‹ã—ã¦ã„ãªã„
+- ?? **ãƒ–ãƒ­ãƒƒã‚¯**: ä¾å­˜é–¢ä¿‚ã«ã‚ˆã‚Šåœæ­¢ä¸­
+- ? **å¤±æ•—**: å®Ÿè£…å¤±æ•—ã€å†æ¤œè¨Žå¿…è¦
+
+### å…¨ä½“é€²æ—
+
+| Phase | ã‚¿ã‚¹ã‚¯æ•° | å®Œäº† | é€²è¡Œä¸­ | æœªç€æ‰‹ | é€²æ—çŽ‡ |
 |-------|---------|------|--------|--------|--------|
 | Phase 0 | 2 | 2 | 0 | 0 | 100% |
 | Phase 1 | 4 | 0 | 0 | 4 | 0% |
@@ -307,65 +307,65 @@
 | Phase 3 | 3 | 0 | 0 | 3 | 0% |
 | Phase 4 | 3 | 0 | 0 | 3 | 0% |
 | Phase 5 | 3 | 0 | 0 | 3 | 0% |
-| **‡Œv** | **19** | **2** | **0** | **17** | **11%** |
+| **åˆè¨ˆ** | **19** | **2** | **0** | **17** | **11%** |
 
-### ƒ}ƒCƒ‹ƒXƒg[ƒ“
+### ãƒžã‚¤ãƒ«ã‚¹ãƒˆãƒ¼ãƒ³
 
-- **M1: Šî”ÕŠ®¬** (Phase 1I—¹) - –Ú•W: 2025-11-19 EOD
-- **M2: Å‰‚ÌAdapterˆÚs** (Phase 2I—¹) - –Ú•W: 2025-11-20 EOD
-- **M3: ‘SAdapterˆÚs** (Phase 3I—¹) - –Ú•W: 2025-11-21 EOD
-- **M4: ƒŠƒŠ[ƒX€”õŠ®—¹** (Phase 5I—¹) - –Ú•W: 2025-11-22 EOD
-
----
-
-## ƒŠƒXƒNŠÇ—
-
-### Ž¯•Ê‚³‚ê‚½ƒŠƒXƒN
-
-1. **Runspaceì¬‚ÌƒI[ƒo[ƒwƒbƒh** (’†)
-   - ‰e‹¿: ƒpƒtƒH[ƒ}ƒ“ƒX’á‰º
-   - ‘Îô: ‰ŠúƒeƒXƒg‚Å‹–—e”ÍˆÍ‚©Šm”FA•K—v‚È‚ç«—ˆ“I‚ÉRunspace Pool“±“ü
-   - Ó”CŽÒ: Agent
-   - ƒXƒe[ƒ^ƒX: ŠÄŽ‹’†
-
-2. **ƒƒbƒZ[ƒWˆ—‚Ì’x‰„** (’†)
-   - ‰e‹¿: UIXV‚Ì’x‚ê
-   - ‘Îô: ƒ^ƒCƒ}[ŠÔŠu‚ÆƒƒbƒZ[ƒWˆ—”‚Ì’²®
-   - Ó”CŽÒ: Agent
-   - ƒXƒe[ƒ^ƒX: ŠÄŽ‹’†
-
-3. **ƒfƒoƒbƒO‚Ì•¡ŽG‰»** (’á)
-   - ‰e‹¿: ƒgƒ‰ƒuƒ‹ƒVƒ…[ƒeƒBƒ“ƒO‚ª¢“ï
-   - ‘Îô: Ú×‚ÈƒƒOo—ÍAƒƒbƒZ[ƒWƒtƒ[}‚Ìì¬
-   - Ó”CŽÒ: Agent
-   - ƒXƒe[ƒ^ƒX: ‘ÎôÏ‚ÝiÝŒv‘‚É‹LÚj
-
-4. **Šù‘¶‹@”\‚Ì”j‰ó** (‚)
-   - ‰e‹¿: ReceivedEventPipelineARuleEngine“™‚ª“®ì‚µ‚È‚­‚È‚é
-   - ‘Îô: ’iŠK“IˆÚsAŠePhase‚Å‚Ì“®ìŠm”F
-   - Ó”CŽÒ: Agent + User
-   - ƒXƒe[ƒ^ƒX: ‘ÎôŒv‰æÏ‚Ý
+- **M1: åŸºç›¤å®Œæˆ** (Phase 1çµ‚äº†) - ç›®æ¨™: 2025-11-19 EOD
+- **M2: æœ€åˆã®Adapterç§»è¡Œ** (Phase 2çµ‚äº†) - ç›®æ¨™: 2025-11-20 EOD
+- **M3: å…¨Adapterç§»è¡Œ** (Phase 3çµ‚äº†) - ç›®æ¨™: 2025-11-21 EOD
+- **M4: ãƒªãƒªãƒ¼ã‚¹æº–å‚™å®Œäº†** (Phase 5çµ‚äº†) - ç›®æ¨™: 2025-11-22 EOD
 
 ---
 
-## •ÏX—š—ð
+## ãƒªã‚¹ã‚¯ç®¡ç†
 
-| “ú•t | ƒo[ƒWƒ‡ƒ“ | •ÏX“à—e | ’S“– |
+### è­˜åˆ¥ã•ã‚ŒãŸãƒªã‚¹ã‚¯
+
+1. **Runspaceä½œæˆã®ã‚ªãƒ¼ãƒãƒ¼ãƒ˜ãƒƒãƒ‰** (ä¸­)
+   - å½±éŸ¿: ãƒ‘ãƒ•ã‚©ãƒ¼ãƒžãƒ³ã‚¹ä½Žä¸‹
+   - å¯¾ç­–: åˆæœŸãƒ†ã‚¹ãƒˆã§è¨±å®¹ç¯„å›²ã‹ç¢ºèªã€å¿…è¦ãªã‚‰å°†æ¥çš„ã«Runspace Poolå°Žå…¥
+   - è²¬ä»»è€…: Agent
+   - ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹: ç›£è¦–ä¸­
+
+2. **ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å‡¦ç†ã®é…å»¶** (ä¸­)
+   - å½±éŸ¿: UIæ›´æ–°ã®é…ã‚Œ
+   - å¯¾ç­–: ã‚¿ã‚¤ãƒžãƒ¼é–“éš”ã¨ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å‡¦ç†æ•°ã®èª¿æ•´
+   - è²¬ä»»è€…: Agent
+   - ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹: ç›£è¦–ä¸­
+
+3. **ãƒ‡ãƒãƒƒã‚°ã®è¤‡é›‘åŒ–** (ä½Ž)
+   - å½±éŸ¿: ãƒˆãƒ©ãƒ–ãƒ«ã‚·ãƒ¥ãƒ¼ãƒ†ã‚£ãƒ³ã‚°ãŒå›°é›£
+   - å¯¾ç­–: è©³ç´°ãªãƒ­ã‚°å‡ºåŠ›ã€ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãƒ•ãƒ­ãƒ¼å›³ã®ä½œæˆ
+   - è²¬ä»»è€…: Agent
+   - ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹: å¯¾ç­–æ¸ˆã¿ï¼ˆè¨­è¨ˆæ›¸ã«è¨˜è¼‰ï¼‰
+
+4. **æ—¢å­˜æ©Ÿèƒ½ã®ç ´å£Š** (é«˜)
+   - å½±éŸ¿: ReceivedEventPipelineã€RuleEngineç­‰ãŒå‹•ä½œã—ãªããªã‚‹
+   - å¯¾ç­–: æ®µéšŽçš„ç§»è¡Œã€å„Phaseã§ã®å‹•ä½œç¢ºèª
+   - è²¬ä»»è€…: Agent + User
+   - ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹: å¯¾ç­–è¨ˆç”»æ¸ˆã¿
+
+---
+
+## å¤‰æ›´å±¥æ­´
+
+| æ—¥ä»˜ | ãƒãƒ¼ã‚¸ãƒ§ãƒ³ | å¤‰æ›´å†…å®¹ | æ‹…å½“ |
 |------|-----------|---------|------|
-| 2025-11-19 | 1.0 | ‰”Åì¬ | Agent |
+| 2025-11-19 | 1.0 | åˆç‰ˆä½œæˆ | Agent |
 
 ---
 
-## ŽŸ‚ÌƒAƒNƒVƒ‡ƒ“
+## æ¬¡ã®ã‚¢ã‚¯ã‚·ãƒ§ãƒ³
 
-**ŽŸ‚É‚â‚é‚±‚Æ**: Task 1.1 - ƒƒbƒZ[ƒWŒ^’è‹`‚ÌŽÀ‘•
+**æ¬¡ã«ã‚„ã‚‹ã“ã¨**: Task 1.1 - ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸åž‹å®šç¾©ã®å®Ÿè£…
 
-**ƒ†[ƒU[‚Ö‚ÌŠm”FŽ–€**:
-1. ‚±‚ÌÝŒv‚Æƒ^ƒXƒN•ªŠ„‚Å–â‘è‚È‚¢‚©H
-2. ŽÀ‘•‚ðŠJŽn‚µ‚Ä‚æ‚¢‚©H
-3. Phase 1‚©‚ç‡”Ô‚Éi‚ß‚Ä‚¢‚­•ûj‚Å‚æ‚¢‚©H
+**ãƒ¦ãƒ¼ã‚¶ãƒ¼ã¸ã®ç¢ºèªäº‹é …**:
+1. ã“ã®è¨­è¨ˆã¨ã‚¿ã‚¹ã‚¯åˆ†å‰²ã§å•é¡Œãªã„ã‹ï¼Ÿ
+2. å®Ÿè£…ã‚’é–‹å§‹ã—ã¦ã‚ˆã„ã‹ï¼Ÿ
+3. Phase 1ã‹ã‚‰é †ç•ªã«é€²ã‚ã¦ã„ãæ–¹é‡ã§ã‚ˆã„ã‹ï¼Ÿ
 
-**€”õŠ®—¹**:
-- ? ÝŒv‘ì¬Š®—¹
-- ? ƒ^ƒXƒNƒŠƒXƒgì¬Š®—¹
-- ? ƒ†[ƒU[³”F‘Ò‚¿
+**æº–å‚™å®Œäº†**:
+- ? è¨­è¨ˆæ›¸ä½œæˆå®Œäº†
+- ? ã‚¿ã‚¹ã‚¯ãƒªã‚¹ãƒˆä½œæˆå®Œäº†
+- ? ãƒ¦ãƒ¼ã‚¶ãƒ¼æ‰¿èªå¾…ã¡

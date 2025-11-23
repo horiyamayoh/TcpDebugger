@@ -1,5 +1,5 @@
-# Core/Infrastructure/Adapters/UdpAdapter.ps1
-# UDP ’ÊMƒAƒ_ƒvƒ^[iVƒA[ƒLƒeƒNƒ`ƒƒ€‹’j
+ï»¿# Core/Infrastructure/Adapters/UdpAdapter.ps1
+# UDP é€šä¿¡ã‚¢ãƒ€ãƒ—ã‚¿ãƒ¼ï¼ˆæ–°ã‚¢ãƒ¼ã‚­ãƒ†ã‚¯ãƒãƒ£æº–æ‹ ï¼‰
 
 class UdpAdapter {
     hidden [ConnectionService]$_connectionService
@@ -34,10 +34,10 @@ class UdpAdapter {
 
     <#
     .SYNOPSIS
-    UDP ’ÊM‚ğŠJn‚·‚é
+    UDP é€šä¿¡ã‚’é–‹å§‹ã™ã‚‹
     
     .PARAMETER connectionId
-    Ú‘±IDiManagedConnection.Idj
+    æ¥ç¶šIDï¼ˆManagedConnection.Idï¼‰
     #>
     [void] Start([string]$connectionId) {
         if ([string]::IsNullOrWhiteSpace($connectionId)) {
@@ -53,12 +53,12 @@ class UdpAdapter {
             throw "UdpAdapter can only handle UDP connections."
         }
 
-        # ƒ[ƒJƒ‹ƒ|[ƒg‚ÌŒŸØ
+        # ãƒ­ãƒ¼ã‚«ãƒ«ãƒãƒ¼ãƒˆã®æ¤œè¨¼
         if ($connection.LocalPort -le 0) {
             throw "Invalid LocalPort for UDP."
         }
 
-        # Šù‘¶Runspace‚ª“®ì’†‚Ìê‡‚ÍƒLƒƒƒ“ƒZƒ‹
+        # æ—¢å­˜RunspaceãŒå‹•ä½œä¸­ã®å ´åˆã¯ã‚­ãƒ£ãƒ³ã‚»ãƒ«
         $existingPs = $connection.Variables['_PowerShell']
         if ($existingPs) {
             $this._logger.LogWarning("Runspace already running. Stopping existing Runspace.", @{
@@ -68,15 +68,15 @@ class UdpAdapter {
             Start-Sleep -Milliseconds 100
         }
 
-        # V‚µ‚¢ƒLƒƒƒ“ƒZƒ‹ƒg[ƒNƒ“ƒ\[ƒX‚ğì¬
+        # æ–°ã—ã„ã‚­ãƒ£ãƒ³ã‚»ãƒ«ãƒˆãƒ¼ã‚¯ãƒ³ã‚½ãƒ¼ã‚¹ã‚’ä½œæˆ
         $connection.CancellationSource = [System.Threading.CancellationTokenSource]::new()
         $connection.State.CancellationSource = $connection.CancellationSource
 
-        # Runspace‚Å”ñ“¯ŠúÀs
+        # Runspaceã§éåŒæœŸå®Ÿè¡Œ
         $scriptBlock = {
             param($connId, $localIP, $localPort, $remoteIP, $remotePort, $cancellationToken, $messageQueue)
 
-            # RunspaceMessages.ps1‚ğƒ[ƒh
+            # RunspaceMessages.ps1ã‚’ãƒ­ãƒ¼ãƒ‰
             $messagesPath = Join-Path $PSScriptRoot "..\..\Domain\RunspaceMessages.ps1"
             $loadScript = ". '$messagesPath'"
             Invoke-Expression $loadScript
@@ -84,17 +84,17 @@ class UdpAdapter {
             $udpClient = $null
             
             try {
-                # ‰ŠúƒXƒe[ƒ^ƒX’Ê’m
+                # åˆæœŸã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹é€šçŸ¥
                 $messageQueue.Enqueue((New-StatusUpdateMessage -ConnectionId $connId -Status "CONNECTING"))
                 $messageQueue.Enqueue((New-LogMessage -ConnectionId $connId -Level "INFO" -Message "Starting UDP communication" -Context @{
                     LocalEndpoint = "${localIP}:${localPort}"
                     RemoteEndpoint = if ($remoteIP -and $remotePort -gt 0) { "${remoteIP}:${remotePort}" } else { "Not specified" }
                 }))
 
-                # UDP ƒNƒ‰ƒCƒAƒ“ƒgì¬
+                # UDP ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆä½œæˆ
                 $udpClient = New-Object System.Net.Sockets.UdpClient($localPort)
 
-                # ƒŠƒ‚[ƒgƒGƒ“ƒhƒ|ƒCƒ“ƒgİ’èi‘—M—pj
+                # ãƒªãƒ¢ãƒ¼ãƒˆã‚¨ãƒ³ãƒ‰ãƒã‚¤ãƒ³ãƒˆè¨­å®šï¼ˆé€ä¿¡ç”¨ï¼‰
                 $remoteEndPoint = $null
                 if (-not [string]::IsNullOrWhiteSpace($remoteIP) -and $remotePort -gt 0) {
                     $remoteEndPoint = New-Object System.Net.IPEndPoint(
@@ -103,7 +103,7 @@ class UdpAdapter {
                     )
                 }
 
-                # ƒXƒe[ƒ^ƒXXV
+                # ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹æ›´æ–°
                 $messageQueue.Enqueue((New-StatusUpdateMessage -ConnectionId $connId -Status "CONNECTED"))
                 $messageQueue.Enqueue((New-SocketUpdateMessage -ConnectionId $connId -Socket $udpClient))
                 $messageQueue.Enqueue((New-ActivityMarkerMessage -ConnectionId $connId))
@@ -112,26 +112,26 @@ class UdpAdapter {
                     LocalEndpoint = "${localIP}:${localPort}"
                 }))
 
-                # óM—pƒGƒ“ƒhƒ|ƒCƒ“ƒgi”CˆÓ‚ÌƒAƒhƒŒƒX‚©‚çóMj
+                # å—ä¿¡ç”¨ã‚¨ãƒ³ãƒ‰ãƒã‚¤ãƒ³ãƒˆï¼ˆä»»æ„ã®ã‚¢ãƒ‰ãƒ¬ã‚¹ã‹ã‚‰å—ä¿¡ï¼‰
                 $anyEndPoint = New-Object System.Net.IPEndPoint([System.Net.IPAddress]::Any, 0)
                 $lastRemoteEndPoint = $null
 
-                # ‘—óMƒ‹[ƒv
+                # é€å—ä¿¡ãƒ«ãƒ¼ãƒ—
                 while (-not $cancellationToken.IsCancellationRequested) {
                     try {
-                        # ‘—Mˆ— - SendRequestƒƒbƒZ[ƒW‚ğƒLƒ…[‚©‚çæ“¾
-                        # i’: UDP‚Å‚ÍSendQueue‚©‚ç’¼Úæ“¾‚Å‚«‚È‚¢‚½‚ßA•Ê‚Ìd‘g‚İ‚ª•K—vj
-                        # b’è“I‚É]—ˆ‚ÌSendQueue•û®‚ğˆÛi—v‰ü‘Pj
+                        # é€ä¿¡å‡¦ç† - SendRequestãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’ã‚­ãƒ¥ãƒ¼ã‹ã‚‰å–å¾—
+                        # ï¼ˆæ³¨: UDPã§ã¯SendQueueã‹ã‚‰ç›´æ¥å–å¾—ã§ããªã„ãŸã‚ã€åˆ¥ã®ä»•çµ„ã¿ãŒå¿…è¦ï¼‰
+                        # æš«å®šçš„ã«å¾“æ¥ã®SendQueueæ–¹å¼ã‚’ç¶­æŒï¼ˆè¦æ”¹å–„ï¼‰
 
-                        # óMˆ—i”ñƒuƒƒbƒLƒ“ƒOj
+                        # å—ä¿¡å‡¦ç†ï¼ˆéãƒ–ãƒ­ãƒƒã‚­ãƒ³ã‚°ï¼‰
                         if ($udpClient.Available -gt 0) {
                             $receivedData = $udpClient.Receive([ref]$anyEndPoint)
 
                             if ($receivedData.Length -gt 0) {
-                                # ÅŒã‚ÌóMŒ³‚ğ‹L˜^
+                                # æœ€å¾Œã®å—ä¿¡å…ƒã‚’è¨˜éŒ²
                                 $lastRemoteEndPoint = $anyEndPoint
 
-                                # ƒfƒoƒbƒOƒƒOFóMƒf[ƒ^Šm”F
+                                # ãƒ‡ãƒãƒƒã‚°ãƒ­ã‚°ï¼šå—ä¿¡ãƒ‡ãƒ¼ã‚¿ç¢ºèª
                                 $messageQueue.Enqueue((New-LogMessage -ConnectionId $connId -Level 'Info' -Message "DATA RECEIVED IN RUNSPACE" -Context @{
                                     BytesRead = $receivedData.Length
                                     DataHex = ($receivedData | ForEach-Object { $_.ToString("X2") }) -join ' '
@@ -141,17 +141,17 @@ class UdpAdapter {
                                     RemoteEndPoint = $anyEndPoint.ToString()
                                 }
 
-                                # óMƒf[ƒ^‚ğƒƒbƒZ[ƒWƒLƒ…[‚É‘—M
+                                # å—ä¿¡ãƒ‡ãƒ¼ã‚¿ã‚’ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚­ãƒ¥ãƒ¼ã«é€ä¿¡
                                 $messageQueue.Enqueue((New-DataReceivedMessage -ConnectionId $connId -Data $receivedData -Metadata $metadata))
                                 
-                                # ƒfƒoƒbƒOƒƒOFDataReceivedƒƒbƒZ[ƒW‘—MŠm”F
+                                # ãƒ‡ãƒãƒƒã‚°ãƒ­ã‚°ï¼šDataReceivedãƒ¡ãƒƒã‚»ãƒ¼ã‚¸é€ä¿¡ç¢ºèª
                                 $messageQueue.Enqueue((New-LogMessage -ConnectionId $connId -Level 'Info' -Message "DataReceivedMessage ENQUEUED" -Context @{}))
                                 
                                 $messageQueue.Enqueue((New-ActivityMarkerMessage -ConnectionId $connId))
                             }
                         }
 
-                        # CPU•‰‰×ŒyŒ¸
+                        # CPUè² è·è»½æ¸›
                         Start-Sleep -Milliseconds 10
 
                     }
@@ -175,7 +175,7 @@ class UdpAdapter {
                 }))
             }
             finally {
-                # ƒNƒŠ[ƒ“ƒAƒbƒv
+                # ã‚¯ãƒªãƒ¼ãƒ³ã‚¢ãƒƒãƒ—
                 if ($udpClient) {
                     try { 
                         $udpClient.Close()
@@ -189,14 +189,14 @@ class UdpAdapter {
             }
         }
 
-        # Runspaceì¬
+        # Runspaceä½œæˆ
         $runspace = [RunspaceFactory]::CreateRunspace()
         $runspace.Open()
 
         $ps = [PowerShell]::Create()
         $ps.Runspace = $runspace
 
-        # ƒpƒ‰ƒ[ƒ^İ’è
+        # ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿è¨­å®š
         $localIPArg = if ($connection.LocalIP) { $connection.LocalIP } else { "0.0.0.0" }
         
         [void]$ps.AddScript($scriptBlock)
@@ -208,10 +208,10 @@ class UdpAdapter {
         [void]$ps.AddArgument($connection.CancellationSource.Token)
         [void]$ps.AddArgument($this._messageQueue)
 
-        # ”ñ“¯ŠúÀsŠJn
+        # éåŒæœŸå®Ÿè¡Œé–‹å§‹
         $asyncHandle = $ps.BeginInvoke()
 
-        # Runspaceî•ñ‚ğ•Û‘¶
+        # Runspaceæƒ…å ±ã‚’ä¿å­˜
         $connection.Variables['_PowerShell'] = $ps
         $connection.Variables['_AsyncHandle'] = $asyncHandle
         $connection.Variables['_Runspace'] = $runspace
@@ -224,10 +224,10 @@ class UdpAdapter {
 
     <#
     .SYNOPSIS
-    UDP ’ÊM‚ğ’â~‚·‚é
+    UDP é€šä¿¡ã‚’åœæ­¢ã™ã‚‹
     
     .PARAMETER connectionId
-    Ú‘±ID
+    æ¥ç¶šID
     #>
     [void] Stop([string]$connectionId) {
         if ([string]::IsNullOrWhiteSpace($connectionId)) {
@@ -243,7 +243,7 @@ class UdpAdapter {
             ConnectionId = $connectionId
         })
 
-        # ƒLƒƒƒ“ƒZƒ‹ƒg[ƒNƒ“‚ğ”­s
+        # ã‚­ãƒ£ãƒ³ã‚»ãƒ«ãƒˆãƒ¼ã‚¯ãƒ³ã‚’ç™ºè¡Œ
         if ($connection.CancellationSource) {
             try {
                 $connection.CancellationSource.Cancel()
@@ -256,14 +256,14 @@ class UdpAdapter {
             }
         }
 
-        # Runspace‚Ì’â~
+        # Runspaceã®åœæ­¢
         $ps = $connection.Variables['_PowerShell']
         $asyncHandle = $connection.Variables['_AsyncHandle']
         $runspace = $connection.Variables['_Runspace']
 
         if ($ps) {
             try {
-                # Às’†‚ÌRunspace‚ğ’â~
+                # å®Ÿè¡Œä¸­ã®Runspaceã‚’åœæ­¢
                 if ($ps.InvocationStateInfo.State -eq [System.Management.Automation.PSInvocationState]::Running) {
                     $this._logger.LogInfo("Stopping Runspace execution", @{
                         ConnectionId = $connectionId
@@ -271,13 +271,13 @@ class UdpAdapter {
                     $ps.Stop()
                 }
 
-                # ”ñ“¯ŠúÀs‚ÌŠ®—¹‚ğ‘Ò‹@iÅ‘å2•bj
+                # éåŒæœŸå®Ÿè¡Œã®å®Œäº†ã‚’å¾…æ©Ÿï¼ˆæœ€å¤§2ç§’ï¼‰
                 if ($asyncHandle) {
                     try {
                         $ps.EndInvoke($asyncHandle)
                     }
                     catch {
-                        # EndInvoke‚ÅƒGƒ‰[‚ª”­¶‚µ‚Ä‚àƒƒO‚¾‚¯‹L˜^
+                        # EndInvokeã§ã‚¨ãƒ©ãƒ¼ãŒç™ºç”Ÿã—ã¦ã‚‚ãƒ­ã‚°ã ã‘è¨˜éŒ²
                         $this._logger.LogWarning("Error during EndInvoke", @{
                             ConnectionId = $connectionId
                             Error = $_.Exception.Message
@@ -292,7 +292,7 @@ class UdpAdapter {
                 })
             }
             finally {
-                # PowerShellƒIƒuƒWƒFƒNƒg‚Ì”jŠü
+                # PowerShellã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ç ´æ£„
                 try {
                     $ps.Dispose()
                 }
@@ -305,7 +305,7 @@ class UdpAdapter {
             }
         }
 
-        # Runspace‚Ì”jŠü
+        # Runspaceã®ç ´æ£„
         if ($runspace) {
             try {
                 if ($runspace.RunspaceStateInfo.State -ne [System.Management.Automation.Runspaces.RunspaceState]::Closed) {
@@ -321,7 +321,7 @@ class UdpAdapter {
             }
         }
 
-        # •Ï”‚ÌƒNƒŠ[ƒ“ƒAƒbƒv
+        # å¤‰æ•°ã®ã‚¯ãƒªãƒ¼ãƒ³ã‚¢ãƒƒãƒ—
         $connection.Variables.Remove('_PowerShell')
         $connection.Variables.Remove('_AsyncHandle')
         $connection.Variables.Remove('_Runspace')

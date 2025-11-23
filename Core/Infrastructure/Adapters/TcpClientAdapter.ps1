@@ -1,5 +1,5 @@
-# Core/Infrastructure/Adapters/TcpClientAdapter.ps1
-# TCP ƒNƒ‰ƒCƒAƒ“ƒgÚ‘±ƒAƒ_ƒvƒ^[iRunspaceƒA[ƒLƒeƒNƒ`ƒƒj
+ï»¿# Core/Infrastructure/Adapters/TcpClientAdapter.ps1
+# TCP ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆæ¥ç¶šã‚¢ãƒ€ãƒ—ã‚¿ãƒ¼ï¼ˆRunspaceã‚¢ãƒ¼ã‚­ãƒ†ã‚¯ãƒãƒ£ï¼‰
 
 class TcpClientAdapter {
     hidden [ConnectionService]$_connectionService
@@ -34,10 +34,10 @@ class TcpClientAdapter {
 
     <#
     .SYNOPSIS
-    TCP ƒNƒ‰ƒCƒAƒ“ƒgÚ‘±‚ğŠJn‚·‚é
+    TCP ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆæ¥ç¶šã‚’é–‹å§‹ã™ã‚‹
     
     .PARAMETER connectionId
-    Ú‘±IDiManagedConnection.Idj
+    æ¥ç¶šIDï¼ˆManagedConnection.Idï¼‰
     #>
     [void] Start([string]$connectionId) {
         if ([string]::IsNullOrWhiteSpace($connectionId)) {
@@ -61,7 +61,7 @@ class TcpClientAdapter {
             throw "Invalid RemoteIP or RemotePort for TCP Client."
         }
 
-        # Šù‘¶Runspace‚ª“®ì’†‚Ìê‡‚Í’â~
+        # æ—¢å­˜RunspaceãŒå‹•ä½œä¸­ã®å ´åˆã¯åœæ­¢
         if ($connection.Variables.ContainsKey('_PowerShell')) {
             $this._logger.LogWarning("PowerShell Runspace already running. Stopping existing runspace.", @{
                 ConnectionId = $connectionId
@@ -70,24 +70,24 @@ class TcpClientAdapter {
             Start-Sleep -Milliseconds 100
         }
 
-        # V‚µ‚¢ƒLƒƒƒ“ƒZƒ‹ƒg[ƒNƒ“ƒ\[ƒX‚ğì¬
+        # æ–°ã—ã„ã‚­ãƒ£ãƒ³ã‚»ãƒ«ãƒˆãƒ¼ã‚¯ãƒ³ã‚½ãƒ¼ã‚¹ã‚’ä½œæˆ
         $connection.CancellationSource = [System.Threading.CancellationTokenSource]::new()
 
-        # Runspaceì¬
+        # Runspaceä½œæˆ
         $runspace = [RunspaceFactory]::CreateRunspace()
         $runspace.Open()
 
-        # PowerShellƒCƒ“ƒXƒ^ƒ“ƒXì¬
+        # PowerShellã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ä½œæˆ
         $ps = [PowerShell]::Create()
         $ps.Runspace = $runspace
 
-        # RunspaceMessages.ps1‚ÌƒpƒX‚ğæ“¾‚µ‚Äƒhƒbƒgƒ\[ƒX
+        # RunspaceMessages.ps1ã®ãƒ‘ã‚¹ã‚’å–å¾—ã—ã¦ãƒ‰ãƒƒãƒˆã‚½ãƒ¼ã‚¹
         $messagesPath = Join-Path $PSScriptRoot "..\..\Domain\RunspaceMessages.ps1"
         $loadScript = ". '$messagesPath'"
         $null = $ps.AddScript($loadScript).Invoke()
         $ps.Commands.Clear()
 
-        # ƒƒCƒ“ScriptBlock
+        # ãƒ¡ã‚¤ãƒ³ScriptBlock
         $scriptBlock = {
             param(
                 [string]$ConnectionId,
@@ -102,17 +102,17 @@ class TcpClientAdapter {
             $stream = $null
             
             try {
-                # ƒƒO: Ú‘±ŠJn
+                # ãƒ­ã‚°: æ¥ç¶šé–‹å§‹
                 $msg = New-LogMessage -ConnectionId $ConnectionId -Level 'Info' -Message 'Connecting to remote server' -Context @{
                     RemoteEndpoint = "${RemoteIP}:${RemotePort}"
                 }
                 $MessageQueue.Enqueue($msg)
                 
-                # ó‘ÔXV: CONNECTING
+                # çŠ¶æ…‹æ›´æ–°: CONNECTING
                 $msg = New-StatusUpdateMessage -ConnectionId $ConnectionId -Status 'CONNECTING'
                 $MessageQueue.Enqueue($msg)
                 
-                # TCPÚ‘±
+                # TCPæ¥ç¶š
                 $tcpClient = New-Object System.Net.Sockets.TcpClient
                 $tcpClient.Connect($RemoteIP, $RemotePort)
                 
@@ -120,15 +120,15 @@ class TcpClientAdapter {
                     throw "Failed to connect to ${RemoteIP}:${RemotePort}"
                 }
                 
-                # ó‘ÔXV: CONNECTED
+                # çŠ¶æ…‹æ›´æ–°: CONNECTED
                 $msg = New-StatusUpdateMessage -ConnectionId $ConnectionId -Status 'CONNECTED'
                 $MessageQueue.Enqueue($msg)
                 
-                # ƒAƒNƒeƒBƒrƒeƒBƒ}[ƒJ[
+                # ã‚¢ã‚¯ãƒ†ã‚£ãƒ“ãƒ†ã‚£ãƒãƒ¼ã‚«ãƒ¼
                 $msg = New-ActivityMessage -ConnectionId $ConnectionId
                 $MessageQueue.Enqueue($msg)
                 
-                # ƒƒO: Ú‘±¬Œ÷
+                # ãƒ­ã‚°: æ¥ç¶šæˆåŠŸ
                 $msg = New-LogMessage -ConnectionId $ConnectionId -Level 'Info' -Message 'Connected successfully' -Context @{
                     RemoteEndpoint = "${RemoteIP}:${RemotePort}"
                 }
@@ -137,9 +137,9 @@ class TcpClientAdapter {
                 $stream = $tcpClient.GetStream()
                 $buffer = New-Object byte[] 8192
                 
-                # ‘—óMƒ‹[ƒv
+                # é€å—ä¿¡ãƒ«ãƒ¼ãƒ—
                 while ($tcpClient.Connected -and -not $CancellationToken.IsCancellationRequested) {
-                    # ‘—Mˆ—
+                    # é€ä¿¡å‡¦ç†
                     if ($SendQueueSync -and $SendQueueSync.Count -gt 0) {
                         [System.Threading.Monitor]::Enter($SendQueueSync.SyncRoot)
                         try {
@@ -151,13 +151,13 @@ class TcpClientAdapter {
                                     $stream.Write($data, 0, $data.Length)
                                     $stream.Flush()
                                     
-                                    # ƒƒO: ‘—M
+                                    # ãƒ­ã‚°: é€ä¿¡
                                     $msg = New-LogMessage -ConnectionId $ConnectionId -Level 'Info' -Message 'Data sent' -Context @{
                                         Length = $data.Length
                                     }
                                     $MessageQueue.Enqueue($msg)
                                     
-                                    # ƒAƒNƒeƒBƒrƒeƒBƒ}[ƒJ[
+                                    # ã‚¢ã‚¯ãƒ†ã‚£ãƒ“ãƒ†ã‚£ãƒãƒ¼ã‚«ãƒ¼
                                     $msg = New-ActivityMessage -ConnectionId $ConnectionId
                                     $MessageQueue.Enqueue($msg)
                                 }
@@ -168,14 +168,14 @@ class TcpClientAdapter {
                         }
                     }
                     
-                    # óMˆ—i”ñƒuƒƒbƒLƒ“ƒOj
+                    # å—ä¿¡å‡¦ç†ï¼ˆéãƒ–ãƒ­ãƒƒã‚­ãƒ³ã‚°ï¼‰
                     if ($stream.DataAvailable) {
                         $bytesRead = $stream.Read($buffer, 0, $buffer.Length)
                         
                         if ($bytesRead -gt 0) {
                             $receivedData = $buffer[0..($bytesRead - 1)]
                             
-                            # ƒfƒoƒbƒOƒƒOFóMƒf[ƒ^Šm”F
+                            # ãƒ‡ãƒãƒƒã‚°ãƒ­ã‚°ï¼šå—ä¿¡ãƒ‡ãƒ¼ã‚¿ç¢ºèª
                             $msg = New-LogMessage -ConnectionId $ConnectionId -Level 'Info' -Message "DATA RECEIVED IN RUNSPACE" -Context @{
                                 BytesRead = $bytesRead
                                 DataHex = ($receivedData | ForEach-Object { $_.ToString("X2") }) -join ' '
@@ -186,38 +186,38 @@ class TcpClientAdapter {
                                 RemoteEndPoint = "${RemoteIP}:${RemotePort}"
                             }
                             
-                            # ƒf[ƒ^óMƒƒbƒZ[ƒW
+                            # ãƒ‡ãƒ¼ã‚¿å—ä¿¡ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
                             $msg = New-DataReceivedMessage -ConnectionId $ConnectionId -Data $receivedData -Metadata $metadata
                             $MessageQueue.Enqueue($msg)
                             
-                            # ƒfƒoƒbƒOƒƒOFDataReceivedƒƒbƒZ[ƒW‘—MŠm”F
+                            # ãƒ‡ãƒãƒƒã‚°ãƒ­ã‚°ï¼šDataReceivedãƒ¡ãƒƒã‚»ãƒ¼ã‚¸é€ä¿¡ç¢ºèª
                             $msg = New-LogMessage -ConnectionId $ConnectionId -Level 'Info' -Message "DataReceivedMessage ENQUEUED" -Context @{}
                             $MessageQueue.Enqueue($msg)
                             
-                            # ƒAƒNƒeƒBƒrƒeƒBƒ}[ƒJ[
+                            # ã‚¢ã‚¯ãƒ†ã‚£ãƒ“ãƒ†ã‚£ãƒãƒ¼ã‚«ãƒ¼
                             $msg = New-ActivityMessage -ConnectionId $ConnectionId
                             $MessageQueue.Enqueue($msg)
                         }
                     }
                     
-                    # CPU•‰‰×ŒyŒ¸
+                    # CPUè² è·è»½æ¸›
                     Start-Sleep -Milliseconds 10
                 }
                 
             }
             catch {
-                # ƒGƒ‰[ƒƒbƒZ[ƒW
+                # ã‚¨ãƒ©ãƒ¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
                 $msg = New-ErrorMessage -ConnectionId $ConnectionId -Message $_.Exception.Message -Exception $_.Exception
                 $MessageQueue.Enqueue($msg)
                 
-                # ƒƒO: ƒGƒ‰[
+                # ãƒ­ã‚°: ã‚¨ãƒ©ãƒ¼
                 $msg = New-LogMessage -ConnectionId $ConnectionId -Level 'Error' -Message 'TCP Client error' -Context @{
                     ErrorMessage = $_.Exception.Message
                 }
                 $MessageQueue.Enqueue($msg)
             }
             finally {
-                # ƒNƒŠ[ƒ“ƒAƒbƒv
+                # ã‚¯ãƒªãƒ¼ãƒ³ã‚¢ãƒƒãƒ—
                 if ($stream) {
                     try { $stream.Close(); $stream.Dispose() } catch { }
                 }
@@ -225,17 +225,17 @@ class TcpClientAdapter {
                     try { $tcpClient.Close(); $tcpClient.Dispose() } catch { }
                 }
                 
-                # ó‘ÔXV: DISCONNECTED
+                # çŠ¶æ…‹æ›´æ–°: DISCONNECTED
                 $msg = New-StatusUpdateMessage -ConnectionId $ConnectionId -Status 'DISCONNECTED'
                 $MessageQueue.Enqueue($msg)
                 
-                # ƒƒO: Ø’f
+                # ãƒ­ã‚°: åˆ‡æ–­
                 $msg = New-LogMessage -ConnectionId $ConnectionId -Level 'Info' -Message 'TCP Client disconnected' -Context @{}
                 $MessageQueue.Enqueue($msg)
             }
         }
 
-        # ScriptBlock‚ğ’Ç‰Á‚µ‚Äƒpƒ‰ƒ[ƒ^‚ğİ’è
+        # ScriptBlockã‚’è¿½åŠ ã—ã¦ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã‚’è¨­å®š
         $null = $ps.AddScript($scriptBlock)
         $null = $ps.AddParameter('ConnectionId', $connectionId)
         $null = $ps.AddParameter('RemoteIP', $connection.RemoteIP)
@@ -244,10 +244,10 @@ class TcpClientAdapter {
         $null = $ps.AddParameter('SendQueueSync', $connection.SendQueue)
         $null = $ps.AddParameter('CancellationToken', $connection.CancellationSource.Token)
 
-        # ”ñ“¯ŠúÀsŠJn
+        # éåŒæœŸå®Ÿè¡Œé–‹å§‹
         $asyncHandle = $ps.BeginInvoke()
 
-        # RunspaceŠÖ˜AƒIƒuƒWƒFƒNƒg‚ğ•Û‘¶
+        # Runspaceé–¢é€£ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ä¿å­˜
         $connection.Variables['_Runspace'] = $runspace
         $connection.Variables['_PowerShell'] = $ps
         $connection.Variables['_AsyncHandle'] = $asyncHandle
@@ -260,10 +260,10 @@ class TcpClientAdapter {
 
     <#
     .SYNOPSIS
-    TCP ƒNƒ‰ƒCƒAƒ“ƒgÚ‘±‚ğ’â~‚·‚é
+    TCP ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆæ¥ç¶šã‚’åœæ­¢ã™ã‚‹
     
     .PARAMETER connectionId
-    Ú‘±ID
+    æ¥ç¶šID
     #>
     [void] Stop([string]$connectionId) {
         if ([string]::IsNullOrWhiteSpace($connectionId)) {
@@ -279,7 +279,7 @@ class TcpClientAdapter {
             ConnectionId = $connectionId
         })
 
-        # ƒLƒƒƒ“ƒZƒ‹ƒg[ƒNƒ“‚ğ”­s
+        # ã‚­ãƒ£ãƒ³ã‚»ãƒ«ãƒˆãƒ¼ã‚¯ãƒ³ã‚’ç™ºè¡Œ
         if ($connection.CancellationSource) {
             try {
                 $connection.CancellationSource.Cancel()
@@ -292,30 +292,30 @@ class TcpClientAdapter {
             }
         }
 
-        # Runspace‚Ì’â~
+        # Runspaceã®åœæ­¢
         if ($connection.Variables.ContainsKey('_PowerShell')) {
             $ps = $connection.Variables['_PowerShell']
             $asyncHandle = $connection.Variables['_AsyncHandle']
             
             try {
-                # Stop‚ğŒÄ‚Ño‚µ‚Ä’†’f
+                # Stopã‚’å‘¼ã³å‡ºã—ã¦ä¸­æ–­
                 $ps.Stop()
                 
-                # I—¹‘Ò‹@iÅ‘å2•bj
+                # çµ‚äº†å¾…æ©Ÿï¼ˆæœ€å¤§2ç§’ï¼‰
                 if ($asyncHandle -and -not $asyncHandle.IsCompleted) {
                     $waitHandle = $asyncHandle.AsyncWaitHandle
                     $null = $waitHandle.WaitOne(2000)
                 }
                 
-                # EndInvokeŒÄ‚Ño‚µiƒGƒ‰[‚Í–³‹j
+                # EndInvokeå‘¼ã³å‡ºã—ï¼ˆã‚¨ãƒ©ãƒ¼ã¯ç„¡è¦–ï¼‰
                 try {
                     $null = $ps.EndInvoke($asyncHandle)
                 }
                 catch {
-                    # Stop‚µ‚½Œã‚ÌEndInvoke‚ÍƒGƒ‰[‚ªo‚é‚±‚Æ‚ª‚ ‚é‚ª–³‹
+                    # Stopã—ãŸå¾Œã®EndInvokeã¯ã‚¨ãƒ©ãƒ¼ãŒå‡ºã‚‹ã“ã¨ãŒã‚ã‚‹ãŒç„¡è¦–
                 }
                 
-                # PowerShell‚ÆRunspace‚ğ”jŠü
+                # PowerShellã¨Runspaceã‚’ç ´æ£„
                 $ps.Dispose()
                 
                 if ($connection.Variables.ContainsKey('_Runspace')) {
@@ -324,7 +324,7 @@ class TcpClientAdapter {
                     $runspace.Dispose()
                 }
                 
-                # •Ï”‚ğƒNƒŠƒA
+                # å¤‰æ•°ã‚’ã‚¯ãƒªã‚¢
                 $connection.Variables.Remove('_PowerShell')
                 $connection.Variables.Remove('_Runspace')
                 $connection.Variables.Remove('_AsyncHandle')

@@ -1,30 +1,30 @@
-# Core/Domain/RunspaceMessages.ps1
-# RunspaceŠÔ’ÊM—p‚ÌƒƒbƒZ[ƒWŒ^’è‹`
+ï»¿# Core/Domain/RunspaceMessages.ps1
+# Runspaceé–“é€šä¿¡ç”¨ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å‹å®šç¾©
 
 <#
 .SYNOPSIS
-ƒƒbƒZ[ƒWƒ^ƒCƒv‚Ì—ñ‹“Œ^
+ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚¿ã‚¤ãƒ—ã®åˆ—æŒ™å‹
 
 .DESCRIPTION
-Runspace‚©‚ç UIƒXƒŒƒbƒh‚Ö‘—M‚³‚ê‚éƒƒbƒZ[ƒW‚Ìí—Ş‚ğ’è‹`
+Runspaceã‹ã‚‰ UIã‚¹ãƒ¬ãƒƒãƒ‰ã¸é€ä¿¡ã•ã‚Œã‚‹ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã®ç¨®é¡ã‚’å®šç¾©
 #>
 enum MessageType {
-    StatusUpdate      # Ú‘±ó‘Ô‚Ì•ÏX (CONNECTING, CONNECTED, DISCONNECTED, ERROR)
-    DataReceived      # ƒf[ƒ^óMƒCƒxƒ“ƒg
-    ErrorOccurred     # ƒGƒ‰[”­¶
-    ActivityMarker    # ÅIƒAƒNƒeƒBƒrƒeƒBXV
-    SocketUpdate      # ƒ\ƒPƒbƒgó‘ÔXV (Socketİ’è/ƒNƒŠƒA)
-    LogMessage        # ƒƒOƒƒbƒZ[ƒW
-    SendRequest       # ƒf[ƒ^‘—MƒŠƒNƒGƒXƒg («—ˆ‚ÌŠg’£—p)
+    StatusUpdate      # æ¥ç¶šçŠ¶æ…‹ã®å¤‰æ›´ (CONNECTING, CONNECTED, DISCONNECTED, ERROR)
+    DataReceived      # ãƒ‡ãƒ¼ã‚¿å—ä¿¡ã‚¤ãƒ™ãƒ³ãƒˆ
+    ErrorOccurred     # ã‚¨ãƒ©ãƒ¼ç™ºç”Ÿ
+    ActivityMarker    # æœ€çµ‚ã‚¢ã‚¯ãƒ†ã‚£ãƒ“ãƒ†ã‚£æ™‚åˆ»æ›´æ–°
+    SocketUpdate      # ã‚½ã‚±ãƒƒãƒˆçŠ¶æ…‹æ›´æ–° (Socketè¨­å®š/ã‚¯ãƒªã‚¢)
+    LogMessage        # ãƒ­ã‚°ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+    SendRequest       # ãƒ‡ãƒ¼ã‚¿é€ä¿¡ãƒªã‚¯ã‚¨ã‚¹ãƒˆ (å°†æ¥ã®æ‹¡å¼µç”¨)
 }
 
 <#
 .SYNOPSIS
-RunspaceŠÔ’ÊM—p‚ÌƒƒbƒZ[ƒWƒNƒ‰ƒX
+Runspaceé–“é€šä¿¡ç”¨ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚¯ãƒ©ã‚¹
 
 .DESCRIPTION
-‚·‚×‚Ä‚ÌƒƒbƒZ[ƒWƒ^ƒCƒv‚ÌŠî’êƒNƒ‰ƒXB
-TypeAConnectionIdATimestampAData‚ğ‚ÂB
+ã™ã¹ã¦ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚¿ã‚¤ãƒ—ã®åŸºåº•ã‚¯ãƒ©ã‚¹ã€‚
+Typeã€ConnectionIdã€Timestampã€Dataã‚’æŒã¤ã€‚
 #>
 class RunspaceMessage {
     [MessageType]$Type
@@ -50,13 +50,13 @@ class RunspaceMessage {
 
 <#
 .SYNOPSIS
-Ú‘±ó‘ÔXVƒƒbƒZ[ƒW‚ğì¬
+æ¥ç¶šçŠ¶æ…‹æ›´æ–°ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’ä½œæˆ
 
 .PARAMETER ConnectionId
-Ú‘±ID
+æ¥ç¶šID
 
 .PARAMETER Status
-V‚µ‚¢ó‘Ô (CONNECTING, CONNECTED, DISCONNECTED, ERROR)
+æ–°ã—ã„çŠ¶æ…‹ (CONNECTING, CONNECTED, DISCONNECTED, ERROR)
 
 .EXAMPLE
 $msg = New-StatusUpdateMessage -ConnectionId "conn-001" -Status "CONNECTED"
@@ -80,16 +80,16 @@ function New-StatusUpdateMessage {
 
 <#
 .SYNOPSIS
-ƒf[ƒ^óMƒƒbƒZ[ƒW‚ğì¬
+ãƒ‡ãƒ¼ã‚¿å—ä¿¡ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’ä½œæˆ
 
 .PARAMETER ConnectionId
-Ú‘±ID
+æ¥ç¶šID
 
 .PARAMETER Data
-óM‚µ‚½ƒoƒCƒgƒf[ƒ^
+å—ä¿¡ã—ãŸãƒã‚¤ãƒˆãƒ‡ãƒ¼ã‚¿
 
 .PARAMETER Metadata
-ƒƒ^ƒf[ƒ^ (RemoteEndpoint ‚È‚Ç)
+ãƒ¡ã‚¿ãƒ‡ãƒ¼ã‚¿ (RemoteEndpoint ãªã©)
 
 .EXAMPLE
 $msg = New-DataReceivedMessage -ConnectionId "conn-001" -Data $bytes -Metadata @{ RemoteEndpoint = "192.168.1.100:8080" }
@@ -118,16 +118,16 @@ function New-DataReceivedMessage {
 
 <#
 .SYNOPSIS
-ƒGƒ‰[”­¶ƒƒbƒZ[ƒW‚ğì¬
+ã‚¨ãƒ©ãƒ¼ç™ºç”Ÿãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’ä½œæˆ
 
 .PARAMETER ConnectionId
-Ú‘±ID
+æ¥ç¶šID
 
 .PARAMETER Message
-ƒGƒ‰[ƒƒbƒZ[ƒW
+ã‚¨ãƒ©ãƒ¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
 
 .PARAMETER Exception
-—áŠOƒIƒuƒWƒFƒNƒg (ƒIƒvƒVƒ‡ƒ“)
+ä¾‹å¤–ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ (ã‚ªãƒ—ã‚·ãƒ§ãƒ³)
 
 .EXAMPLE
 $msg = New-ErrorMessage -ConnectionId "conn-001" -Message "Connection refused" -Exception $_.Exception
@@ -156,13 +156,13 @@ function New-ErrorMessage {
 
 <#
 .SYNOPSIS
-ƒAƒNƒeƒBƒrƒeƒBƒ}[ƒJ[ƒƒbƒZ[ƒW‚ğì¬
+ã‚¢ã‚¯ãƒ†ã‚£ãƒ“ãƒ†ã‚£ãƒãƒ¼ã‚«ãƒ¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’ä½œæˆ
 
 .PARAMETER ConnectionId
-Ú‘±ID
+æ¥ç¶šID
 
 .DESCRIPTION
-Ú‘±‚ÌÅIƒAƒNƒeƒBƒrƒeƒB‚ğXV‚·‚é‚½‚ß‚ÌƒƒbƒZ[ƒW
+æ¥ç¶šã®æœ€çµ‚ã‚¢ã‚¯ãƒ†ã‚£ãƒ“ãƒ†ã‚£æ™‚åˆ»ã‚’æ›´æ–°ã™ã‚‹ãŸã‚ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
 
 .EXAMPLE
 $msg = New-ActivityMessage -ConnectionId "conn-001"
@@ -183,17 +183,17 @@ function New-ActivityMessage {
 
 <#
 .SYNOPSIS
-ƒ\ƒPƒbƒgXVƒƒbƒZ[ƒW‚ğì¬
+ã‚½ã‚±ãƒƒãƒˆæ›´æ–°ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’ä½œæˆ
 
 .PARAMETER ConnectionId
-Ú‘±ID
+æ¥ç¶šID
 
 .PARAMETER Socket
-ƒ\ƒPƒbƒgƒIƒuƒWƒFƒNƒg ($null‚Ìê‡‚ÍƒNƒŠƒA)
+ã‚½ã‚±ãƒƒãƒˆã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ ($nullã®å ´åˆã¯ã‚¯ãƒªã‚¢)
 
 .EXAMPLE
 $msg = New-SocketUpdateMessage -ConnectionId "conn-001" -Socket $tcpClient
-$msg = New-SocketUpdateMessage -ConnectionId "conn-001" -Socket $null  # ƒNƒŠƒA
+$msg = New-SocketUpdateMessage -ConnectionId "conn-001" -Socket $null  # ã‚¯ãƒªã‚¢
 #>
 function New-SocketUpdateMessage {
     [OutputType([RunspaceMessage])]
@@ -213,19 +213,19 @@ function New-SocketUpdateMessage {
 
 <#
 .SYNOPSIS
-ƒƒOƒƒbƒZ[ƒW‚ğì¬
+ãƒ­ã‚°ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’ä½œæˆ
 
 .PARAMETER ConnectionId
-Ú‘±ID
+æ¥ç¶šID
 
 .PARAMETER Level
-ƒƒOƒŒƒxƒ‹ (Info, Warning, Error)
+ãƒ­ã‚°ãƒ¬ãƒ™ãƒ« (Info, Warning, Error)
 
 .PARAMETER Message
-ƒƒOƒƒbƒZ[ƒW
+ãƒ­ã‚°ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
 
 .PARAMETER Context
-ƒƒOƒRƒ“ƒeƒLƒXƒg (’Ç‰Áî•ñ)
+ãƒ­ã‚°ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆ (è¿½åŠ æƒ…å ±)
 
 .EXAMPLE
 $msg = New-LogMessage -ConnectionId "conn-001" -Level "Info" -Message "Data sent" -Context @{ Length = 1024 }
@@ -259,13 +259,13 @@ function New-LogMessage {
 
 <#
 .SYNOPSIS
-‘—MƒŠƒNƒGƒXƒgƒƒbƒZ[ƒW‚ğì¬ («—ˆ‚ÌŠg’£—p)
+é€ä¿¡ãƒªã‚¯ã‚¨ã‚¹ãƒˆãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’ä½œæˆ (å°†æ¥ã®æ‹¡å¼µç”¨)
 
 .PARAMETER ConnectionId
-Ú‘±ID
+æ¥ç¶šID
 
 .PARAMETER Data
-‘—M‚·‚éƒoƒCƒgƒf[ƒ^
+é€ä¿¡ã™ã‚‹ãƒã‚¤ãƒˆãƒ‡ãƒ¼ã‚¿
 
 .EXAMPLE
 $msg = New-SendRequestMessage -ConnectionId "conn-001" -Data $bytes

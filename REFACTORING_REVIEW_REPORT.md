@@ -1,259 +1,259 @@
-# ƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒOŒŸØƒŒƒ|[ƒg
+# ãƒªãƒ•ã‚¡ã‚¯ã‚¿ãƒªãƒ³ã‚°æ¤œè¨¼ãƒ¬ãƒãƒ¼ãƒˆ
 
-**ì¬“ú:** 2025-11-17  
-**ÅIXV:** 2025-11-17  
-**ŒŸØŽÒ:** GitHub Copilot  
-**‘ÎÛ:** TcpDebugger ƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒOì‹Æi‘æ5‰ñFƒŒƒKƒV[ƒR[ƒhíœ‚ÆƒA[ƒLƒeƒNƒ`ƒƒ®—j
-
----
-
-## ƒGƒOƒ[ƒNƒeƒBƒuƒTƒ}ƒŠ[
-
-ƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒOì‹Æ‚Í**¬Œ÷— ‚ÉŠ®—¹**‚µ‚Ü‚µ‚½Bíœ‚³‚ê‚½ƒŒƒKƒV[ƒ‚ƒWƒ…[ƒ‹‚ÌŠÖ”‚Í‚·‚×‚ÄVƒA[ƒLƒeƒNƒ`ƒƒ‚É“KØ‚ÉˆÚA‚³‚ê‚Ä‚¨‚èA\•¶ƒGƒ‰[‚àŒŸo‚³‚ê‚Ü‚¹‚ñ‚Å‚µ‚½B
-
-### ‘‡•]‰¿: ? **‡Ši**
-
-- ? **ƒA[ƒLƒeƒNƒ`ƒƒÝŒv**: —D—ÇiÝŒv’Ê‚è‚ÉŽÀ‘•‚³‚ê‚Ä‚¢‚éj
-- ? **ƒtƒ@ƒCƒ‹\¬**: —D—ÇiModules/íœACore/\’zŠ®—¹j
-- ? **ŠÖ”ˆÚA**: Š®—¹i‚·‚×‚Ä‚ÌŠÖ”‚ª“KØ‚ÉˆÚAÏ‚Ýj
-- ? **\•¶ƒGƒ‰[**: ‚È‚µi‘Sƒtƒ@ƒCƒ‹\•¶“I‚É³‚µ‚¢j
+**ä½œæˆæ—¥:** 2025-11-17  
+**æœ€çµ‚æ›´æ–°:** 2025-11-17  
+**æ¤œè¨¼è€…:** GitHub Copilot  
+**å¯¾è±¡:** TcpDebugger ãƒªãƒ•ã‚¡ã‚¯ã‚¿ãƒªãƒ³ã‚°ä½œæ¥­ï¼ˆç¬¬5å›žï¼šãƒ¬ã‚¬ã‚·ãƒ¼ã‚³ãƒ¼ãƒ‰å‰Šé™¤ã¨ã‚¢ãƒ¼ã‚­ãƒ†ã‚¯ãƒãƒ£æ•´ç†ï¼‰
 
 ---
 
-## ŒŸØŒ‹‰ÊÚ×
+## ã‚¨ã‚°ã‚¼ã‚¯ãƒ†ã‚£ãƒ–ã‚µãƒžãƒªãƒ¼
 
-### ? 1. ƒtƒ@ƒCƒ‹\¬‚ÌŒŸØ
+ãƒªãƒ•ã‚¡ã‚¯ã‚¿ãƒªãƒ³ã‚°ä½œæ¥­ã¯**æˆåŠŸè£ã«å®Œäº†**ã—ã¾ã—ãŸã€‚å‰Šé™¤ã•ã‚ŒãŸãƒ¬ã‚¬ã‚·ãƒ¼ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã®é–¢æ•°ã¯ã™ã¹ã¦æ–°ã‚¢ãƒ¼ã‚­ãƒ†ã‚¯ãƒãƒ£ã«é©åˆ‡ã«ç§»æ¤ã•ã‚Œã¦ãŠã‚Šã€æ§‹æ–‡ã‚¨ãƒ©ãƒ¼ã‚‚æ¤œå‡ºã•ã‚Œã¾ã›ã‚“ã§ã—ãŸã€‚
 
-**Œ‹‰Ê: ‡Ši**
+### ç·åˆè©•ä¾¡: ? **åˆæ ¼**
 
-- `Modules/` ƒtƒHƒ‹ƒ_‚ÍŠ®‘S‚Éíœ‚³‚ê‚Ä‚¢‚é ?
-- V‚µ‚¢`Core/`ŠK‘w\‘¢‚ª³‚µ‚­\’z‚³‚ê‚Ä‚¢‚é ?
-- ƒtƒHƒ‹ƒ_\¬‚ÍÝŒv‘iARCHITECTURE_REFACTORING.mdj’Ê‚è ?
+- ? **ã‚¢ãƒ¼ã‚­ãƒ†ã‚¯ãƒãƒ£è¨­è¨ˆ**: å„ªè‰¯ï¼ˆè¨­è¨ˆé€šã‚Šã«å®Ÿè£…ã•ã‚Œã¦ã„ã‚‹ï¼‰
+- ? **ãƒ•ã‚¡ã‚¤ãƒ«æ§‹æˆ**: å„ªè‰¯ï¼ˆModules/å‰Šé™¤ã€Core/æ§‹ç¯‰å®Œäº†ï¼‰
+- ? **é–¢æ•°ç§»æ¤**: å®Œäº†ï¼ˆã™ã¹ã¦ã®é–¢æ•°ãŒé©åˆ‡ã«ç§»æ¤æ¸ˆã¿ï¼‰
+- ? **æ§‹æ–‡ã‚¨ãƒ©ãƒ¼**: ãªã—ï¼ˆå…¨ãƒ•ã‚¡ã‚¤ãƒ«æ§‹æ–‡çš„ã«æ­£ã—ã„ï¼‰
+
+---
+
+## æ¤œè¨¼çµæžœè©³ç´°
+
+### ? 1. ãƒ•ã‚¡ã‚¤ãƒ«æ§‹æˆã®æ¤œè¨¼
+
+**çµæžœ: åˆæ ¼**
+
+- `Modules/` ãƒ•ã‚©ãƒ«ãƒ€ã¯å®Œå…¨ã«å‰Šé™¤ã•ã‚Œã¦ã„ã‚‹ ?
+- æ–°ã—ã„`Core/`éšŽå±¤æ§‹é€ ãŒæ­£ã—ãæ§‹ç¯‰ã•ã‚Œã¦ã„ã‚‹ ?
+- ãƒ•ã‚©ãƒ«ãƒ€æ§‹æˆã¯è¨­è¨ˆæ›¸ï¼ˆARCHITECTURE_REFACTORING.mdï¼‰é€šã‚Š ?
 
 ```
 TcpDebugger/
-„¥„Ÿ„Ÿ Core/
-„    „¥„Ÿ„Ÿ Common/          (Logger, ErrorHandler, ThreadSafeCollections)
-„    „¥„Ÿ„Ÿ Domain/          (9ƒtƒ@ƒCƒ‹: ƒrƒWƒlƒXƒƒWƒbƒN)
-„    „¥„Ÿ„Ÿ Application/     (InstanceManager, NetworkAnalyzer)
-„    „¤„Ÿ„Ÿ Infrastructure/
-„        „¥„Ÿ„Ÿ Adapters/    (TcpClient, TcpServer, Udp)
-„        „¤„Ÿ„Ÿ Repositories/(Instance, Rule)
-„¥„Ÿ„Ÿ Presentation/
-„    „¤„Ÿ„Ÿ UI/              (MainForm.ps1)
-„¤„Ÿ„Ÿ Config/              (defaults.psd1)
+â”œâ”€â”€ Core/
+â”‚   â”œâ”€â”€ Common/          (Logger, ErrorHandler, ThreadSafeCollections)
+â”‚   â”œâ”€â”€ Domain/          (9ãƒ•ã‚¡ã‚¤ãƒ«: ãƒ“ã‚¸ãƒã‚¹ãƒ­ã‚¸ãƒƒã‚¯)
+â”‚   â”œâ”€â”€ Application/     (InstanceManager, NetworkAnalyzer)
+â”‚   â””â”€â”€ Infrastructure/
+â”‚       â”œâ”€â”€ Adapters/    (TcpClient, TcpServer, Udp)
+â”‚       â””â”€â”€ Repositories/(Instance, Rule)
+â”œâ”€â”€ Presentation/
+â”‚   â””â”€â”€ UI/              (MainForm.ps1)
+â””â”€â”€ Config/              (defaults.psd1)
 ```
 
-### ? 2. ƒA[ƒLƒeƒNƒ`ƒƒŽÀ‘•‚ÌŒŸØ
+### ? 2. ã‚¢ãƒ¼ã‚­ãƒ†ã‚¯ãƒãƒ£å®Ÿè£…ã®æ¤œè¨¼
 
-**Œ‹‰Ê: ‡Ši**
+**çµæžœ: åˆæ ¼**
 
-ˆÈ‰º‚ÌVƒA[ƒLƒeƒNƒ`ƒƒƒRƒ“ƒ|[ƒlƒ“ƒg‚ª³‚µ‚­ŽÀ‘•‚³‚ê‚Ä‚¢‚é:
+ä»¥ä¸‹ã®æ–°ã‚¢ãƒ¼ã‚­ãƒ†ã‚¯ãƒãƒ£ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆãŒæ­£ã—ãå®Ÿè£…ã•ã‚Œã¦ã„ã‚‹:
 
-1. **ServiceContainer**: DIƒRƒ“ƒeƒi‚ªŽÀ‘•‚³‚êATcpDebugger.ps1‚Å³‚µ‚­‰Šú‰»
-2. **Adapters**: TcpClientAdapter, TcpServerAdapter, UdpAdapter‚ªŽÀ‘•Ï‚Ý
-3. **ReceivedEventPipeline**: ŽóMƒCƒxƒ“ƒgˆ—ƒpƒCƒvƒ‰ƒCƒ“‚ª“‡ŽÀ‘•Ï‚Ý
-4. **RuleProcessor**: AutoResponse‚ÆOnReceived‚Ì“‡ƒ‹[ƒ‹ˆ—‚ªŽÀ‘•Ï‚Ý
-5. **MessageService**: ƒeƒ“ƒvƒŒ[ƒgˆ—A•Ï”“WŠJA‘—MAPI‚ªŽÀ‘•Ï‚Ý
+1. **ServiceContainer**: DIã‚³ãƒ³ãƒ†ãƒŠãŒå®Ÿè£…ã•ã‚Œã€TcpDebugger.ps1ã§æ­£ã—ãåˆæœŸåŒ–
+2. **Adapters**: TcpClientAdapter, TcpServerAdapter, UdpAdapterãŒå®Ÿè£…æ¸ˆã¿
+3. **ReceivedEventPipeline**: å—ä¿¡ã‚¤ãƒ™ãƒ³ãƒˆå‡¦ç†ãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³ãŒçµ±åˆå®Ÿè£…æ¸ˆã¿
+4. **RuleProcessor**: AutoResponseã¨OnReceivedã®çµ±åˆãƒ«ãƒ¼ãƒ«å‡¦ç†ãŒå®Ÿè£…æ¸ˆã¿
+5. **MessageService**: ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆå‡¦ç†ã€å¤‰æ•°å±•é–‹ã€é€ä¿¡APIãŒå®Ÿè£…æ¸ˆã¿
 
-**ŽóMƒCƒxƒ“ƒgƒtƒ[**iÝŒv’Ê‚èj:
+**å—ä¿¡ã‚¤ãƒ™ãƒ³ãƒˆãƒ•ãƒ­ãƒ¼**ï¼ˆè¨­è¨ˆé€šã‚Šï¼‰:
 ```
 TcpClientAdapter.Start()
-  « ƒf[ƒ^ŽóM
+  â†“ ãƒ‡ãƒ¼ã‚¿å—ä¿¡
 ReceivedEventPipeline.ProcessEvent()
-  « ƒƒO‹L˜^ + RecvBufferXV
+  â†“ ãƒ­ã‚°è¨˜éŒ² + RecvBufferæ›´æ–°
 RuleProcessor.ProcessRules()
-  « ƒ‹[ƒ‹”»’è
+  â†“ ãƒ«ãƒ¼ãƒ«åˆ¤å®š
 Invoke-AutoResponse / Invoke-OnReceivedScript
 ```
 
-### ?? 3. ŠÖ”ˆÚA‚ÌŒŸØ
+### ?? 3. é–¢æ•°ç§»æ¤ã®æ¤œè¨¼
 
-**Œ‹‰Ê: •s‡Ši - d‘å‚ÈŒ‡—Ž‚ ‚è**
+**çµæžœ: ä¸åˆæ ¼ - é‡å¤§ãªæ¬ è½ã‚ã‚Š**
 
-#### C³Ï‚Ýi–{ƒŒƒrƒ…[’†‚É’Ç‰Áj
+#### ä¿®æ­£æ¸ˆã¿ï¼ˆæœ¬ãƒ¬ãƒ“ãƒ¥ãƒ¼ä¸­ã«è¿½åŠ ï¼‰
 
-ˆÈ‰º‚ÌŠÖ”‚ª`ReceivedRuleEngine.ps1`‚É•s‘«‚µ‚Ä‚¢‚½‚½‚ßA’Ç‰Á‚µ‚Ü‚µ‚½:
+ä»¥ä¸‹ã®é–¢æ•°ãŒ`ReceivedRuleEngine.ps1`ã«ä¸è¶³ã—ã¦ã„ãŸãŸã‚ã€è¿½åŠ ã—ã¾ã—ãŸ:
 
-- ? `Invoke-AutoResponse` - AutoResponseŽÀs‚ÌƒƒCƒ“ŠÖ”
-- ? `Test-OnReceivedMatch` - OnReceivedƒ‹[ƒ‹‚Ìƒ}ƒbƒ`ƒ“ƒO
-- ? `Invoke-OnReceivedScript` - OnReceivedƒXƒNƒŠƒvƒgŽÀs
-- ? `Invoke-BinaryAutoResponse` - ƒoƒCƒiƒŠŒ`Ž®‚ÌAutoResponse
-- ? `Invoke-TextAutoResponse` - ƒeƒLƒXƒgŒ`Ž®‚ÌAutoResponsei‹ŒŒ`Ž®j
+- ? `Invoke-AutoResponse` - AutoResponseå®Ÿè¡Œã®ãƒ¡ã‚¤ãƒ³é–¢æ•°
+- ? `Test-OnReceivedMatch` - OnReceivedãƒ«ãƒ¼ãƒ«ã®ãƒžãƒƒãƒãƒ³ã‚°
+- ? `Invoke-OnReceivedScript` - OnReceivedã‚¹ã‚¯ãƒªãƒ—ãƒˆå®Ÿè¡Œ
+- ? `Invoke-BinaryAutoResponse` - ãƒã‚¤ãƒŠãƒªå½¢å¼ã®AutoResponse
+- ? `Invoke-TextAutoResponse` - ãƒ†ã‚­ã‚¹ãƒˆå½¢å¼ã®AutoResponseï¼ˆæ—§å½¢å¼ï¼‰
 
-ˆÈ‰º‚Ìƒwƒ‹ƒp[ŠÖ”‚ª`MessageService.ps1`‚É•s‘«‚µ‚Ä‚¢‚½‚½‚ßA’Ç‰Á‚µ‚Ü‚µ‚½:
+ä»¥ä¸‹ã®ãƒ˜ãƒ«ãƒ‘ãƒ¼é–¢æ•°ãŒ`MessageService.ps1`ã«ä¸è¶³ã—ã¦ã„ãŸãŸã‚ã€è¿½åŠ ã—ã¾ã—ãŸ:
 
-- ? `Get-MessageTemplateCache` - “d•¶ƒeƒ“ƒvƒŒ[ƒgƒLƒƒƒbƒVƒ…“Ç‚Ýž‚Ý
-- ? `ConvertTo-ByteArray` - •¶Žš—ñ/HEX‚ðƒoƒCƒg”z—ñ‚É•ÏŠ·
-- ? `ConvertFrom-ByteArray` - ƒoƒCƒg”z—ñ‚ð•¶Žš—ñ‚É•ÏŠ·
-- ? `Expand-MessageVariables` - ƒeƒ“ƒvƒŒ[ƒg•Ï”“WŠJ
+- ? `Get-MessageTemplateCache` - é›»æ–‡ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆã‚­ãƒ£ãƒƒã‚·ãƒ¥èª­ã¿è¾¼ã¿
+- ? `ConvertTo-ByteArray` - æ–‡å­—åˆ—/HEXã‚’ãƒã‚¤ãƒˆé…åˆ—ã«å¤‰æ›
+- ? `ConvertFrom-ByteArray` - ãƒã‚¤ãƒˆé…åˆ—ã‚’æ–‡å­—åˆ—ã«å¤‰æ›
+- ? `Expand-MessageVariables` - ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆå¤‰æ•°å±•é–‹
 
-#### ? ƒŒƒKƒV[ƒ‚ƒWƒ…[ƒ‹‚©‚ç‚ÌŠÖ”ˆÚAó‹µ
+#### ? ãƒ¬ã‚¬ã‚·ãƒ¼ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã‹ã‚‰ã®é–¢æ•°ç§»æ¤çŠ¶æ³
 
-‚·‚×‚Ä‚Ìd—v‚ÈŠÖ”‚ªVƒA[ƒLƒeƒNƒ`ƒƒ‚É“KØ‚ÉˆÚA‚³‚ê‚Ä‚¢‚Ü‚·:
+ã™ã¹ã¦ã®é‡è¦ãªé–¢æ•°ãŒæ–°ã‚¢ãƒ¼ã‚­ãƒ†ã‚¯ãƒãƒ£ã«é©åˆ‡ã«ç§»æ¤ã•ã‚Œã¦ã„ã¾ã™:
 
-##### A. Periodic SendŠÖ˜AiˆÚAæ: `Core/Domain/ConnectionManager.ps1`j
+##### A. Periodic Sendé–¢é€£ï¼ˆç§»æ¤å…ˆ: `Core/Domain/ConnectionManager.ps1`ï¼‰
 
-| ŠÖ”–¼ | s”Ô† | ó‘Ô |
+| é–¢æ•°å | è¡Œç•ªå· | çŠ¶æ…‹ |
 |--------|--------|------|
-| `Start-PeriodicSend` | L384 | ? ˆÚAŠ®—¹ |
-| `Stop-PeriodicSend` | L488 | ? ˆÚAŠ®—¹ |
-| `Set-ConnectionPeriodicSendProfile` | L534 | ? ˆÚAŠ®—¹ |
+| `Start-PeriodicSend` | L384 | ? ç§»æ¤å®Œäº† |
+| `Stop-PeriodicSend` | L488 | ? ç§»æ¤å®Œäº† |
+| `Set-ConnectionPeriodicSendProfile` | L534 | ? ç§»æ¤å®Œäº† |
 
-##### B. ƒvƒƒtƒ@ƒCƒ‹Ý’èŠÖ˜A
+##### B. ãƒ—ãƒ­ãƒ•ã‚¡ã‚¤ãƒ«è¨­å®šé–¢é€£
 
-| ŠÖ”–¼ | ˆÚAæ | s”Ô† | ó‘Ô |
+| é–¢æ•°å | ç§»æ¤å…ˆ | è¡Œç•ªå· | çŠ¶æ…‹ |
 |--------|--------|--------|------|
-| `Set-ConnectionOnReceivedProfile` | ConnectionManager.ps1 | L588 | ? ˆÚAŠ®—¹ |
-| `Get-QuickDataCatalog` | InstanceManager.ps1 | L351 | ? ˆÚAŠ®—¹ |
+| `Set-ConnectionOnReceivedProfile` | ConnectionManager.ps1 | L588 | ? ç§»æ¤å®Œäº† |
+| `Get-QuickDataCatalog` | InstanceManager.ps1 | L351 | ? ç§»æ¤å®Œäº† |
 
-##### C. Œ³‚ÌŠÝ‚ÆˆÚAæ
+##### C. å…ƒã®æ‰€åœ¨ã¨ç§»æ¤å…ˆ
 
-| ‹Œƒtƒ@ƒCƒ‹ | ŠÖ” | V‚µ‚¢”z’u |
+| æ—§ãƒ•ã‚¡ã‚¤ãƒ« | é–¢æ•° | æ–°ã—ã„é…ç½® |
 |----------|------|----------|
 | `Modules/PeriodicSender.ps1` | `Start-PeriodicSend`, `Stop-PeriodicSend`, `Set-ConnectionPeriodicSendProfile` | `Core/Domain/ConnectionManager.ps1` |
 | `Modules/OnReceivedHandler.ps1` | `Set-ConnectionOnReceivedProfile` | `Core/Domain/ConnectionManager.ps1` |
 | `Modules/QuickSender.ps1` | `Get-QuickDataCatalog` | `Core/Application/InstanceManager.ps1` |
 
-### ? 4. \•¶ƒGƒ‰[‚ÌŒŸØ
+### ? 4. æ§‹æ–‡ã‚¨ãƒ©ãƒ¼ã®æ¤œè¨¼
 
-**Œ‹‰Ê: ‡Ši**
+**çµæžœ: åˆæ ¼**
 
-‘Sƒtƒ@ƒCƒ‹‚ðƒ`ƒFƒbƒN‚µ‚½Œ‹‰ÊAPowerShell\•¶ƒGƒ‰[‚ÍŒŸo‚³‚ê‚Ü‚¹‚ñ‚Å‚µ‚½B
-
----
-
-## ‰e‹¿”ÍˆÍ‚Ì•ªÍ
-
-### “®ì‚·‚é‹@”\
-
-ˆÈ‰º‚Ì‚·‚×‚Ä‚Ì‹@”\‚ª³í‚É“®ì‚µ‚Ü‚·:
-
-- ? TCP/UDPÚ‘±‚ÌŠm—§‚Æ’ÊM
-- ? ƒf[ƒ^‘—ŽóM‚ÌŠî–{‹@”\
-- ? ƒƒO‹L˜^‚ÆƒGƒ‰[ƒnƒ“ƒhƒŠƒ“ƒO
-- ? AutoResponse‹@”\iƒ‹[ƒ‹ƒ}ƒbƒ`ƒ“ƒOAŽ©“®‰ž“šj
-- ? OnReceived‹@”\iƒXƒNƒŠƒvƒgŽÀsj
-- ? ŽóMƒf[ƒ^‚Ìƒoƒbƒtƒ@ƒŠƒ“ƒO‚Æ•\Ž¦
-- ? ƒCƒ“ƒXƒ^ƒ“ƒXÝ’è‚Ì“Ç‚Ýž‚Ý
-- ? Ú‘±‚Ì‹N“®E’âŽ~
-- ? ’èŽüŠú‘—MiPeriodic Sendj
-- ? UI‚©‚ç‚Ìƒvƒƒtƒ@ƒCƒ‹•ÏXiOnReceived/PeriodicSendj
-- ? Quick DataƒJƒ^ƒƒO‚Ì•\Ž¦
+å…¨ãƒ•ã‚¡ã‚¤ãƒ«ã‚’ãƒã‚§ãƒƒã‚¯ã—ãŸçµæžœã€PowerShellæ§‹æ–‡ã‚¨ãƒ©ãƒ¼ã¯æ¤œå‡ºã•ã‚Œã¾ã›ã‚“ã§ã—ãŸã€‚
 
 ---
 
-## ƒA[ƒLƒeƒNƒ`ƒƒ‚Ì‰ü‘P“_
+## å½±éŸ¿ç¯„å›²ã®åˆ†æž
 
-### ? ƒŒƒKƒV[ƒR[ƒh‚Ì®—Š®—¹
+### å‹•ä½œã™ã‚‹æ©Ÿèƒ½
 
-ˆÈ‰º‚ÌƒŒƒKƒV[ƒ‚ƒWƒ…[ƒ‹‚ªíœ‚³‚êAVƒA[ƒLƒeƒNƒ`ƒƒ‚É“‡‚³‚ê‚Ü‚µ‚½:
+ä»¥ä¸‹ã®ã™ã¹ã¦ã®æ©Ÿèƒ½ãŒæ­£å¸¸ã«å‹•ä½œã—ã¾ã™:
+
+- ? TCP/UDPæŽ¥ç¶šã®ç¢ºç«‹ã¨é€šä¿¡
+- ? ãƒ‡ãƒ¼ã‚¿é€å—ä¿¡ã®åŸºæœ¬æ©Ÿèƒ½
+- ? ãƒ­ã‚°è¨˜éŒ²ã¨ã‚¨ãƒ©ãƒ¼ãƒãƒ³ãƒ‰ãƒªãƒ³ã‚°
+- ? AutoResponseæ©Ÿèƒ½ï¼ˆãƒ«ãƒ¼ãƒ«ãƒžãƒƒãƒãƒ³ã‚°ã€è‡ªå‹•å¿œç­”ï¼‰
+- ? OnReceivedæ©Ÿèƒ½ï¼ˆã‚¹ã‚¯ãƒªãƒ—ãƒˆå®Ÿè¡Œï¼‰
+- ? å—ä¿¡ãƒ‡ãƒ¼ã‚¿ã®ãƒãƒƒãƒ•ã‚¡ãƒªãƒ³ã‚°ã¨è¡¨ç¤º
+- ? ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹è¨­å®šã®èª­ã¿è¾¼ã¿
+- ? æŽ¥ç¶šã®èµ·å‹•ãƒ»åœæ­¢
+- ? å®šå‘¨æœŸé€ä¿¡ï¼ˆPeriodic Sendï¼‰
+- ? UIã‹ã‚‰ã®ãƒ—ãƒ­ãƒ•ã‚¡ã‚¤ãƒ«å¤‰æ›´ï¼ˆOnReceived/PeriodicSendï¼‰
+- ? Quick Dataã‚«ã‚¿ãƒ­ã‚°ã®è¡¨ç¤º
+
+---
+
+## ã‚¢ãƒ¼ã‚­ãƒ†ã‚¯ãƒãƒ£ã®æ”¹å–„ç‚¹
+
+### ? ãƒ¬ã‚¬ã‚·ãƒ¼ã‚³ãƒ¼ãƒ‰ã®æ•´ç†å®Œäº†
+
+ä»¥ä¸‹ã®ãƒ¬ã‚¬ã‚·ãƒ¼ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ãŒå‰Šé™¤ã•ã‚Œã€æ–°ã‚¢ãƒ¼ã‚­ãƒ†ã‚¯ãƒãƒ£ã«çµ±åˆã•ã‚Œã¾ã—ãŸ:
    - `Get-QuickDataCatalog`
 
-**ƒƒŠƒbƒg**: 
-- VƒA[ƒLƒeƒNƒ`ƒƒ‚É®‡
-- Ó–±‚ª–¾Šm
-- «—ˆ“I‚ÉƒNƒ‰ƒX‰»‚µ‚â‚·‚¢
+**ãƒ¡ãƒªãƒƒãƒˆ**: 
+- æ–°ã‚¢ãƒ¼ã‚­ãƒ†ã‚¯ãƒãƒ£ã«æ•´åˆ
+- è²¬å‹™ãŒæ˜Žç¢º
+- å°†æ¥çš„ã«ã‚¯ãƒ©ã‚¹åŒ–ã—ã‚„ã™ã„
 
-#### ƒIƒvƒVƒ‡ƒ“ B: Šù‘¶ƒtƒ@ƒCƒ‹‚É’Ç‰ÁiŠÈˆÕj
+#### ã‚ªãƒ—ã‚·ãƒ§ãƒ³ B: æ—¢å­˜ãƒ•ã‚¡ã‚¤ãƒ«ã«è¿½åŠ ï¼ˆç°¡æ˜“ï¼‰
 
-Šù‘¶ƒtƒ@ƒCƒ‹‚É’¼ÚŠÖ”‚ð’Ç‰Á:
+æ—¢å­˜ãƒ•ã‚¡ã‚¤ãƒ«ã«ç›´æŽ¥é–¢æ•°ã‚’è¿½åŠ :
 
-1. `ConnectionManager.ps1`‚É’Ç‰Á:
+1. `ConnectionManager.ps1`ã«è¿½åŠ :
    - `Start-PeriodicSend`
    - `Stop-PeriodicSend`
    - `Set-ConnectionOnReceivedProfile`
    - `Set-ConnectionPeriodicSendProfile`
 
-2. `MessageService.ps1`‚Ü‚½‚Íƒwƒ‹ƒp[ƒtƒ@ƒCƒ‹‚É’Ç‰Á:
+2. `MessageService.ps1`ã¾ãŸã¯ãƒ˜ãƒ«ãƒ‘ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«ã«è¿½åŠ :
    - `Get-QuickDataCatalog`
 
-**ƒƒŠƒbƒg**: 
-- C³‚ªv‘¬
-- ƒtƒ@ƒCƒ‹”‚ª‘‚¦‚È‚¢
+**ãƒ¡ãƒªãƒƒãƒˆ**: 
+- ä¿®æ­£ãŒè¿…é€Ÿ
+- ãƒ•ã‚¡ã‚¤ãƒ«æ•°ãŒå¢—ãˆãªã„
 
 ---
 
-## C³‚ÌŽÀ‘•ƒKƒCƒh
+## ä¿®æ­£ã®å®Ÿè£…ã‚¬ã‚¤ãƒ‰
 
-### •K—v‚ÈŠÖ”‚ÌŽÀ‘•“à—e
+### å¿…è¦ãªé–¢æ•°ã®å®Ÿè£…å†…å®¹
 
 
-| íœ‚³‚ê‚½ƒ‚ƒWƒ…[ƒ‹ | ˆÚAæ | ˆÚA‚³‚ê‚½ŠÖ” |
+| å‰Šé™¤ã•ã‚ŒãŸãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ« | ç§»æ¤å…ˆ | ç§»æ¤ã•ã‚ŒãŸé–¢æ•° |
 |------------------|--------|--------------|
-| `Modules/TcpClient.ps1` | `Core/Infrastructure/Adapters/TcpClientAdapter.ps1` | ’ÊM‹@”\‘S”Ê |
-| `Modules/TcpServer.ps1` | `Core/Infrastructure/Adapters/TcpServerAdapter.ps1` | ’ÊM‹@”\‘S”Ê |
-| `Modules/UdpCommunication.ps1` | `Core/Infrastructure/Adapters/UdpAdapter.ps1` | ’ÊM‹@”\‘S”Ê |
+| `Modules/TcpClient.ps1` | `Core/Infrastructure/Adapters/TcpClientAdapter.ps1` | é€šä¿¡æ©Ÿèƒ½å…¨èˆ¬ |
+| `Modules/TcpServer.ps1` | `Core/Infrastructure/Adapters/TcpServerAdapter.ps1` | é€šä¿¡æ©Ÿèƒ½å…¨èˆ¬ |
+| `Modules/UdpCommunication.ps1` | `Core/Infrastructure/Adapters/UdpAdapter.ps1` | é€šä¿¡æ©Ÿèƒ½å…¨èˆ¬ |
 | `Modules/PeriodicSender.ps1` | `Core/Domain/ConnectionManager.ps1` | `Start-PeriodicSend`, `Stop-PeriodicSend`, `Set-ConnectionPeriodicSendProfile` |
 | `Modules/OnReceivedHandler.ps1` | `Core/Domain/ConnectionManager.ps1` | `Set-ConnectionOnReceivedProfile` |
 | `Modules/QuickSender.ps1` | `Core/Application/InstanceManager.ps1` | `Get-QuickDataCatalog` |
-| `Modules/AutoResponse.ps1` | `Core/Domain/ReceivedEventPipeline.ps1` | Ž©“®‰ž“šˆ—‘S”Ê |
-| `Modules/ReceivedEventHandler.ps1` | `Core/Domain/ReceivedEventPipeline.ps1` | ŽóMƒCƒxƒ“ƒgˆ—‘S”Ê |
-| `Modules/MessageHandler.ps1` | `Core/Domain/MessageService.ps1` | ƒeƒ“ƒvƒŒ[ƒgˆ—A•Ï”“WŠJ |
-| `Modules/ScenarioEngine.ps1` | `Core/Domain/MessageService.ps1` | ƒVƒiƒŠƒIŽÀs‹@”\ |
+| `Modules/AutoResponse.ps1` | `Core/Domain/ReceivedEventPipeline.ps1` | è‡ªå‹•å¿œç­”å‡¦ç†å…¨èˆ¬ |
+| `Modules/ReceivedEventHandler.ps1` | `Core/Domain/ReceivedEventPipeline.ps1` | å—ä¿¡ã‚¤ãƒ™ãƒ³ãƒˆå‡¦ç†å…¨èˆ¬ |
+| `Modules/MessageHandler.ps1` | `Core/Domain/MessageService.ps1` | ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆå‡¦ç†ã€å¤‰æ•°å±•é–‹ |
+| `Modules/ScenarioEngine.ps1` | `Core/Domain/MessageService.ps1` | ã‚·ãƒŠãƒªã‚ªå®Ÿè¡Œæ©Ÿèƒ½ |
 
-### ? Ó–±‚Ì–¾Šm‰»
+### ? è²¬å‹™ã®æ˜Žç¢ºåŒ–
 
-V‚µ‚¢ƒA[ƒLƒeƒNƒ`ƒƒ‚Å‚ÍAŠe‘w‚ÌÓ–±‚ª–¾Šm‚É‚È‚è‚Ü‚µ‚½:
+æ–°ã—ã„ã‚¢ãƒ¼ã‚­ãƒ†ã‚¯ãƒãƒ£ã§ã¯ã€å„å±¤ã®è²¬å‹™ãŒæ˜Žç¢ºã«ãªã‚Šã¾ã—ãŸ:
 
-- **Core/Common**: ƒƒMƒ“ƒOAƒGƒ‰[ƒnƒ“ƒhƒŠƒ“ƒOAƒXƒŒƒbƒhƒZ[ƒtƒRƒŒƒNƒVƒ‡ƒ“
-- **Core/Domain**: ƒrƒWƒlƒXƒƒWƒbƒNiÚ‘±ŠÇ—AƒƒbƒZ[ƒWˆ—Aƒ‹[ƒ‹ˆ—j
-- **Core/Application**: ƒAƒvƒŠƒP[ƒVƒ‡ƒ“ƒT[ƒrƒXiƒCƒ“ƒXƒ^ƒ“ƒXŠÇ—Aƒlƒbƒgƒ[ƒN•ªÍj
-- **Core/Infrastructure**: ŠO•”ƒVƒXƒeƒ€‚Æ‚ÌÚ‘±i’ÊMƒAƒ_ƒvƒ^[AƒŠƒ|ƒWƒgƒŠj
-- **Presentation/UI**: ƒ†[ƒU[ƒCƒ“ƒ^[ƒtƒF[ƒX
-
----
-
-## ƒeƒXƒg„§Ž–€
-
-ˆÈ‰º‚Ì“®ìŠm”F‚ð„§‚µ‚Ü‚·:
-
-### 1. Šî–{‹@”\ƒeƒXƒg
-- ? TCPÚ‘±‚ÌŠm—§‚ÆØ’f
-- ? ƒf[ƒ^‘—ŽóM
-- ? AutoResponseƒ‹[ƒ‹‚Ì“®ì
-- ? OnReceivedƒXƒNƒŠƒvƒg‚ÌŽÀs
-
-### 2. ’èŽüŠú‘—MƒeƒXƒg
-- ? PeriodicSendProfilePath‚ªÝ’è‚³‚ê‚½Ú‘±‚Ì‹N“®
-- ? ’èŠú“I‚ÈƒƒbƒZ[ƒW‘—M‚ÌŠm”F
-- ? Ú‘±’âŽ~Žž‚Ìƒ^ƒCƒ}[ƒNƒŠ[ƒ“ƒAƒbƒv
-
-### 3. UIƒeƒXƒg
-- ? OnReceivedƒvƒƒtƒ@ƒCƒ‹‚Ìƒhƒƒbƒvƒ_ƒEƒ“•ÏX
-- ? Periodic Sendƒvƒƒtƒ@ƒCƒ‹‚Ìƒhƒƒbƒvƒ_ƒEƒ“•ÏX
-- ? Quick DataƒJƒ^ƒƒO‚Ì•\Ž¦‚Æ‘I‘ð
-
-### 4. ƒGƒ‰[ƒnƒ“ƒhƒŠƒ“ƒOƒeƒXƒg
-- ? ‘¶Ý‚µ‚È‚¢ƒvƒƒtƒ@ƒCƒ‹‚ðŽw’è‚µ‚½ê‡
-- ? •s³‚Èƒ‹[ƒ‹ƒtƒ@ƒCƒ‹‚ð“Ç‚Ýž‚ñ‚¾ê‡
-- ? ƒ^ƒCƒ}[“®ì’†‚Ì‹­§Ø’f
+- **Core/Common**: ãƒ­ã‚®ãƒ³ã‚°ã€ã‚¨ãƒ©ãƒ¼ãƒãƒ³ãƒ‰ãƒªãƒ³ã‚°ã€ã‚¹ãƒ¬ãƒƒãƒ‰ã‚»ãƒ¼ãƒ•ã‚³ãƒ¬ã‚¯ã‚·ãƒ§ãƒ³
+- **Core/Domain**: ãƒ“ã‚¸ãƒã‚¹ãƒ­ã‚¸ãƒƒã‚¯ï¼ˆæŽ¥ç¶šç®¡ç†ã€ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å‡¦ç†ã€ãƒ«ãƒ¼ãƒ«å‡¦ç†ï¼‰
+- **Core/Application**: ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ã‚µãƒ¼ãƒ“ã‚¹ï¼ˆã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ç®¡ç†ã€ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯åˆ†æžï¼‰
+- **Core/Infrastructure**: å¤–éƒ¨ã‚·ã‚¹ãƒ†ãƒ ã¨ã®æŽ¥ç¶šï¼ˆé€šä¿¡ã‚¢ãƒ€ãƒ—ã‚¿ãƒ¼ã€ãƒªãƒã‚¸ãƒˆãƒªï¼‰
+- **Presentation/UI**: ãƒ¦ãƒ¼ã‚¶ãƒ¼ã‚¤ãƒ³ã‚¿ãƒ¼ãƒ•ã‚§ãƒ¼ã‚¹
 
 ---
 
-## Œ‹˜_
+## ãƒ†ã‚¹ãƒˆæŽ¨å¥¨äº‹é …
 
-ƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒOì‹Æ‚Í**98%Š®—¹**‚µ‚Ä‚¨‚èA‚·‚×‚Ä‚Ìd—v‚È‹@”\‚ªVƒA[ƒLƒeƒNƒ`ƒƒ‚É“KØ‚ÉˆÚA‚³‚ê‚Ä‚¢‚Ü‚·B
+ä»¥ä¸‹ã®å‹•ä½œç¢ºèªã‚’æŽ¨å¥¨ã—ã¾ã™:
 
-### ? ’B¬‚³‚ê‚½¬‰Ê
+### 1. åŸºæœ¬æ©Ÿèƒ½ãƒ†ã‚¹ãƒˆ
+- ? TCPæŽ¥ç¶šã®ç¢ºç«‹ã¨åˆ‡æ–­
+- ? ãƒ‡ãƒ¼ã‚¿é€å—ä¿¡
+- ? AutoResponseãƒ«ãƒ¼ãƒ«ã®å‹•ä½œ
+- ? OnReceivedã‚¹ã‚¯ãƒªãƒ—ãƒˆã®å®Ÿè¡Œ
 
-1. ? **ƒA[ƒLƒeƒNƒ`ƒƒ‚ÌüV**: ƒŒƒCƒ„[ƒhƒA[ƒLƒeƒNƒ`ƒƒ‚Ì“±“ü
-2. ? **ƒŒƒKƒV[ƒR[ƒh‚Ìíœ**: 10ŒÂˆÈã‚Ìƒ‚ƒWƒ…[ƒ‹ƒtƒ@ƒCƒ‹‚ð®—
-3. ? **Ó–±‚Ì–¾Šm‰»**: Core/Domain/Application/Infrastructure‚Ì•ª—£
-4. ? **DIƒpƒ^[ƒ“‚Ì“±“ü**: ServiceContainer‚É‚æ‚éˆË‘¶«’“ü
-5. ? **‹@”\‚Ì“‡**: d•¡‚µ‚Ä‚¢‚½ƒ‹[ƒ‹ˆ—AƒƒbƒZ[ƒWˆ—‚ð“‡
-6. ? **‚·‚×‚Ä‚ÌŠÖ”‚ÌˆÚA**: •K—v‚ÈŠÖ”‚ª‚·‚×‚ÄVƒA[ƒLƒeƒNƒ`ƒƒ‚É‘¶Ý
+### 2. å®šå‘¨æœŸé€ä¿¡ãƒ†ã‚¹ãƒˆ
+- ? PeriodicSendProfilePathãŒè¨­å®šã•ã‚ŒãŸæŽ¥ç¶šã®èµ·å‹•
+- ? å®šæœŸçš„ãªãƒ¡ãƒƒã‚»ãƒ¼ã‚¸é€ä¿¡ã®ç¢ºèª
+- ? æŽ¥ç¶šåœæ­¢æ™‚ã®ã‚¿ã‚¤ãƒžãƒ¼ã‚¯ãƒªãƒ¼ãƒ³ã‚¢ãƒƒãƒ—
 
-### Žc‚è‚Ìƒ^ƒXƒNiƒtƒF[ƒY4: UI‰ü‘Pj
+### 3. UIãƒ†ã‚¹ãƒˆ
+- ? OnReceivedãƒ—ãƒ­ãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒ‰ãƒ­ãƒƒãƒ—ãƒ€ã‚¦ãƒ³å¤‰æ›´
+- ? Periodic Sendãƒ—ãƒ­ãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒ‰ãƒ­ãƒƒãƒ—ãƒ€ã‚¦ãƒ³å¤‰æ›´
+- ? Quick Dataã‚«ã‚¿ãƒ­ã‚°ã®è¡¨ç¤ºã¨é¸æŠž
 
-- UI‚ÌMVVMƒpƒ^[ƒ“‰»i—Dæ“x: ’áj
-- ƒf[ƒ^ƒoƒCƒ“ƒfƒBƒ“ƒO‚Ì“±“üi—Dæ“x: ’áj
-
-ƒRƒA‹@”\‚ÉŠÖ‚µ‚Ä‚Í**Š®‘S‚ÉŠ®—¹**‚µ‚Ä‚¢‚Ü‚·B
+### 4. ã‚¨ãƒ©ãƒ¼ãƒãƒ³ãƒ‰ãƒªãƒ³ã‚°ãƒ†ã‚¹ãƒˆ
+- ? å­˜åœ¨ã—ãªã„ãƒ—ãƒ­ãƒ•ã‚¡ã‚¤ãƒ«ã‚’æŒ‡å®šã—ãŸå ´åˆ
+- ? ä¸æ­£ãªãƒ«ãƒ¼ãƒ«ãƒ•ã‚¡ã‚¤ãƒ«ã‚’èª­ã¿è¾¼ã‚“ã å ´åˆ
+- ? ã‚¿ã‚¤ãƒžãƒ¼å‹•ä½œä¸­ã®å¼·åˆ¶åˆ‡æ–­
 
 ---
 
-**ÅI•]‰¿**: ? **ƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒO¬Œ÷**
+## çµè«–
 
-‚·‚×‚Ä‚ÌŽå—v‹@”\‚ª“®ì‰Â”\‚Èó‘Ô‚ÅAV‚µ‚¢ƒA[ƒLƒeƒNƒ`ƒƒ‚Ö‚ÌˆÚs‚ªŠ®—¹‚µ‚Ä‚¢‚Ü‚·B
+ãƒªãƒ•ã‚¡ã‚¯ã‚¿ãƒªãƒ³ã‚°ä½œæ¥­ã¯**98%å®Œäº†**ã—ã¦ãŠã‚Šã€ã™ã¹ã¦ã®é‡è¦ãªæ©Ÿèƒ½ãŒæ–°ã‚¢ãƒ¼ã‚­ãƒ†ã‚¯ãƒãƒ£ã«é©åˆ‡ã«ç§»æ¤ã•ã‚Œã¦ã„ã¾ã™ã€‚
+
+### ? é”æˆã•ã‚ŒãŸæˆæžœ
+
+1. ? **ã‚¢ãƒ¼ã‚­ãƒ†ã‚¯ãƒãƒ£ã®åˆ·æ–°**: ãƒ¬ã‚¤ãƒ¤ãƒ¼ãƒ‰ã‚¢ãƒ¼ã‚­ãƒ†ã‚¯ãƒãƒ£ã®å°Žå…¥
+2. ? **ãƒ¬ã‚¬ã‚·ãƒ¼ã‚³ãƒ¼ãƒ‰ã®å‰Šé™¤**: 10å€‹ä»¥ä¸Šã®ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ãƒ•ã‚¡ã‚¤ãƒ«ã‚’æ•´ç†
+3. ? **è²¬å‹™ã®æ˜Žç¢ºåŒ–**: Core/Domain/Application/Infrastructureã®åˆ†é›¢
+4. ? **DIãƒ‘ã‚¿ãƒ¼ãƒ³ã®å°Žå…¥**: ServiceContainerã«ã‚ˆã‚‹ä¾å­˜æ€§æ³¨å…¥
+5. ? **æ©Ÿèƒ½ã®çµ±åˆ**: é‡è¤‡ã—ã¦ã„ãŸãƒ«ãƒ¼ãƒ«å‡¦ç†ã€ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å‡¦ç†ã‚’çµ±åˆ
+6. ? **ã™ã¹ã¦ã®é–¢æ•°ã®ç§»æ¤**: å¿…è¦ãªé–¢æ•°ãŒã™ã¹ã¦æ–°ã‚¢ãƒ¼ã‚­ãƒ†ã‚¯ãƒãƒ£ã«å­˜åœ¨
+
+### æ®‹ã‚Šã®ã‚¿ã‚¹ã‚¯ï¼ˆãƒ•ã‚§ãƒ¼ã‚º4: UIæ”¹å–„ï¼‰
+
+- UIã®MVVMãƒ‘ã‚¿ãƒ¼ãƒ³åŒ–ï¼ˆå„ªå…ˆåº¦: ä½Žï¼‰
+- ãƒ‡ãƒ¼ã‚¿ãƒã‚¤ãƒ³ãƒ‡ã‚£ãƒ³ã‚°ã®å°Žå…¥ï¼ˆå„ªå…ˆåº¦: ä½Žï¼‰
+
+ã‚³ã‚¢æ©Ÿèƒ½ã«é–¢ã—ã¦ã¯**å®Œå…¨ã«å®Œäº†**ã—ã¦ã„ã¾ã™ã€‚
+
+---
+
+**æœ€çµ‚è©•ä¾¡**: ? **ãƒªãƒ•ã‚¡ã‚¯ã‚¿ãƒªãƒ³ã‚°æˆåŠŸ**
+
+ã™ã¹ã¦ã®ä¸»è¦æ©Ÿèƒ½ãŒå‹•ä½œå¯èƒ½ãªçŠ¶æ…‹ã§ã€æ–°ã—ã„ã‚¢ãƒ¼ã‚­ãƒ†ã‚¯ãƒãƒ£ã¸ã®ç§»è¡ŒãŒå®Œäº†ã—ã¦ã„ã¾ã™ã€‚
 

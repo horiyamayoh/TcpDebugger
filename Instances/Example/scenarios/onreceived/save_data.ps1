@@ -1,21 +1,21 @@
-# save_data.ps1
-# ƒf[ƒ^—v‹‚ÅóM‚µ‚½ƒf[ƒ^‚ğ•Û‘¶
+ï»¿# save_data.ps1
+# ãƒ‡ãƒ¼ã‚¿è¦æ±‚ã§å—ä¿¡ã—ãŸãƒ‡ãƒ¼ã‚¿ã‚’ä¿å­˜
 
 param($Context)
 
 . "$PSScriptRoot\..\..\..\..\Core\Domain\OnReceivedLibrary.ps1"
 
-Write-OnReceivedLog "ƒf[ƒ^‚ğ•Û‘¶‚µ‚Ü‚·"
+Write-OnReceivedLog "ãƒ‡ãƒ¼ã‚¿ã‚’ä¿å­˜ã—ã¾ã™"
 
-# óMƒf[ƒ^‚©‚çƒyƒCƒ[ƒh•”•ª‚ğ’ŠoiƒIƒtƒZƒbƒg6ˆÈ~‚Æ‰¼’èj
+# å—ä¿¡ãƒ‡ãƒ¼ã‚¿ã‹ã‚‰ãƒšã‚¤ãƒ­ãƒ¼ãƒ‰éƒ¨åˆ†ã‚’æŠ½å‡ºï¼ˆã‚ªãƒ•ã‚»ãƒƒãƒˆ6ä»¥é™ã¨ä»®å®šï¼‰
 if ($Context.ReceivedData.Length -gt 6) {
     $payload = Get-ByteSlice -Data $Context.ReceivedData -Offset 6 -Length ($Context.ReceivedData.Length - 6)
     
-    # ƒRƒlƒNƒVƒ‡ƒ“•Ï”‚É•Û‘¶
+    # ã‚³ãƒã‚¯ã‚·ãƒ§ãƒ³å¤‰æ•°ã«ä¿å­˜
     Set-ConnectionVariable -Connection $Context.Connection -Name "LastReceivedData" -Value $payload
     
     $hexData = ConvertTo-HexString -Data $payload -Separator " "
-    Write-OnReceivedLog "ƒf[ƒ^‚ğ•Û‘¶‚µ‚Ü‚µ‚½ ($($payload.Length) ƒoƒCƒg): $hexData"
+    Write-OnReceivedLog "ãƒ‡ãƒ¼ã‚¿ã‚’ä¿å­˜ã—ã¾ã—ãŸ ($($payload.Length) ãƒã‚¤ãƒˆ): $hexData"
 } else {
-    Write-OnReceivedLog "ƒf[ƒ^‚ª’Z‚·‚¬‚é‚½‚ß•Û‘¶‚ğƒXƒLƒbƒv‚µ‚Ü‚µ‚½"
+    Write-OnReceivedLog "ãƒ‡ãƒ¼ã‚¿ãŒçŸ­ã™ãã‚‹ãŸã‚ä¿å­˜ã‚’ã‚¹ã‚­ãƒƒãƒ—ã—ã¾ã—ãŸ"
 }

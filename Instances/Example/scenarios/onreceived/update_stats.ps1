@@ -1,20 +1,20 @@
-# update_stats.ps1
-# “Œvî•ñ‚ğXV
+ï»¿# update_stats.ps1
+# çµ±è¨ˆæƒ…å ±ã‚’æ›´æ–°
 
 param($Context)
 
 . "$PSScriptRoot\..\..\..\..\Core\Domain\OnReceivedLibrary.ps1"
 
-Write-OnReceivedLog "“Œvî•ñ‚ğXV‚µ‚Ü‚·"
+Write-OnReceivedLog "çµ±è¨ˆæƒ…å ±ã‚’æ›´æ–°ã—ã¾ã™"
 
-# ƒf[ƒ^—v‹ƒJƒEƒ“ƒ^[‚ğƒCƒ“ƒNƒŠƒƒ“ƒg
+# ãƒ‡ãƒ¼ã‚¿è¦æ±‚ã‚«ã‚¦ãƒ³ã‚¿ãƒ¼ã‚’ã‚¤ãƒ³ã‚¯ãƒªãƒ¡ãƒ³ãƒˆ
 $dataRequestCount = Get-ConnectionVariable -Connection $Context.Connection -Name "DataRequestCount" -Default 0
 $dataRequestCount++
 Set-ConnectionVariable -Connection $Context.Connection -Name "DataRequestCount" -Value $dataRequestCount
 
-# óMƒoƒCƒg”‚ğ—İÏ
+# å—ä¿¡ãƒã‚¤ãƒˆæ•°ã‚’ç´¯ç©
 $totalBytesReceived = Get-ConnectionVariable -Connection $Context.Connection -Name "TotalBytesReceived" -Default 0
 $totalBytesReceived += $Context.ReceivedData.Length
 Set-ConnectionVariable -Connection $Context.Connection -Name "TotalBytesReceived" -Value $totalBytesReceived
 
-Write-OnReceivedLog "“Œv: ƒf[ƒ^—v‹=$dataRequestCount ‰ñ, —İŒvóM=$totalBytesReceived ƒoƒCƒg"
+Write-OnReceivedLog "çµ±è¨ˆ: ãƒ‡ãƒ¼ã‚¿è¦æ±‚=$dataRequestCount å›, ç´¯è¨ˆå—ä¿¡=$totalBytesReceived ãƒã‚¤ãƒˆ"

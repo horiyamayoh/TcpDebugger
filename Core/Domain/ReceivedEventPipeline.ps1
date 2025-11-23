@@ -1,4 +1,4 @@
-# Core/Domain/ReceivedEventPipeline.ps1
+ï»¿# Core/Domain/ReceivedEventPipeline.ps1
 
 class ReceivedEventPipeline {
     hidden [Logger]$_logger
@@ -60,9 +60,9 @@ class ReceivedEventPipeline {
 
         try {
             if ($connection.RecvBuffer) {
-                # RecvBufferƒTƒCƒY§ŒÀiFIFO: 1000Œ‚ğ’´‚¦‚½‚çŒÃ‚¢‚à‚Ì‚ğíœj
+                # RecvBufferã‚µã‚¤ã‚ºåˆ¶é™ï¼ˆFIFO: 1000ä»¶ã‚’è¶…ãˆãŸã‚‰å¤ã„ã‚‚ã®ã‚’å‰Šé™¤ï¼‰
                 if ($connection.RecvBuffer.Count -ge 1000) {
-                    # Å‚àŒÃ‚¢ƒGƒ“ƒgƒŠ‚ğíœiæ“ª‚©‚ç100Œíœ‚µ‚Ä—]—T‚ğ‚½‚¹‚éj
+                    # æœ€ã‚‚å¤ã„ã‚¨ãƒ³ãƒˆãƒªã‚’å‰Šé™¤ï¼ˆå…ˆé ­ã‹ã‚‰100ä»¶å‰Šé™¤ã—ã¦ä½™è£•ã‚’æŒãŸã›ã‚‹ï¼‰
                     $removeCount = [Math]::Min(100, $connection.RecvBuffer.Count - 900)
                     for ($i = 0; $i -lt $removeCount; $i++) {
                         [void]$connection.RecvBuffer.RemoveAt(0)

@@ -1,27 +1,27 @@
-# copy_message_id.ps1
-# óM“d•¶‚©‚çƒƒbƒZ[ƒWID‚ğƒRƒs[‚µ‚Ä‰“š“d•¶‚É“]‹L
+ï»¿# copy_message_id.ps1
+# å—ä¿¡é›»æ–‡ã‹ã‚‰ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸IDã‚’ã‚³ãƒ”ãƒ¼ã—ã¦å¿œç­”é›»æ–‡ã«è»¢è¨˜
 
 param($Context)
 
-# ƒ‰ƒCƒuƒ‰ƒŠŠÖ”‚ğ“Ç‚İ‚İ
+# ãƒ©ã‚¤ãƒ–ãƒ©ãƒªé–¢æ•°ã‚’èª­ã¿è¾¼ã¿
 . "$PSScriptRoot\..\..\..\..\Core\Domain\OnReceivedLibrary.ps1"
 
-Write-OnReceivedLog "óM“d•¶‚©‚çƒƒbƒZ[ƒWID‚ğƒRƒs[‚µ‚Ü‚·"
+Write-OnReceivedLog "å—ä¿¡é›»æ–‡ã‹ã‚‰ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸IDã‚’ã‚³ãƒ”ãƒ¼ã—ã¾ã™"
 
-# óMƒf[ƒ^‚©‚çƒIƒtƒZƒbƒg2A’·‚³4‚ÌƒoƒCƒg‚ğæ“¾iƒƒbƒZ[ƒWID‚Æ‰¼’èj
+# å—ä¿¡ãƒ‡ãƒ¼ã‚¿ã‹ã‚‰ã‚ªãƒ•ã‚»ãƒƒãƒˆ2ã€é•·ã•4ã®ãƒã‚¤ãƒˆã‚’å–å¾—ï¼ˆãƒ¡ãƒƒã‚»ãƒ¼ã‚¸IDã¨ä»®å®šï¼‰
 $messageId = Get-ByteSlice -Data $Context.ReceivedData -Offset 2 -Length 4
 
-# 16i”•¶š—ñ‚Æ‚µ‚Ä•\¦
+# 16é€²æ•°æ–‡å­—åˆ—ã¨ã—ã¦è¡¨ç¤º
 $messageIdHex = ConvertTo-HexString -Data $messageId
-Write-OnReceivedLog "ƒƒbƒZ[ƒWID: $messageIdHex"
+Write-OnReceivedLog "ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ID: $messageIdHex"
 
-# ‰“š“d•¶ƒtƒ@ƒCƒ‹‚ğ“Ç‚İ‚İ
+# å¿œç­”é›»æ–‡ãƒ•ã‚¡ã‚¤ãƒ«ã‚’èª­ã¿è¾¼ã¿
 $responseData = Read-MessageFile -FilePath "response_with_id.csv" -InstancePath $Context.InstancePath
 
-# ‰“š“d•¶‚ÌƒIƒtƒZƒbƒg4‚ÉƒƒbƒZ[ƒWID‚ğƒRƒs[
+# å¿œç­”é›»æ–‡ã®ã‚ªãƒ•ã‚»ãƒƒãƒˆ4ã«ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸IDã‚’ã‚³ãƒ”ãƒ¼
 Set-ByteSlice -Target $responseData -Offset 4 -Source $messageId
 
-# ‰“š“d•¶‚ğ‘—M
+# å¿œç­”é›»æ–‡ã‚’é€ä¿¡
 Send-MessageData -ConnectionId $Context.ConnectionId -Data $responseData
 
-Write-OnReceivedLog "ƒƒbƒZ[ƒWID“]‹LŠ®—¹"
+Write-OnReceivedLog "ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸IDè»¢è¨˜å®Œäº†"

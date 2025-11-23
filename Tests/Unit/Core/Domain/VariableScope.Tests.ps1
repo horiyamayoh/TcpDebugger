@@ -1,4 +1,4 @@
-# Tests/Unit/Core/Domain/VariableScope.Tests.ps1
+﻿# Tests/Unit/Core/Domain/VariableScope.Tests.ps1
 
 $repoRoot = Resolve-Path -LiteralPath (Join-Path $PSScriptRoot "..\..\..\..")
 . (Join-Path $repoRoot "Core\Domain\VariableScope.ps1")

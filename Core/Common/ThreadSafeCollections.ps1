@@ -1,4 +1,4 @@
-# Core/Common/ThreadSafeCollections.ps1
+﻿# Core/Common/ThreadSafeCollections.ps1
 # Helper functions to create synchronized collections and critical sections
 
 function New-ThreadSafeHashtable {

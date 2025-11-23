@@ -1,4 +1,4 @@
-# Core/Domain/ConnectionModels.ps1
+﻿# Core/Domain/ConnectionModels.ps1
 # Connection data models used by ConnectionService
 
 . "$PSScriptRoot\VariableScope.ps1"

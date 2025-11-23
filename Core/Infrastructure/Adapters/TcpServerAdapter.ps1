@@ -1,5 +1,5 @@
-# Core/Infrastructure/Adapters/TcpServerAdapter.ps1
-# TCP ƒT[ƒo[Ú‘±ƒAƒ_ƒvƒ^[iVƒA[ƒLƒeƒNƒ`ƒƒ€‹’j
+ï»¿# Core/Infrastructure/Adapters/TcpServerAdapter.ps1
+# TCP ã‚µãƒ¼ãƒãƒ¼æ¥ç¶šã‚¢ãƒ€ãƒ—ã‚¿ãƒ¼ï¼ˆæ–°ã‚¢ãƒ¼ã‚­ãƒ†ã‚¯ãƒãƒ£æº–æ‹ ï¼‰
 
 class TcpServerAdapter {
     hidden [ConnectionService]$_connectionService
@@ -34,10 +34,10 @@ class TcpServerAdapter {
 
     <#
     .SYNOPSIS
-    TCP ƒT[ƒo[‚ğ‹N“®‚·‚é
+    TCP ã‚µãƒ¼ãƒãƒ¼ã‚’èµ·å‹•ã™ã‚‹
     
     .PARAMETER connectionId
-    Ú‘±IDiManagedConnection.Idj
+    æ¥ç¶šIDï¼ˆManagedConnection.Idï¼‰
     #>
     [void] Start([string]$connectionId) {
         if ([string]::IsNullOrWhiteSpace($connectionId)) {
@@ -61,7 +61,7 @@ class TcpServerAdapter {
             throw "Invalid LocalIP or LocalPort for TCP Server."
         }
 
-        # Šù‘¶Runspace‚ª“®ì’†‚Ìê‡‚Í’â~
+        # æ—¢å­˜RunspaceãŒå‹•ä½œä¸­ã®å ´åˆã¯åœæ­¢
         if ($connection.Variables.ContainsKey('_PowerShell')) {
             $this._logger.LogWarning("PowerShell Runspace already running. Stopping existing runspace.", @{
                 ConnectionId = $connectionId
@@ -70,24 +70,24 @@ class TcpServerAdapter {
             Start-Sleep -Milliseconds 100
         }
 
-        # V‚µ‚¢ƒLƒƒƒ“ƒZƒ‹ƒg[ƒNƒ“ƒ\[ƒX‚ğì¬
+        # æ–°ã—ã„ã‚­ãƒ£ãƒ³ã‚»ãƒ«ãƒˆãƒ¼ã‚¯ãƒ³ã‚½ãƒ¼ã‚¹ã‚’ä½œæˆ
         $connection.CancellationSource = [System.Threading.CancellationTokenSource]::new()
 
-        # Runspaceì¬
+        # Runspaceä½œæˆ
         $runspace = [RunspaceFactory]::CreateRunspace()
         $runspace.Open()
 
-        # PowerShellƒCƒ“ƒXƒ^ƒ“ƒXì¬
+        # PowerShellã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ä½œæˆ
         $ps = [PowerShell]::Create()
         $ps.Runspace = $runspace
 
-        # RunspaceMessages.ps1‚ÌƒpƒX‚ğæ“¾‚µ‚Äƒhƒbƒgƒ\[ƒX
+        # RunspaceMessages.ps1ã®ãƒ‘ã‚¹ã‚’å–å¾—ã—ã¦ãƒ‰ãƒƒãƒˆã‚½ãƒ¼ã‚¹
         $messagesPath = Join-Path $PSScriptRoot "..\..\Domain\RunspaceMessages.ps1"
         $loadScript = ". '$messagesPath'"
         $null = $ps.AddScript($loadScript).Invoke()
         $ps.Commands.Clear()
 
-        # ƒƒCƒ“ScriptBlock
+        # ãƒ¡ã‚¤ãƒ³ScriptBlock
         $scriptBlock = {
             param(
                 [string]$ConnectionId,
@@ -111,7 +111,7 @@ class TcpServerAdapter {
                 $msg = New-StatusUpdateMessage -ConnectionId $ConnectionId -Status 'CONNECTING'
                 $MessageQueue.Enqueue($msg)
                 
-                # TCP ƒŠƒXƒi[ì¬
+                # TCP ãƒªã‚¹ãƒŠãƒ¼ä½œæˆ
                 $ipAddress = [System.Net.IPAddress]::Parse($LocalIP)
                 $listener = New-Object System.Net.Sockets.TcpListener($ipAddress, $LocalPort)
                 $listener.Start()
@@ -127,12 +127,12 @@ class TcpServerAdapter {
                 }
                 $MessageQueue.Enqueue($msg)
                 
-                # ƒNƒ‰ƒCƒAƒ“ƒgÚ‘±‘Ò‹@ƒ‹[ƒv
+                # ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆæ¥ç¶šå¾…æ©Ÿãƒ«ãƒ¼ãƒ—
                 while (-not $CancellationToken.IsCancellationRequested) {
                     try {
-                        # Ú‘±‘Ò‹@iƒ|[ƒŠƒ“ƒO•û®j
+                        # æ¥ç¶šå¾…æ©Ÿï¼ˆãƒãƒ¼ãƒªãƒ³ã‚°æ–¹å¼ï¼‰
                         if ($listener.Pending()) {
-                            # Šù‘¶ƒNƒ‰ƒCƒAƒ“ƒg‚ª‚ ‚ê‚ÎƒNƒ[ƒYiƒVƒ“ƒOƒ‹Ú‘±ƒ‚[ƒhj
+                            # æ—¢å­˜ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆãŒã‚ã‚Œã°ã‚¯ãƒ­ãƒ¼ã‚ºï¼ˆã‚·ãƒ³ã‚°ãƒ«æ¥ç¶šãƒ¢ãƒ¼ãƒ‰ï¼‰
                             if ($client) {
                                 try {
                                     if ($stream) { $stream.Close(); $stream.Dispose(); $stream = $null }
@@ -152,9 +152,9 @@ class TcpServerAdapter {
                             $MessageQueue.Enqueue($msg)
                         }
 
-                        # ƒNƒ‰ƒCƒAƒ“ƒg‚ªÚ‘±’†‚Ìê‡A‘—óMˆ—
+                        # ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆãŒæ¥ç¶šä¸­ã®å ´åˆã€é€å—ä¿¡å‡¦ç†
                         if ($client -and $client.Connected) {
-                            # ‘—Mˆ—
+                            # é€ä¿¡å‡¦ç†
                             if ($SendQueueSync -and $SendQueueSync.Count -gt 0) {
                                 [System.Threading.Monitor]::Enter($SendQueueSync.SyncRoot)
                                 try {
@@ -181,7 +181,7 @@ class TcpServerAdapter {
                                 }
                             }
 
-                            # óMˆ—i”ñƒuƒƒbƒLƒ“ƒOj
+                            # å—ä¿¡å‡¦ç†ï¼ˆéãƒ–ãƒ­ãƒƒã‚­ãƒ³ã‚°ï¼‰
                             if ($stream.DataAvailable) {
                                 $buffer = New-Object byte[] 8192
                                 $bytesRead = $stream.Read($buffer, 0, $buffer.Length)
@@ -202,7 +202,7 @@ class TcpServerAdapter {
                             }
                         }
 
-                        # CPU•‰‰×ŒyŒ¸
+                        # CPUè² è·è»½æ¸›
                         Start-Sleep -Milliseconds 10
 
                     }
@@ -227,7 +227,7 @@ class TcpServerAdapter {
                 $MessageQueue.Enqueue($msg)
             }
             finally {
-                # ƒNƒŠ[ƒ“ƒAƒbƒv
+                # ã‚¯ãƒªãƒ¼ãƒ³ã‚¢ãƒƒãƒ—
                 if ($stream) {
                     try { $stream.Close(); $stream.Dispose() } catch { }
                 }
@@ -246,7 +246,7 @@ class TcpServerAdapter {
             }
         }
 
-        # ScriptBlock‚ğ’Ç‰Á‚µ‚Äƒpƒ‰ƒ[ƒ^‚ğİ’è
+        # ScriptBlockã‚’è¿½åŠ ã—ã¦ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã‚’è¨­å®š
         $null = $ps.AddScript($scriptBlock)
         $null = $ps.AddParameter('ConnectionId', $connectionId)
         $null = $ps.AddParameter('LocalIP', $connection.LocalIP)
@@ -255,10 +255,10 @@ class TcpServerAdapter {
         $null = $ps.AddParameter('SendQueueSync', $connection.SendQueue)
         $null = $ps.AddParameter('CancellationToken', $connection.CancellationSource.Token)
 
-        # ”ñ“¯ŠúÀsŠJn
+        # éåŒæœŸå®Ÿè¡Œé–‹å§‹
         $asyncHandle = $ps.BeginInvoke()
 
-        # RunspaceŠÖ˜AƒIƒuƒWƒFƒNƒg‚ğ•Û‘¶
+        # Runspaceé–¢é€£ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’ä¿å­˜
         $connection.Variables['_Runspace'] = $runspace
         $connection.Variables['_PowerShell'] = $ps
         $connection.Variables['_AsyncHandle'] = $asyncHandle
@@ -271,10 +271,10 @@ class TcpServerAdapter {
 
     <#
     .SYNOPSIS
-    TCP ƒT[ƒo[‚ğ’â~‚·‚é
+    TCP ã‚µãƒ¼ãƒãƒ¼ã‚’åœæ­¢ã™ã‚‹
     
     .PARAMETER connectionId
-    Ú‘±ID
+    æ¥ç¶šID
     #>
     [void] Stop([string]$connectionId) {
         if ([string]::IsNullOrWhiteSpace($connectionId)) {
@@ -290,7 +290,7 @@ class TcpServerAdapter {
             ConnectionId = $connectionId
         })
 
-        # ƒLƒƒƒ“ƒZƒ‹ƒg[ƒNƒ“‚ğ”­s
+        # ã‚­ãƒ£ãƒ³ã‚»ãƒ«ãƒˆãƒ¼ã‚¯ãƒ³ã‚’ç™ºè¡Œ
         if ($connection.CancellationSource) {
             try {
                 $connection.CancellationSource.Cancel()
@@ -303,14 +303,14 @@ class TcpServerAdapter {
             }
         }
 
-        # Runspace‚Ì’â~
+        # Runspaceã®åœæ­¢
         $ps = $connection.Variables['_PowerShell']
         $asyncHandle = $connection.Variables['_AsyncHandle']
         $runspace = $connection.Variables['_Runspace']
 
         if ($ps) {
             try {
-                # Às’†‚ÌRunspace‚ğ’â~
+                # å®Ÿè¡Œä¸­ã®Runspaceã‚’åœæ­¢
                 if ($ps.InvocationStateInfo.State -eq [System.Management.Automation.PSInvocationState]::Running) {
                     $this._logger.LogInfo("Stopping Runspace execution", @{
                         ConnectionId = $connectionId
@@ -318,13 +318,13 @@ class TcpServerAdapter {
                     $ps.Stop()
                 }
 
-                # ”ñ“¯ŠúÀs‚ÌŠ®—¹‚ğ‘Ò‹@iÅ‘å2•bj
+                # éåŒæœŸå®Ÿè¡Œã®å®Œäº†ã‚’å¾…æ©Ÿï¼ˆæœ€å¤§2ç§’ï¼‰
                 if ($asyncHandle) {
                     try {
                         $ps.EndInvoke($asyncHandle)
                     }
                     catch {
-                        # EndInvoke‚ÅƒGƒ‰[‚ª”­¶‚µ‚Ä‚àƒƒO‚¾‚¯‹L˜^
+                        # EndInvokeã§ã‚¨ãƒ©ãƒ¼ãŒç™ºç”Ÿã—ã¦ã‚‚ãƒ­ã‚°ã ã‘è¨˜éŒ²
                         $this._logger.LogWarning("Error during EndInvoke", @{
                             ConnectionId = $connectionId
                             Error = $_.Exception.Message
@@ -339,7 +339,7 @@ class TcpServerAdapter {
                 })
             }
             finally {
-                # PowerShellƒIƒuƒWƒFƒNƒg‚Ì”jŠü
+                # PowerShellã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ç ´æ£„
                 try {
                     $ps.Dispose()
                 }
@@ -352,7 +352,7 @@ class TcpServerAdapter {
             }
         }
 
-        # Runspace‚Ì”jŠü
+        # Runspaceã®ç ´æ£„
         if ($runspace) {
             try {
                 if ($runspace.RunspaceStateInfo.State -ne [System.Management.Automation.Runspaces.RunspaceState]::Closed) {
@@ -368,7 +368,7 @@ class TcpServerAdapter {
             }
         }
 
-        # •Ï”‚ÌƒNƒŠ[ƒ“ƒAƒbƒv
+        # å¤‰æ•°ã®ã‚¯ãƒªãƒ¼ãƒ³ã‚¢ãƒƒãƒ—
         $connection.Variables.Remove('_PowerShell')
         $connection.Variables.Remove('_AsyncHandle')
         $connection.Variables.Remove('_Runspace')

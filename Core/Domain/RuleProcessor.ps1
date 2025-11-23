@@ -1,4 +1,4 @@
-class RuleProcessor {
+ï»¿class RuleProcessor {
     hidden [Logger]$_logger
     hidden [RuleRepository]$_ruleRepository
 
@@ -43,7 +43,7 @@ class RuleProcessor {
                 return
             }
 
-            # OnReceivedƒ‹[ƒ‹‚ğBefore/After‚É•ª‚¯‚é
+            # OnReceivedãƒ«ãƒ¼ãƒ«ã‚’Before/Afterã«åˆ†ã‘ã‚‹
             $onReceivedRulesBefore = @()
             $onReceivedRulesAfter = @()
             
@@ -60,17 +60,17 @@ class RuleProcessor {
                 }
             }
 
-            # 1. Before OnReceived ‚ğÀs
+            # 1. Before OnReceived ã‚’å®Ÿè¡Œ
             if ($onReceivedRulesBefore.Count -gt 0) {
                 $this.ProcessOnReceived($connection, $data, $onReceivedRulesBefore)
             }
 
-            # 2. AutoResponse ‚ğÀs
+            # 2. AutoResponse ã‚’å®Ÿè¡Œ
             if ($autoRules -and $autoRules.Count -gt 0) {
                 $this.ProcessAutoResponse($connection, $data, $autoRules)
             }
 
-            # 3. After OnReceived ‚ğÀs
+            # 3. After OnReceived ã‚’å®Ÿè¡Œ
             if ($onReceivedRulesAfter.Count -gt 0) {
                 $this.ProcessOnReceived($connection, $data, $onReceivedRulesAfter)
             }

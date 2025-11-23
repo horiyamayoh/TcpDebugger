@@ -1,4 +1,4 @@
-# Core/Infrastructure/ServiceContainer.ps1
+﻿# Core/Infrastructure/ServiceContainer.ps1
 # Lightweight dependency injection container
 
 class ServiceContainer {

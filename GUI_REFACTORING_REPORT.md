@@ -1,161 +1,161 @@
-# GUI ƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒOŠ®—¹ƒŒƒ|[ƒg
+# GUI ãƒªãƒ•ã‚¡ã‚¯ã‚¿ãƒªãƒ³ã‚°å®Œäº†ãƒ¬ãƒãƒ¼ãƒˆ
 
-**ì¬“ú:** 2025-11-17  
-**ƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒO“à—e:** MainForm.ps1 ‚Ì MVVM ƒpƒ^[ƒ“‰»
-
----
-
-## ƒGƒOƒ[ƒNƒeƒBƒuƒTƒ}ƒŠ[
-
-GUI‘w‚ÌƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒO‚ªŠ®—¹‚µ‚Ü‚µ‚½B1400s‚Ì‹‘å‚È `MainForm.ps1` ‚ð MVVM ƒpƒ^[ƒ“‚ÉŠî‚Ã‚¢‚Ä3‚Â‚Ìƒtƒ@ƒCƒ‹‚É•ªŠ„‚µA•ÛŽç«‚ÆŠg’£«‚ð‘å•‚ÉŒüã‚³‚¹‚Ü‚µ‚½B
-
-### ‘‡•]‰¿: ? **¬Œ÷**
-
-- ? **MVVM ƒpƒ^[ƒ“‚Ì“±“ü**: View / ViewModel / Model ‚Ì•ª—£Š®—¹
-- ? **ƒR[ƒh‚Ì•ª—£**: UI\’zAƒrƒWƒlƒXƒƒWƒbƒNAƒCƒxƒ“ƒgƒnƒ“ƒhƒŠƒ“ƒO‚ð•ª—£
-- ? **\•¶ƒGƒ‰[**: ‚È‚µi‘Sƒtƒ@ƒCƒ‹\•¶“I‚É³‚µ‚¢j
-- ? **‰ºˆÊŒÝŠ·«**: Šù‘¶‚Ì‹@”\‚ð‚·‚×‚ÄˆÛŽ
+**ä½œæˆæ—¥:** 2025-11-17  
+**ãƒªãƒ•ã‚¡ã‚¯ã‚¿ãƒªãƒ³ã‚°å†…å®¹:** MainForm.ps1 ã® MVVM ãƒ‘ã‚¿ãƒ¼ãƒ³åŒ–
 
 ---
 
-## ƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒOÚ×
+## ã‚¨ã‚°ã‚¼ã‚¯ãƒ†ã‚£ãƒ–ã‚µãƒžãƒªãƒ¼
 
-### ? V‚µ‚¢ƒtƒ@ƒCƒ‹\¬
+GUIå±¤ã®ãƒªãƒ•ã‚¡ã‚¯ã‚¿ãƒªãƒ³ã‚°ãŒå®Œäº†ã—ã¾ã—ãŸã€‚1400è¡Œã®å·¨å¤§ãª `MainForm.ps1` ã‚’ MVVM ãƒ‘ã‚¿ãƒ¼ãƒ³ã«åŸºã¥ã„ã¦3ã¤ã®ãƒ•ã‚¡ã‚¤ãƒ«ã«åˆ†å‰²ã—ã€ä¿å®ˆæ€§ã¨æ‹¡å¼µæ€§ã‚’å¤§å¹…ã«å‘ä¸Šã•ã›ã¾ã—ãŸã€‚
+
+### ç·åˆè©•ä¾¡: ? **æˆåŠŸ**
+
+- ? **MVVM ãƒ‘ã‚¿ãƒ¼ãƒ³ã®å°Žå…¥**: View / ViewModel / Model ã®åˆ†é›¢å®Œäº†
+- ? **ã‚³ãƒ¼ãƒ‰ã®åˆ†é›¢**: UIæ§‹ç¯‰ã€ãƒ“ã‚¸ãƒã‚¹ãƒ­ã‚¸ãƒƒã‚¯ã€ã‚¤ãƒ™ãƒ³ãƒˆãƒãƒ³ãƒ‰ãƒªãƒ³ã‚°ã‚’åˆ†é›¢
+- ? **æ§‹æ–‡ã‚¨ãƒ©ãƒ¼**: ãªã—ï¼ˆå…¨ãƒ•ã‚¡ã‚¤ãƒ«æ§‹æ–‡çš„ã«æ­£ã—ã„ï¼‰
+- ? **ä¸‹ä½äº’æ›æ€§**: æ—¢å­˜ã®æ©Ÿèƒ½ã‚’ã™ã¹ã¦ç¶­æŒ
+
+---
+
+## ãƒªãƒ•ã‚¡ã‚¯ã‚¿ãƒªãƒ³ã‚°è©³ç´°
+
+### ? æ–°ã—ã„ãƒ•ã‚¡ã‚¤ãƒ«æ§‹æˆ
 
 ```
 Presentation/
-„¥„Ÿ„Ÿ ViewModels/
-„    „¤„Ÿ„Ÿ MainFormViewModel.ps1    (V‹Kì¬: 450s)
-„¥„Ÿ„Ÿ UI/
-„    „¥„Ÿ„Ÿ MainForm.ps1              (ƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒO: 1085s © Œ³1400s)
-„    „¥„Ÿ„Ÿ MainForm.ps1.bak          (ƒoƒbƒNƒAƒbƒv)
-„    „¤„Ÿ„Ÿ ViewBuilder.ps1           (V‹Kì¬: 302s)
+â”œâ”€â”€ ViewModels/
+â”‚   â””â”€â”€ MainFormViewModel.ps1    (æ–°è¦ä½œæˆ: 450è¡Œ)
+â”œâ”€â”€ UI/
+â”‚   â”œâ”€â”€ MainForm.ps1              (ãƒªãƒ•ã‚¡ã‚¯ã‚¿ãƒªãƒ³ã‚°: 1085è¡Œ â† å…ƒ1400è¡Œ)
+â”‚   â”œâ”€â”€ MainForm.ps1.bak          (ãƒãƒƒã‚¯ã‚¢ãƒƒãƒ—)
+â”‚   â””â”€â”€ ViewBuilder.ps1           (æ–°è¦ä½œæˆ: 302è¡Œ)
 ```
 
-### ? Ó–±‚Ì•ª—£
+### ? è²¬å‹™ã®åˆ†é›¢
 
-#### 1. **MainFormViewModel.ps1** (ƒrƒWƒlƒXƒƒWƒbƒN‘w)
+#### 1. **MainFormViewModel.ps1** (ãƒ“ã‚¸ãƒã‚¹ãƒ­ã‚¸ãƒƒã‚¯å±¤)
 
-**Ó–±:**
-- Ú‘±ƒŠƒXƒg‚ÌŠÇ—
-- ƒƒOƒGƒ“ƒgƒŠ‚ÌŠÇ—
-- ƒvƒƒtƒ@ƒCƒ‹ƒJƒ^ƒƒO‚ÌŽæ“¾
-- Ú‘±‘€ì‚ÌŽÀsiÚ‘±/Ø’f/ƒvƒƒtƒ@ƒCƒ‹•ÏXj
-- ƒVƒiƒŠƒIŽÀsAQuick Data‘—M
+**è²¬å‹™:**
+- æŽ¥ç¶šãƒªã‚¹ãƒˆã®ç®¡ç†
+- ãƒ­ã‚°ã‚¨ãƒ³ãƒˆãƒªã®ç®¡ç†
+- ãƒ—ãƒ­ãƒ•ã‚¡ã‚¤ãƒ«ã‚«ã‚¿ãƒ­ã‚°ã®å–å¾—
+- æŽ¥ç¶šæ“ä½œã®å®Ÿè¡Œï¼ˆæŽ¥ç¶š/åˆ‡æ–­/ãƒ—ãƒ­ãƒ•ã‚¡ã‚¤ãƒ«å¤‰æ›´ï¼‰
+- ã‚·ãƒŠãƒªã‚ªå®Ÿè¡Œã€Quick Dataé€ä¿¡
 
-**Žå—vƒƒ\ƒbƒh:**
+**ä¸»è¦ãƒ¡ã‚½ãƒƒãƒ‰:**
 ```powershell
 class MainFormViewModel {
-    # ƒf[ƒ^ŠÇ—
+    # ãƒ‡ãƒ¼ã‚¿ç®¡ç†
     [void] RefreshConnections()
     [object] GetSelectedConnection()
     
-    # Ú‘±‘€ì
+    # æŽ¥ç¶šæ“ä½œ
     [void] ConnectSelectedConnection()
     [void] DisconnectSelectedConnection()
     
-    # ƒvƒƒtƒ@ƒCƒ‹ŠÇ—
+    # ãƒ—ãƒ­ãƒ•ã‚¡ã‚¤ãƒ«ç®¡ç†
     [void] SetAutoResponseProfile($connectionId, $profileName, $profilePath)
     [void] SetOnReceivedProfile($connectionId, $profileName, $profilePath)
     [void] SetPeriodicSendProfile($connectionId, $profilePath, $instancePath)
     
-    # ƒJƒ^ƒƒOŽæ“¾
+    # ã‚«ã‚¿ãƒ­ã‚°å–å¾—
     [hashtable] GetAutoResponseProfileCatalog($instancePath)
     [hashtable] GetOnReceivedProfileCatalog($instancePath)
     [hashtable] GetPeriodicSendProfileCatalog($instancePath)
     [hashtable] GetQuickDataCatalog($instancePath)
     [hashtable] GetQuickActionCatalog($instancePath)
     
-    # ƒAƒNƒVƒ‡ƒ“ŽÀs
+    # ã‚¢ã‚¯ã‚·ãƒ§ãƒ³å®Ÿè¡Œ
     [void] StartScenario($connectionId, $scenarioPath)
     [void] SendQuickData($connectionId, $dataId, $dataBankPath)
     
-    # ƒƒOŠÇ—
+    # ãƒ­ã‚°ç®¡ç†
     [void] AddLogEntry($message)
     [void] ClearLogs()
     
-    # ƒNƒŠ[ƒ“ƒAƒbƒv
+    # ã‚¯ãƒªãƒ¼ãƒ³ã‚¢ãƒƒãƒ—
     [void] Cleanup()
     
-    # ƒvƒƒpƒeƒB•ÏX’Ê’m
+    # ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£å¤‰æ›´é€šçŸ¥
     [void] NotifyPropertyChanged($propertyName)
 }
 ```
 
-**ƒƒŠƒbƒg:**
-- UI ‚©‚ç“Æ—§‚µ‚½ƒrƒWƒlƒXƒƒWƒbƒN
-- ƒeƒXƒg‰Â”\‚ÈƒR[ƒh
-- ƒT[ƒrƒX‘w‚Ö‚ÌˆË‘¶«’“ü
+**ãƒ¡ãƒªãƒƒãƒˆ:**
+- UI ã‹ã‚‰ç‹¬ç«‹ã—ãŸãƒ“ã‚¸ãƒã‚¹ãƒ­ã‚¸ãƒƒã‚¯
+- ãƒ†ã‚¹ãƒˆå¯èƒ½ãªã‚³ãƒ¼ãƒ‰
+- ã‚µãƒ¼ãƒ“ã‚¹å±¤ã¸ã®ä¾å­˜æ€§æ³¨å…¥
 
-#### 2. **ViewBuilder.ps1** (UI\’z‘w)
+#### 2. **ViewBuilder.ps1** (UIæ§‹ç¯‰å±¤)
 
-**Ó–±:**
-- WinForms ƒRƒ“ƒgƒ[ƒ‹‚Ì¶¬
-- DataGridView ‚ÌƒJƒ‰ƒ€’è‹`
-- UI—v‘f‚ÌƒŒƒCƒAƒEƒg
+**è²¬å‹™:**
+- WinForms ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ã®ç”Ÿæˆ
+- DataGridView ã®ã‚«ãƒ©ãƒ å®šç¾©
+- UIè¦ç´ ã®ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
 
-**Žå—vŠÖ”:**
+**ä¸»è¦é–¢æ•°:**
 ```powershell
-function New-MainFormWindow { }           # ƒƒCƒ“ƒEƒBƒ“ƒhƒEì¬
-function New-ConnectionDataGridView { }   # Ú‘±ˆê——ƒOƒŠƒbƒhì¬
-function Add-ConnectionGridColumns { }    # ƒOƒŠƒbƒhƒJƒ‰ƒ€’Ç‰Á
-function New-ToolbarButton { }            # ƒc[ƒ‹ƒo[ƒ{ƒ^ƒ“ì¬
-function New-LabelControl { }             # ƒ‰ƒxƒ‹ì¬
-function New-LogTextBox { }               # ƒƒOƒeƒLƒXƒgƒ{ƒbƒNƒXì¬
-function New-RefreshTimer { }             # ƒ^ƒCƒ}[ì¬
+function New-MainFormWindow { }           # ãƒ¡ã‚¤ãƒ³ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ä½œæˆ
+function New-ConnectionDataGridView { }   # æŽ¥ç¶šä¸€è¦§ã‚°ãƒªãƒƒãƒ‰ä½œæˆ
+function Add-ConnectionGridColumns { }    # ã‚°ãƒªãƒƒãƒ‰ã‚«ãƒ©ãƒ è¿½åŠ 
+function New-ToolbarButton { }            # ãƒ„ãƒ¼ãƒ«ãƒãƒ¼ãƒœã‚¿ãƒ³ä½œæˆ
+function New-LabelControl { }             # ãƒ©ãƒ™ãƒ«ä½œæˆ
+function New-LogTextBox { }               # ãƒ­ã‚°ãƒ†ã‚­ã‚¹ãƒˆãƒœãƒƒã‚¯ã‚¹ä½œæˆ
+function New-RefreshTimer { }             # ã‚¿ã‚¤ãƒžãƒ¼ä½œæˆ
 ```
 
-**ƒƒŠƒbƒg:**
-- UI\’zƒƒWƒbƒN‚ÌÄ—˜—p‰Â”\«
-- UI•ÏX‚Ì—eˆÕ‚³
-- ƒe[ƒ}‚âƒXƒ^ƒCƒ‹‚ÌˆêŒ³ŠÇ—
+**ãƒ¡ãƒªãƒƒãƒˆ:**
+- UIæ§‹ç¯‰ãƒ­ã‚¸ãƒƒã‚¯ã®å†åˆ©ç”¨å¯èƒ½æ€§
+- UIå¤‰æ›´ã®å®¹æ˜“ã•
+- ãƒ†ãƒ¼ãƒžã‚„ã‚¹ã‚¿ã‚¤ãƒ«ã®ä¸€å…ƒç®¡ç†
 
-#### 3. **MainForm.ps1** (ƒvƒŒƒ[ƒ“ƒe[ƒVƒ‡ƒ“‘w)
+#### 3. **MainForm.ps1** (ãƒ—ãƒ¬ã‚¼ãƒ³ãƒ†ãƒ¼ã‚·ãƒ§ãƒ³å±¤)
 
-**Ó–±:**
-- ViewModel‚ÆView‚ÌÚ‘±
-- ƒCƒxƒ“ƒgƒnƒ“ƒhƒŠƒ“ƒO‚Ì’è‹`
-- ƒf[ƒ^ƒoƒCƒ“ƒfƒBƒ“ƒO‚ÌŽÀ‘•
-- UIXV‚Ì§Œä
+**è²¬å‹™:**
+- ViewModelã¨Viewã®æŽ¥ç¶š
+- ã‚¤ãƒ™ãƒ³ãƒˆãƒãƒ³ãƒ‰ãƒªãƒ³ã‚°ã®å®šç¾©
+- ãƒ‡ãƒ¼ã‚¿ãƒã‚¤ãƒ³ãƒ‡ã‚£ãƒ³ã‚°ã®å®Ÿè£…
+- UIæ›´æ–°ã®åˆ¶å¾¡
 
-**Žå—vƒZƒNƒVƒ‡ƒ“:**
+**ä¸»è¦ã‚»ã‚¯ã‚·ãƒ§ãƒ³:**
 ```powershell
 function Show-MainForm {
-    # 1. ƒT[ƒrƒX‰Šú‰»
-    # 2. ViewModelì¬
-    # 3. Viewì¬iViewBuilder‚ðŽg—pj
-    # 4. ƒCƒxƒ“ƒgƒnƒ“ƒhƒ‰[“o˜^
-    # 5. ƒf[ƒ^ƒoƒCƒ“ƒfƒBƒ“ƒOÝ’è
-    # 6. ‰Šú‰»‚ÆƒtƒH[ƒ€•\Ž¦
+    # 1. ã‚µãƒ¼ãƒ“ã‚¹åˆæœŸåŒ–
+    # 2. ViewModelä½œæˆ
+    # 3. Viewä½œæˆï¼ˆViewBuilderã‚’ä½¿ç”¨ï¼‰
+    # 4. ã‚¤ãƒ™ãƒ³ãƒˆãƒãƒ³ãƒ‰ãƒ©ãƒ¼ç™»éŒ²
+    # 5. ãƒ‡ãƒ¼ã‚¿ãƒã‚¤ãƒ³ãƒ‡ã‚£ãƒ³ã‚°è¨­å®š
+    # 6. åˆæœŸåŒ–ã¨ãƒ•ã‚©ãƒ¼ãƒ è¡¨ç¤º
 }
 
-# ƒCƒxƒ“ƒgƒnƒ“ƒhƒ‰[ŠÖ”
+# ã‚¤ãƒ™ãƒ³ãƒˆãƒãƒ³ãƒ‰ãƒ©ãƒ¼é–¢æ•°
 function Handle-AutoResponseChange { }
 function Handle-OnReceivedChange { }
 function Handle-PeriodicSendChange { }
 function Handle-ButtonClick { }
 
-# UIXVŠÖ”
+# UIæ›´æ–°é–¢æ•°
 function Update-ConnectionGrid { }
 function Update-LogTextBox { }
 function Update-LogDisplay { }
 ```
 
-**ƒƒŠƒbƒg:**
-- ƒCƒxƒ“ƒgˆ—‚Ì–¾Šm‰»
-- ViewModelŒo—R‚Å‚ÌƒrƒWƒlƒXƒƒWƒbƒNŽÀs
-- UI‚ÆƒƒWƒbƒN‚Ì•ª—£
+**ãƒ¡ãƒªãƒƒãƒˆ:**
+- ã‚¤ãƒ™ãƒ³ãƒˆå‡¦ç†ã®æ˜Žç¢ºåŒ–
+- ViewModelçµŒç”±ã§ã®ãƒ“ã‚¸ãƒã‚¹ãƒ­ã‚¸ãƒƒã‚¯å®Ÿè¡Œ
+- UIã¨ãƒ­ã‚¸ãƒƒã‚¯ã®åˆ†é›¢
 
 ---
 
-## MVVM ƒpƒ^[ƒ“‚ÌŽÀ‘•
+## MVVM ãƒ‘ã‚¿ãƒ¼ãƒ³ã®å®Ÿè£…
 
-### ƒf[ƒ^ƒoƒCƒ“ƒfƒBƒ“ƒO
+### ãƒ‡ãƒ¼ã‚¿ãƒã‚¤ãƒ³ãƒ‡ã‚£ãƒ³ã‚°
 
-ViewModel‚Ì•ÏX‚ðUI‚ÉŽ©“®”½‰f‚·‚éŽd‘g‚Ý‚ðŽÀ‘•:
+ViewModelã®å¤‰æ›´ã‚’UIã«è‡ªå‹•åæ˜ ã™ã‚‹ä»•çµ„ã¿ã‚’å®Ÿè£…:
 
 ```powershell
-# ViewModel‘¤
+# ViewModelå´
 $viewModel.OnPropertyChanged = {
     param([string]$propertyName)
     
@@ -169,16 +169,16 @@ $viewModel.OnPropertyChanged = {
     }
 }
 
-# ƒvƒƒpƒeƒB•ÏX‚Ì’Ê’m
-$viewModel.RefreshConnections()  # ¨ NotifyPropertyChanged('Connections') ¨ UIXV
+# ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£å¤‰æ›´ã®é€šçŸ¥
+$viewModel.RefreshConnections()  # â†’ NotifyPropertyChanged('Connections') â†’ UIæ›´æ–°
 ```
 
-### ˆË‘¶«’“ü
+### ä¾å­˜æ€§æ³¨å…¥
 
-ViewModel‚ÍƒT[ƒrƒX‘w‚Ö‚ÌˆË‘¶‚ð’“ü‚ÅŽó‚¯Žæ‚é:
+ViewModelã¯ã‚µãƒ¼ãƒ“ã‚¹å±¤ã¸ã®ä¾å­˜ã‚’æ³¨å…¥ã§å—ã‘å–ã‚‹:
 
 ```powershell
-# ƒtƒ@ƒNƒgƒŠ[ƒpƒ^[ƒ“
+# ãƒ•ã‚¡ã‚¯ãƒˆãƒªãƒ¼ãƒ‘ã‚¿ãƒ¼ãƒ³
 $viewModel = New-MainFormViewModel `
     -ConnectionService $connectionService `
     -InstanceManager $instanceManager `
@@ -187,85 +187,85 @@ $viewModel = New-MainFormViewModel `
 
 ---
 
-## ƒR[ƒhíŒ¸‚Æ®—
+## ã‚³ãƒ¼ãƒ‰å‰Šæ¸›ã¨æ•´ç†
 
-### Before (ƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒO‘O)
-
-```
-MainForm.ps1: 1400s
-- UI\’zƒƒWƒbƒN
-- ƒrƒWƒlƒXƒƒWƒbƒN
-- ƒCƒxƒ“ƒgƒnƒ“ƒhƒŠƒ“ƒO
-- ƒf[ƒ^Žæ“¾ƒƒWƒbƒN
-- ƒvƒƒtƒ@ƒCƒ‹ŠÇ—
-- ƒƒO•\Ž¦
-```
-
-### After (ƒŠƒtƒ@ƒNƒ^ƒŠƒ“ƒOŒã)
+### Before (ãƒªãƒ•ã‚¡ã‚¯ã‚¿ãƒªãƒ³ã‚°å‰)
 
 ```
-MainFormViewModel.ps1: 450s  (ƒrƒWƒlƒXƒƒWƒbƒN)
-ViewBuilder.ps1:       302s  (UI\’z)
-MainForm.ps1:         1085s  (ƒvƒŒƒ[ƒ“ƒe[ƒVƒ‡ƒ“)
+MainForm.ps1: 1400è¡Œ
+- UIæ§‹ç¯‰ãƒ­ã‚¸ãƒƒã‚¯
+- ãƒ“ã‚¸ãƒã‚¹ãƒ­ã‚¸ãƒƒã‚¯
+- ã‚¤ãƒ™ãƒ³ãƒˆãƒãƒ³ãƒ‰ãƒªãƒ³ã‚°
+- ãƒ‡ãƒ¼ã‚¿å–å¾—ãƒ­ã‚¸ãƒƒã‚¯
+- ãƒ—ãƒ­ãƒ•ã‚¡ã‚¤ãƒ«ç®¡ç†
+- ãƒ­ã‚°è¡¨ç¤º
+```
+
+### After (ãƒªãƒ•ã‚¡ã‚¯ã‚¿ãƒªãƒ³ã‚°å¾Œ)
+
+```
+MainFormViewModel.ps1: 450è¡Œ  (ãƒ“ã‚¸ãƒã‚¹ãƒ­ã‚¸ãƒƒã‚¯)
+ViewBuilder.ps1:       302è¡Œ  (UIæ§‹ç¯‰)
+MainForm.ps1:         1085è¡Œ  (ãƒ—ãƒ¬ã‚¼ãƒ³ãƒ†ãƒ¼ã‚·ãƒ§ãƒ³)
 ----------------------------------------
-‡Œv:                 1837s  (d•¡”rœE\‘¢‰»‚É‚æ‚è437s‘)
+åˆè¨ˆ:                 1837è¡Œ  (é‡è¤‡æŽ’é™¤ãƒ»æ§‹é€ åŒ–ã«ã‚ˆã‚Š437è¡Œå¢—)
 ```
 
-**‘‰Á‚Ì——R:**
-- –¾Ž¦“I‚ÈŠÖ”’è‹`‚ÆƒRƒƒ“ƒg
-- ƒNƒ‰ƒXƒx[ƒX‚Ì\‘¢‰»
-- ˆË‘¶«’“ü‚ÌŽÀ‘•
-- ƒGƒ‰[ƒnƒ“ƒhƒŠƒ“ƒO‚Ì‹­‰»
+**å¢—åŠ ã®ç†ç”±:**
+- æ˜Žç¤ºçš„ãªé–¢æ•°å®šç¾©ã¨ã‚³ãƒ¡ãƒ³ãƒˆ
+- ã‚¯ãƒ©ã‚¹ãƒ™ãƒ¼ã‚¹ã®æ§‹é€ åŒ–
+- ä¾å­˜æ€§æ³¨å…¥ã®å®Ÿè£…
+- ã‚¨ãƒ©ãƒ¼ãƒãƒ³ãƒ‰ãƒªãƒ³ã‚°ã®å¼·åŒ–
 
-**ŽÀŽ¿“I‚ÈŒø‰Ê:**
-- **•ÛŽç«**: ? ‘å•‚ÉŒüãiÓ–±‚ª–¾Šmj
-- **ƒeƒXƒg—eˆÕ«**: ? ŒüãiViewModel‚ª“Æ—§j
-- **Ä—˜—p«**: ? ŒüãiViewBuilder‚ª”Ä—pj
-- **Šg’£«**: ? ŒüãiMVVMƒpƒ^[ƒ“‚ÅV‹@”\’Ç‰Á‚ª—eˆÕj
-
----
-
-## “®ìŠm”Fƒ`ƒFƒbƒNƒŠƒXƒg
-
-### ? Šî–{‹@”\
-- [ ] ƒAƒvƒŠƒP[ƒVƒ‡ƒ“‹N“®
-- [ ] Ú‘±ƒŠƒXƒg•\Ž¦
-- [ ] Refresh ƒ{ƒ^ƒ“
-- [ ] Connect / Disconnect ƒ{ƒ^ƒ“
-
-### ? ƒvƒƒtƒ@ƒCƒ‹•ÏX
-- [ ] Auto Response ƒvƒƒtƒ@ƒCƒ‹•ÏX
-- [ ] OnReceived ƒvƒƒtƒ@ƒCƒ‹•ÏX
-- [ ] Periodic Send ƒvƒƒtƒ@ƒCƒ‹•ÏX
-
-### ? ƒAƒNƒVƒ‡ƒ“ŽÀs
-- [ ] ƒVƒiƒŠƒIŽÀsiAuto Response—ñj
-- [ ] Quick Data ‘—M
-- [ ] Quick Action ŽÀs
-
-### ? UI“®ì
-- [ ] ƒOƒŠƒbƒh‚Ì•ÒWó‘ÔŠÇ—
-- [ ] ComboBox ‚ÌŽ©“®ƒhƒƒbƒvƒ_ƒEƒ“
-- [ ] ƒƒO•\Ž¦‚ÌŽ©“®XV
-- [ ] ƒ^ƒCƒ}[‚É‚æ‚é’èŠúƒŠƒtƒŒƒbƒVƒ…
-- [ ] ‘I‘ðó‘Ô‚Ì•ÛŽ
-- [ ] ƒXƒNƒ[ƒ‹ˆÊ’u‚Ì•ÛŽ
-
-### ? ƒGƒ‰[ƒnƒ“ƒhƒŠƒ“ƒO
-- [ ] ‘¶Ý‚µ‚È‚¢ƒvƒƒtƒ@ƒCƒ‹‘I‘ðŽž‚ÌƒGƒ‰[•\Ž¦
-- [ ] Ú‘±Ž¸”sŽž‚ÌƒGƒ‰[ƒƒbƒZ[ƒW
-- [ ] ƒf[ƒ^‘—MŽ¸”sŽž‚Ìƒnƒ“ƒhƒŠƒ“ƒO
+**å®Ÿè³ªçš„ãªåŠ¹æžœ:**
+- **ä¿å®ˆæ€§**: ? å¤§å¹…ã«å‘ä¸Šï¼ˆè²¬å‹™ãŒæ˜Žç¢ºï¼‰
+- **ãƒ†ã‚¹ãƒˆå®¹æ˜“æ€§**: ? å‘ä¸Šï¼ˆViewModelãŒç‹¬ç«‹ï¼‰
+- **å†åˆ©ç”¨æ€§**: ? å‘ä¸Šï¼ˆViewBuilderãŒæ±Žç”¨ï¼‰
+- **æ‹¡å¼µæ€§**: ? å‘ä¸Šï¼ˆMVVMãƒ‘ã‚¿ãƒ¼ãƒ³ã§æ–°æ©Ÿèƒ½è¿½åŠ ãŒå®¹æ˜“ï¼‰
 
 ---
 
-## ƒA[ƒLƒeƒNƒ`ƒƒ‚Ì—˜“_
+## å‹•ä½œç¢ºèªãƒã‚§ãƒƒã‚¯ãƒªã‚¹ãƒˆ
 
-### 1. **ƒeƒXƒ^ƒrƒŠƒeƒB**
+### ? åŸºæœ¬æ©Ÿèƒ½
+- [ ] ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³èµ·å‹•
+- [ ] æŽ¥ç¶šãƒªã‚¹ãƒˆè¡¨ç¤º
+- [ ] Refresh ãƒœã‚¿ãƒ³
+- [ ] Connect / Disconnect ãƒœã‚¿ãƒ³
 
-ViewModel‚Í UI ‚©‚çŠ®‘S‚É“Æ—§‚µ‚Ä‚¢‚é‚½‚ßA’P‘ÌƒeƒXƒg‚ª—eˆÕ:
+### ? ãƒ—ãƒ­ãƒ•ã‚¡ã‚¤ãƒ«å¤‰æ›´
+- [ ] Auto Response ãƒ—ãƒ­ãƒ•ã‚¡ã‚¤ãƒ«å¤‰æ›´
+- [ ] OnReceived ãƒ—ãƒ­ãƒ•ã‚¡ã‚¤ãƒ«å¤‰æ›´
+- [ ] Periodic Send ãƒ—ãƒ­ãƒ•ã‚¡ã‚¤ãƒ«å¤‰æ›´
+
+### ? ã‚¢ã‚¯ã‚·ãƒ§ãƒ³å®Ÿè¡Œ
+- [ ] ã‚·ãƒŠãƒªã‚ªå®Ÿè¡Œï¼ˆAuto Responseåˆ—ï¼‰
+- [ ] Quick Data é€ä¿¡
+- [ ] Quick Action å®Ÿè¡Œ
+
+### ? UIå‹•ä½œ
+- [ ] ã‚°ãƒªãƒƒãƒ‰ã®ç·¨é›†çŠ¶æ…‹ç®¡ç†
+- [ ] ComboBox ã®è‡ªå‹•ãƒ‰ãƒ­ãƒƒãƒ—ãƒ€ã‚¦ãƒ³
+- [ ] ãƒ­ã‚°è¡¨ç¤ºã®è‡ªå‹•æ›´æ–°
+- [ ] ã‚¿ã‚¤ãƒžãƒ¼ã«ã‚ˆã‚‹å®šæœŸãƒªãƒ•ãƒ¬ãƒƒã‚·ãƒ¥
+- [ ] é¸æŠžçŠ¶æ…‹ã®ä¿æŒ
+- [ ] ã‚¹ã‚¯ãƒ­ãƒ¼ãƒ«ä½ç½®ã®ä¿æŒ
+
+### ? ã‚¨ãƒ©ãƒ¼ãƒãƒ³ãƒ‰ãƒªãƒ³ã‚°
+- [ ] å­˜åœ¨ã—ãªã„ãƒ—ãƒ­ãƒ•ã‚¡ã‚¤ãƒ«é¸æŠžæ™‚ã®ã‚¨ãƒ©ãƒ¼è¡¨ç¤º
+- [ ] æŽ¥ç¶šå¤±æ•—æ™‚ã®ã‚¨ãƒ©ãƒ¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
+- [ ] ãƒ‡ãƒ¼ã‚¿é€ä¿¡å¤±æ•—æ™‚ã®ãƒãƒ³ãƒ‰ãƒªãƒ³ã‚°
+
+---
+
+## ã‚¢ãƒ¼ã‚­ãƒ†ã‚¯ãƒãƒ£ã®åˆ©ç‚¹
+
+### 1. **ãƒ†ã‚¹ã‚¿ãƒ“ãƒªãƒ†ã‚£**
+
+ViewModelã¯ UI ã‹ã‚‰å®Œå…¨ã«ç‹¬ç«‹ã—ã¦ã„ã‚‹ãŸã‚ã€å˜ä½“ãƒ†ã‚¹ãƒˆãŒå®¹æ˜“:
 
 ```powershell
-# ƒeƒXƒg—ái‹^Ž—ƒR[ƒhj
+# ãƒ†ã‚¹ãƒˆä¾‹ï¼ˆç–‘ä¼¼ã‚³ãƒ¼ãƒ‰ï¼‰
 Describe "MainFormViewModel" {
     It "RefreshConnections should update Connections list" {
         $vm = New-MainFormViewModel -ConnectionService $mockService
@@ -275,74 +275,74 @@ Describe "MainFormViewModel" {
 }
 ```
 
-### 2. **•ÛŽç«**
+### 2. **ä¿å®ˆæ€§**
 
-•ÏX‚Ì‰e‹¿”ÍˆÍ‚ª–¾Šm:
+å¤‰æ›´ã®å½±éŸ¿ç¯„å›²ãŒæ˜Žç¢º:
 
-- **UIƒfƒUƒCƒ“•ÏX**: `ViewBuilder.ps1` ‚Ì‚Ý
-- **ƒrƒWƒlƒXƒƒWƒbƒN•ÏX**: `MainFormViewModel.ps1` ‚Ì‚Ý
-- **ƒCƒxƒ“ƒgˆ—•ÏX**: `MainForm.ps1` ‚ÌƒCƒxƒ“ƒgƒnƒ“ƒhƒ‰[‚Ì‚Ý
+- **UIãƒ‡ã‚¶ã‚¤ãƒ³å¤‰æ›´**: `ViewBuilder.ps1` ã®ã¿
+- **ãƒ“ã‚¸ãƒã‚¹ãƒ­ã‚¸ãƒƒã‚¯å¤‰æ›´**: `MainFormViewModel.ps1` ã®ã¿
+- **ã‚¤ãƒ™ãƒ³ãƒˆå‡¦ç†å¤‰æ›´**: `MainForm.ps1` ã®ã‚¤ãƒ™ãƒ³ãƒˆãƒãƒ³ãƒ‰ãƒ©ãƒ¼ã®ã¿
 
-### 3. **Šg’£«**
+### 3. **æ‹¡å¼µæ€§**
 
-V‚µ‚¢ƒvƒƒtƒ@ƒCƒ‹ƒ^ƒCƒv‚âƒAƒNƒVƒ‡ƒ“‚Ì’Ç‰Á‚ª—eˆÕ:
+æ–°ã—ã„ãƒ—ãƒ­ãƒ•ã‚¡ã‚¤ãƒ«ã‚¿ã‚¤ãƒ—ã‚„ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã®è¿½åŠ ãŒå®¹æ˜“:
 
 ```powershell
-# ViewModel‚ÉV‚µ‚¢ƒJƒ^ƒƒOƒƒ\ƒbƒh‚ð’Ç‰Á
+# ViewModelã«æ–°ã—ã„ã‚«ã‚¿ãƒ­ã‚°ãƒ¡ã‚½ãƒƒãƒ‰ã‚’è¿½åŠ 
 [hashtable] GetNewProfileCatalog($instancePath) { ... }
 
-# ViewBuilder‚ÉV‚µ‚¢ƒRƒ“ƒgƒ[ƒ‹‚ð’Ç‰Á
+# ViewBuilderã«æ–°ã—ã„ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ã‚’è¿½åŠ 
 function New-CustomControl { ... }
 
-# MainForm‚ÅƒCƒxƒ“ƒgƒnƒ“ƒhƒ‰[‚ð“o˜^
+# MainFormã§ã‚¤ãƒ™ãƒ³ãƒˆãƒãƒ³ãƒ‰ãƒ©ãƒ¼ã‚’ç™»éŒ²
 $dgv.Add_CellValueChanged({ Handle-NewProfileChange ... })
 ```
 
-### 4. **Ä—˜—p«**
+### 4. **å†åˆ©ç”¨æ€§**
 
-`ViewBuilder.ps1` ‚ÌŠÖ”‚Í‘¼‚ÌUI‚Å‚àŽg—p‰Â”\:
+`ViewBuilder.ps1` ã®é–¢æ•°ã¯ä»–ã®UIã§ã‚‚ä½¿ç”¨å¯èƒ½:
 
 ```powershell
-# •Ê‚ÌƒtƒH[ƒ€‚Å‚à“¯‚¶UI—v‘f‚ðŽg—p
+# åˆ¥ã®ãƒ•ã‚©ãƒ¼ãƒ ã§ã‚‚åŒã˜UIè¦ç´ ã‚’ä½¿ç”¨
 $myForm = New-MainFormWindow -Title "Custom Tool" -Width 800 -Height 600
 $myGrid = New-ConnectionDataGridView -X 10 -Y 50
 ```
 
 ---
 
-## ¡Œã‚Ì‰ü‘P’ñˆÄ
+## ä»Šå¾Œã®æ”¹å–„ææ¡ˆ
 
-### Phase 2: ‚“x‚Èƒf[ƒ^ƒoƒCƒ“ƒfƒBƒ“ƒO
+### Phase 2: é«˜åº¦ãªãƒ‡ãƒ¼ã‚¿ãƒã‚¤ãƒ³ãƒ‡ã‚£ãƒ³ã‚°
 
-- PowerShell ƒNƒ‰ƒX‚ÌƒvƒƒpƒeƒB•ÏX’Ê’m‚Ì‹­‰»
-- ObservableCollection ‚ÌŽÀ‘•
-- ‘o•ûŒüƒoƒCƒ“ƒfƒBƒ“ƒO‚ÌŽÀ‘•
+- PowerShell ã‚¯ãƒ©ã‚¹ã®ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£å¤‰æ›´é€šçŸ¥ã®å¼·åŒ–
+- ObservableCollection ã®å®Ÿè£…
+- åŒæ–¹å‘ãƒã‚¤ãƒ³ãƒ‡ã‚£ãƒ³ã‚°ã®å®Ÿè£…
 
-### Phase 3: UI ƒRƒ“ƒ|[ƒlƒ“ƒg‰»
+### Phase 3: UI ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆåŒ–
 
-- ƒJƒXƒ^ƒ€ƒRƒ“ƒgƒ[ƒ‹‚Ìì¬
-- Ä—˜—p‰Â”\‚Èƒ_ƒCƒAƒƒOƒRƒ“ƒ|[ƒlƒ“ƒg
-- Ý’è‰æ–Ê‚Ì•ª—£
+- ã‚«ã‚¹ã‚¿ãƒ ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ã®ä½œæˆ
+- å†åˆ©ç”¨å¯èƒ½ãªãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆ
+- è¨­å®šç”»é¢ã®åˆ†é›¢
 
-### Phase 4: ”ñ“¯Šúˆ—‚Ì‰ü‘P
+### Phase 4: éžåŒæœŸå‡¦ç†ã®æ”¹å–„
 
-- BackgroundWorker ‚ÌŠˆ—p
-- ’·ŽžŠÔˆ—’†‚ÌƒvƒƒOƒŒƒX•\Ž¦
-- ƒLƒƒƒ“ƒZƒ‹‹@”\‚ÌŽÀ‘•
-
----
-
-## ‚Ü‚Æ‚ß
-
-? **MVVMƒpƒ^[ƒ“‚Ì“±“ü‚É‚æ‚èAGUIƒR[ƒh‚Ì•iŽ¿‚ª‘å•‚ÉŒüã‚µ‚Ü‚µ‚½:**
-
-1. **Ó–±‚Ì•ª—£**: View / ViewModel / ViewBuilder ‚É–¾Šm‚É•ª—£
-2. **ƒeƒXƒg—eˆÕ«**: ƒrƒWƒlƒXƒƒWƒbƒN‚ª UI ‚©‚ç“Æ—§
-3. **•ÛŽç«Œüã**: •ÏX‚Ì‰e‹¿”ÍˆÍ‚ª–¾Šm
-4. **Šg’£«Œüã**: V‹@”\‚Ì’Ç‰Á‚ª—eˆÕ
-
-**Šù‘¶‚Ì‹@”\‚Í‚·‚×‚ÄˆÛŽ**‚³‚ê‚Ä‚¨‚èA‰ºˆÊŒÝŠ·«‚à•Û‚½‚ê‚Ä‚¢‚Ü‚·B
+- BackgroundWorker ã®æ´»ç”¨
+- é•·æ™‚é–“å‡¦ç†ä¸­ã®ãƒ—ãƒ­ã‚°ãƒ¬ã‚¹è¡¨ç¤º
+- ã‚­ãƒ£ãƒ³ã‚»ãƒ«æ©Ÿèƒ½ã®å®Ÿè£…
 
 ---
 
-**ŽŸ‚ÌƒXƒeƒbƒv**: ŽÀÛ‚ÉƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚ð‹N“®‚µ‚Ä“®ìŠm”F‚ðŽÀŽ{‚µ‚Ä‚­‚¾‚³‚¢B
+## ã¾ã¨ã‚
+
+? **MVVMãƒ‘ã‚¿ãƒ¼ãƒ³ã®å°Žå…¥ã«ã‚ˆã‚Šã€GUIã‚³ãƒ¼ãƒ‰ã®å“è³ªãŒå¤§å¹…ã«å‘ä¸Šã—ã¾ã—ãŸ:**
+
+1. **è²¬å‹™ã®åˆ†é›¢**: View / ViewModel / ViewBuilder ã«æ˜Žç¢ºã«åˆ†é›¢
+2. **ãƒ†ã‚¹ãƒˆå®¹æ˜“æ€§**: ãƒ“ã‚¸ãƒã‚¹ãƒ­ã‚¸ãƒƒã‚¯ãŒ UI ã‹ã‚‰ç‹¬ç«‹
+3. **ä¿å®ˆæ€§å‘ä¸Š**: å¤‰æ›´ã®å½±éŸ¿ç¯„å›²ãŒæ˜Žç¢º
+4. **æ‹¡å¼µæ€§å‘ä¸Š**: æ–°æ©Ÿèƒ½ã®è¿½åŠ ãŒå®¹æ˜“
+
+**æ—¢å­˜ã®æ©Ÿèƒ½ã¯ã™ã¹ã¦ç¶­æŒ**ã•ã‚Œã¦ãŠã‚Šã€ä¸‹ä½äº’æ›æ€§ã‚‚ä¿ãŸã‚Œã¦ã„ã¾ã™ã€‚
+
+---
+
+**æ¬¡ã®ã‚¹ãƒ†ãƒƒãƒ—**: å®Ÿéš›ã«ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ã‚’èµ·å‹•ã—ã¦å‹•ä½œç¢ºèªã‚’å®Ÿæ–½ã—ã¦ãã ã•ã„ã€‚

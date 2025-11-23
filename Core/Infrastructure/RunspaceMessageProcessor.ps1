@@ -1,14 +1,14 @@
-# Core/Infrastructure/RunspaceMessageProcessor.ps1
-# ƒƒbƒZ[ƒWƒLƒ…[‚©‚çƒƒbƒZ[ƒW‚ğæ‚èo‚µ‚ÄUIƒXƒŒƒbƒh‚Åˆ—
+ï»¿# Core/Infrastructure/RunspaceMessageProcessor.ps1
+# ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚­ãƒ¥ãƒ¼ã‹ã‚‰ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’å–ã‚Šå‡ºã—ã¦UIã‚¹ãƒ¬ãƒƒãƒ‰ã§å‡¦ç†
 
 <#
 .SYNOPSIS
-RunspaceƒƒbƒZ[ƒWƒvƒƒZƒbƒT
+Runspaceãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãƒ—ãƒ­ã‚»ãƒƒã‚µ
 
 .DESCRIPTION
-RunspaceMessageQueue‚©‚çƒƒbƒZ[ƒW‚ğæ‚èo‚µA“KØ‚Èˆ—‚ğÀs‚·‚éB
-‚·‚×‚Ä‚Ìˆ—‚ÍUIƒXƒŒƒbƒh‚ÅÀs‚³‚ê‚é‚½‚ßAÚ‘±ƒIƒuƒWƒFƒNƒg‚Ö‚Ì
-’¼ÚƒAƒNƒZƒX‚ªˆÀ‘S‚És‚¦‚éB
+RunspaceMessageQueueã‹ã‚‰ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’å–ã‚Šå‡ºã—ã€é©åˆ‡ãªå‡¦ç†ã‚’å®Ÿè¡Œã™ã‚‹ã€‚
+ã™ã¹ã¦ã®å‡¦ç†ã¯UIã‚¹ãƒ¬ãƒƒãƒ‰ã§å®Ÿè¡Œã•ã‚Œã‚‹ãŸã‚ã€æ¥ç¶šã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã¸ã®
+ç›´æ¥ã‚¢ã‚¯ã‚»ã‚¹ãŒå®‰å…¨ã«è¡Œãˆã‚‹ã€‚
 #>
 class RunspaceMessageProcessor {
     hidden [RunspaceMessageQueue]$_queue
@@ -20,19 +20,19 @@ class RunspaceMessageProcessor {
     
     <#
     .SYNOPSIS
-    ƒRƒ“ƒXƒgƒ‰ƒNƒ^
+    ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
     
     .PARAMETER queue
-    ƒƒbƒZ[ƒWƒLƒ…[
+    ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚­ãƒ¥ãƒ¼
     
     .PARAMETER connectionService
-    Ú‘±ƒT[ƒrƒX
+    æ¥ç¶šã‚µãƒ¼ãƒ“ã‚¹
     
     .PARAMETER pipeline
-    óMƒCƒxƒ“ƒgƒpƒCƒvƒ‰ƒCƒ“
+    å—ä¿¡ã‚¤ãƒ™ãƒ³ãƒˆãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³
     
     .PARAMETER logger
-    ƒƒK[
+    ãƒ­ã‚¬ãƒ¼
     #>
     RunspaceMessageProcessor(
         [RunspaceMessageQueue]$queue,
@@ -72,17 +72,17 @@ class RunspaceMessageProcessor {
     
     <#
     .SYNOPSIS
-    ƒƒbƒZ[ƒW‚ğˆ—‚·‚é
+    ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’å‡¦ç†ã™ã‚‹
     
     .PARAMETER maxCount
-    1‰ñ‚ÌŒÄ‚Ño‚µ‚Åˆ—‚·‚éÅ‘åƒƒbƒZ[ƒW”
+    1å›ã®å‘¼ã³å‡ºã—ã§å‡¦ç†ã™ã‚‹æœ€å¤§ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸æ•°
     
     .RETURNS
-    ÀÛ‚Éˆ—‚µ‚½ƒƒbƒZ[ƒW”
+    å®Ÿéš›ã«å‡¦ç†ã—ãŸãƒ¡ãƒƒã‚»ãƒ¼ã‚¸æ•°
     
     .DESCRIPTION
-    ƒLƒ…[‚©‚çƒƒbƒZ[ƒW‚ğæ‚èo‚µ‚Äˆ—‚·‚éB
-    maxCountŒÂ‚ÌƒƒbƒZ[ƒW‚ğˆ—‚·‚é‚©AƒLƒ…[‚ª‹ó‚É‚È‚é‚Ü‚Åˆ—‚ğ‘±‚¯‚éB
+    ã‚­ãƒ¥ãƒ¼ã‹ã‚‰ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’å–ã‚Šå‡ºã—ã¦å‡¦ç†ã™ã‚‹ã€‚
+    maxCountå€‹ã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’å‡¦ç†ã™ã‚‹ã‹ã€ã‚­ãƒ¥ãƒ¼ãŒç©ºã«ãªã‚‹ã¾ã§å‡¦ç†ã‚’ç¶šã‘ã‚‹ã€‚
     
     .EXAMPLE
     $processed = $processor.ProcessMessages(50)
@@ -100,7 +100,7 @@ class RunspaceMessageProcessor {
             $dequeueResult = $this._queue.TryDequeue([ref]$message)
             
             if (-not $dequeueResult) {
-                # ƒLƒ…[‚ª‹ó
+                # ã‚­ãƒ¥ãƒ¼ãŒç©º
                 break
             }
             
@@ -127,13 +127,13 @@ class RunspaceMessageProcessor {
     
     <#
     .SYNOPSIS
-    ’PˆêƒƒbƒZ[ƒW‚ğˆ—
+    å˜ä¸€ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’å‡¦ç†
     
     .PARAMETER message
-    ˆ—‚·‚éƒƒbƒZ[ƒW
+    å‡¦ç†ã™ã‚‹ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
     
     .DESCRIPTION
-    ƒƒbƒZ[ƒWƒ^ƒCƒv‚É‰‚¶‚Ä“KØ‚Èˆ—‚ğÀs‚·‚éB
+    ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚¿ã‚¤ãƒ—ã«å¿œã˜ã¦é©åˆ‡ãªå‡¦ç†ã‚’å®Ÿè¡Œã™ã‚‹ã€‚
     #>
     hidden [void] ProcessMessage([object]$message) {
         if (-not $message) {
@@ -141,10 +141,10 @@ class RunspaceMessageProcessor {
             return
         }
         
-        # Ú‘±ƒIƒuƒWƒFƒNƒg‚ğæ“¾
+        # æ¥ç¶šã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’å–å¾—
         $conn = $this._connectionService.GetConnection($message.ConnectionId)
         
-        # ƒƒbƒZ[ƒWƒ^ƒCƒv‚É‰‚¶‚Äˆ—‚ğ•ªŠò
+        # ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚¿ã‚¤ãƒ—ã«å¿œã˜ã¦å‡¦ç†ã‚’åˆ†å²
         switch ($message.Type) {
             'StatusUpdate' {
                 $this.ProcessStatusUpdate($conn, $message)
@@ -186,7 +186,7 @@ class RunspaceMessageProcessor {
     
     <#
     .SYNOPSIS
-    Ú‘±ó‘ÔXVƒƒbƒZ[ƒW‚ğˆ—
+    æ¥ç¶šçŠ¶æ…‹æ›´æ–°ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’å‡¦ç†
     #>
     hidden [void] ProcessStatusUpdate([object]$conn, [object]$message) {
         if ($conn) {
@@ -207,7 +207,7 @@ class RunspaceMessageProcessor {
     
     <#
     .SYNOPSIS
-    ƒf[ƒ^óMƒƒbƒZ[ƒW‚ğˆ—
+    ãƒ‡ãƒ¼ã‚¿å—ä¿¡ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’å‡¦ç†
     #>
     hidden [void] ProcessDataReceived([object]$conn, [object]$message) {
         try {
@@ -221,8 +221,8 @@ class RunspaceMessageProcessor {
                     $metadata
                 )
                 
-                # ƒAƒNƒeƒBƒrƒeƒB‚ğƒ}[ƒNiDataReceivedƒƒbƒZ[ƒW‚É‚ÍŠù‚ÉActivityMarker‚ª
-                # ‘—‚ç‚ê‚Ä‚¢‚é‘z’è‚¾‚ªA”O‚Ì‚½‚ß‚±‚±‚Å‚àƒ}[ƒNj
+                # ã‚¢ã‚¯ãƒ†ã‚£ãƒ“ãƒ†ã‚£ã‚’ãƒãƒ¼ã‚¯ï¼ˆDataReceivedãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã«ã¯æ—¢ã«ActivityMarkerãŒ
+                # é€ã‚‰ã‚Œã¦ã„ã‚‹æƒ³å®šã ãŒã€å¿µã®ãŸã‚ã“ã“ã§ã‚‚ãƒãƒ¼ã‚¯ï¼‰
                 $conn.MarkActivity()
             }
         }
@@ -236,7 +236,7 @@ class RunspaceMessageProcessor {
     
     <#
     .SYNOPSIS
-    ƒGƒ‰[”­¶ƒƒbƒZ[ƒW‚ğˆ—
+    ã‚¨ãƒ©ãƒ¼ç™ºç”Ÿãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’å‡¦ç†
     #>
     hidden [void] ProcessError([object]$conn, [object]$message) {
         if ($conn) {
@@ -260,7 +260,7 @@ class RunspaceMessageProcessor {
     
     <#
     .SYNOPSIS
-    ƒAƒNƒeƒBƒrƒeƒBƒ}[ƒJ[ƒƒbƒZ[ƒW‚ğˆ—
+    ã‚¢ã‚¯ãƒ†ã‚£ãƒ“ãƒ†ã‚£ãƒãƒ¼ã‚«ãƒ¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’å‡¦ç†
     #>
     hidden [void] ProcessActivityMarker([object]$conn, [object]$message) {
         if ($conn) {
@@ -270,7 +270,7 @@ class RunspaceMessageProcessor {
     
     <#
     .SYNOPSIS
-    ƒ\ƒPƒbƒgXVƒƒbƒZ[ƒW‚ğˆ—
+    ã‚½ã‚±ãƒƒãƒˆæ›´æ–°ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’å‡¦ç†
     #>
     hidden [void] ProcessSocketUpdate([object]$conn, [object]$message) {
         if ($conn) {
@@ -287,7 +287,7 @@ class RunspaceMessageProcessor {
     
     <#
     .SYNOPSIS
-    ƒƒOƒƒbƒZ[ƒW‚ğˆ—
+    ãƒ­ã‚°ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’å‡¦ç†
     #>
     hidden [void] ProcessLogMessage([object]$message) {
         $level = $message.Data['Level']
@@ -298,7 +298,7 @@ class RunspaceMessageProcessor {
             $context = @{}
         }
         
-        # ConnectionId‚ğƒRƒ“ƒeƒLƒXƒg‚É’Ç‰Á
+        # ConnectionIdã‚’ã‚³ãƒ³ãƒ†ã‚­ã‚¹ãƒˆã«è¿½åŠ 
         $context['ConnectionId'] = $message.ConnectionId
         
         switch ($level) {
@@ -319,10 +319,10 @@ class RunspaceMessageProcessor {
     
     <#
     .SYNOPSIS
-    ‘—MƒŠƒNƒGƒXƒgƒƒbƒZ[ƒW‚ğˆ— («—ˆ‚ÌŠg’£—p)
+    é€ä¿¡ãƒªã‚¯ã‚¨ã‚¹ãƒˆãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’å‡¦ç† (å°†æ¥ã®æ‹¡å¼µç”¨)
     #>
     hidden [void] ProcessSendRequest([object]$conn, [object]$message) {
-        # Œ»ó‚Å‚Í–¢À‘•iSendQueue‚É’¼Ú’Ç‰Á‚·‚é•û®‚ğg—pj
+        # ç¾çŠ¶ã§ã¯æœªå®Ÿè£…ï¼ˆSendQueueã«ç›´æ¥è¿½åŠ ã™ã‚‹æ–¹å¼ã‚’ä½¿ç”¨ï¼‰
         $this._logger.LogWarning("SendRequest message not implemented", @{
             ConnectionId = $message.ConnectionId
         })
@@ -330,10 +330,10 @@ class RunspaceMessageProcessor {
     
     <#
     .SYNOPSIS
-    “Œvî•ñ‚ğæ“¾
+    çµ±è¨ˆæƒ…å ±ã‚’å–å¾—
     
     .RETURNS
-    ˆ—“Œv‚ÌƒnƒbƒVƒ…ƒe[ƒuƒ‹
+    å‡¦ç†çµ±è¨ˆã®ãƒãƒƒã‚·ãƒ¥ãƒ†ãƒ¼ãƒ–ãƒ«
     #>
     [hashtable] GetStatistics() {
         return @{
@@ -345,7 +345,7 @@ class RunspaceMessageProcessor {
     
     <#
     .SYNOPSIS
-    “Œvî•ñ‚ğƒƒOo—Í
+    çµ±è¨ˆæƒ…å ±ã‚’ãƒ­ã‚°å‡ºåŠ›
     #>
     [void] LogStatistics() {
         $stats = $this.GetStatistics()

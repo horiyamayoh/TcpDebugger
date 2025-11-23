@@ -38,10 +38,8 @@ function Read-ReceivedRules {
         return @()
     }
 
-    # Shift-JISでCSV読み込み（PowerShell 5.1対応）
-    # Import-CsvのEncodingパラメータはSystem.Text.Encodingオブジェクトを受け付けないため
-    # Get-ContentでShift-JIS読み込み→ConvertFrom-Csvで解析
-    $content = Get-Content -Path $FilePath -Encoding Default -Raw
+    # UTF-8でCSV読み込み
+    $content = Get-Content -Path $FilePath -Encoding UTF8 -Raw
     $rules = $content | ConvertFrom-Csv
 
     if ($rules.Count -eq 0) {

@@ -1,35 +1,35 @@
-@{
-    # ƒCƒ“ƒXƒ^ƒ“ƒX¯•Êq
+ï»¿@{
+    # ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹è­˜åˆ¥å­
     Id = "example-server"
     
-    # UI•\¦–¼
+    # UIè¡¨ç¤ºå
     DisplayName = "Example TCP Server"
     
-    # à–¾E—p“r
-    Description = "ƒTƒ“ƒvƒ‹TCPƒT[ƒo[ - ƒ[ƒJƒ‹ƒzƒXƒg‚Å‚ÌŠÈˆÕŒ±—p"
+    # èª¬æ˜ãƒ»ç”¨é€”
+    Description = "ã‚µãƒ³ãƒ—ãƒ«TCPã‚µãƒ¼ãƒãƒ¼ - ãƒ­ãƒ¼ã‚«ãƒ«ãƒ›ã‚¹ãƒˆã§ã®ç°¡æ˜“è©¦é¨“ç”¨"
     
-    # Ú‘±İ’è
+    # æ¥ç¶šè¨­å®š
     Connection = @{
         Protocol = "TCP"           # TCP/UDP
         Mode = "Server"           # Client/Server/Sender/Receiver
         LocalIP = "127.0.0.1"
         LocalPort = 8080
-        RemoteIP = ""             # Serverƒ‚[ƒh‚Å‚Í•s—v
+        RemoteIP = ""             # Serverãƒ¢ãƒ¼ãƒ‰ã§ã¯ä¸è¦
         RemotePort = 0
     }
     
-    # ‹N“®İ’è
-    AutoStart = $false           # ƒAƒvƒŠ‹N“®‚É©“®Ú‘±
-    AutoScenario = ""            # Ú‘±Œã‚É©“®Às‚·‚éƒVƒiƒŠƒI
+    # èµ·å‹•è¨­å®š
+    AutoStart = $false           # ã‚¢ãƒ—ãƒªèµ·å‹•æ™‚ã«è‡ªå‹•æ¥ç¶š
+    AutoScenario = ""            # æ¥ç¶šå¾Œã«è‡ªå‹•å®Ÿè¡Œã™ã‚‹ã‚·ãƒŠãƒªã‚ª
     
-    # ƒ^ƒOEƒOƒ‹[ƒvi˜_—ƒrƒ…[‚Å‚Ì•ª—Şj
+    # ã‚¿ã‚°ãƒ»ã‚°ãƒ«ãƒ¼ãƒ—ï¼ˆè«–ç†ãƒ“ãƒ¥ãƒ¼ã§ã®åˆ†é¡ï¼‰
     Tags = @("Example", "TCP", "Server")
     Group = "Examples"
     
-    # ƒGƒ“ƒR[ƒfƒBƒ“ƒOİ’è
+    # ã‚¨ãƒ³ã‚³ãƒ¼ãƒ‡ã‚£ãƒ³ã‚°è¨­å®š
     DefaultEncoding = "UTF-8"
     
-    # «”\‘ª’èİ’è
+    # æ€§èƒ½æ¸¬å®šè¨­å®š
     Performance = @{
         EnableMetrics = $false
         SampleInterval = 1000    # ms

@@ -1,32 +1,32 @@
-@{
-    # ƒfƒtƒHƒ‹ƒgÝ’èƒXƒiƒbƒvƒVƒ‡ƒbƒg
+ï»¿@{
+    # ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆè¨­å®šã‚¹ãƒŠãƒƒãƒ—ã‚·ãƒ§ãƒƒãƒˆ
     
-    # Ú‘±ƒ^ƒCƒ€ƒAƒEƒgiƒ~ƒŠ•bj
+    # æŽ¥ç¶šã‚¿ã‚¤ãƒ ã‚¢ã‚¦ãƒˆï¼ˆãƒŸãƒªç§’ï¼‰
     ConnectionTimeout = 5000
     
-    # ŽóMƒoƒbƒtƒ@ƒTƒCƒYiƒoƒCƒgj
+    # å—ä¿¡ãƒãƒƒãƒ•ã‚¡ã‚µã‚¤ã‚ºï¼ˆãƒã‚¤ãƒˆï¼‰
     ReceiveBufferSize = 8192
     
-    # ‘—Mƒoƒbƒtƒ@ƒTƒCƒYiƒoƒCƒgj
+    # é€ä¿¡ãƒãƒƒãƒ•ã‚¡ã‚µã‚¤ã‚ºï¼ˆãƒã‚¤ãƒˆï¼‰
     SendBufferSize = 8192
     
-    # ÄÚ‘±ŽŽs‰ñ”
+    # å†æŽ¥ç¶šè©¦è¡Œå›žæ•°
     ReconnectAttempts = 3
     
-    # ÄÚ‘±ŠÔŠuiƒ~ƒŠ•bj
+    # å†æŽ¥ç¶šé–“éš”ï¼ˆãƒŸãƒªç§’ï¼‰
     ReconnectInterval = 1000
     
-    # ƒƒO•ÛŽŒ”iƒƒ‚ƒŠãj
+    # ãƒ­ã‚°ä¿æŒä»¶æ•°ï¼ˆãƒ¡ãƒ¢ãƒªä¸Šï¼‰
     LogRetentionCount = 100
     
-    # ƒfƒtƒHƒ‹ƒgƒGƒ“ƒR[ƒfƒBƒ“ƒO
+    # ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã‚¨ãƒ³ã‚³ãƒ¼ãƒ‡ã‚£ãƒ³ã‚°
     DefaultEncoding = "UTF-8"
     
-    # ƒƒOo—ÍÝ’è
-    EnableFileLogging = $false        # ƒtƒ@ƒCƒ‹ƒƒOo—Íi$false ‚Å–³Œø‰»j
-    LogBufferSize = 50                # ƒoƒbƒtƒ@ƒTƒCƒYiƒGƒ“ƒgƒŠ”j
-    LogFlushIntervalSeconds = 5       # ƒtƒ‰ƒbƒVƒ…ŠÔŠui•bj
+    # ãƒ­ã‚°å‡ºåŠ›è¨­å®š
+    EnableFileLogging = $false        # ãƒ•ã‚¡ã‚¤ãƒ«ãƒ­ã‚°å‡ºåŠ›ï¼ˆ$false ã§ç„¡åŠ¹åŒ–ï¼‰
+    LogBufferSize = 50                # ãƒãƒƒãƒ•ã‚¡ã‚µã‚¤ã‚ºï¼ˆã‚¨ãƒ³ãƒˆãƒªæ•°ï¼‰
+    LogFlushIntervalSeconds = 5       # ãƒ•ãƒ©ãƒƒã‚·ãƒ¥é–“éš”ï¼ˆç§’ï¼‰
     
-    # ƒfƒoƒbƒOo—ÍÝ’è
-    EnableDebugOutput = $false         # ƒRƒ“ƒ\[ƒ‹ƒfƒoƒbƒOƒƒOi$false ‚Å«”\Œüãj
+    # ãƒ‡ãƒãƒƒã‚°å‡ºåŠ›è¨­å®š
+    EnableDebugOutput = $false         # ã‚³ãƒ³ã‚½ãƒ¼ãƒ«ãƒ‡ãƒãƒƒã‚°ãƒ­ã‚°ï¼ˆ$false ã§æ€§èƒ½å‘ä¸Šï¼‰
 }

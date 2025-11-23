@@ -1,4 +1,4 @@
-# Core/Common/ErrorHandler.ps1
+﻿# Core/Common/ErrorHandler.ps1
 # Centralized error-handling helpers
 
 class ErrorHandler {

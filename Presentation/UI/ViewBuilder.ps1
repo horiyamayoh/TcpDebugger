@@ -1,4 +1,4 @@
-# ViewBuilder.ps1
+ï»¿# ViewBuilder.ps1
 # Responsible for creating WinForms UI controls
 
 Add-Type -AssemblyName System.Windows.Forms
@@ -305,7 +305,7 @@ function Configure-ProfileColumn {
     [void]$items.Add($noneEntry)
     $mapping[$noneEntry.Key] = $noneEntry
 
-    # ƒCƒ“ƒXƒ^ƒ“ƒX–¼‚ğæ“¾
+    # ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹åã‚’å–å¾—
     $instanceName = ""
     if ($Connection -and $Connection.Variables -and $Connection.Variables.ContainsKey('InstanceName')) {
         $instanceName = $Connection.Variables['InstanceName']
@@ -847,7 +847,7 @@ function Update-LogDisplay {
 
             $summary = Get-MessageSummary -Data $recv.Data -MaxLength 40
             $timeStr = $recv.Timestamp.ToString("HH:mm:ss")
-            $logLines += "[$timeStr] $($conn.DisplayName) © $summary ($($recv.Length) bytes)"
+            $logLines += "[$timeStr] $($conn.DisplayName) â† $summary ($($recv.Length) bytes)"
         }
     }
 

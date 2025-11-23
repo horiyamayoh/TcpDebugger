@@ -1,183 +1,183 @@
-# ŽóMƒ‹[ƒ‹‹¤’ÊƒtƒH[ƒ}ƒbƒgŽd—l
+# å—ä¿¡ãƒ«ãƒ¼ãƒ«å…±é€šãƒ•ã‚©ãƒ¼ãƒžãƒƒãƒˆä»•æ§˜
 
-## ŠT—v
-AutoResponse‹@”\‚ÆOnReceived‹@”\‚ÍA‹¤’Ê‚ÌCSVƒ‹[ƒ‹ƒtƒH[ƒ}ƒbƒg‚ðŽg—p‚µ‚Ü‚·B
-ƒ‹[ƒ‹ƒ^ƒCƒv‚ÍACSV‚Ì—ñ‚É‚æ‚Á‚ÄŽ©“®”»’è‚³‚ê‚Ü‚·B
+## æ¦‚è¦
+AutoResponseæ©Ÿèƒ½ã¨OnReceivedæ©Ÿèƒ½ã¯ã€å…±é€šã®CSVãƒ«ãƒ¼ãƒ«ãƒ•ã‚©ãƒ¼ãƒžãƒƒãƒˆã‚’ä½¿ç”¨ã—ã¾ã™ã€‚
+ãƒ«ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ—ã¯ã€CSVã®åˆ—ã«ã‚ˆã£ã¦è‡ªå‹•åˆ¤å®šã•ã‚Œã¾ã™ã€‚
 
-## CSV—ñ’è‹`
+## CSVåˆ—å®šç¾©
 
-### ‹¤’Ê—ñ
-| —ñ–¼ | •K{ | à–¾ |
+### å…±é€šåˆ—
+| åˆ—å | å¿…é ˆ | èª¬æ˜Ž |
 |------|------|------|
-| RuleName | „§ | ƒ‹[ƒ‹‚Ì–¼‘OiƒƒOo—Í“™‚ÉŽg—pj |
-| MatchOffset | ðŒ•t | ƒ}ƒbƒ`ƒ“ƒOŠJŽnˆÊ’uiƒoƒCƒg’PˆÊA10i”j<br>È—ªŽž‚Í‘SŽóMƒf[ƒ^‚Éƒ}ƒbƒ` |
-| MatchLength | ðŒ•t | ƒ}ƒbƒ`ƒ“ƒO’·‚³iƒoƒCƒg”A10i”j<br>MatchOffset‚ðŽw’è‚µ‚½ê‡‚Í•K{ |
-| MatchValue | ðŒ•t | ƒ}ƒbƒ`‚³‚¹‚é16i”’l<br>MatchOffset‚ðŽw’è‚µ‚½ê‡‚Í•K{ |
-| Delay | ”CˆÓ | ƒAƒNƒVƒ‡ƒ“ŽÀs‘O‚Ì’x‰„iƒ~ƒŠ•bA10i”j<br>ƒfƒtƒHƒ‹ƒg: 0 |
+| RuleName | æŽ¨å¥¨ | ãƒ«ãƒ¼ãƒ«ã®åå‰ï¼ˆãƒ­ã‚°å‡ºåŠ›ç­‰ã«ä½¿ç”¨ï¼‰ |
+| MatchOffset | æ¡ä»¶ä»˜ | ãƒžãƒƒãƒãƒ³ã‚°é–‹å§‹ä½ç½®ï¼ˆãƒã‚¤ãƒˆå˜ä½ã€10é€²æ•°ï¼‰<br>çœç•¥æ™‚ã¯å…¨å—ä¿¡ãƒ‡ãƒ¼ã‚¿ã«ãƒžãƒƒãƒ |
+| MatchLength | æ¡ä»¶ä»˜ | ãƒžãƒƒãƒãƒ³ã‚°é•·ã•ï¼ˆãƒã‚¤ãƒˆæ•°ã€10é€²æ•°ï¼‰<br>MatchOffsetã‚’æŒ‡å®šã—ãŸå ´åˆã¯å¿…é ˆ |
+| MatchValue | æ¡ä»¶ä»˜ | ãƒžãƒƒãƒã•ã›ã‚‹16é€²æ•°å€¤<br>MatchOffsetã‚’æŒ‡å®šã—ãŸå ´åˆã¯å¿…é ˆ |
+| Delay | ä»»æ„ | ã‚¢ã‚¯ã‚·ãƒ§ãƒ³å®Ÿè¡Œå‰ã®é…å»¶ï¼ˆãƒŸãƒªç§’ã€10é€²æ•°ï¼‰<br>ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆ: 0 |
 
-### AutoResponseê—p—ñ
-| —ñ–¼ | •K{ | à–¾ |
+### AutoResponseå°‚ç”¨åˆ—
+| åˆ—å | å¿…é ˆ | èª¬æ˜Ž |
 |------|------|------|
-| ResponseMessageFile | •K{ | ‰ž“š“d•¶CSVƒtƒ@ƒCƒ‹–¼i‘Š‘ÎƒpƒX‚Ü‚½‚Íâ‘ÎƒpƒXj<br>‘Š‘ÎƒpƒX‚Ìê‡‚Í `templates/` ‚©‚ç‚Ì‘Š‘ÎƒpƒX |
+| ResponseMessageFile | å¿…é ˆ | å¿œç­”é›»æ–‡CSVãƒ•ã‚¡ã‚¤ãƒ«åï¼ˆç›¸å¯¾ãƒ‘ã‚¹ã¾ãŸã¯çµ¶å¯¾ãƒ‘ã‚¹ï¼‰<br>ç›¸å¯¾ãƒ‘ã‚¹ã®å ´åˆã¯ `templates/` ã‹ã‚‰ã®ç›¸å¯¾ãƒ‘ã‚¹ |
 
-### OnReceivedê—p—ñ
-| —ñ–¼ | •K{ | à–¾ |
+### OnReceivedå°‚ç”¨åˆ—
+| åˆ—å | å¿…é ˆ | èª¬æ˜Ž |
 |------|------|------|
-| ScriptFile | •K{ | ŽÀs‚·‚éPowerShellƒXƒNƒŠƒvƒgƒtƒ@ƒCƒ‹–¼i‘Š‘ÎƒpƒX‚Ü‚½‚Íâ‘ÎƒpƒXj<br>‘Š‘ÎƒpƒX‚Ìê‡‚Í `scenarios/onreceived/` ‚©‚ç‚Ì‘Š‘ÎƒpƒX |
-| ExecutionTiming | ”CˆÓ | ƒXƒNƒŠƒvƒgŽÀsƒ^ƒCƒ~ƒ“ƒO<br>`Before`: AutoResponse‚Ì‘O‚ÉŽÀs<br>`After`: AutoResponse‚ÌŒã‚ÉŽÀsiƒfƒtƒHƒ‹ƒgj |
+| ScriptFile | å¿…é ˆ | å®Ÿè¡Œã™ã‚‹PowerShellã‚¹ã‚¯ãƒªãƒ—ãƒˆãƒ•ã‚¡ã‚¤ãƒ«åï¼ˆç›¸å¯¾ãƒ‘ã‚¹ã¾ãŸã¯çµ¶å¯¾ãƒ‘ã‚¹ï¼‰<br>ç›¸å¯¾ãƒ‘ã‚¹ã®å ´åˆã¯ `scenarios/onreceived/` ã‹ã‚‰ã®ç›¸å¯¾ãƒ‘ã‚¹ |
+| ExecutionTiming | ä»»æ„ | ã‚¹ã‚¯ãƒªãƒ—ãƒˆå®Ÿè¡Œã‚¿ã‚¤ãƒŸãƒ³ã‚°<br>`Before`: AutoResponseã®å‰ã«å®Ÿè¡Œ<br>`After`: AutoResponseã®å¾Œã«å®Ÿè¡Œï¼ˆãƒ‡ãƒ•ã‚©ãƒ«ãƒˆï¼‰ |
 
-## ƒ‹[ƒ‹ƒ^ƒCƒv‚ÌŽ©“®”»’è
+## ãƒ«ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ—ã®è‡ªå‹•åˆ¤å®š
 
-CSVƒtƒ@ƒCƒ‹‚ð“Ç‚Ýž‚ÞÛAˆÈ‰º‚ÌƒƒWƒbƒN‚Åƒ‹[ƒ‹ƒ^ƒCƒv‚ð”»’è‚µ‚Ü‚·:
+CSVãƒ•ã‚¡ã‚¤ãƒ«ã‚’èª­ã¿è¾¼ã‚€éš›ã€ä»¥ä¸‹ã®ãƒ­ã‚¸ãƒƒã‚¯ã§ãƒ«ãƒ¼ãƒ«ã‚¿ã‚¤ãƒ—ã‚’åˆ¤å®šã—ã¾ã™:
 
-1. `ResponseMessageFile` ‚Æ `ScriptFile` ‚Ì—¼•û‚Ì—ñ‚ª‘¶Ý ¨ **“‡Œ`Ž®**i—¼•û‚ÌƒAƒNƒVƒ‡ƒ“‚ðŽg—p‰Â”\j
-2. `ResponseMessageFile` —ñ‚Ì‚Ý‘¶Ý ¨ **AutoResponseƒ‹[ƒ‹**
-3. `ScriptFile` —ñ‚Ì‚Ý‘¶Ý ¨ **OnReceivedƒ‹[ƒ‹**
-4. `TriggerPattern` —ñ‚ª‘¶Ý ¨ **‹ŒŒ`Ž®AutoResponseƒ‹[ƒ‹**iŒÝŠ·«ˆÛŽj
+1. `ResponseMessageFile` ã¨ `ScriptFile` ã®ä¸¡æ–¹ã®åˆ—ãŒå­˜åœ¨ â†’ **çµ±åˆå½¢å¼**ï¼ˆä¸¡æ–¹ã®ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã‚’ä½¿ç”¨å¯èƒ½ï¼‰
+2. `ResponseMessageFile` åˆ—ã®ã¿å­˜åœ¨ â†’ **AutoResponseãƒ«ãƒ¼ãƒ«**
+3. `ScriptFile` åˆ—ã®ã¿å­˜åœ¨ â†’ **OnReceivedãƒ«ãƒ¼ãƒ«**
+4. `TriggerPattern` åˆ—ãŒå­˜åœ¨ â†’ **æ—§å½¢å¼AutoResponseãƒ«ãƒ¼ãƒ«**ï¼ˆäº’æ›æ€§ç¶­æŒï¼‰
 
-## “‡ƒ‹[ƒ‹ƒtƒ@ƒCƒ‹i„§j
+## çµ±åˆãƒ«ãƒ¼ãƒ«ãƒ•ã‚¡ã‚¤ãƒ«ï¼ˆæŽ¨å¥¨ï¼‰
 
-**“‡Œ`Ž®‚Å‚ÍA“¯ˆê‚ÌCSVƒtƒ@ƒCƒ‹‚ÉAutoResponse‚ÆOnReceived‚ÌƒAƒNƒVƒ‡ƒ“‚ðŽ©—R‚É‘g‚Ý‡‚í‚¹‚Ä‹Lq‚Å‚«‚Ü‚·B**
+**çµ±åˆå½¢å¼ã§ã¯ã€åŒä¸€ã®CSVãƒ•ã‚¡ã‚¤ãƒ«ã«AutoResponseã¨OnReceivedã®ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã‚’è‡ªç”±ã«çµ„ã¿åˆã‚ã›ã¦è¨˜è¿°ã§ãã¾ã™ã€‚**
 
-### “®ìŽd—l
-1. **•¡”ƒ‹[ƒ‹‚Ìƒ}ƒbƒ`ƒ“ƒO**: “¯ˆê‚Ì“d•¶‚É‘Î‚µ‚Ä•¡”‚Ìƒ‹[ƒ‹‚ªƒ}ƒbƒ`‚µ‚½ê‡ACSV‹LÚ‡‚É**‚·‚×‚ÄŽÀs**‚³‚ê‚Ü‚·
-2. **ƒAƒNƒVƒ‡ƒ“‚Ì‘g‚Ý‡‚í‚¹**: Šes‚ÅˆÈ‰º‚Ìƒpƒ^[ƒ“‚ðŽg‚¢•ª‚¯‚Å‚«‚Ü‚·
-   - `ResponseMessageFile` ‚Ì‚ÝŽw’è ¨ ‰ž“š“d•¶‚Ì‘—M‚Ì‚Ý
-   - `ScriptFile` ‚Ì‚ÝŽw’è ¨ ƒXƒNƒŠƒvƒgŽÀs‚Ì‚Ý
-   - —¼•ûŽw’è ¨ ‰ž“š“d•¶‘—MŒã‚ÉƒXƒNƒŠƒvƒgŽÀs
-   - —¼•û‹ó—“ ¨ ƒAƒNƒVƒ‡ƒ“‚È‚µiŒx‚ªo‚éj
+### å‹•ä½œä»•æ§˜
+1. **è¤‡æ•°ãƒ«ãƒ¼ãƒ«ã®ãƒžãƒƒãƒãƒ³ã‚°**: åŒä¸€ã®é›»æ–‡ã«å¯¾ã—ã¦è¤‡æ•°ã®ãƒ«ãƒ¼ãƒ«ãŒãƒžãƒƒãƒã—ãŸå ´åˆã€CSVè¨˜è¼‰é †ã«**ã™ã¹ã¦å®Ÿè¡Œ**ã•ã‚Œã¾ã™
+2. **ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã®çµ„ã¿åˆã‚ã›**: å„è¡Œã§ä»¥ä¸‹ã®ãƒ‘ã‚¿ãƒ¼ãƒ³ã‚’ä½¿ã„åˆ†ã‘ã§ãã¾ã™
+   - `ResponseMessageFile` ã®ã¿æŒ‡å®š â†’ å¿œç­”é›»æ–‡ã®é€ä¿¡ã®ã¿
+   - `ScriptFile` ã®ã¿æŒ‡å®š â†’ ã‚¹ã‚¯ãƒªãƒ—ãƒˆå®Ÿè¡Œã®ã¿
+   - ä¸¡æ–¹æŒ‡å®š â†’ å¿œç­”é›»æ–‡é€ä¿¡å¾Œã«ã‚¹ã‚¯ãƒªãƒ—ãƒˆå®Ÿè¡Œ
+   - ä¸¡æ–¹ç©ºæ¬„ â†’ ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ãªã—ï¼ˆè­¦å‘ŠãŒå‡ºã‚‹ï¼‰
 
-### “‡Œ`Ž®‚Ì—á
+### çµ±åˆå½¢å¼ã®ä¾‹
 ```csv
 RuleName,MatchOffset,MatchLength,MatchValue,ResponseMessageFile,ScriptFile,Delay
-ƒƒOƒCƒ“—v‹-‰ž“š,0,2,0001,login_response.csv,,0
-ƒƒOƒCƒ“—v‹-ƒƒO‹L˜^,0,2,0001,,log_login.ps1,10
-ƒf[ƒ^—v‹-‰ž“š‘—M,0,2,0010,data_response.csv,,0
-ƒf[ƒ^—v‹-ƒf[ƒ^•Û‘¶,0,2,0010,,save_data.ps1,50
-ƒf[ƒ^—v‹-“ŒvXV,0,2,0010,,update_stats.ps1,100
-ƒGƒR[—v‹-—¼•ûŽÀs,0,2,0020,echo_response.csv,log_echo.ps1,0
+ãƒ­ã‚°ã‚¤ãƒ³è¦æ±‚-å¿œç­”,0,2,0001,login_response.csv,,0
+ãƒ­ã‚°ã‚¤ãƒ³è¦æ±‚-ãƒ­ã‚°è¨˜éŒ²,0,2,0001,,log_login.ps1,10
+ãƒ‡ãƒ¼ã‚¿è¦æ±‚-å¿œç­”é€ä¿¡,0,2,0010,data_response.csv,,0
+ãƒ‡ãƒ¼ã‚¿è¦æ±‚-ãƒ‡ãƒ¼ã‚¿ä¿å­˜,0,2,0010,,save_data.ps1,50
+ãƒ‡ãƒ¼ã‚¿è¦æ±‚-çµ±è¨ˆæ›´æ–°,0,2,0010,,update_stats.ps1,100
+ã‚¨ã‚³ãƒ¼è¦æ±‚-ä¸¡æ–¹å®Ÿè¡Œ,0,2,0020,echo_response.csv,log_echo.ps1,0
 ```
 
-#### ŽÀs—ái“d•¶ `0001...` ‚ðŽóM‚µ‚½ê‡j
-1. **ƒƒOƒCƒ“—v‹-‰ž“š**: `login_response.csv` ‚Ì“à—e‚ð‘¦À‚É‘—M
-2. **ƒƒOƒCƒ“—v‹-ƒƒO‹L˜^**: 10ms‘Ò‹@ŒãA`log_login.ps1` ‚ðŽÀs‚µ‚ÄƒƒO‹L˜^
+#### å®Ÿè¡Œä¾‹ï¼ˆé›»æ–‡ `0001...` ã‚’å—ä¿¡ã—ãŸå ´åˆï¼‰
+1. **ãƒ­ã‚°ã‚¤ãƒ³è¦æ±‚-å¿œç­”**: `login_response.csv` ã®å†…å®¹ã‚’å³åº§ã«é€ä¿¡
+2. **ãƒ­ã‚°ã‚¤ãƒ³è¦æ±‚-ãƒ­ã‚°è¨˜éŒ²**: 10mså¾…æ©Ÿå¾Œã€`log_login.ps1` ã‚’å®Ÿè¡Œã—ã¦ãƒ­ã‚°è¨˜éŒ²
 
-#### ŽÀs—ái“d•¶ `0010...` ‚ðŽóM‚µ‚½ê‡j
-1. **ƒf[ƒ^—v‹-‰ž“š‘—M**: `data_response.csv` ‚Ì“à—e‚ð‘¦À‚É‘—M
-2. **ƒf[ƒ^—v‹-ƒf[ƒ^•Û‘¶**: 50ms‘Ò‹@ŒãA`save_data.ps1` ‚ðŽÀs‚µ‚Äƒf[ƒ^•Û‘¶
-3. **ƒf[ƒ^—v‹-“ŒvXV**: ‚³‚ç‚É100ms‘Ò‹@ŒãA`update_stats.ps1` ‚ðŽÀs‚µ‚Ä“ŒvXV
+#### å®Ÿè¡Œä¾‹ï¼ˆé›»æ–‡ `0010...` ã‚’å—ä¿¡ã—ãŸå ´åˆï¼‰
+1. **ãƒ‡ãƒ¼ã‚¿è¦æ±‚-å¿œç­”é€ä¿¡**: `data_response.csv` ã®å†…å®¹ã‚’å³åº§ã«é€ä¿¡
+2. **ãƒ‡ãƒ¼ã‚¿è¦æ±‚-ãƒ‡ãƒ¼ã‚¿ä¿å­˜**: 50mså¾…æ©Ÿå¾Œã€`save_data.ps1` ã‚’å®Ÿè¡Œã—ã¦ãƒ‡ãƒ¼ã‚¿ä¿å­˜
+3. **ãƒ‡ãƒ¼ã‚¿è¦æ±‚-çµ±è¨ˆæ›´æ–°**: ã•ã‚‰ã«100mså¾…æ©Ÿå¾Œã€`update_stats.ps1` ã‚’å®Ÿè¡Œã—ã¦çµ±è¨ˆæ›´æ–°
 
-**‡Œv3‚Â‚ÌƒAƒNƒVƒ‡ƒ“‚ª‡ŽŸŽÀs‚³‚ê‚Ü‚·B**
+**åˆè¨ˆ3ã¤ã®ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ãŒé †æ¬¡å®Ÿè¡Œã•ã‚Œã¾ã™ã€‚**
 
-### AutoResponseƒ‹[ƒ‹‚Ì—á
+### AutoResponseãƒ«ãƒ¼ãƒ«ã®ä¾‹
 ```csv
 RuleName,MatchOffset,MatchLength,MatchValue,ResponseMessageFile,Delay
-‰ž“š01,0,2,0102,response_01.csv,0
-‰ž“š02,0,2,0103,response_02.csv,100
-ƒGƒ‰[‰ž“š,0,2,0199,error_response.csv,0
+å¿œç­”01,0,2,0102,response_01.csv,0
+å¿œç­”02,0,2,0103,response_02.csv,100
+ã‚¨ãƒ©ãƒ¼å¿œç­”,0,2,0199,error_response.csv,0
 ```
 
-### OnReceivedƒ‹[ƒ‹‚Ì—á
+### OnReceivedãƒ«ãƒ¼ãƒ«ã®ä¾‹
 ```csv
 RuleName,MatchOffset,MatchLength,MatchValue,ScriptFile,Delay,ExecutionTiming
-ID“]‹L,0,2,0102,copy_message_id.ps1,0,Before
-ƒV[ƒPƒ“ƒXˆ—,0,2,0103,process_sequence.ps1,0,Before
-ƒGƒR[ƒoƒbƒN,0,2,0104,echo_back.ps1,0,After
+IDè»¢è¨˜,0,2,0102,copy_message_id.ps1,0,Before
+ã‚·ãƒ¼ã‚±ãƒ³ã‚¹å‡¦ç†,0,2,0103,process_sequence.ps1,0,Before
+ã‚¨ã‚³ãƒ¼ãƒãƒƒã‚¯,0,2,0104,echo_back.ps1,0,After
 ```
 
-#### ExecutionTiming‚ÌŽg‚¢•ª‚¯
-- **`Before`**: AutoResponseŽÀs‘O‚ÉƒXƒNƒŠƒvƒg‚ðŽÀs
-  - —p“r: ƒXƒNƒŠƒvƒg‚Åˆ—‚µ‚½Œ‹‰Ê‚ð‰ž“š‚ÉŠÜ‚ß‚½‚¢ê‡
-  - —á: ƒf[ƒ^ƒx[ƒX‚Ö‚Ì‘‚«ž‚ÝŒ‹‰Ê‚ð‰ž“š‚É”½‰fA•Ï”‚ÌXV‚È‚Ç
-- **`After`** (ƒfƒtƒHƒ‹ƒg): AutoResponseŽÀsŒã‚ÉƒXƒNƒŠƒvƒg‚ðŽÀs
-  - —p“r: ‰ž“š‚ð—Dæ‚µAƒoƒbƒ`ˆ—‚ÍŒã‚Ås‚¤ê‡
-  - —á: ƒƒO‹L˜^A“ŒvXV‚È‚ÇA‰ž“š‚É‰e‹¿‚µ‚È‚¢ˆ—
+#### ExecutionTimingã®ä½¿ã„åˆ†ã‘
+- **`Before`**: AutoResponseå®Ÿè¡Œå‰ã«ã‚¹ã‚¯ãƒªãƒ—ãƒˆã‚’å®Ÿè¡Œ
+  - ç”¨é€”: ã‚¹ã‚¯ãƒªãƒ—ãƒˆã§å‡¦ç†ã—ãŸçµæžœã‚’å¿œç­”ã«å«ã‚ãŸã„å ´åˆ
+  - ä¾‹: ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ã¸ã®æ›¸ãè¾¼ã¿çµæžœã‚’å¿œç­”ã«åæ˜ ã€å¤‰æ•°ã®æ›´æ–°ãªã©
+- **`After`** (ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆ): AutoResponseå®Ÿè¡Œå¾Œã«ã‚¹ã‚¯ãƒªãƒ—ãƒˆã‚’å®Ÿè¡Œ
+  - ç”¨é€”: å¿œç­”ã‚’å„ªå…ˆã—ã€ãƒãƒƒãƒå‡¦ç†ã¯å¾Œã§è¡Œã†å ´åˆ
+  - ä¾‹: ãƒ­ã‚°è¨˜éŒ²ã€çµ±è¨ˆæ›´æ–°ãªã©ã€å¿œç­”ã«å½±éŸ¿ã—ãªã„å‡¦ç†
 
-## ƒ}ƒbƒ`ƒ“ƒO“®ì
+## ãƒžãƒƒãƒãƒ³ã‚°å‹•ä½œ
 
-### •¡”ƒ‹[ƒ‹‚Ìˆ—
-- CSVƒtƒ@ƒCƒ‹“à‚Ìƒ‹[ƒ‹‚Í**ã‚©‚ç‡‚É•]‰¿**‚³‚ê‚Ü‚·
-- ƒ}ƒbƒ`‚µ‚½ƒ‹[ƒ‹‚Í**‚·‚×‚ÄŽÀs**‚³‚ê‚Ü‚·iÅ‰‚Ì1Œ‚¾‚¯‚Å‚Í‚ ‚è‚Ü‚¹‚ñj
-- “¯ˆê‚Ì“d•¶‚É‘Î‚µ‚Ä•¡”‚Ìƒ‹[ƒ‹‚ð’è‹`‚·‚é‚±‚Æ‚ÅA•¡”‚ÌƒAƒNƒVƒ‡ƒ“‚ð‡ŽŸŽÀs‚Å‚«‚Ü‚·
+### è¤‡æ•°ãƒ«ãƒ¼ãƒ«ã®å‡¦ç†
+- CSVãƒ•ã‚¡ã‚¤ãƒ«å†…ã®ãƒ«ãƒ¼ãƒ«ã¯**ä¸Šã‹ã‚‰é †ã«è©•ä¾¡**ã•ã‚Œã¾ã™
+- ãƒžãƒƒãƒã—ãŸãƒ«ãƒ¼ãƒ«ã¯**ã™ã¹ã¦å®Ÿè¡Œ**ã•ã‚Œã¾ã™ï¼ˆæœ€åˆã®1ä»¶ã ã‘ã§ã¯ã‚ã‚Šã¾ã›ã‚“ï¼‰
+- åŒä¸€ã®é›»æ–‡ã«å¯¾ã—ã¦è¤‡æ•°ã®ãƒ«ãƒ¼ãƒ«ã‚’å®šç¾©ã™ã‚‹ã“ã¨ã§ã€è¤‡æ•°ã®ã‚¢ã‚¯ã‚·ãƒ§ãƒ³ã‚’é †æ¬¡å®Ÿè¡Œã§ãã¾ã™
 
-### ƒoƒCƒiƒŠƒ}ƒbƒ`ƒ“ƒOiVŒ`Ž®j
-- `MatchOffset`, `MatchLength`, `MatchValue` ‚ðŽg—p
-- ŽóMƒf[ƒ^‚ÌŽw’èˆÊ’u‚ÌƒoƒCƒg—ñ‚Æ16i”’l‚ð”äŠr
-- ‚·‚×‚Äˆê’v‚µ‚½ê‡‚Éƒ‹[ƒ‹‚ª“K—p‚³‚ê‚é
+### ãƒã‚¤ãƒŠãƒªãƒžãƒƒãƒãƒ³ã‚°ï¼ˆæ–°å½¢å¼ï¼‰
+- `MatchOffset`, `MatchLength`, `MatchValue` ã‚’ä½¿ç”¨
+- å—ä¿¡ãƒ‡ãƒ¼ã‚¿ã®æŒ‡å®šä½ç½®ã®ãƒã‚¤ãƒˆåˆ—ã¨16é€²æ•°å€¤ã‚’æ¯”è¼ƒ
+- ã™ã¹ã¦ä¸€è‡´ã—ãŸå ´åˆã«ãƒ«ãƒ¼ãƒ«ãŒé©ç”¨ã•ã‚Œã‚‹
 
-### ƒ}ƒbƒ`ƒ“ƒOÈ—ª
-- `MatchOffset` ‚ðÈ—ª‚Ü‚½‚Í‹ó—“‚É‚µ‚½ê‡A‚·‚×‚Ä‚ÌŽóMƒf[ƒ^‚Éƒ}ƒbƒ`
-- ‚±‚Ìê‡AÅ‰‚É’è‹`‚³‚ê‚½ƒ‹[ƒ‹‚Ì‚Ý‚ªŽÀs‚³‚ê‚é
+### ãƒžãƒƒãƒãƒ³ã‚°çœç•¥
+- `MatchOffset` ã‚’çœç•¥ã¾ãŸã¯ç©ºæ¬„ã«ã—ãŸå ´åˆã€ã™ã¹ã¦ã®å—ä¿¡ãƒ‡ãƒ¼ã‚¿ã«ãƒžãƒƒãƒ
+- ã“ã®å ´åˆã€æœ€åˆã«å®šç¾©ã•ã‚ŒãŸãƒ«ãƒ¼ãƒ«ã®ã¿ãŒå®Ÿè¡Œã•ã‚Œã‚‹
 
-### ƒeƒLƒXƒgƒ}ƒbƒ`ƒ“ƒOi‹ŒŒ`Ž®AutoResponsej
-- `TriggerPattern` ‚ðŽg—piŒã•ûŒÝŠ·«‚Ì‚½‚ßˆÛŽj
-- `MatchType` ‚Å”äŠr•û–@‚ðŽw’èiExact/Contains/StartsWith/EndsWith/Regexj
+### ãƒ†ã‚­ã‚¹ãƒˆãƒžãƒƒãƒãƒ³ã‚°ï¼ˆæ—§å½¢å¼AutoResponseï¼‰
+- `TriggerPattern` ã‚’ä½¿ç”¨ï¼ˆå¾Œæ–¹äº’æ›æ€§ã®ãŸã‚ç¶­æŒï¼‰
+- `MatchType` ã§æ¯”è¼ƒæ–¹æ³•ã‚’æŒ‡å®šï¼ˆExact/Contains/StartsWith/EndsWith/Regexï¼‰
 
-## ƒGƒ“ƒR[ƒfƒBƒ“ƒO
-- CSVƒtƒ@ƒCƒ‹‚Í **Shift-JIS** ƒGƒ“ƒR[ƒfƒBƒ“ƒO‚Å•Û‘¶‚·‚é‚±‚Æ
-- “d•¶CSVƒtƒ@ƒCƒ‹‚à“¯—l‚ÉShift-JIS
+## ã‚¨ãƒ³ã‚³ãƒ¼ãƒ‡ã‚£ãƒ³ã‚°
+- CSVãƒ•ã‚¡ã‚¤ãƒ«ã¯ **UTF-8** ã‚¨ãƒ³ã‚³ãƒ¼ãƒ‡ã‚£ãƒ³ã‚°ã§ä¿å­˜ã™ã‚‹ã“ã¨
+- é›»æ–‡CSVãƒ•ã‚¡ã‚¤ãƒ«ã‚‚åŒæ§˜ã«UTF-8
 
-## ƒtƒ@ƒCƒ‹”z’u
+## ãƒ•ã‚¡ã‚¤ãƒ«é…ç½®
 ```
 Instances/
   {InstanceName}/
     scenarios/
       auto/
-        binary_rules.csv          # AutoResponseƒ‹[ƒ‹
+        binary_rules.csv          # AutoResponseãƒ«ãƒ¼ãƒ«
       onreceived/
-        rules.csv                  # OnReceivedƒ‹[ƒ‹
-        copy_message_id.ps1        # OnReceivedƒXƒNƒŠƒvƒg
+        rules.csv                  # OnReceivedãƒ«ãƒ¼ãƒ«
+        copy_message_id.ps1        # OnReceivedã‚¹ã‚¯ãƒªãƒ—ãƒˆ
         process_sequence.ps1
     templates/
-      response_01.csv              # AutoResponse‰ž“š“d•¶
+      response_01.csv              # AutoResponseå¿œç­”é›»æ–‡
       response_02.csv
-      response_with_id.csv         # OnReceived‚ÅŽg—p‚·‚é“d•¶
+      response_with_id.csv         # OnReceivedã§ä½¿ç”¨ã™ã‚‹é›»æ–‡
       sequence_response.csv
 ```
 
-## Žg—p—á
+## ä½¿ç”¨ä¾‹
 
-### “d•¶Ží•Ê‚É‚æ‚éŽ©“®‰ž“š
+### é›»æ–‡ç¨®åˆ¥ã«ã‚ˆã‚‹è‡ªå‹•å¿œç­”
 ```csv
 RuleName,MatchOffset,MatchLength,MatchValue,ResponseMessageFile,Delay
-ƒƒOƒCƒ“‰ž“š,0,2,0001,login_response.csv,0
-ƒƒOƒAƒEƒg‰ž“š,0,2,0002,logout_response.csv,0
-ƒf[ƒ^—v‹‰ž“š,0,2,0010,data_response.csv,50
+ãƒ­ã‚°ã‚¤ãƒ³å¿œç­”,0,2,0001,login_response.csv,0
+ãƒ­ã‚°ã‚¢ã‚¦ãƒˆå¿œç­”,0,2,0002,logout_response.csv,0
+ãƒ‡ãƒ¼ã‚¿è¦æ±‚å¿œç­”,0,2,0010,data_response.csv,50
 ```
 
-### “d•¶Ží•Ê‚É‚æ‚éƒXƒNƒŠƒvƒgŽÀs
+### é›»æ–‡ç¨®åˆ¥ã«ã‚ˆã‚‹ã‚¹ã‚¯ãƒªãƒ—ãƒˆå®Ÿè¡Œ
 ```csv
 RuleName,MatchOffset,MatchLength,MatchValue,ScriptFile,Delay
-ƒƒOƒCƒ“ˆ—,0,2,0001,handle_login.ps1,0
-ƒf[ƒ^•Û‘¶,0,2,0010,save_data.ps1,0
-ó‘ÔXV,0,2,0020,update_state.ps1,0
+ãƒ­ã‚°ã‚¤ãƒ³å‡¦ç†,0,2,0001,handle_login.ps1,0
+ãƒ‡ãƒ¼ã‚¿ä¿å­˜,0,2,0010,save_data.ps1,0
+çŠ¶æ…‹æ›´æ–°,0,2,0020,update_state.ps1,0
 ```
 
-## ’ˆÓŽ–€
+## æ³¨æ„äº‹é …
 
-1. **ƒ‹[ƒ‹‚Ì•]‰¿‡˜**: CSV‚Ìã‚©‚ç‡‚É•]‰¿‚³‚êAƒ}ƒbƒ`‚µ‚½ƒ‹[ƒ‹‚Í**‚·‚×‚Ä**ŽÀs‚³‚ê‚é
-2. **•¡”ƒAƒNƒVƒ‡ƒ“**: “¯ˆê“d•¶‚É‘Î‚µ‚Ä•¡”‚Ìƒ‹[ƒ‹‚ð’è‹`‚·‚é‚±‚Æ‚ÅA•¡”‚Ìˆ—‚ð‡ŽŸŽÀs‰Â”\
-3. **16i”’l**: `MatchValue` ‚Í16i”•¶Žš—ñi0-9A-Fa-fj‚Å‹LqAƒXƒy[ƒXEƒnƒCƒtƒ“•s‰Â
-4. **’·‚³‚Ì®‡«**: `MatchValue` ‚ÌƒoƒCƒg”i•¶Žš”€2j‚Æ `MatchLength` ‚Íˆê’v‚·‚é•K—v‚ª‚ ‚é
-5. **‘å•¶Žš¬•¶Žš**: 16i”’l‚Í‘å•¶ŽšE¬•¶Žš‚Ç‚¿‚ç‚Å‚à‰Â
-6. **‘Š‘ÎƒpƒX**: `ResponseMessageFile` ‚â `ScriptFile` ‚Å‘Š‘ÎƒpƒX‚ðŽg—p‚·‚éê‡AƒCƒ“ƒXƒ^ƒ“ƒXƒtƒHƒ‹ƒ_‚©‚ç‚Ì‘Š‘ÎƒpƒX
-7. **’x‰„‚Ì—ÝÏ**: •¡”ƒ‹[ƒ‹‚ªƒ}ƒbƒ`‚µ‚½ê‡AŠeƒ‹[ƒ‹‚Ì `Delay` ‚ÍŒÂ•Ê‚É“K—p‚³‚ê‚éi—ÝÏ‚·‚éj
+1. **ãƒ«ãƒ¼ãƒ«ã®è©•ä¾¡é †åº**: CSVã®ä¸Šã‹ã‚‰é †ã«è©•ä¾¡ã•ã‚Œã€ãƒžãƒƒãƒã—ãŸãƒ«ãƒ¼ãƒ«ã¯**ã™ã¹ã¦**å®Ÿè¡Œã•ã‚Œã‚‹
+2. **è¤‡æ•°ã‚¢ã‚¯ã‚·ãƒ§ãƒ³**: åŒä¸€é›»æ–‡ã«å¯¾ã—ã¦è¤‡æ•°ã®ãƒ«ãƒ¼ãƒ«ã‚’å®šç¾©ã™ã‚‹ã“ã¨ã§ã€è¤‡æ•°ã®å‡¦ç†ã‚’é †æ¬¡å®Ÿè¡Œå¯èƒ½
+3. **16é€²æ•°å€¤**: `MatchValue` ã¯16é€²æ•°æ–‡å­—åˆ—ï¼ˆ0-9A-Fa-fï¼‰ã§è¨˜è¿°ã€ã‚¹ãƒšãƒ¼ã‚¹ãƒ»ãƒã‚¤ãƒ•ãƒ³ä¸å¯
+4. **é•·ã•ã®æ•´åˆæ€§**: `MatchValue` ã®ãƒã‚¤ãƒˆæ•°ï¼ˆæ–‡å­—æ•°Ã·2ï¼‰ã¨ `MatchLength` ã¯ä¸€è‡´ã™ã‚‹å¿…è¦ãŒã‚ã‚‹
+5. **å¤§æ–‡å­—å°æ–‡å­—**: 16é€²æ•°å€¤ã¯å¤§æ–‡å­—ãƒ»å°æ–‡å­—ã©ã¡ã‚‰ã§ã‚‚å¯
+6. **ç›¸å¯¾ãƒ‘ã‚¹**: `ResponseMessageFile` ã‚„ `ScriptFile` ã§ç›¸å¯¾ãƒ‘ã‚¹ã‚’ä½¿ç”¨ã™ã‚‹å ´åˆã€ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ãƒ•ã‚©ãƒ«ãƒ€ã‹ã‚‰ã®ç›¸å¯¾ãƒ‘ã‚¹
+7. **é…å»¶ã®ç´¯ç©**: è¤‡æ•°ãƒ«ãƒ¼ãƒ«ãŒãƒžãƒƒãƒã—ãŸå ´åˆã€å„ãƒ«ãƒ¼ãƒ«ã® `Delay` ã¯å€‹åˆ¥ã«é©ç”¨ã•ã‚Œã‚‹ï¼ˆç´¯ç©ã™ã‚‹ï¼‰
 
-## Žg—pã‚Ìƒqƒ“ƒg
+## ä½¿ç”¨ä¸Šã®ãƒ’ãƒ³ãƒˆ
 
-### ƒV[ƒPƒ“ƒVƒƒƒ‹‚Èˆ—‚ÌŽÀŒ»
+### ã‚·ãƒ¼ã‚±ãƒ³ã‚·ãƒ£ãƒ«ãªå‡¦ç†ã®å®Ÿç¾
 ```csv
-ˆ—1-‰ž“š,0,2,0001,response.csv,,0,true
-ˆ—2-ƒƒO,0,2,0001,,log.ps1,100,true
-ˆ—3-DB•Û‘¶,0,2,0001,,save_db.ps1,200,true
+å‡¦ç†1-å¿œç­”,0,2,0001,response.csv,,0,true
+å‡¦ç†2-ãƒ­ã‚°,0,2,0001,,log.ps1,100,true
+å‡¦ç†3-DBä¿å­˜,0,2,0001,,save_db.ps1,200,true
 ```
-‚±‚Ì—á‚Å‚ÍA‰ž“š‘—M ¨ 100msŒã‚ÉƒƒO‹L˜^ ¨ 200msŒã‚ÉDB•Û‘¶‚ª‡ŽŸŽÀs‚³‚ê‚Ü‚·B
+ã“ã®ä¾‹ã§ã¯ã€å¿œç­”é€ä¿¡ â†’ 100mså¾Œã«ãƒ­ã‚°è¨˜éŒ² â†’ 200mså¾Œã«DBä¿å­˜ãŒé †æ¬¡å®Ÿè¡Œã•ã‚Œã¾ã™ã€‚
 
-### •À—ñ“I‚Èˆ—‚ÌŽÀŒ»iDelay=0j
+### ä¸¦åˆ—çš„ãªå‡¦ç†ã®å®Ÿç¾ï¼ˆDelay=0ï¼‰
 ```csv
-‰ž“š‘—M,0,2,0001,response.csv,,0,true
-ƒƒO‹L˜^,0,2,0001,,log.ps1,0,true
-“ŒvXV,0,2,0001,,update_stats.ps1,0,true
+å¿œç­”é€ä¿¡,0,2,0001,response.csv,,0,true
+ãƒ­ã‚°è¨˜éŒ²,0,2,0001,,log.ps1,0,true
+çµ±è¨ˆæ›´æ–°,0,2,0001,,update_stats.ps1,0,true
 ```
-‚·‚×‚Ä `Delay=0` ‚É‚·‚é‚ÆA‚Ù‚Ú“¯Žž‚ÉŽÀs‚³‚ê‚Ü‚·B
+ã™ã¹ã¦ `Delay=0` ã«ã™ã‚‹ã¨ã€ã»ã¼åŒæ™‚ã«å®Ÿè¡Œã•ã‚Œã¾ã™ã€‚
 
