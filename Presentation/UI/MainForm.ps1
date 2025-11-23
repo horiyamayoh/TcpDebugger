@@ -101,10 +101,12 @@ function Show-MainForm {
 
         if ($selectedProfile -eq "(None)") {
             # 全てのプロファイルをクリア
+            Write-Host "[UI] Clearing all profiles (None selected)" -ForegroundColor Cyan
             Clear-AllProfiles -DataGridView $dgvInstances
             return
         }
 
+        Write-Host "[UI] Applying application profile: $selectedProfile" -ForegroundColor Cyan
         Apply-ApplicationProfile -DataGridView $dgvInstances -ProfileName $selectedProfile
     })
 
@@ -845,12 +847,18 @@ function Clear-AllProfiles {
     )
 
     try {
-        # 全接続のプロファイルをクリア
-        foreach ($connId in $Global:Connections.Keys) {
+        Write-Verbose "[Clear-AllProfiles] Starting to clear all profiles"
+        
+        # ConnectionServiceを使用して全接続を取得
+        $connections = Get-UiConnections
+        $clearedCount = 0
+        
+        foreach ($conn in $connections) {
             try {
-                # 接続情報を取得
-                $conn = $Global:Connections[$connId]
+                $connId = $conn.Id
                 $instancePath = if ($conn.Variables.ContainsKey('InstancePath')) { $conn.Variables['InstancePath'] } else { "" }
+                
+                Write-Verbose "[Clear-AllProfiles] Clearing profiles for: $connId"
                 
                 # AutoResponseプロファイルをクリア
                 Set-ConnectionAutoResponseProfile -ConnectionId $connId -ProfileName $null -ProfilePath $null | Out-Null
@@ -865,11 +873,14 @@ function Clear-AllProfiles {
                 
                 # InstanceProfile変数もクリア
                 $conn.Variables.Remove('InstanceProfile')
+                $clearedCount++
             }
             catch {
                 Write-Warning "[UI] Failed to clear profiles for ${connId}: $_"
             }
         }
+        
+        Write-Host "[Clear-AllProfiles] Cleared profiles for $clearedCount connection(s)" -ForegroundColor Green
         
         # UIを更新
         $script:suppressProfileEvent = $true

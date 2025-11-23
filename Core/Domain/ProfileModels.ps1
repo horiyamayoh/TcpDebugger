@@ -48,13 +48,25 @@ class ApplicationProfile {
     }
     static [ApplicationProfile] FromCsvRow([PSCustomObject]$row, [string[]]$instanceNames) {
         $profile = [ApplicationProfile]::new($row.ProfileName)
-        foreach ($instanceName in $instanceNames) {
-            if ($row.PSObject.Properties.Name -contains $instanceName) {
-                $instProfileName = $row.$instanceName
+        
+        # CSV列をスキャンし、実際に存在するインスタンスにのみマッピング
+        # これにより、CSV列とインスタンスが完全一致しなくても動作する
+        foreach ($property in $row.PSObject.Properties) {
+            $columnName = $property.Name
+            
+            # ProfileName列はスキップ（これはプロファイル名自体）
+            if ($columnName -eq 'ProfileName') {
+                continue
+            }
+            
+            # この列名が実際のインスタンス名と一致するかチェック
+            if ($instanceNames -contains $columnName) {
+                $instProfileName = $property.Value
                 if (-not [string]::IsNullOrWhiteSpace($instProfileName)) {
-                    $profile.SetInstanceProfile($instanceName, $instProfileName)
+                    $profile.SetInstanceProfile($columnName, $instProfileName)
                 }
             }
+            # 一致しない列は単純に無視（エラーにしない）
         }
         return $profile
     }

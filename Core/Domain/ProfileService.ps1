@@ -2,11 +2,13 @@
 class ProfileService {
     [object]$ProfileRepository
     [object]$Logger
+    [object]$ConnectionService
     [hashtable]$InstanceProfiles
     [System.Collections.Generic.List[object]]$ApplicationProfiles
     ProfileService([object]$profileRepository, [object]$logger) {
         $this.ProfileRepository = $profileRepository
         $this.Logger = $logger
+        $this.ConnectionService = $null
         $this.InstanceProfiles = @{}
         $this.ApplicationProfiles = [System.Collections.Generic.List[object]]::new()
     }
@@ -55,29 +57,86 @@ class ProfileService {
                     Set-ConnectionPeriodicSendProfile -ConnectionId $connectionId -ProfilePath $scenarioPath -InstancePath $instancePath 
                 }
             }
-            $connection = Get-UiConnection -ConnectionId $connectionId
-            if ($connection) { 
-                $connection.Variables['InstanceProfile'] = $profileName 
+            
+            # ConnectionServiceを取得
+            if (-not $this.ConnectionService) {
+                $this.ConnectionService = $Global:ConnectionService
+            }
+            
+            if ($this.ConnectionService) {
+                $connection = $this.ConnectionService.GetConnection($connectionId)
+                if ($connection) { 
+                    $connection.Variables['InstanceProfile'] = $profileName 
+                }
             }
         } catch { 
-            Write-Warning "[ProfileService] Error applying profile: $_"
+            $this.Logger.Warning("Error applying profile: $_", @{ ConnectionId = $connectionId; ProfileName = $profileName; Exception = $_.Exception.Message })
         }
     }
     [void] ApplyApplicationProfile([string]$appProfileName) {
         try {
             $appProfile = $this.ApplicationProfiles | Where-Object { $_.ProfileName -eq $appProfileName } | Select-Object -First 1
-            if (-not $appProfile) { return }
-            $connections = Get-AllUiConnections
+            if (-not $appProfile) { 
+                $this.Logger.Warning("Application profile not found: $appProfileName", @{ ProfileName = $appProfileName })
+                return 
+            }
+            
+            # ConnectionServiceを取得
+            if (-not $this.ConnectionService) {
+                $this.ConnectionService = $Global:ConnectionService
+            }
+            
+            if (-not $this.ConnectionService) {
+                $this.Logger.Error("ConnectionService is not available")
+                return
+            }
+            
+            $connections = $this.ConnectionService.GetAllConnections()
+            $appliedCount = 0
+            $skippedCount = 0
+            $appliedDetails = [System.Collections.Generic.List[string]]::new()
+            
             foreach ($connection in $connections) {
                 $instanceName = $connection.Variables['InstanceName']
                 $instancePath = $connection.Variables['InstancePath']
-                if ([string]::IsNullOrWhiteSpace($instanceName) -or [string]::IsNullOrWhiteSpace($instancePath)) { continue }
+                
+                if ([string]::IsNullOrWhiteSpace($instanceName) -or [string]::IsNullOrWhiteSpace($instancePath)) { 
+                    continue 
+                }
+                
                 $instanceProfileName = $appProfile.GetInstanceProfile($instanceName)
+                
                 if (-not [string]::IsNullOrWhiteSpace($instanceProfileName)) {
                     $this.ApplyInstanceProfile($connection.Id, $instanceName, $instanceProfileName, $instancePath)
+                    $appliedCount++
+                    $appliedDetails.Add("$instanceName -> $instanceProfileName")
+                } else {
+                    # CSV列にこのインスタンスの設定がない、または空白
+                    $skippedCount++
+                    $this.Logger.Debug("No profile mapping for instance: $instanceName", @{ 
+                        AppProfile = $appProfileName
+                        Instance = $instanceName 
+                    })
                 }
             }
-        } catch { }
+            
+            # 詳細ログ
+            if ($appliedCount -gt 0) {
+                $detailsText = $appliedDetails -join ', '
+                $this.Logger.Info("Applied application profile '$appProfileName' [$detailsText]", @{ 
+                    ProfileName = $appProfileName
+                    AppliedCount = $appliedCount
+                    SkippedCount = $skippedCount
+                })
+            } else {
+                $this.Logger.Warning("Application profile '$appProfileName' applied to 0 connections (skipped: $skippedCount)", @{ 
+                    ProfileName = $appProfileName
+                    SkippedCount = $skippedCount
+                })
+            }
+        } catch { 
+            $this.Logger.Error("Failed to apply application profile: $_", $_.Exception, @{ ProfileName = $appProfileName })
+        }
     }
     [string[]] GetAvailableInstanceProfiles([string]$instanceName) {
         if (-not $this.InstanceProfiles.ContainsKey($instanceName)) { return @() }
