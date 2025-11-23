@@ -100,6 +100,8 @@ function Show-MainForm {
         }
 
         if ($selectedProfile -eq "(None)") {
+            # 全てのプロファイルをクリア
+            Clear-AllProfiles -DataGridView $dgvInstances
             return
         }
 
@@ -746,7 +748,24 @@ function Apply-ProfileToConnectionRow {
     }
 
     try {
-        $Global:ProfileService.ApplyInstanceProfile($connId, $instanceName, $ProfileName, $instancePath)
+        # ProfileNameが空の場合(NONEを選択した場合)は、すべてのプロファイルをクリア
+        if ([string]::IsNullOrWhiteSpace($ProfileName)) {
+            # AutoResponseプロファイルをクリア
+            Set-ConnectionAutoResponseProfile -ConnectionId $connId -ProfileName $null -ProfilePath $null | Out-Null
+            
+            # OnReceivedプロファイルをクリア
+            Set-ConnectionOnReceivedProfile -ConnectionId $connId -ProfileName $null -ProfilePath $null | Out-Null
+            
+            # PeriodicSendプロファイルをクリア
+            Set-ConnectionPeriodicSendProfile -ConnectionId $connId -ProfilePath $null -InstancePath $instancePath | Out-Null
+            
+            # InstanceProfile変数もクリア
+            $connection.Variables.Remove('InstanceProfile')
+        }
+        else {
+            # ProfileNameが指定されている場合は、プロファイルを適用
+            $Global:ProfileService.ApplyInstanceProfile($connId, $instanceName, $ProfileName, $instancePath)
+        }
 
         $script:suppressProfileEvent = $true
         $script:suppressScenarioEvent = $true
@@ -817,6 +836,58 @@ function Apply-ApplicationProfile {
     }
     catch {
         Write-Warning "[UI] Failed to apply application profile: $_"
+    }
+}
+
+function Clear-AllProfiles {
+    param(
+        [System.Windows.Forms.DataGridView]$DataGridView
+    )
+
+    try {
+        # 全接続のプロファイルをクリア
+        foreach ($connId in $Global:Connections.Keys) {
+            try {
+                # 接続情報を取得
+                $conn = $Global:Connections[$connId]
+                $instancePath = if ($conn.Variables.ContainsKey('InstancePath')) { $conn.Variables['InstancePath'] } else { "" }
+                
+                # AutoResponseプロファイルをクリア
+                Set-ConnectionAutoResponseProfile -ConnectionId $connId -ProfileName $null -ProfilePath $null | Out-Null
+                
+                # OnReceivedプロファイルをクリア
+                Set-ConnectionOnReceivedProfile -ConnectionId $connId -ProfileName $null -ProfilePath $null | Out-Null
+                
+                # PeriodicSendプロファイルをクリア（InstancePathが必要）
+                if ($instancePath) {
+                    Set-ConnectionPeriodicSendProfile -ConnectionId $connId -ProfilePath $null -InstancePath $instancePath | Out-Null
+                }
+                
+                # InstanceProfile変数もクリア
+                $conn.Variables.Remove('InstanceProfile')
+            }
+            catch {
+                Write-Warning "[UI] Failed to clear profiles for ${connId}: $_"
+            }
+        }
+        
+        # UIを更新
+        $script:suppressProfileEvent = $true
+        $script:suppressScenarioEvent = $true
+        $script:suppressOnReceivedEvent = $true
+        $script:suppressPeriodicSendEvent = $true
+        try {
+            Update-InstanceList -DataGridView $DataGridView -PreserveComboStates:$false
+        }
+        finally {
+            $script:suppressScenarioEvent = $false
+            $script:suppressOnReceivedEvent = $false
+            $script:suppressPeriodicSendEvent = $false
+            $script:suppressProfileEvent = $false
+        }
+    }
+    catch {
+        Write-Warning "[UI] Failed to clear all profiles: $_"
     }
 }
 
