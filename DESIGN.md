@@ -121,17 +121,44 @@ TcpDebugger/
 ├── TcpDebugger.ps1              # メインスクリプト（GUIエントリーポイント）
 ├── DESIGN.md                    # 本設計書
 ├── README.md                    # 使用方法
-├── Modules/                     # モジュール群
-│   ├── ConnectionManager.ps1        # 接続管理
-│   ├── TcpClient.ps1               # TCPクライアント処理
-│   ├── TcpServer.ps1               # TCPサーバー処理
-│   ├── UdpCommunication.ps1        # UDP通信処理
-│   ├── ScenarioEngine.ps1          # シナリオ実行エンジン
-│   ├── MessageHandler.ps1          # 電文処理
-│   ├── AutoResponse.ps1            # 自動応答処理
-│   ├── QuickSender.ps1             # データバンク & ワンクリック送信
-│   ├── InstanceManager.ps1         # 論理グループ管理
-│   └── NetworkAnalyzer.ps1         # 環境診断
+├── Core/                        # コア層（ビジネスロジック）
+│   ├── Common/                      # 共通ユーティリティ
+│   │   ├── Logger.ps1                   # ログ出力
+│   │   ├── ErrorHandler.ps1             # エラーハンドリング
+│   │   └── ThreadSafeCollections.ps1    # スレッドセーフコレクション
+│   ├── Domain/                      # ドメインロジック
+│   │   ├── ConnectionModels.ps1         # 接続モデル定義
+│   │   ├── ConnectionService.ps1        # 接続管理サービス
+│   │   ├── ConnectionManager.ps1        # 接続制御・ライフサイクル管理
+│   │   ├── MessageService.ps1           # メッセージ処理（テンプレート、変数展開）
+│   │   ├── ReceivedEventPipeline.ps1    # 受信イベント処理パイプライン
+│   │   ├── ReceivedRuleEngine.ps1       # ルールエンジン（AutoResponse/OnReceived）
+│   │   ├── RuleProcessor.ps1            # ルール実行
+│   │   ├── OnReceivedLibrary.ps1        # OnReceivedプロファイル管理
+│   │   ├── VariableScope.ps1            # 変数スコープ管理
+│   │   ├── ProfileModels.ps1            # プロファイルモデル定義
+│   │   ├── ProfileService.ps1           # プロファイル管理サービス
+│   │   └── RunspaceMessages.ps1         # Runspace間メッセージ定義
+│   ├── Application/                 # アプリケーションサービス
+│   │   ├── InstanceManager.ps1          # インスタンス管理
+│   │   └── NetworkAnalyzer.ps1          # ネットワーク診断
+│   └── Infrastructure/              # インフラストラクチャ層
+│       ├── ServiceContainer.ps1         # DIコンテナ
+│       ├── RunspaceMessageQueue.ps1     # Runspaceメッセージキュー
+│       ├── RunspaceMessageProcessor.ps1 # メッセージプロセッサ
+│       ├── Adapters/                    # 通信アダプター
+│       │   ├── TcpClientAdapter.ps1     # TCPクライアント通信
+│       │   ├── TcpServerAdapter.ps1     # TCPサーバー通信
+│       │   └── UdpAdapter.ps1           # UDP通信
+│       └── Repositories/                # データアクセス
+│           ├── RuleRepository.ps1       # ルールリポジトリ
+│           ├── InstanceRepository.ps1   # インスタンス設定リポジトリ
+│           └── ProfileRepository.ps1    # プロファイルリポジトリ
+├── Presentation/                # プレゼンテーション層
+│   └── UI/
+│       ├── MainForm.ps1                 # メインフォーム（WinForms UI）
+│       ├── ViewBuilder.ps1              # UI構築ヘルパー
+│       └── MainFormViewModel.ps1        # ViewModelロジック
 ├── Config/                      # 共通設定・デフォルトテンプレート
 │   └── defaults.psd1                # 既定値スナップショット
 ├── Instances/                   # 通信インスタンスフォルダ群（増減で動的認識）
@@ -154,10 +181,16 @@ TcpDebugger/
 │       ├── instance.psd1
 │       └── scenarios/
 │           └── burst_send.csv
-├── Scripts/                     # カスタムスクリプト
-│   └── custom_handlers.ps1
-└── UI/                          # UI定義
-    └── MainForm.ps1                # WinFormsフォーム定義（必要に応じてC#コードをAdd-Typeで埋め込み）
+├── Docs/                        # ドキュメント
+│   └── ReceivedRuleFormat.md        # 受信ルール共通フォーマット仕様
+├── Tests/                       # テストコード
+│   └── Unit/
+│       └── Core/
+│           ├── Common/
+│           │   └── Logger.Tests.ps1
+│           └── Domain/
+│               └── VariableScope.Tests.ps1
+└── Logs/                        # ログファイル出力先
 ```
 
 #### 3.1.3 インスタンス検出・管理ルール
@@ -171,202 +204,124 @@ TcpDebugger/
 - **独立性保証**: 各インスタンスは独自のスレッド・変数スコープ・状態管理を持ち、他インスタンスの動作に影響を与えない。
 - **ログ・レポート**: 各インスタンスフォルダ内に自動保存され、フォルダごとコピーすることで環境移行・バックアップが可能。
 
-### 3.2 モジュール構成
+### 3.2 クリーンアーキテクチャによる設計
 
-#### 3.2.1 ConnectionManager（接続管理）
-- 複数接続の一元管理
-- 接続インスタンスの生成・破棄
-- ステータス監視
+本アプリケーションは、v1.1.0でクリーンアーキテクチャに完全移行しました。
 
-#### 3.2.2 TcpClient/TcpServer
-- TCP接続の確立・切断
-- 非同期送受信処理
-- イベント通知（接続/切断/受信）
+#### 3.2.1 レイヤー構成
+- **Core層**: ビジネスロジックとドメインモデル
+  - `Common/`: Logger、ErrorHandler、ThreadSafeCollections
+  - `Domain/`: ConnectionService、MessageService、ReceivedEventPipeline
+  - `Application/`: InstanceManager、NetworkAnalyzer
+  - `Infrastructure/`: Adapters（通信プロトコル）、Repositories（データアクセス）、ServiceContainer（DI）
 
-#### 3.2.3 UdpCommunication
-- UDPソケットの管理
-- 送受信処理
+- **Presentation層**: UI/MainForm.ps1によるWinFormsベースのユーザーインターフェース
 
-#### 3.2.4 ScenarioEngine
-- CSVシナリオの読み込み・解析
-- シナリオ実行制御
-- 変数管理・置換処理
-
-#### 3.2.5 MessageHandler
-- 電文のエンコード/デコード
-- フォーマット変換（HEX, ASCII, etc.）
-- バリデーション
-
-#### 3.2.6 AutoResponse
-- 受信パターンマッチング
-- 自動応答ルール管理
-- テンプレート適用
-
-#### 3.2.7 QuickSender
-- データバンク（テンプレート／ファイル／生成データ）をロードし、QuickPadキー枠（スロット番号）へバインド
-- ワンクリック送信、最後の送信再実行、グループ送信
-- 送信履歴の保持と再送
-
-#### 3.2.8 InstanceManager
-- 接続を論理グループ・タグで分類
-- 一括操作（接続開始/停止、送信、シナリオ走行）
-- 論理ビュー用データモデルの提供
-
-#### 3.2.9 NetworkAnalyzer
-- 接続前診断（Ping、ポート疎通、ルーティング確認）
-- 設定チェックリスト生成
-- エラー原因のリコメンド
+#### 3.2.2 主要コンポーネント
+- **ConnectionService**: 接続の作成、管理、状態監視を統括
+- **MessageService**: テンプレート展開、変数処理、シナリオ実行を統合
+- **ReceivedEventPipeline**: 受信データの処理パイプライン（AutoResponse、OnReceived、Unifiedルール対応）
+- **RuleProcessor**: ルールマッチングとアクション実行
+- **通信アダプター**（TcpClient/Server、UDP）: プロトコル固有の実装を分離
+- **ProfileService**: Auto Response、OnReceived、Periodic Sendの各プロファイルを統合管理
 
 ### 3.3 ロジカルアーキテクチャ
 ```
 ┌─────────────────────────────────────────────┐
 │ Presentation Layer                          │
-│  - WinForms MainForm (Quick Send, Logical View) │
-│  - UserControls / Shared Styles (Panel/Controlライブラリ) │
+│  - WinForms UI (MainForm, ViewBuilder)      │
+│  - ViewModel (MainFormViewModel)            │
 └─────────────────────────────────────────────┘
-          │ (Data binding / Commands)
+          │ (Data binding / Service calls)
 ┌─────────────────────────────────────────────┐
-│ Orchestration Layer                         │
-│  - ConnectionManager                        │
-│  - ScenarioEngine                           │
-│  - InstanceManager                          │
+│ Core / Application Layer                    │
+│  - InstanceManager (インスタンス管理)         │
+│  - NetworkAnalyzer (ネットワーク診断)         │
 └─────────────────────────────────────────────┘
-          │ (Events / Pipelines)
+          │ (Domain services)
 ┌─────────────────────────────────────────────┐
-│ Service Layer                               │
-│  - TcpClient / TcpServer / UdpCommunication │
-│  - QuickSender / AutoResponse               │
-│  - NetworkAnalyzer                          │
+│ Core / Domain Layer                         │
+│  - ConnectionService (接続管理)              │
+│  - MessageService (メッセージ処理)            │
+│  - ReceivedEventPipeline (受信処理)          │
+│  - ProfileService (プロファイル管理)          │
 └─────────────────────────────────────────────┘
-          │ (I/O, OS API, Files)
+          │ (Adapters / Repositories)
 ┌─────────────────────────────────────────────┐
-│ Infrastructure Layer                        │
-│  - Config & DataBank Loader                 │
-│  - Logging                                  │
-│  - Resource Monitors                        │
+│ Core / Infrastructure Layer                 │
+│  - TcpClientAdapter / TcpServerAdapter / UdpAdapter │
+│  - RuleRepository / ProfileRepository       │
+│  - ServiceContainer (DI)                    │
 └─────────────────────────────────────────────┘
 ```
 
-- **責務分離**: UIはデータバインディングのみを担い、実行制御はOrchestration層へ委譲。通信／診断といった専門処理はService層が担当し、ファイル読み書きや永続化はInfrastructure層で共通化する。
+- **責務分離**: UIはデータバインディングとユーザー操作の受付のみ。ビジネスロジックはDomain層、外部I/OはInfrastructure層に集約。
+- **依存性注入**: ServiceContainerによるDIパターンで、テスタビリティと保守性を確保。
+- **イベント駆動**: ReceivedEventPipelineによる統一された受信処理フロー。
 - **イベント駆動**: Orchestration層はPowerShellイベントでUIへ状態を通知。Service層はイベント発火のみを行い、UIスレッドに直接触れない。
 - **拡張性**: 新しいプロトコルや解析機能はService層のモジュール追加で実現し、UI/Orchestrationは最小改修で済む。
 
-### 3.4 スレッド構成（Thread Topology）
-- **UI Thread**: WinFormsのメッセージループ（`System.Windows.Forms.Application.Run`）。ユーザー操作と表示更新を担当。
-- **Connection Threads**: 接続ごとに1スレッドを確保し、非同期受信と送信処理を実行。各インスタンスは独立したリソースのみ操作するため、ロック不要。
-- **Scenario Threads**: シナリオ単位でスレッドを起こし、ステップ実行や待機を制御。キャンセルはフラグで管理。
-- **Diagnostics Thread**: NetworkAnalyzer専用。Ping/Portチェックを非同期で実行し、結果をOrchestration層へ通知。
-- **Shared Data Structures**: `Hashtable`（synchronized）で接続状態を共有。UI更新は`Control.Invoke`を介したディスパッチで一貫性を確保。
+### 3.4 スレッド構成
+- **UI Thread**: WinFormsのメッセージループ。ユーザー操作と表示更新を担当。
+- **Connection Runspaces**: 接続ごとに専用のRunspaceを確保し、非同期受信と送信処理を実行。各インスタンスは独立したリソースのみ操作。
+- **RunspaceMessageProcessor**: 通信スレッドとUIスレッド間のメッセージングを管理。
+- **Shared Data Structures**: スレッドセーフなコレクション（ThreadSafeHashtable等）で接続状態を共有。UI更新は`Control.Invoke`を介して実行。
 
-**スレッド分離原則**: 各通信インスタンスは専用スレッドで動作し、独自のバッファ・変数・状態のみを操作。他インスタンスのリソースには一切触れないため、ロックやミューテックスは不要。
+**設計原則**: 各通信インスタンスは専用Runspaceで動作し、独自のバッファ・変数・状態のみを操作。グローバル状態へのアクセスは最小化し、ServiceContainerを通じた依存性注入で疎結合を実現。
 
-### 3.5 イベント／メッセージフロー
-| イベント種別 | 発火元 | 受信先 | 内容 |
-| --- | --- | --- | --- |
-| `Connection.StatusChanged` | Connection Thread | InstanceManager, UI | 接続状態・エラーコード |
-| `Scenario.StepProgress` | ScenarioEngine | UI, Logging | 現在ステップ、進捗率、変数スナップショット |
-| `QuickSend.Requested` | UIボタン | QuickSender | DataID, 対象接続/グループ |
-| `Diagnostics.Result` | NetworkAnalyzer | UI | 判定結果、推奨アクション |
+### 3.5 受信イベントパイプライン
 
-- **メッセージバス実装**: PowerShellの`Register-EngineEvent`＋カスタムイベントを利用し、スレッド間で疎結合に通信。
+v1.1.0で受信データ処理が統合的なパイプラインとして再設計されました：
+
+- **ReceivedEventPipeline**: すべての受信データを統一的に処理するパイプライン。
+- **RuleProcessor**: ルールマッチングとアクション実行を担当。
+- **ProfileService**: Auto Response、OnReceived、Periodic Sendの各プロファイルを管理。
+- **統合ルールフォーマット**: AutoResponse、OnReceived、Unified形式をサポート（詳細は`Docs/ReceivedRuleFormat.md`参照）。
+
+通信アダプター（TcpClientAdapter、TcpServerAdapter、UdpAdapter）の受信ループから`ReceivedEventPipeline`が呼び出され、設定されたプロファイルに基づいて自動応答やスクリプト実行が行われます。
 
 ### 3.6 状態・設定管理
-- **Immutable Config**: 起動時に`instance.psd1`等を読み込み、`ConfigSnapshot`として保持。変更は「再読み込み」操作でバージョンアップし、イベントで各モジュールへ伝播。
-- **Runtime State Store**: 接続状態、シナリオ実行状況を`StateStore`（synchronized Hashtable）に集約。UIはStoreにバインドし、ログや外部APIも同じソースを参照する。
-- **Data Persistence**: DataBankやDiagnosticsは各インスタンスフォルダ内に保存。
-- **ログ保存**: ユーザーが明示的に「ログ保存」を実行した場合のみファイル出力（ファイル名はユーザー指定）
+- **インスタンス設定**: 起動時に`instance.psd1`を読み込み、InstanceRepositoryで管理。
+- **プロファイル管理**: ProfileServiceとProfileRepositoryにより、Auto Response、OnReceived、Periodic Sendの設定を一元管理。
+- **Runtime State**: 接続状態、シナリオ実行状況はConnectionServiceとConnectionManagerで管理。
+- **キャッシュ管理**: MessageServiceとRuleRepositoryが、テンプレートとルールのキャッシュを自動管理（ファイル更新検知付き）。
+- **ログ**: 構造化ログ（Logger）で統一的にログ出力。
 
-### 3.7 拡張ポイント
-- **Plug-in Loader**: `Scripts/`配下のPS1を自動ロードし、`ExportedFunctions.psd1`に準拠した関数をScenarioEngineやQuickSenderから呼び出し可能。
-- **Protocol Adapter**: 新しい通信手段は`Modules/Adapters/<Protocol>.ps1`を追加し、ConnectionManagerのファクトリに登録するだけで利用可能。
-- **Data Transformer**: MessageHandlerに`IMessageTransformer`相当のインターフェースを定義し、Base64、圧縮などをチェーン可能。
-- **UI Custom Pane**: MainForm内の`Panel`プレースホルダを用意し、UserControlや追加フォームを差し替えられる構造にする。
+### 3.7 拡張性
+- **プロトコル拡張**: 新しい通信アダプターを`Core/Infrastructure/Adapters/`に追加し、ServiceContainerに登録。
+- **カスタム処理**: OnReceivedプロファイルでPowerShellスクリプトを実行可能。スクリプトにはConnectionContextが渡される。
+- **変数システム**: MessageServiceで組み込み変数（TIMESTAMP、RANDOM、SEQなど）をサポート。カスタム変数ハンドラーの追加も可能。
+- **テスト**: Pesterによる単体テストをTests/Unit/に配置。CI/CDパイプラインでの自動テストに対応。
 
-### 3.8 デプロイ／運用モデル
-- **単一配布物**: `TcpDebugger.ps1`と`Modules/`配下を同ディレクトリに配置するだけで動作。PowerShell 5.1以上があれば追加インストール不要。
-- **インスタンス管理**: `Instances/`配下にフォルダを追加するだけで新規インスタンス作成。
-- **権限**: 通常はユーザ権限で実行。ポート開放やファイアウォール設定のみ昇格したPowerShellを別途起動。
-- **ログ出力**: ユーザーが必要時に「ログエクスポート」ボタンで明示的に保存（自動保存なし）
+### 3.8 デプロイ・運用
+- **ポータブル実行**: `TcpDebugger.ps1`と`Core/`、`Presentation/`配下を配置するだけで動作。PowerShell 5.1以上があれば追加インストール不要。
+- **インスタンス管理**: `Instances/`配下にフォルダを追加するだけで新規インスタンス作成。フォルダのコピーで環境複製可能。
+- **依存性注入**: ServiceContainerによるDIで、モジュール間の依存関係を管理。
+- **エラーハンドリング**: ErrorHandlerクラスで統一的なエラー処理とロギング。
 
 ### 3.9 動的インスタンス管理
 
 #### 3.9.1 インスタンスライフサイクル
 ```
-作成 → 初期化 → 接続 → アクティブ → 切断 → 破棄
-  ↑                    ↓         ↑
-  └──── 再利用プール ────┘         └─ 再接続
+検出 → 初期化 → 接続 → アクティブ → 切断 → 保持
+  ↑                              ↓
+  └────── 再接続 ─────────────────┘
 ```
 
-#### 3.9.2 リソース管理戦略
-- **Runspaceプール**: 最大50 Runspaceをプール化し、作成/破棄のオーバーヘッドを削減
-- **ConcurrentDictionary**: スレッドセーフな接続管理で競合状態を回避
-- **明示的削除**: ユーザーがUIまたはAPIから削除操作を行うまで保持（自動削除なし）
+#### 3.9.2 リソース管理
+- **Runspaceプール**: 通信用Runspaceを効率的に管理。
+- **スレッドセーフコレクション**: 並行アクセスに対応したデータ構造。
+- **明示的管理**: フォルダの削除でインスタンス削除（自動削除なし）。
 
 #### 3.9.3 バッチ操作
-| 操作 | 説明 | 実装方針 |
-|------|------|-------------------|
-| 一括追加 | CSVインポート、フォルダコピー | フォルダ追加で自動認識 |
-| 一括接続 | 選択した接続を同時開始 | 各インスタンスのスレッドを順次起動 |
-| 一括削除 | グループ/タグ単位での削除 | フォルダ削除で即座に反映 |
-| 一括送信 | 複数接続への同一データ送信 | 各スレッドへ送信イベントを発火 |
-
-#### 3.9.4 UI応答性
-- **仮想化リスト**: DataGrid仮想化により多数の接続でもスムーズスクロール
-- **データバインディング**: `BindingList`＋`BindingSource`を使ったWinForms標準バインディング
-- **プログレス表示**: 複数接続の操作時は進捗バーを表示
-- **バックグラウンド処理**: 接続操作は別スレッドで実行し、UIをブロックしない
-
-#### 3.9.5 動的接続追加API
-```powershell
-# 単一接続追加
-$conn = $Global:ConnectionManager.AddConnection(@{
-    Name = "web-server-01"
-    Protocol = "TCP"
-    RemoteIP = "192.168.1.100"
-    RemotePort = 8080
-    Group = "WebServers"
-})
-
-# バッチ追加（テンプレートから20個生成）
-$template = @{
-    BaseName = "load-test"
-    Protocol = "TCP"
-    RemoteIP = "192.168.1.200"
-    RemotePort = 9000
-    Group = "LoadTest"
-}
-$connections = $Global:ConnectionManager.AddConnectionBatch($template, 20)
-# → load-test_1 ~ load-test_20 が生成される
-
-# CSVからインポート
-Import-Csv "new_connections.csv" | ForEach-Object {
-    $Global:ConnectionManager.AddConnection(@{
-        Name = $_.Name
-        Protocol = $_.Protocol
-        RemoteIP = $_.RemoteIP
-        RemotePort = $_.RemotePort
-        Group = $_.Group
-    })
-}
-
-# 接続の削除
-$Global:ConnectionManager.RemoveConnection("web-server-01")
-
-# グループ単位で削除
-$removed = $Global:ConnectionManager.RemoveConnectionsByGroup("LoadTest")
-Write-Host "$removed connections removed"
-```
+| 操作 | 説明 | 実装 |
+|------|------|------|
+| 一括接続 | 選択した接続を同時開始 | InstanceManagerで一括制御 |
+| 一括送信 | 複数接続への同一データ送信 | MessageServiceで並列送信 |
+| プロファイル切替 | グループ単位でのプロファイル変更 | ProfileServiceで一括適用 |
 
 ---
 
-
-### 3.10 受信イベントパイプライン
-- TcpClient/TcpServer/UdpCommunication の受信ループでは、受信済みバイト列を ConnectionContext.RecvBuffer に追記しつつ、接続ごとの Invoke-ConnectionAutoResponse を呼び出すことで即時に応答を試みる。
-- AutoResponse.ps1 と ReceivedRuleEngine.ps1 は CSV から AutoResponse/OnReceived/Unified/Legacy を自動判別し、ResponseMessageFile (templates/) や ScriptFile (scenarios/onreceived/) を必要に応じて展開する。
-- ReceivedEventHandler.ps1 は Unified ルールでは AutoResponse のみ、従来ルールでは AutoResponse → OnReceived の順で Invoke-ConnectionAutoResponse / Invoke-ConnectionOnReceived を呼び出す設計で、GUI からのプロファイル選択をハブ化する。
-- OnReceivedHandler.ps1 と OnReceivedLibrary.ps1 は PowerShell スクリプトが受信データを加工しやすいように、テンプレート読み込み・バイト切り出し・変数管理・Send-MessageData などのヘルパーを提供している。
-- WinForms UI の DataGridView からは AutoResponse/OnReceived/Periodic Send 列を介して Set-ConnectionAutoResponseProfile / Set-ConnectionOnReceivedProfile / Set-ConnectionPeriodicSendProfile を呼び出し、受信パイプラインの設定を都度更新できる。
-
 ## 4. データフォーマット
 
 ### 4.1 インスタンス設定ファイル（instance.psd1）
@@ -908,48 +863,49 @@ ECHO_BACK,Dynamic,受信データ返送,TEXT,${response}
 
 ---
 
-
-### 7.9 既知の技術的課題
-- TcpClient.ps1 と UdpCommunication.ps1 では Invoke-ConnectionAutoResponse の呼び出し位置が受信処理より前にあり、receivedData 変数が未定義のまま実行される恐れがある (TcpServer.ps1 は正しい位置に配置済み)。
-- 受信パイプラインは ReceivedEventHandler.ps1 を経由する設計だが、通信ループから Invoke-ReceivedEvent が呼ばれておらず、OnReceived プロファイルのみを指定した場合は実行されない。
-- UI/MainForm.ps1 の Periodic Send 設定では未実装の Get-InstancePath を参照しており、実行時に例外が発生する。Connection.Variables[InstancePath] を再利用する方向で改修が必要。
-- ScenarioEngine.ps1 の IF アクション (Invoke-IfAction) は警告を出すだけのスタブで、条件分岐を伴うシナリオをまだ実行できない。
-- OnReceived プロファイルを GUI から切り替えても実行フックが存在しないため、Unified ルール経由で Invoke-OnReceivedScript が呼ばれるケース以外では効果が出ない。
-
+
+
+### 7.9 既知の技術的課題
+
+- TcpClient.ps1 と UdpCommunication.ps1 では Invoke-ConnectionAutoResponse の呼び出し位置が受信処理より前にあり、receivedData 変数が未定義のまま実行される恐れがある (TcpServer.ps1 は正しい位置に配置済み)。
+
+- 受信パイプラインは ReceivedEventHandler.ps1 を経由する設計だが、通信ループから Invoke-ReceivedEvent が呼ばれておらず、OnReceived プロファイルのみを指定した場合は実行されない。
+
+- UI/MainForm.ps1 の Periodic Send 設定では未実装の Get-InstancePath を参照しており、実行時に例外が発生する。Connection.Variables[InstancePath] を再利用する方向で改修が必要。
+
+- ScenarioEngine.ps1 の IF アクション (Invoke-IfAction) は警告を出すだけのスタブで、条件分岐を伴うシナリオをまだ実行できない。
+
+- OnReceived プロファイルを GUI から切り替えても実行フックが存在しないため、Unified ルール経由で Invoke-OnReceivedScript が呼ばれるケース以外では効果が出ない。
+
+
+
 ## 8. 拡張性
 
 ### 8.1 カスタムスクリプト
+OnReceivedプロファイルでPowerShellスクリプトを実行できます。スクリプトにはConnectionContextが渡され、受信データの加工や変数操作が可能です。
+
 ```powershell
-# Scripts/custom_handlers.ps1
-function CustomValidation {
-    param($ReceivedData, $Connection)
-    # カスタム検証ロジック
-    if ($ReceivedData -match "ERROR") {
-        # エラー処理
-        return $false
-    }
-    return $true
-}
+# Instances/Example/scenarios/onreceived/log_login.ps1
+param($Context)
+
+# 受信データをログに記録
+$receivedText = [System.Text.Encoding]::UTF8.GetString($Context.RecvBuffer)
+Write-Host "Login received: $receivedText"
+
+# 変数に保存
+$Context.Variables['LastLogin'] = $receivedText
+$Context.Variables['LoginTime'] = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'
 ```
 
-シナリオから呼び出し:
-```csv
-Step,Action,Parameter1,Parameter2,Parameter3
-10,CALL_SCRIPT,CustomValidation,$RECV_DATA,$CONN_NAME
-```
+### 8.2 変数システム拡張
+MessageServiceで組み込み変数をサポート。カスタム変数ハンドラーの追加も可能です。
 
-### 8.2 プラグイン機能
-- `Scripts/`配下のPS1ファイルを自動読み込み
-- 定義済み関数をシナリオから呼び出し可能
-- プラグインAPI規約に従った実装
-
-### 8.3 変数システム拡張
-新しい変数タイプの追加:
 ```powershell
-# Modules/MessageHandler.ps1 内
-function Expand-Variables {
-    # ${CUSTOM:xxx} パターンの処理追加
-}
+# 組み込み変数の例
+${TIMESTAMP}      # 現在時刻
+${RANDOM:1-100}   # ランダム値
+${SEQ:name}       # シーケンス番号
+${CALC:1+2}       # 計算式
 ```
 
 ---
@@ -964,131 +920,75 @@ function Expand-Variables {
 
 ---
 
-## 10. パフォーマンス
+## 10. パフォーマンスとスケーラビリティ
 
-### 10.1 最適化ポイント
-- 大量データ受信時のバッファリング
-- UI更新の間引き（高頻度更新時）
-- ログ保持件数の制限（メモリ上100件）
-- ワンクリック送信時のデバウンス
+### 10.1 最適化
+- **テンプレートキャッシュ**: MessageServiceがファイル更新検知付きキャッシュで高速読み込み
+- **ルールキャッシュ**: RuleRepositoryがルール定義をキャッシュし、繰り返しアクセスを高速化
+- **非同期処理**: 通信処理はRunspaceで並列実行し、UIをブロックしない
+- **スレッドセーフコレクション**: ロックフリーなデータ構造で並行性能を向上
 
 ### 10.2 スケーラビリティ
-- 同時接続数: 20?30接続程度を想定
-- メモリ使用量: 接続あたり数MB
-- CPU負荷: 通常時 < 5%
-- 一括制御時もUIがブロックしないよう非同期化
+- **同時接続数**: 20～30接続程度を想定（ハードウェア性能に依存）
+- **メモリ使用量**: 接続あたり数MB
+- **CPU負荷**: 通常時 < 5%
 
 ---
 
 ## 11. テスト方針
 
 ### 11.1 単体テスト
-- 各モジュールの独立テスト
-- QuickSender: テンプレート展開、変数置換
-- InstanceManager: グループ作成、タグフィルタ
-- NetworkAnalyzer: Ping/Port結果の判定ロジック
+- **Pesterフレームワーク**: PowerShell標準のテストフレームワークを使用
+- **テスト対象**: Core層の主要コンポーネント（Logger、VariableScope、MessageService等）
+- **テストファイル**: `Tests/Unit/`配下に配置
+- **CI/CD**: 自動テストパイプラインで継続的に品質を保証
 
-### 11.2 結合テスト
+### 11.2 統合テスト
 - ローカルループバック通信テスト
 - 複数接続同時動作テスト
-- シナリオ実行テスト（SAVE_RECV→変数埋め込み送信）
-- DataBank→QuickSender→複数接続への一括送信
+- シナリオ実行テスト（変数展開、ループ、条件分岐）
+- プロファイル切替テスト（Auto Response、OnReceived、Periodic Send）
 
 ### 11.3 実環境テスト
 - 実機器との接続テスト
 - 長時間稼働テスト
 - エラーリカバリテスト
-- 10?20接続規模のグループ制御試験
+- 10～20接続規模での負荷テスト
 
 ---
 
 ## 12. 配布と運用
 
-### 12.1 配布戦略
+### 12.1 配布形態
 - **ポータブルパッケージ**: 単一ZIPファイルで完全な実行環境を配布
 - **依存関係**: PowerShell 5.1以上（Windows標準）のみ
 - **USB実行対応**: 任意のドライブから実行可能、レジストリ非依存
 
-### 12.2 パッケージ構成
-```
-TcpDebugger/
-├── TcpDebugger.ps1              # メインスクリプト
-├── Modules/                     # モジュール群
-├── Config/
-│   └── defaults.psd1            # デフォルト設定
-├── Instances/                   # 通信インスタンスフォルダ群
-│   └── Example/                 # サンプルインスタンス
-│       ├── instance.psd1
-│       ├── scenarios/
-│       └── templates/
-└── README.md
-```
-
-### 12.3 起動方法
+### 12.2 起動方法
 ```powershell
 # 基本起動
 .\TcpDebugger.ps1
 
-# または、PowerShell から直接起動
+# 実行ポリシー指定
 powershell.exe -ExecutionPolicy Bypass -File ".\TcpDebugger.ps1"
 ```
 
-### 12.4 配布方法
-
-#### スタンドアロン配布
-```powershell
-# ZIPを配布
-# → TcpDebugger.zip
-
-# 展開と実行
-Expand-Archive -Path "TcpDebugger.zip" -DestinationPath "C:\Tools\TcpDebugger"
-cd "C:\Tools\TcpDebugger"
-.\TcpDebugger.ps1
-```
-
-#### ネットワーク共有配布
-```powershell
-# サーバー側: 共有フォルダに配置
-Copy-Item -Path "TcpDebugger" -Destination "\\server\tools\TcpDebugger" -Recurse
-
-# クライアント側: 直接実行
-\\server\tools\TcpDebugger\TcpDebugger.ps1
-```
+### 12.3 バージョン管理
+- v1.1.0でクリーンアーキテクチャへ完全移行
+- 詳細なバージョン履歴はREADME.mdを参照
 
 ---
 
-## 13. 今後の拡張予定
+## 13. 参考資料
 
-### 13.1 フェーズ1（基本実装）- 現在の設計範囲
-- TCP/UDP基本通信
-- 手動送受信
-- シナリオエンジン（受信データ活用含む）
-- WinFormsベースGUI
-- 1フォルダ=1インスタンス管理
-- 診断支援機能
+### 13.1 関連ドキュメント
+- **README.md**: 使用方法、インストール手順、機能概要
+- **Docs/ReceivedRuleFormat.md**: 受信ルール共通フォーマット仕様
 
-### 13.2 フェーズ2（機能拡張）- 将来検討
-- プロトコル解析プラグイン
-- 性能測定機能（iperf互換）
-- より高度なシナリオDSL
-
----
-
-## 14. 参考資料
-
-### 14.1 技術参考
-- [PowerShell WinForms GUI Tutorial](https://learn.microsoft.com/powershell/scripting/samples/sample-gui)
+### 13.2 技術参考
+- [PowerShell Documentation](https://learn.microsoft.com/powershell/)
 - [.NET Socket Programming](https://docs.microsoft.com/dotnet/api/system.net.sockets)
-
-### 14.2 関連ツール
-- VSCode: スクリプト編集
-- Excel/LibreOffice: CSV編集
-
----
-
-## 付録A: サンプル設定ファイル
-
-詳細なサンプルは実装時に別途作成予定。
+- [Windows Forms](https://learn.microsoft.com/dotnet/desktop/winforms/)
 
 ---
 
@@ -1097,12 +997,11 @@ Copy-Item -Path "TcpDebugger" -Destination "\\server\tools\TcpDebugger" -Recurse
 - Version 1.1 (2025-11-15): 要件整理と簡素化
   - 1フォルダ=1インスタンスに厳密統一
   - WinFormsで現実的なGUIに変更
-  - スレッド構成を明確化（ロック不要）
-  - iperf削除、診断機能は維持
-  - 入力検証は不要と明記
+  - スレッド構成を明確化
   - 受信データ活用機能（SAVE_RECV）を追加
-  - PowerShell単体での実行に限定
-
-
-**文書履歴**
-- Version 1.0 (2025-11-15): 初版作成
+- Version 1.2 (2025-11-24): クリーンアーキテクチャ移行に伴う更新
+  - Core/Infrastructure/Presentation層への再構成
+  - ServiceContainerによる依存性注入の導入
+  - ReceivedEventPipelineによる受信処理の統合
+  - ProfileServiceによるプロファイル管理の一元化
+  - 古いモジュール名の更新と不要な記述の削除
