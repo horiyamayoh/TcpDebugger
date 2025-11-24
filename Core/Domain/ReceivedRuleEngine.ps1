@@ -46,24 +46,17 @@ function Read-ReceivedRules {
         return @()
     }
 
-    # ルールタイプを判定
+    # ルールタイプを判定（シンプル版：Unified形式は廃止）
     $detectedType = $null
     $firstRule = $rules[0]
     $properties = $firstRule.PSObject.Properties.Name
 
-    # ResponseMessageFileとScriptFileの両方がある場合は統合形式
-    $hasResponseFile = $properties -contains 'ResponseMessageFile'
-    $hasScriptFile = $properties -contains 'ScriptFile'
-    
-    if ($hasResponseFile -and $hasScriptFile) {
-        $detectedType = 'Unified'
-    }
-    # ResponseMessageFileのみがあればAutoResponse
-    elseif ($hasResponseFile) {
+    # ResponseMessageFileカラムがあればAutoResponse
+    if ($properties -contains 'ResponseMessageFile') {
         $detectedType = 'AutoResponse'
     }
-    # ScriptFileのみがあればOnReceived
-    elseif ($hasScriptFile) {
+    # ScriptFileカラムがあればOnReceived
+    elseif ($properties -contains 'ScriptFile') {
         $detectedType = 'OnReceived'
     }
     # TriggerPatternがあれば旧形式AutoResponse
@@ -89,28 +82,11 @@ function Read-ReceivedRules {
         }
         $rule | Add-Member -NotePropertyName '__ExecutionTiming' -NotePropertyValue $executionTiming -Force
         
-        # 統合形式の場合、各ルールの実際のアクションタイプを判定
-        if ($detectedType -eq 'Unified') {
-            $hasResponse = -not [string]::IsNullOrWhiteSpace($rule.ResponseMessageFile)
-            $hasScript = -not [string]::IsNullOrWhiteSpace($rule.ScriptFile)
-            
-            if ($hasResponse -and $hasScript) {
-                # 両方指定されている場合
-                $rule | Add-Member -NotePropertyName '__ActionType' -NotePropertyValue 'Both' -Force
-            } elseif ($hasResponse) {
-                $rule | Add-Member -NotePropertyName '__ActionType' -NotePropertyValue 'AutoResponse' -Force
-            } elseif ($hasScript) {
-                $rule | Add-Member -NotePropertyName '__ActionType' -NotePropertyValue 'OnReceived' -Force
-            } else {
-                $rule | Add-Member -NotePropertyName '__ActionType' -NotePropertyValue 'None' -Force
-            }
-        } else {
-            # 非統合形式の場合
-            if ($detectedType -eq 'AutoResponse' -or $detectedType -eq 'AutoResponse_Legacy') {
-                $rule | Add-Member -NotePropertyName '__ActionType' -NotePropertyValue 'AutoResponse' -Force
-            } elseif ($detectedType -eq 'OnReceived') {
-                $rule | Add-Member -NotePropertyName '__ActionType' -NotePropertyValue 'OnReceived' -Force
-            }
+        # アクションタイプを設定（Unified形式は廃止）
+        if ($detectedType -eq 'AutoResponse' -or $detectedType -eq 'AutoResponse_Legacy') {
+            $rule | Add-Member -NotePropertyName '__ActionType' -NotePropertyValue 'AutoResponse' -Force
+        } elseif ($detectedType -eq 'OnReceived') {
+            $rule | Add-Member -NotePropertyName '__ActionType' -NotePropertyValue 'OnReceived' -Force
         }
         
         # バイナリマッチング形式かテキストマッチング形式かを判定
@@ -402,32 +378,16 @@ function Invoke-AutoResponse {
             'AutoResponse'
         }
 
-        switch ($actionType) {
-            'AutoResponse' {
-                # AutoResponse処理のみ
+        # アクションタイプに応じて処理（Unified形式は廃止）
+        if ($actionType -eq 'AutoResponse') {
+            # AutoResponse処理
+            if ($rule.__RuleType -eq 'AutoResponse_Legacy') {
+                Invoke-TextAutoResponse -ConnectionId $ConnectionId -Rule $rule -Connection $conn -DefaultEncoding $defaultEncoding
+            } else {
                 Invoke-BinaryAutoResponse -ConnectionId $ConnectionId -Rule $rule -Connection $conn
-            }
-            'OnReceived' {
-                # OnReceivedスクリプト実行のみ
-                Invoke-OnReceivedScript -ConnectionId $ConnectionId -ReceivedData $ReceivedData -Rule $rule -Connection $conn
-            }
-            'Both' {
-                # 両方実行（AutoResponse → OnReceived の順）
-                Invoke-BinaryAutoResponse -ConnectionId $ConnectionId -Rule $rule -Connection $conn
-                Invoke-OnReceivedScript -ConnectionId $ConnectionId -ReceivedData $ReceivedData -Rule $rule -Connection $conn
-            }
-            'None' {
-                Write-Warning "[AutoResponse] Rule has no action defined: $ruleName"
-            }
-            default {
-                # 旧形式の場合
-                if ($rule.__RuleType -eq 'AutoResponse_Legacy') {
-                    Invoke-TextAutoResponse -ConnectionId $ConnectionId -Rule $rule -Connection $conn -DefaultEncoding $defaultEncoding
-                } else {
-                    Invoke-BinaryAutoResponse -ConnectionId $ConnectionId -Rule $rule -Connection $conn
-                }
             }
         }
+        # OnReceivedは別の関数で処理されるのでここでは何もしない
 
         # 複数ルール対応: breakせずに継続
     }

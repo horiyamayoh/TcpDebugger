@@ -38,11 +38,6 @@
                 $autoRules = $this._ruleRepository.GetRules($autoProfilePath)
             }
 
-            if ($this.HasUnifiedRules($autoRules)) {
-                $this.ProcessUnifiedRules($connection, $data, $autoRules)
-                return
-            }
-
             # OnReceivedルールをBefore/Afterに分ける
             $onReceivedRulesBefore = @()
             $onReceivedRulesAfter = @()
@@ -98,39 +93,6 @@
         }
 
         return $null
-    }
-
-    hidden [bool] HasUnifiedRules([object[]]$rules) {
-        if (-not $rules -or $rules.Count -eq 0) {
-            return $false
-        }
-
-        $firstRule = $rules[0]
-        if (-not $firstRule) {
-            return $false
-        }
-
-        if ($firstRule.PSObject.Properties.Name -contains '__RuleType') {
-            return $firstRule.__RuleType -eq 'Unified'
-        }
-
-        return $false
-    }
-
-    hidden [void] ProcessUnifiedRules(
-        [ManagedConnection]$connection,
-        [byte[]]$data,
-        [object[]]$rules
-    ) {
-        try {
-            Invoke-AutoResponse -ConnectionId $connection.Id -ReceivedData $data -Rules $rules
-        }
-        catch {
-            $this._logger.LogError("Unified rule execution failed", $_.Exception, @{
-                ConnectionId = $connection.Id
-                Profile = 'Unified'
-            })
-        }
     }
 
     hidden [void] ProcessAutoResponse(

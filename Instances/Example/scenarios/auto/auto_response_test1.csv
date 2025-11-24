@@ -1,3 +1,3 @@
-RuleName,MatchOffset,MatchLength,MatchValue,ResponseMessageFile,ScriptFile,Delay,Enabled
-テストメッセージ1,0,2,0001,test_message1.csv,,0,true
-テストメッセージ2,0,2,0002,test_message2.csv,,0,true
+RuleName,MatchOffset,MatchLength,MatchValue,ResponseMessageFile,ScriptFile,Delay
+テストメッセージ1,0,2,0001,test_message1.csv,,0
+テストメッセージ2,0,2,0002,test_message2.csv,,0
