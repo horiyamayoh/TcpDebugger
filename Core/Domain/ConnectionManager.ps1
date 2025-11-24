@@ -177,14 +177,22 @@ function Start-Connection {
         
         if ($periodicProfilePath -and (Test-Path -LiteralPath $periodicProfilePath)) {
             try {
-                $instancePath = if ($conn.Variables -and $conn.Variables.ContainsKey('InstancePath')) {
-                    $conn.Variables['InstancePath']
-                } else {
-                    $null
-                }
+                # 既存のPeriodicSendタイマーが起動していないか確認
+                $hasActiveTimers = $conn.PeriodicTimers -and $conn.PeriodicTimers.Count -gt 0
                 
-                if ($instancePath) {
-                    Start-PeriodicSend -ConnectionId $ConnectionId -RuleFilePath $periodicProfilePath -InstancePath $instancePath
+                if (-not $hasActiveTimers) {
+                    $instancePath = if ($conn.Variables -and $conn.Variables.ContainsKey('InstancePath')) {
+                        $conn.Variables['InstancePath']
+                    } else {
+                        $null
+                    }
+                    
+                    if ($instancePath) {
+                        Start-PeriodicSend -ConnectionId $ConnectionId -RuleFilePath $periodicProfilePath -InstancePath $instancePath
+                        Write-DebugLog "[ConnectionManager] Started periodic send on connection" "Green"
+                    }
+                } else {
+                    Write-DebugLog "[ConnectionManager] Periodic send already active, skipping startup" "Yellow"
                 }
             } catch {
                 Write-Warning "[ConnectionManager] Failed to start periodic send: $_"
@@ -635,13 +643,21 @@ function Set-ConnectionPeriodicSendProfile {
 
     $conn = $Global:Connections[$ConnectionId]
 
-    # 既存のPeriodicSendを停止
-    Stop-PeriodicSend -ConnectionId $ConnectionId
+    # 現在のプロファイルパスを取得
+    $currentProfilePath = $null
+    if ($conn.Variables.ContainsKey('PeriodicSendProfilePath')) {
+        $currentProfilePath = $conn.Variables['PeriodicSendProfilePath']
+    }
 
+    # プロファイルをクリアする場合
     if ([string]::IsNullOrWhiteSpace($ProfilePath)) {
-        $conn.Variables.Remove('PeriodicSendProfile')
-        $conn.Variables.Remove('PeriodicSendProfilePath')
-        Write-DebugLog "[PeriodicSend] Cleared periodic send profile for $($conn.DisplayName)" "Yellow"
+        if ($currentProfilePath) {
+            # 既存のPeriodicSendを停止
+            Stop-PeriodicSend -ConnectionId $ConnectionId
+            $conn.Variables.Remove('PeriodicSendProfile')
+            $conn.Variables.Remove('PeriodicSendProfilePath')
+            Write-DebugLog "[PeriodicSend] Cleared periodic send profile for $($conn.DisplayName)" "Yellow"
+        }
         return
     }
 
@@ -652,6 +668,17 @@ function Set-ConnectionPeriodicSendProfile {
     $resolved = (Resolve-Path -LiteralPath $ProfilePath).Path
     $profileName = [System.IO.Path]::GetFileNameWithoutExtension($ProfilePath)
     
+    # 同じプロファイルが既に設定されている場合はスキップ
+    if ($currentProfilePath -eq $resolved) {
+        Write-DebugLog "[PeriodicSend] Profile '$profileName' is already active, skipping" "Cyan"
+        return
+    }
+
+    # 既存のPeriodicSendを停止（異なるプロファイルに切り替える場合）
+    if ($currentProfilePath) {
+        Stop-PeriodicSend -ConnectionId $ConnectionId
+    }
+
     $conn.Variables['PeriodicSendProfile'] = $profileName
     $conn.Variables['PeriodicSendProfilePath'] = $resolved
 
