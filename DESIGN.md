@@ -132,9 +132,9 @@ TcpDebugger/
 │   │   ├── ConnectionManager.ps1        # 接続制御・ライフサイクル管理
 │   │   ├── MessageService.ps1           # メッセージ処理（テンプレート、変数展開）
 │   │   ├── ReceivedEventPipeline.ps1    # 受信イベント処理パイプライン
-│   │   ├── ReceivedRuleEngine.ps1       # ルールエンジン（AutoResponse/OnReceived）
+│   │   ├── ReceivedRuleEngine.ps1       # ルールエンジン（OnReceiveReply/OnReceiveScript）
 │   │   ├── RuleProcessor.ps1            # ルール実行
-│   │   ├── OnReceivedLibrary.ps1        # OnReceivedプロファイル管理
+│   │   ├── OnReceiveScriptLibrary.ps1   # OnReceiveScriptプロファイル管理
 │   │   ├── VariableScope.ps1            # 変数スコープ管理
 │   │   ├── ProfileModels.ps1            # プロファイルモデル定義
 │   │   ├── ProfileService.ps1           # プロファイル管理サービス
@@ -166,7 +166,7 @@ TcpDebugger/
 │   │   ├── instance.psd1            # インスタンス設定（ID、表示名、接続パラメータ）
 │   │   ├── scenarios/               # このインスタンス専用シナリオ
 │   │   │   ├── startup.csv
-│   │   │   └── auto_response.csv
+│   │   │   └── on_receive_reply.csv
 │   │   ├── templates/               # このインスタンス専用電文テンプレート
 │   │   │   └── messages.csv
 │   │   ├── logs/                    # 送受信ログ（自動生成）
@@ -220,10 +220,10 @@ TcpDebugger/
 #### 3.2.2 主要コンポーネント
 - **ConnectionService**: 接続の作成、管理、状態監視を統括
 - **MessageService**: テンプレート展開、変数処理、シナリオ実行を統合
-- **ReceivedEventPipeline**: 受信データの処理パイプライン（AutoResponse、OnReceived、Unifiedルール対応）
+- **ReceivedEventPipeline**: 受信データの処理パイプライン（On Receive: Reply、On Receive: Script、Unifiedルール対応）
 - **RuleProcessor**: ルールマッチングとアクション実行
 - **通信アダプター**（TcpClient/Server、UDP）: プロトコル固有の実装を分離
-- **ProfileService**: Auto Response、OnReceived、Periodic Sendの各プロファイルを統合管理
+- **ProfileService**: On Receive: Reply、On Receive: Script、On Timer: Sendの各プロファイルを統合管理
 
 ### 3.3 ロジカルアーキテクチャ
 ```
@@ -275,21 +275,21 @@ v1.1.0で受信データ処理が統合的なパイプラインとして再設�
 
 - **ReceivedEventPipeline**: すべての受信データを統一的に処理するパイプライン。
 - **RuleProcessor**: ルールマッチングとアクション実行を担当。
-- **ProfileService**: Auto Response、OnReceived、Periodic Sendの各プロファイルを管理。
-- **統合ルールフォーマット**: AutoResponse、OnReceived、Unified形式をサポート（詳細は`Docs/ReceivedRuleFormat.md`参照）。
+- **ProfileService**: On Receive: Reply、On Receive: Script、On Timer: Sendの各プロファイルを管理。
+- **統合ルールフォーマット**: OnReceiveReply、OnReceiveScript、Unified形式をサポート（詳細は`Docs/ReceivedRuleFormat.md`参照）。
 
 通信アダプター（TcpClientAdapter、TcpServerAdapter、UdpAdapter）の受信ループから`ReceivedEventPipeline`が呼び出され、設定されたプロファイルに基づいて自動応答やスクリプト実行が行われます。
 
 ### 3.6 状態・設定管理
 - **インスタンス設定**: 起動時に`instance.psd1`を読み込み、InstanceRepositoryで管理。
-- **プロファイル管理**: ProfileServiceとProfileRepositoryにより、Auto Response、OnReceived、Periodic Sendの設定を一元管理。
+- **プロファイル管理**: ProfileServiceとProfileRepositoryにより、On Receive: Reply、On Receive: Script、On Timer: Sendの設定を一元管理。
 - **Runtime State**: 接続状態、シナリオ実行状況はConnectionServiceとConnectionManagerで管理。
 - **キャッシュ管理**: MessageServiceとRuleRepositoryが、テンプレートとルールのキャッシュを自動管理（ファイル更新検知付き）。
 - **ログ**: 構造化ログ（Logger）で統一的にログ出力。
 
 ### 3.7 拡張性
 - **プロトコル拡張**: 新しい通信アダプターを`Core/Infrastructure/Adapters/`に追加し、ServiceContainerに登録。
-- **カスタム処理**: OnReceivedプロファイルでPowerShellスクリプトを実行可能。スクリプトにはConnectionContextが渡される。
+- **カスタム処理**: On Receive: ScriptプロファイルでPowerShellスクリプトを実行可能。スクリプトにはConnectionContextが渡される。
 - **変数システム**: MessageServiceで組み込み変数（TIMESTAMP、RANDOM、SEQなど）をサポート。カスタム変数ハンドラーの追加も可能。
 - **テスト**: Pesterによる単体テストをTests/Unit/に配置。CI/CDパイプラインでの自動テストに対応。
 
@@ -460,7 +460,7 @@ MSG_ECHO,${response},UTF-8
 - `${HEX:value}`: HEX変換
 - `${CALC:expression}`: 計算式
 
-### 4.4 自動応答ルール（scenarios/auto_response.csv）
+### 4.4 自動応答ルール（scenarios/on_receive_reply.csv）
 ```csv
 TriggerPattern,ResponseTemplate,Encoding,Delay,MatchType
 ^PING,PONG,ASCII,0,Regex
@@ -782,7 +782,7 @@ ECHO_BACK,Dynamic,受信データ返送,TEXT,${response}
 ### 6.4 自動応答フロー
 ```
 1. Connection スレッドが受信データをMessageHandlerへ渡す
-2. AutoResponseモジュールがルールテーブルを走査
+2. OnReceiveReplyモジュールがルールテーブルを走査
 3. マッチした場合はテンプレート展開→Delay→送信
 4. 応答結果を履歴へ記録し、必要に応じてScenarioEngineへトリガー返送
 5. マッチしなかった場合はシナリオ待機へ委譲
@@ -867,25 +867,25 @@ ECHO_BACK,Dynamic,受信データ返送,TEXT,${response}
 
 ### 7.9 既知の技術的課題
 
-- TcpClient.ps1 と UdpCommunication.ps1 では Invoke-ConnectionAutoResponse の呼び出し位置が受信処理より前にあり、receivedData 変数が未定義のまま実行される恐れがある (TcpServer.ps1 は正しい位置に配置済み)。
+- TcpClient.ps1 と UdpCommunication.ps1 では Invoke-ConnectionOnReceiveReply の呼び出し位置が受信処理より前にあり、receivedData 変数が未定義のまま実行される恐れがある (TcpServer.ps1 は正しい位置に配置済み)。
 
-- 受信パイプラインは ReceivedEventHandler.ps1 を経由する設計だが、通信ループから Invoke-ReceivedEvent が呼ばれておらず、OnReceived プロファイルのみを指定した場合は実行されない。
+- 受信パイプラインは ReceivedEventHandler.ps1 を経由する設計だが、通信ループから Invoke-ReceivedEvent が呼ばれておらず、OnReceiveScript プロファイルのみを指定した場合は実行されない。
 
-- UI/MainForm.ps1 の Periodic Send 設定では未実装の Get-InstancePath を参照しており、実行時に例外が発生する。Connection.Variables[InstancePath] を再利用する方向で改修が必要。
+- UI/MainForm.ps1 の On Timer: Send 設定では未実装の Get-InstancePath を参照しており、実行時に例外が発生する。Connection.Variables[InstancePath] を再利用する方向で改修が必要。
 
 - ScenarioEngine.ps1 の IF アクション (Invoke-IfAction) は警告を出すだけのスタブで、条件分岐を伴うシナリオをまだ実行できない。
 
-- OnReceived プロファイルを GUI から切り替えても実行フックが存在しないため、Unified ルール経由で Invoke-OnReceivedScript が呼ばれるケース以外では効果が出ない。
+- OnReceiveScript プロファイルを GUI から切り替えても実行フックが存在しないため、Unified ルール経由で Invoke-OnReceiveScript が呼ばれるケース以外では効果が出ない。
 
 
 
 ## 8. 拡張性
 
 ### 8.1 カスタムスクリプト
-OnReceivedプロファイルでPowerShellスクリプトを実行できます。スクリプトにはConnectionContextが渡され、受信データの加工や変数操作が可能です。
+On Receive: ScriptプロファイルでPowerShellスクリプトを実行できます。スクリプトにはConnectionContextが渡され、受信データの加工や変数操作が可能です。
 
 ```powershell
-# Instances/Example/scenarios/onreceived/log_login.ps1
+# Instances/Example/scenarios/on_receive_script/log_login.ps1
 param($Context)
 
 # 受信データをログに記録
@@ -947,7 +947,7 @@ ${CALC:1+2}       # 計算式
 - ローカルループバック通信テスト
 - 複数接続同時動作テスト
 - シナリオ実行テスト（変数展開、ループ、条件分岐）
-- プロファイル切替テスト（Auto Response、OnReceived、Periodic Send）
+- プロファイル切替テスト（On Receive: Reply、On Receive: Script、On Timer: Send）
 
 ### 11.3 実環境テスト
 - 実機器との接続テスト

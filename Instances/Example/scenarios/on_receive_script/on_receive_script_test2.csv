@@ -1,0 +1,2 @@
+RuleName,MatchOffset,MatchLength,MatchValue,ScriptFile,Delay,ExecutionTiming
+テストシナリオ2,0,2,0002,on_receive_script_test2.ps1,0,After

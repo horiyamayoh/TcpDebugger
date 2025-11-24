@@ -1,5 +1,5 @@
-﻿# OnReceivedLibrary.ps1
-# OnReceivedスクリプト用のヘルパー関数ライブラリ
+﻿# OnReceiveScriptLibrary.ps1
+# OnReceiveScriptスクリプト用のヘルパー関数ライブラリ
 
 function Get-ByteSlice {
     <#
@@ -191,7 +191,7 @@ function Send-MessageFile {
     if ($data.Length -gt 16) {
         $hexPreview += "..."
     }
-    Write-Host "[OnReceived] Sent message from $FilePath ($($data.Length) bytes: $hexPreview)" -ForegroundColor Magenta
+    Write-Host "[OnReceiveScript] Sent message from $FilePath ($($data.Length) bytes: $hexPreview)" -ForegroundColor Magenta
 }
 
 function Send-MessageData {
@@ -216,7 +216,7 @@ function Send-MessageData {
     if ($Data.Length -gt 16) {
         $hexPreview += "..."
     }
-    Write-Host "[OnReceived] Sent message ($($Data.Length) bytes: $hexPreview)" -ForegroundColor Magenta
+    Write-Host "[OnReceiveScript] Sent message ($($Data.Length) bytes: $hexPreview)" -ForegroundColor Magenta
 }
 
 function ConvertTo-HexString {
@@ -315,19 +315,19 @@ function Set-ConnectionVariable {
     $Connection.Variables[$Name] = $Value
 }
 
-function Write-OnReceivedLog {
+function Write-OnReceiveScriptLog {
     <#
     .SYNOPSIS
-    OnReceivedスクリプトからログ出力
+    OnReceiveScriptスクリプトからログ出力
     
     .EXAMPLE
-    Write-OnReceivedLog "Processing message ID: $messageId"
+    Write-OnReceiveScriptLog "Processing message ID: $messageId"
     #>
     param(
         [Parameter(Mandatory=$true)]
         [string]$Message
     )
 
-    Write-Host "[OnReceived-Script] $Message" -ForegroundColor Cyan
+    Write-Host "[OnReceiveScript] $Message" -ForegroundColor Cyan
 }
 

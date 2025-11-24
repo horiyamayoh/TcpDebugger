@@ -171,35 +171,33 @@ function Start-Connection {
         $conn.MarkActivity()
         
         $periodicProfilePath = $null
-        if ($conn.Variables.ContainsKey('PeriodicSendProfilePath')) {
-            $periodicProfilePath = $conn.Variables['PeriodicSendProfilePath']
+        if ($conn.Variables.ContainsKey('OnTimerSendProfilePath')) {
+            $periodicProfilePath = $conn.Variables['OnTimerSendProfilePath']
         }
         
         if ($periodicProfilePath -and (Test-Path -LiteralPath $periodicProfilePath)) {
             try {
-                # 既存のPeriodicSendタイマーが起動していないか確認
-                $hasActiveTimers = $conn.PeriodicTimers -and $conn.PeriodicTimers.Count -gt 0
-                
-                if (-not $hasActiveTimers) {
-                    $instancePath = if ($conn.Variables -and $conn.Variables.ContainsKey('InstancePath')) {
-                        $conn.Variables['InstancePath']
-                    } else {
-                        $null
-                    }
-                    
-                    if ($instancePath) {
-                        Start-PeriodicSend -ConnectionId $ConnectionId -RuleFilePath $periodicProfilePath -InstancePath $instancePath
-                        Write-DebugLog "[ConnectionManager] Started periodic send on connection" "Green"
-                    }
+            # 既存のOnTimerSendタイマーが起動していないか確認
+            $hasActiveTimers = $conn.PeriodicTimers -and $conn.PeriodicTimers.Count -gt 0
+            
+            if (-not $hasActiveTimers) {
+                $instancePath = if ($conn.Variables -and $conn.Variables.ContainsKey('InstancePath')) {
+                    $conn.Variables['InstancePath']
                 } else {
-                    Write-DebugLog "[ConnectionManager] Periodic send already active, skipping startup" "Yellow"
+                    $null
                 }
-            } catch {
-                Write-Warning "[ConnectionManager] Failed to start periodic send: $_"
+                
+                if ($instancePath) {
+                    Start-OnTimerSend -ConnectionId $ConnectionId -RuleFilePath $periodicProfilePath -InstancePath $instancePath
+                    Write-DebugLog "[ConnectionManager] Started On Timer: Send on connection" "Green"
+                }
+            } else {
+                Write-DebugLog "[ConnectionManager] On Timer: Send already active, skipping startup" "Yellow"
             }
+        } catch {
+            Write-Warning "[ConnectionManager] Failed to start On Timer: Send: $_"
         }
-        
-        Write-DebugLog "[ConnectionManager] Connection established: $($conn.DisplayName)" "Green"
+    }        Write-DebugLog "[ConnectionManager] Connection established: $($conn.DisplayName)" "Green"
         
     } catch {
         $conn.SetError($_.Exception.Message, $_.Exception)
@@ -225,9 +223,9 @@ function Stop-Connection {
     
     try {
         try {
-            Stop-PeriodicSend -ConnectionId $ConnectionId
+            Stop-OnTimerSend -ConnectionId $ConnectionId
         } catch {
-            Write-Verbose "[ConnectionManager] Failed to stop periodic send: $_"
+            Write-Verbose "[ConnectionManager] Failed to stop On Timer: Send: $_"
         }
         
         if ($conn.ScenarioTimers -and $conn.ScenarioTimers.Count -gt 0) {
@@ -374,10 +372,10 @@ function Send-Data {
 }
 
 # =====================================================================
-# Periodic Send Functions (定周期送信)
+# On Timer: Send Functions (定周期送信)
 # =====================================================================
 
-function Read-PeriodicSendRules {
+function Read-OnTimerSendRules {
     <#
     .SYNOPSIS
     定周期送信ルールCSVを読み込み
@@ -396,7 +394,7 @@ function Read-PeriodicSendRules {
     )
 
     if (-not (Test-Path -LiteralPath $FilePath)) {
-        Write-Warning "[PeriodicSend] Rule file not found: $FilePath"
+        Write-Warning "[OnTimerSend] Rule file not found: $FilePath"
         return @()
     }
 
@@ -409,19 +407,19 @@ function Read-PeriodicSendRules {
         foreach ($rule in $rules) {
             # 必須フィールドチェック
             if ([string]::IsNullOrWhiteSpace($rule.MessageFile)) {
-                Write-Warning "[PeriodicSend] Skipping rule with empty MessageFile"
+                Write-Warning "[OnTimerSend] Skipping rule with empty MessageFile"
                 continue
             }
 
             if ([string]::IsNullOrWhiteSpace($rule.IntervalMs)) {
-                Write-Warning "[PeriodicSend] Skipping rule '$($rule.RuleName)' with empty IntervalMs"
+                Write-Warning "[OnTimerSend] Skipping rule '$($rule.RuleName)' with empty IntervalMs"
                 continue
             }
 
             # IntervalMs を数値に変換
             $intervalMs = 0
             if (-not [int]::TryParse($rule.IntervalMs, [ref]$intervalMs) -or $intervalMs -le 0) {
-                Write-Warning "[PeriodicSend] Invalid IntervalMs for rule '$($rule.RuleName)': $($rule.IntervalMs)"
+                Write-Warning "[OnTimerSend] Invalid IntervalMs for rule '$($rule.RuleName)': $($rule.IntervalMs)"
                 continue
             }
 
@@ -430,7 +428,7 @@ function Read-PeriodicSendRules {
             $messageFilePath = Join-Path $templatesPath $rule.MessageFile
 
             if (-not (Test-Path -LiteralPath $messageFilePath)) {
-                Write-Warning "[PeriodicSend] MessageFile not found: $messageFilePath"
+                Write-Warning "[OnTimerSend] MessageFile not found: $messageFilePath"
                 continue
             }
 
@@ -441,16 +439,16 @@ function Read-PeriodicSendRules {
             }
         }
 
-        Write-DebugLog "[PeriodicSend] Loaded $($validRules.Count) periodic send rules from $FilePath" "Green"
+        Write-DebugLog "[OnTimerSend] Loaded $($validRules.Count) timer send rules from $FilePath" "Green"
         return $validRules
 
     } catch {
-        Write-Error "[PeriodicSend] Failed to read periodic send rules: $_"
+        Write-Error "[OnTimerSend] Failed to read timer send rules: $_"
         return @()
     }
 }
 
-function Start-PeriodicSend {
+function Start-OnTimerSend {
     <#
     .SYNOPSIS
     指定された接続で定周期送信を開始
@@ -470,18 +468,18 @@ function Start-PeriodicSend {
     $connection = $service.GetConnection($ConnectionId)
     
     if (-not $connection) {
-        Write-Warning "[PeriodicSend] Connection not found: $ConnectionId"
+        Write-Warning "[OnTimerSend] Connection not found: $ConnectionId"
         return
     }
 
     # 既存のタイマーを停止
-    Stop-PeriodicSend -ConnectionId $ConnectionId
+    Stop-OnTimerSend -ConnectionId $ConnectionId
 
     # ルールを読み込み
-    $rules = Read-PeriodicSendRules -FilePath $RuleFilePath -InstancePath $InstancePath
+    $rules = Read-OnTimerSendRules -FilePath $RuleFilePath -InstancePath $InstancePath
     
     if ($rules.Count -eq 0) {
-        Write-DebugLog "[PeriodicSend] No valid periodic send rules found" "Yellow"
+        Write-DebugLog "[OnTimerSend] No valid timer send rules found" "Yellow"
         return
     }
 
@@ -529,20 +527,20 @@ function Start-PeriodicSend {
                 # スクリプトブロックとして関数を呼び出し
                 $templates = & $getTemplate -FilePath $messageFile -ThrowOnMissing
                 if (-not $templates -or -not $templates.ContainsKey('DEFAULT')) {
-                    Write-Warning "[PeriodicSend] DEFAULT template not found in: $messageFile"
+                    Write-Warning "[OnTimerSend] DEFAULT template not found in: $messageFile"
                     return
                 }
 
                 $template = $templates['DEFAULT']
                 if (-not $template -or -not $template.Format) {
-                    Write-Warning "[PeriodicSend] Template format is empty: $messageFile"
+                    Write-Warning "[OnTimerSend] Template format is empty: $messageFile"
                     return
                 }
 
                 $bytes = & $convertBytes -Data $template.Format -Encoding 'HEX'
                 & $sendData -ConnectionId $connId -Data $bytes
             } catch {
-                Write-Warning "[PeriodicSend] Failed to send periodic message for rule '$ruleName': $_"
+                Write-Warning "[OnTimerSend] Failed to send periodic message for rule '$ruleName': $_"
             }
         } -MessageData @{
             ConnectionId = $ConnectionId
@@ -563,11 +561,11 @@ function Start-PeriodicSend {
 
         # タイマー開始
         $timer.Start()
-        Write-DebugLog "[PeriodicSend] Started periodic timer for rule '$($rule.RuleName)' (Interval: $($rule.IntervalMs)ms)" "Green"
+        Write-DebugLog "[OnTimerSend] Started periodic timer for rule '$($rule.RuleName)' (Interval: $($rule.IntervalMs)ms)" "Green"
     }
 }
 
-function Stop-PeriodicSend {
+function Stop-OnTimerSend {
     <#
     .SYNOPSIS
     定周期送信を停止
@@ -589,7 +587,7 @@ function Stop-PeriodicSend {
     }
 
     
-    Write-DebugLog "[PeriodicSend] Stopping periodic timers for connection: $($connection.DisplayName)" "Yellow"
+    Write-DebugLog "[OnTimerSend] Stopping periodic timers for connection: $($connection.DisplayName)" "Yellow"
     
     foreach ($timerState in @($connection.PeriodicTimers)) {
         # タイマーを停止・破棄
@@ -599,7 +597,7 @@ function Stop-PeriodicSend {
                 $timerState.Timer.Dispose()
             }
         } catch {
-            Write-Verbose "[PeriodicSend] Failed to dispose timer: $_"
+            Write-Verbose "[OnTimerSend] Failed to dispose timer: $_"
         }
 
         # イベントをアンレジスター
@@ -617,18 +615,18 @@ function Stop-PeriodicSend {
                 }
             }
         } catch {
-            Write-Verbose "[PeriodicSend] Failed to unregister event: $_"
+            Write-Verbose "[OnTimerSend] Failed to unregister event: $_"
         }
     }
 
     $connection.PeriodicTimers.Clear()
-    Write-DebugLog "[PeriodicSend] All periodic timers stopped" "Green"
+    Write-DebugLog "[OnTimerSend] All periodic timers stopped" "Green"
 }
 
-function Set-ConnectionPeriodicSendProfile {
+function Set-ConnectionOnTimerSendProfile {
     <#
     .SYNOPSIS
-    接続に定周期送信プロファイルを設定
+    接続に On Timer: Send プロファイルを設定
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -650,24 +648,24 @@ function Set-ConnectionPeriodicSendProfile {
 
     # 現在のプロファイルパスを取得
     $currentProfilePath = $null
-    if ($conn.Variables.ContainsKey('PeriodicSendProfilePath')) {
-        $currentProfilePath = $conn.Variables['PeriodicSendProfilePath']
+    if ($conn.Variables.ContainsKey('OnTimerSendProfilePath')) {
+        $currentProfilePath = $conn.Variables['OnTimerSendProfilePath']
     }
 
     # プロファイルをクリアする場合
     if ([string]::IsNullOrWhiteSpace($ProfilePath)) {
         if ($currentProfilePath) {
-            # 既存のPeriodicSendを停止
-            Stop-PeriodicSend -ConnectionId $ConnectionId
-            $conn.Variables.Remove('PeriodicSendProfile')
-            $conn.Variables.Remove('PeriodicSendProfilePath')
-            Write-DebugLog "[PeriodicSend] Cleared periodic send profile for $($conn.DisplayName)" "Yellow"
+            # 既存のOnTimerSendを停止
+            Stop-OnTimerSend -ConnectionId $ConnectionId
+            $conn.Variables.Remove('OnTimerSendProfile')
+            $conn.Variables.Remove('OnTimerSendProfilePath')
+            Write-DebugLog "[OnTimerSend] Cleared On Timer: Send profile for $($conn.DisplayName)" "Yellow"
         }
         return
     }
 
     if (-not (Test-Path -LiteralPath $ProfilePath)) {
-        throw "Periodic send profile not found: $ProfilePath"
+        throw "On Timer: Send profile not found: $ProfilePath"
     }
 
     $resolved = (Resolve-Path -LiteralPath $ProfilePath).Path
@@ -675,33 +673,33 @@ function Set-ConnectionPeriodicSendProfile {
     
     # 同じプロファイルが既に設定されている場合はスキップ
     if ($currentProfilePath -eq $resolved) {
-        Write-DebugLog "[PeriodicSend] Profile '$profileName' is already active, skipping" "Cyan"
+        Write-DebugLog "[OnTimerSend] Profile '$profileName' is already active, skipping" "Cyan"
         return
     }
 
-    # 既存のPeriodicSendを停止（異なるプロファイルに切り替える場合）
+    # 既存のOnTimerSendを停止（異なるプロファイルに切り替える場合）
     if ($currentProfilePath) {
-        Stop-PeriodicSend -ConnectionId $ConnectionId
+        Stop-OnTimerSend -ConnectionId $ConnectionId
     }
 
-    $conn.Variables['PeriodicSendProfile'] = $profileName
-    $conn.Variables['PeriodicSendProfilePath'] = $resolved
+    $conn.Variables['OnTimerSendProfile'] = $profileName
+    $conn.Variables['OnTimerSendProfilePath'] = $resolved
 
     
-    Write-DebugLog "[PeriodicSend] Profile '$profileName' applied to $($conn.DisplayName)" "Green"    # 接続が既にアクティブな場合は即座に開始
+    Write-DebugLog "[OnTimerSend] Profile '$profileName' applied to $($conn.DisplayName)" "Green"    # 接続が既にアクティブな場合は即座に開始
     if ($conn.Status -eq "CONNECTED") {
-        Start-PeriodicSend -ConnectionId $ConnectionId -RuleFilePath $resolved -InstancePath $InstancePath
+        Start-OnTimerSend -ConnectionId $ConnectionId -RuleFilePath $resolved -InstancePath $InstancePath
     }
 }
 
 # =====================================================================
-# OnReceived Profile Functions (受信イベントプロファイル)
+# On Receive: Script Profile Functions (受信イベントプロファイル)
 # =====================================================================
 
-function Set-ConnectionOnReceivedProfile {
+function Set-ConnectionOnReceiveScriptProfile {
     <#
     .SYNOPSIS
-    コネクションにOnReceivedプロファイルを設定
+    コネクションに On Receive: Script プロファイルを設定
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -722,23 +720,23 @@ function Set-ConnectionOnReceivedProfile {
     }
 
     if ([string]::IsNullOrWhiteSpace($ProfileName) -or -not $ProfilePath) {
-        $conn.Variables.Remove('OnReceivedProfile')
-        $conn.Variables.Remove('OnReceivedProfilePath')
-        $conn.Variables.Remove('OnReceivedRulesCache')
-        Write-Host "[OnReceived] Cleared OnReceived profile for $($conn.DisplayName)" -ForegroundColor Yellow
+        $conn.Variables.Remove('OnReceiveScriptProfile')
+        $conn.Variables.Remove('OnReceiveScriptProfilePath')
+        $conn.Variables.Remove('OnReceiveScriptRulesCache')
+        Write-Host "[OnReceiveScript] Cleared OnReceiveScript profile for $($conn.DisplayName)" -ForegroundColor Yellow
         return @()
     }
 
     if (-not (Test-Path -LiteralPath $ProfilePath)) {
-        throw "OnReceived profile not found: $ProfilePath"
+        throw "OnReceiveScript profile not found: $ProfilePath"
     }
 
     $resolved = (Resolve-Path -LiteralPath $ProfilePath).Path
-    $conn.Variables['OnReceivedProfile'] = $ProfileName
-    $conn.Variables['OnReceivedProfilePath'] = $resolved
-    $conn.Variables.Remove('OnReceivedRulesCache')
+    $conn.Variables['OnReceiveScriptProfile'] = $ProfileName
+    $conn.Variables['OnReceiveScriptProfilePath'] = $resolved
+    $conn.Variables.Remove('OnReceiveScriptRulesCache')
 
-    Write-Host "[OnReceived] Profile '$ProfileName' applied to $($conn.DisplayName)" -ForegroundColor Green
+    Write-Host "[OnReceiveScript] Profile '$ProfileName' applied to $($conn.DisplayName)" -ForegroundColor Green
 
     # RuleRepositoryを通じてルールをキャッシュ
     if ($Global:RuleRepository) {
@@ -746,7 +744,7 @@ function Set-ConnectionOnReceivedProfile {
             $rules = $Global:RuleRepository.GetRules($resolved)
             return $rules
         } catch {
-            Write-Warning "[OnReceived] Failed to load rules: $_"
+            Write-Warning "[OnReceiveScript] Failed to load rules: $_"
             return @()
         }
     }
@@ -754,10 +752,10 @@ function Set-ConnectionOnReceivedProfile {
     return @()
 }
 
-function Set-ConnectionAutoResponseProfile {
+function Set-ConnectionOnReceiveReplyProfile {
     <#
     .SYNOPSIS
-    コネクションにAutoResponseプロファイルを設定
+    コネクションに On Receive: Reply プロファイルを設定
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -778,23 +776,23 @@ function Set-ConnectionAutoResponseProfile {
     }
 
     if ([string]::IsNullOrWhiteSpace($ProfileName) -or -not $ProfilePath) {
-        $conn.Variables.Remove('AutoResponseProfile')
-        $conn.Variables.Remove('AutoResponseProfilePath')
-        $conn.Variables.Remove('AutoResponseRulesCache')
-        Write-Host "[AutoResponse] Cleared auto-response profile for $($conn.DisplayName)" -ForegroundColor Yellow
+        $conn.Variables.Remove('OnReceiveReplyProfile')
+        $conn.Variables.Remove('OnReceiveReplyProfilePath')
+        $conn.Variables.Remove('OnReceiveReplyRulesCache')
+        Write-Host "[OnReceiveReply] Cleared on-receive-reply profile for $($conn.DisplayName)" -ForegroundColor Yellow
         return @()
     }
 
     if (-not (Test-Path -LiteralPath $ProfilePath)) {
-        throw "Auto-response profile not found: $ProfilePath"
+        throw "On-receive-reply profile not found: $ProfilePath"
     }
 
     $resolved = (Resolve-Path -LiteralPath $ProfilePath).Path
-    $conn.Variables['AutoResponseProfile'] = $ProfileName
-    $conn.Variables['AutoResponseProfilePath'] = $resolved
-    $conn.Variables.Remove('AutoResponseRulesCache')
+    $conn.Variables['OnReceiveReplyProfile'] = $ProfileName
+    $conn.Variables['OnReceiveReplyProfilePath'] = $resolved
+    $conn.Variables.Remove('OnReceiveReplyRulesCache')
 
-    Write-Host "[AutoResponse] Profile '$ProfileName' applied to $($conn.DisplayName)" -ForegroundColor Green
+    Write-Host "[OnReceiveReply] Profile '$ProfileName' applied to $($conn.DisplayName)" -ForegroundColor Green
 
     # RuleRepositoryを通じてルールをキャッシュ
     if ($Global:RuleRepository) {
@@ -802,7 +800,7 @@ function Set-ConnectionAutoResponseProfile {
             $rules = $Global:RuleRepository.GetRules($resolved)
             return $rules
         } catch {
-            Write-Warning "[AutoResponse] Failed to load rules: $_"
+            Write-Warning "[OnReceiveReply] Failed to load rules: $_"
             return @()
         }
     }

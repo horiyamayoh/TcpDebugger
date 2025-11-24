@@ -47,7 +47,7 @@ $coreModules = @(
     "Core\Domain\ConnectionService.ps1",
     "Core\Application\ConnectionManager.ps1",
     "Core\Domain\ReceivedRuleEngine.ps1",
-    "Core\Domain\OnReceivedLibrary.ps1",
+    "Core\Domain\OnReceiveScriptLibrary.ps1",
     "Core\Domain\ProfileModels.ps1",
     "Core\Domain\ProfileService.ps1",
     "Core\Infrastructure\Repositories\RuleRepository.ps1",
@@ -351,6 +351,10 @@ try {
 Write-Host "[GUI] Starting GUI..." -ForegroundColor Cyan
 try {
     Show-MainForm
+} catch {
+    Write-Host "[ERROR] GUI failed: $_" -ForegroundColor Red
+    Write-Host $_.ScriptStackTrace -ForegroundColor Red
+    throw
 } finally {
     if ($script:ConsoleCancelHandler) {
         [Console]::remove_CancelKeyPress($script:ConsoleCancelHandler)

@@ -178,8 +178,8 @@ function Show-MainForm {
 
     # State holders
     $script:suppressScenarioEvent = $false
-    $script:suppressOnReceivedEvent = $false
-    $script:suppressPeriodicSendEvent = $false
+    $script:suppressOnReceiveScriptEvent = $false
+    $script:suppressOnTimerSendEvent = $false
     $script:suppressProfileEvent = $false
     $script:isGlobalProfileLocked = $false
     $script:lastSelectedConnectionId = $null
@@ -298,7 +298,7 @@ function Register-GridEvents {
     $DataGridView.Add_CurrentCellDirtyStateChanged({
         if ($DataGridView.IsCurrentCellDirty -and $DataGridView.CurrentCell -and
             $DataGridView.CurrentCell.OwningColumn -and
-            $DataGridView.CurrentCell.OwningColumn.Name -in @("Scenario", "OnReceived", "PeriodicSend", "Profile")) {
+            $DataGridView.CurrentCell.OwningColumn.Name -in @("Scenario", "OnReceiveScript", "OnTimerSend", "Profile")) {
             $DataGridView.CommitEdit([System.Windows.Forms.DataGridViewDataErrorContexts]::Commit)
         }
     })
@@ -313,11 +313,11 @@ function Register-GridEvents {
         if ($column.Name -eq "Scenario") {
             Handle-ScenarioChanged -Sender $sender -Args $args
         }
-        elseif ($column.Name -eq "PeriodicSend") {
-            Handle-PeriodicSendChanged -Sender $sender -Args $args
+        elseif ($column.Name -eq "OnTimerSend") {
+            Handle-OnTimerSendChanged -Sender $sender -Args $args
         }
-        elseif ($column.Name -eq "OnReceived") {
-            Handle-OnReceivedChanged -Sender $sender -Args $args
+        elseif ($column.Name -eq "OnReceiveScript") {
+            Handle-OnReceiveScriptChanged -Sender $sender -Args $args
         }
         elseif ($column.Name -eq "Profile") {
             Handle-ProfileChanged -Sender $sender -Args $args
@@ -481,7 +481,7 @@ function Handle-ScenarioChanged {
         return
     }
 
-    Apply-AutoResponseProfile -ConnectionId $connId -Entry $entry -Cell $cell -CurrentKey $currentProfileKey -Sender $Sender
+    Apply-OnReceiveReplyProfile -ConnectionId $connId -Entry $entry -Cell $cell -CurrentKey $currentProfileKey -Sender $Sender
 }
 
 function Execute-Scenario {
@@ -516,7 +516,7 @@ function Execute-Scenario {
     }
 }
 
-function Apply-AutoResponseProfile {
+function Apply-OnReceiveReplyProfile {
     param(
         [string]$ConnectionId,
         $Entry,
@@ -533,7 +533,7 @@ function Apply-AutoResponseProfile {
     }
 
     try {
-        Set-ConnectionAutoResponseProfile -ConnectionId $ConnectionId -ProfileName $profileName -ProfilePath $profilePath | Out-Null
+        Set-ConnectionOnReceiveReplyProfile -ConnectionId $ConnectionId -ProfileName $profileName -ProfilePath $profilePath | Out-Null
         $tagData = $Cell.Tag
         if ($tagData -is [System.Collections.IDictionary] -and $tagData.ContainsKey("ProfileKey")) {
             $tagData["ProfileKey"] = $Cell.Value
@@ -548,24 +548,24 @@ function Apply-AutoResponseProfile {
             }
             $Sender.InvalidateCell($Cell)
         }
-        [System.Windows.Forms.MessageBox]::Show("Failed to apply auto-response profile: $_", "Error") | Out-Null
+        [System.Windows.Forms.MessageBox]::Show("Failed to apply On Receive: Reply profile: $_", "Error") | Out-Null
     }
 }
 
-function Handle-PeriodicSendChanged {
+function Handle-OnTimerSendChanged {
     param(
         $Sender,
         $Args
     )
 
-    if ($script:suppressPeriodicSendEvent) {
+    if ($script:suppressOnTimerSendEvent) {
         return
     }
     if ($Args.ColumnIndex -lt 0 -or $Args.RowIndex -lt 0) {
         return
     }
     $column = $Sender.Columns[$Args.ColumnIndex]
-    if ($column.Name -ne "PeriodicSend") {
+    if ($column.Name -ne "OnTimerSend") {
         return
     }
 
@@ -579,17 +579,17 @@ function Handle-PeriodicSendChanged {
         return
     }
 
-    $cell = $row.Cells["PeriodicSend"]
+    $cell = $row.Cells["OnTimerSend"]
     $tagData = $cell.Tag
     $mapping = $null
-    $currentPeriodicSendKey = ""
+    $currentTimerSendKey = ""
 
     if ($tagData -is [System.Collections.IDictionary]) {
         if ($tagData.ContainsKey("Mapping")) {
             $mapping = $tagData["Mapping"]
         }
-        if ($tagData.ContainsKey("PeriodicSendProfileKey")) {
-            $currentPeriodicSendKey = $tagData["PeriodicSendProfileKey"]
+        if ($tagData.ContainsKey("OnTimerSendProfileKey")) {
+            $currentTimerSendKey = $tagData["OnTimerSendProfileKey"]
         }
     }
 
@@ -600,10 +600,10 @@ function Handle-PeriodicSendChanged {
         $entry = $mapping[$selectedKey]
     }
 
-    Apply-PeriodicSendProfile -ConnectionId $connId -Entry $entry -Cell $cell -CurrentKey $currentPeriodicSendKey -Sender $Sender
+    Apply-OnTimerSendProfile -ConnectionId $connId -Entry $entry -Cell $cell -CurrentKey $currentTimerSendKey -Sender $Sender
 }
 
-function Apply-PeriodicSendProfile {
+function Apply-OnTimerSendProfile {
     param(
         [string]$ConnectionId,
         $Entry,
@@ -625,7 +625,7 @@ function Apply-PeriodicSendProfile {
             throw "Connection not found: $ConnectionId"
         }
 
-        # 新しいプロファイルを設定（Set-ConnectionPeriodicSendProfileが状態チェックを行う）
+        # 新しいプロファイルを設定（Set-ConnectionOnTimerSendProfileが状態チェックを行う）
         # インスタンスパスを取得
         $instancePath = $null
         if ($connection.Variables.ContainsKey('InstancePath')) {
@@ -633,51 +633,51 @@ function Apply-PeriodicSendProfile {
         }
 
         if ($profilePath -and (Test-Path -LiteralPath $profilePath)) {
-            # Set-ConnectionPeriodicSendProfileを使用（接続状態をチェックし、CONNECTEDの場合のみタイマーを開始）
-            Set-ConnectionPeriodicSendProfile -ConnectionId $ConnectionId -ProfilePath $profilePath -InstancePath $instancePath
-            Write-Host "[PeriodicSend] Applied profile: $profileName" -ForegroundColor Green
+            # Set-ConnectionOnTimerSendProfileを使用（接続状態をチェックし、CONNECTEDの場合のみタイマーを開始）
+            Set-ConnectionOnTimerSendProfile -ConnectionId $ConnectionId -ProfilePath $profilePath -InstancePath $instancePath
+            Write-Host "[OnTimerSend] Applied profile: $profileName" -ForegroundColor Green
         }
         else {
             # プロファイルをクリア
-            Set-ConnectionPeriodicSendProfile -ConnectionId $ConnectionId -ProfilePath $null -InstancePath $instancePath
-            Write-Host "[PeriodicSend] Cleared profile" -ForegroundColor Yellow
+            Set-ConnectionOnTimerSendProfile -ConnectionId $ConnectionId -ProfilePath $null -InstancePath $instancePath
+            Write-Host "[OnTimerSend] Cleared profile" -ForegroundColor Yellow
         }
 
         # Tagを更新
         $tagData = $Cell.Tag
-        if ($tagData -is [System.Collections.IDictionary] -and $tagData.ContainsKey("PeriodicSendProfileKey")) {
-            $tagData["PeriodicSendProfileKey"] = $Cell.Value
+        if ($tagData -is [System.Collections.IDictionary] -and $tagData.ContainsKey("OnTimerSendProfileKey")) {
+            $tagData["OnTimerSendProfileKey"] = $Cell.Value
         }
     }
     catch {
         # エラー時は元の値に戻す
         if ($CurrentKey -ne $Cell.Value) {
-            $script:suppressPeriodicSendEvent = $true
+            $script:suppressOnTimerSendEvent = $true
             try {
                 $Cell.Value = $CurrentKey
             } finally {
-                $script:suppressPeriodicSendEvent = $false
+                $script:suppressOnTimerSendEvent = $false
             }
             $Sender.InvalidateCell($Cell)
         }
-        [System.Windows.Forms.MessageBox]::Show("Failed to apply periodic send profile: $_", "Error") | Out-Null
+        [System.Windows.Forms.MessageBox]::Show("Failed to apply On Timer: Send profile: $_", "Error") | Out-Null
     }
 }
 
-function Handle-OnReceivedChanged {
+function Handle-OnReceiveScriptChanged {
     param(
         $Sender,
         $Args
     )
 
-    if ($script:suppressOnReceivedEvent) {
+    if ($script:suppressOnReceiveScriptEvent) {
         return
     }
     if ($Args.ColumnIndex -lt 0 -or $Args.RowIndex -lt 0) {
         return
     }
     $column = $Sender.Columns[$Args.ColumnIndex]
-    if ($column.Name -ne "OnReceived") {
+    if ($column.Name -ne "OnReceiveScript") {
         return
     }
 
@@ -691,14 +691,14 @@ function Handle-OnReceivedChanged {
         return
     }
 
-    $cell = $row.Cells["OnReceived"]
+    $cell = $row.Cells["OnReceiveScript"]
     $tagData = $cell.Tag
     $mapping = $null
     $currentProfileKey = ""
 
-    if ($tagData -is [System.Collections.IDictionary] -and $tagData.ContainsKey("Mapping") -and $tagData.ContainsKey("OnReceivedProfileKey")) {
+    if ($tagData -is [System.Collections.IDictionary] -and $tagData.ContainsKey("Mapping") -and $tagData.ContainsKey("OnReceiveScriptProfileKey")) {
         $mapping = $tagData["Mapping"]
-        $currentProfileKey = $tagData["OnReceivedProfileKey"]
+        $currentProfileKey = $tagData["OnReceiveScriptProfileKey"]
     }
 
     $selectedKey = if ($cell.Value) { [string]$cell.Value } else { "" }
@@ -707,10 +707,10 @@ function Handle-OnReceivedChanged {
         $entry = $mapping[$selectedKey]
     }
 
-    Apply-OnReceivedProfile -ConnectionId $connId -Entry $entry -Cell $cell -CurrentKey $currentProfileKey -Sender $Sender
+    Apply-OnReceiveScriptProfile -ConnectionId $connId -Entry $entry -Cell $cell -CurrentKey $currentProfileKey -Sender $Sender
 }
 
-function Apply-OnReceivedProfile {
+function Apply-OnReceiveScriptProfile {
     param(
         [string]$ConnectionId,
         $Entry,
@@ -727,22 +727,22 @@ function Apply-OnReceivedProfile {
     }
 
     try {
-        Set-ConnectionOnReceivedProfile -ConnectionId $ConnectionId -ProfileName $profileName -ProfilePath $profilePath | Out-Null
+        Set-ConnectionOnReceiveScriptProfile -ConnectionId $ConnectionId -ProfileName $profileName -ProfilePath $profilePath | Out-Null
         $tagData = $Cell.Tag
-        if ($tagData -is [System.Collections.IDictionary] -and $tagData.ContainsKey("OnReceivedProfileKey")) {
-            $tagData["OnReceivedProfileKey"] = $Cell.Value
+        if ($tagData -is [System.Collections.IDictionary] -and $tagData.ContainsKey("OnReceiveScriptProfileKey")) {
+            $tagData["OnReceiveScriptProfileKey"] = $Cell.Value
         }
     } catch {
         if ($CurrentKey -ne $Cell.Value) {
-            $script:suppressOnReceivedEvent = $true
+            $script:suppressOnReceiveScriptEvent = $true
             try {
                 $Cell.Value = $CurrentKey
             } finally {
-                $script:suppressOnReceivedEvent = $false
+                $script:suppressOnReceiveScriptEvent = $false
             }
             $Sender.InvalidateCell($Cell)
         }
-        [System.Windows.Forms.MessageBox]::Show("Failed to apply OnReceived profile: $_", "Error") | Out-Null
+        [System.Windows.Forms.MessageBox]::Show("Failed to apply OnReceiveScript profile: $_", "Error") | Out-Null
     }
 }
 
@@ -814,14 +814,14 @@ function Apply-ProfileToConnectionRow {
     try {
         # ProfileNameが空の場合(NONEを選択した場合)は、すべてのプロファイルをクリア
         if ([string]::IsNullOrWhiteSpace($ProfileName)) {
-            # AutoResponseプロファイルをクリア
-            Set-ConnectionAutoResponseProfile -ConnectionId $connId -ProfileName $null -ProfilePath $null | Out-Null
+            # OnReceiveReplyプロファイルをクリア
+            Set-ConnectionOnReceiveReplyProfile -ConnectionId $connId -ProfileName $null -ProfilePath $null | Out-Null
             
-            # OnReceivedプロファイルをクリア
-            Set-ConnectionOnReceivedProfile -ConnectionId $connId -ProfileName $null -ProfilePath $null | Out-Null
+            # OnReceiveScriptプロファイルをクリア
+            Set-ConnectionOnReceiveScriptProfile -ConnectionId $connId -ProfileName $null -ProfilePath $null | Out-Null
             
-            # PeriodicSendプロファイルをクリア
-            Set-ConnectionPeriodicSendProfile -ConnectionId $connId -ProfilePath $null -InstancePath $instancePath | Out-Null
+            # OnTimerSendプロファイルをクリア
+            Set-ConnectionOnTimerSendProfile -ConnectionId $connId -ProfilePath $null -InstancePath $instancePath | Out-Null
             
             # InstanceProfile変数もクリア
             $connection.Variables.Remove('InstanceProfile')
@@ -833,8 +833,8 @@ function Apply-ProfileToConnectionRow {
 
         $script:suppressProfileEvent = $true
         $script:suppressScenarioEvent = $true
-        $script:suppressOnReceivedEvent = $true
-        $script:suppressPeriodicSendEvent = $true
+        $script:suppressOnReceiveScriptEvent = $true
+        $script:suppressOnTimerSendEvent = $true
         
         Update-InstanceList -DataGridView $DataGridView -PreserveComboStates:$false
     }
@@ -843,8 +843,8 @@ function Apply-ProfileToConnectionRow {
     }
     finally {
         $script:suppressScenarioEvent = $false
-        $script:suppressOnReceivedEvent = $false
-        $script:suppressPeriodicSendEvent = $false
+        $script:suppressOnReceiveScriptEvent = $false
+        $script:suppressOnTimerSendEvent = $false
         $script:suppressProfileEvent = $false
     }
 }
@@ -887,15 +887,15 @@ function Apply-ApplicationProfile {
         # UIを更新
         $script:suppressProfileEvent = $true
         $script:suppressScenarioEvent = $true
-        $script:suppressOnReceivedEvent = $true
-        $script:suppressPeriodicSendEvent = $true
+        $script:suppressOnReceiveScriptEvent = $true
+        $script:suppressOnTimerSendEvent = $true
         try {
             Update-InstanceList -DataGridView $DataGridView -PreserveComboStates:$false
         }
         finally {
             $script:suppressScenarioEvent = $false
-            $script:suppressOnReceivedEvent = $false
-            $script:suppressPeriodicSendEvent = $false
+            $script:suppressOnReceiveScriptEvent = $false
+            $script:suppressOnTimerSendEvent = $false
             $script:suppressProfileEvent = $false
         }
     }
@@ -923,15 +923,15 @@ function Clear-AllProfiles {
                 
                 Write-Verbose "[Clear-AllProfiles] Clearing profiles for: $connId"
                 
-                # AutoResponseプロファイルをクリア
-                Set-ConnectionAutoResponseProfile -ConnectionId $connId -ProfileName $null -ProfilePath $null | Out-Null
+                # OnReceiveReplyプロファイルをクリア
+                Set-ConnectionOnReceiveReplyProfile -ConnectionId $connId -ProfileName $null -ProfilePath $null | Out-Null
                 
-                # OnReceivedプロファイルをクリア
-                Set-ConnectionOnReceivedProfile -ConnectionId $connId -ProfileName $null -ProfilePath $null | Out-Null
+                # OnReceiveScriptプロファイルをクリア
+                Set-ConnectionOnReceiveScriptProfile -ConnectionId $connId -ProfileName $null -ProfilePath $null | Out-Null
                 
-                # PeriodicSendプロファイルをクリア（InstancePathが必要）
+                # OnTimerSendプロファイルをクリア（InstancePathが必要）
                 if ($instancePath) {
-                    Set-ConnectionPeriodicSendProfile -ConnectionId $connId -ProfilePath $null -InstancePath $instancePath | Out-Null
+                    Set-ConnectionOnTimerSendProfile -ConnectionId $connId -ProfilePath $null -InstancePath $instancePath | Out-Null
                 }
                 
                 # InstanceProfile変数もクリア
@@ -948,15 +948,15 @@ function Clear-AllProfiles {
         # UIを更新
         $script:suppressProfileEvent = $true
         $script:suppressScenarioEvent = $true
-        $script:suppressOnReceivedEvent = $true
-        $script:suppressPeriodicSendEvent = $true
+        $script:suppressOnReceiveScriptEvent = $true
+        $script:suppressOnTimerSendEvent = $true
         try {
             Update-InstanceList -DataGridView $DataGridView -PreserveComboStates:$false
         }
         finally {
             $script:suppressScenarioEvent = $false
-            $script:suppressOnReceivedEvent = $false
-            $script:suppressPeriodicSendEvent = $false
+            $script:suppressOnReceiveScriptEvent = $false
+            $script:suppressOnTimerSendEvent = $false
             $script:suppressProfileEvent = $false
         }
     }
@@ -975,7 +975,7 @@ function Set-ProfileColumnsReadOnly {
         return
     }
 
-    foreach ($columnName in @("Profile", "Scenario", "OnReceived", "PeriodicSend")) {
+    foreach ($columnName in @("Profile", "Scenario", "OnReceiveScript", "OnTimerSend")) {
         if ($DataGridView.Columns.Contains($columnName)) {
             $DataGridView.Columns[$columnName].ReadOnly = $IsLocked
         }
@@ -1023,6 +1023,46 @@ function Handle-CellContentClick {
     }
 }
 
+function Send-ManualData {
+    <#
+    .SYNOPSIS
+    Sends a data item from the data bank to a connection.
+    #>
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$ConnectionId,
+        
+        [Parameter(Mandatory=$true)]
+        [string]$DataID,
+        
+        [Parameter(Mandatory=$true)]
+        [string]$DataBankPath
+    )
+    
+    if (-not (Test-Path -LiteralPath $DataBankPath)) {
+        throw "Data bank file not found: $DataBankPath"
+    }
+    
+    # Read databank CSV
+    $entries = Import-Csv -Path $DataBankPath -Encoding UTF8
+    $entry = $entries | Where-Object { $_.DataID -eq $DataID } | Select-Object -First 1
+    
+    if (-not $entry) {
+        throw "Data ID not found in data bank: $DataID"
+    }
+    
+    # Convert hex string to byte array
+    $hexString = $entry.Data -replace '\s', ''
+    if ([string]::IsNullOrWhiteSpace($hexString)) {
+        throw "Data is empty for ID: $DataID"
+    }
+    
+    $byteArray = ConvertTo-ByteArray -HexString $hexString
+    
+    # Send data
+    Send-Data -ConnectionId $ConnectionId -Data $byteArray
+}
+
 function Handle-QuickSendClick {
     param(
         $Row,
@@ -1030,7 +1070,7 @@ function Handle-QuickSendClick {
         $Connection
     )
 
-    $comboCell = $Row.Cells["QuickData"]
+    $comboCell = $Row.Cells["ManualSend"]
     if (-not $comboCell) { return }
 
     $selectedKey = if ($comboCell.Value) { [string]$comboCell.Value } else { "" }
@@ -1062,7 +1102,7 @@ function Handle-QuickSendClick {
     }
 
     try {
-        Send-QuickData -ConnectionId $ConnectionId -DataID $selectedKey -DataBankPath $dataBankPath
+        Send-ManualData -ConnectionId $ConnectionId -DataID $selectedKey -DataBankPath $dataBankPath
         $targetName = if ($Connection) { $Connection.DisplayName } else { $ConnectionId }
         [System.Windows.Forms.MessageBox]::Show("Sent data item '$selectedKey' to $targetName.", "Success") | Out-Null
     } catch {
@@ -1077,7 +1117,7 @@ function Handle-ActionSendClick {
         $Connection
     )
 
-    $actionCell = $Row.Cells["QuickAction"]
+    $actionCell = $Row.Cells["ManualScript"]
     if (-not $actionCell) { return }
 
     $selectedKey = if ($actionCell.Value) { [string]$actionCell.Value } else { "" }
@@ -1179,7 +1219,7 @@ function Handle-EditingControlShowing {
         $GridState.PendingComboDropDown = $null
     }
 
-    # コンボボックス選択変更の即座反映（PeriodicSendやScenario用）
+    # コンボボックス選択変更の即座反映（OnTimerSendやScenario用）
     $currentCell = $Sender.CurrentCell
     if ($currentCell -and $currentCell.OwningColumn) {
         $columnName = $currentCell.OwningColumn.Name
@@ -1251,18 +1291,18 @@ function Handle-EditingControlShowing {
                         Write-Warning "Error in Apply-ProfileToConnectionRow: $_"
                     }
                 }
-                elseif ($columnName -eq "PeriodicSend") {
+                elseif ($columnName -eq "OnTimerSend") {
                     $tagData = $cell.Tag
-                    $currentPeriodicSendKey = ""
-                    if ($tagData -is [System.Collections.IDictionary] -and $tagData.ContainsKey("PeriodicSendProfileKey")) {
-                        $currentPeriodicSendKey = $tagData["PeriodicSendProfileKey"]
+                    $currentTimerSendKey = ""
+                    if ($tagData -is [System.Collections.IDictionary] -and $tagData.ContainsKey("OnTimerSendProfileKey")) {
+                        $currentTimerSendKey = $tagData["OnTimerSendProfileKey"]
                     }
                     
                     try {
-                        Apply-PeriodicSendProfile -ConnectionId $connId -Entry $entry -Cell $cell -CurrentKey $currentPeriodicSendKey -Sender $grid
+                        Apply-OnTimerSendProfile -ConnectionId $connId -Entry $entry -Cell $cell -CurrentKey $currentTimerSendKey -Sender $grid
                     }
                     catch {
-                        Write-Warning "Error in Apply-PeriodicSendProfile: $_"
+                        Write-Warning "Error in Apply-OnTimerSendProfile: $_"
                     }
                 }
                 elseif ($columnName -eq "Scenario") {
@@ -1276,25 +1316,25 @@ function Handle-EditingControlShowing {
                         if ($entry -and $entry.Type -eq "Scenario") {
                             Execute-Scenario -ConnectionId $connId -Entry $entry -Cell $cell -CurrentKey $currentProfileKey -Sender $grid
                         } else {
-                            Apply-AutoResponseProfile -ConnectionId $connId -Entry $entry -Cell $cell -CurrentKey $currentProfileKey -Sender $grid
+                            Apply-OnReceiveReplyProfile -ConnectionId $connId -Entry $entry -Cell $cell -CurrentKey $currentProfileKey -Sender $grid
                         }
                     }
                     catch {
                         Write-Warning "Error in Scenario handling: $_"
                     }
                 }
-                elseif ($columnName -eq "OnReceived") {
+                elseif ($columnName -eq "OnReceiveScript") {
                     $tagData = $cell.Tag
-                    $currentOnReceivedKey = ""
-                    if ($tagData -is [System.Collections.IDictionary] -and $tagData.ContainsKey("OnReceivedProfileKey")) {
-                        $currentOnReceivedKey = $tagData["OnReceivedProfileKey"]
+                    $currentOnReceiveScriptKey = ""
+                    if ($tagData -is [System.Collections.IDictionary] -and $tagData.ContainsKey("OnReceiveScriptProfileKey")) {
+                        $currentOnReceiveScriptKey = $tagData["OnReceiveScriptProfileKey"]
                     }
                     
                     try {
-                        Apply-OnReceivedProfile -ConnectionId $connId -Entry $entry -Cell $cell -CurrentKey $currentOnReceivedKey -Sender $grid
+                        Apply-OnReceiveScriptProfile -ConnectionId $connId -Entry $entry -Cell $cell -CurrentKey $currentOnReceiveScriptKey -Sender $grid
                     }
                     catch {
-                        Write-Warning "Error in Apply-OnReceivedProfile: $_"
+                        Write-Warning "Error in Apply-OnReceiveScriptProfile: $_"
                     }
                 }
             }
@@ -1375,7 +1415,7 @@ function Save-GridState {
             $comboStates[$connId] = @{}
             
             # 各ComboBox列の選択値を保存
-            foreach ($colName in @('Profile', 'AutoResponse', 'OnReceived', 'PeriodicSend')) {
+            foreach ($colName in @('Profile', 'Scenario', 'OnReceiveScript', 'OnTimerSend', 'ManualSend', 'ManualScript')) {
                 if ($DataGridView.Columns.Contains($colName)) {
                     $comboStates[$connId][$colName] = $row.Cells[$colName].Value
                 }
@@ -1472,24 +1512,24 @@ function Add-ConnectionRow {
 
         try {
             $script:suppressScenarioEvent = $true
-            $script:suppressOnReceivedEvent = $true
-            $script:suppressPeriodicSendEvent = $true
+            $script:suppressOnReceiveScriptEvent = $true
+            $script:suppressOnTimerSendEvent = $true
 
             $instancePath = if ($Connection.Variables.ContainsKey('InstancePath')) { $Connection.Variables['InstancePath'] } else { $null }
 
             Configure-ProfileColumn -Row $row -Connection $Connection
             Configure-ScenarioColumn -Row $row -Connection $Connection -InstancePath $instancePath
-            Configure-OnReceivedColumn -Row $row -Connection $Connection -InstancePath $instancePath
-            Configure-PeriodicSendColumn -Row $row -Connection $Connection -InstancePath $instancePath
-            Configure-QuickDataColumn -Row $row -InstancePath $instancePath
-            Configure-QuickActionColumn -Row $row -InstancePath $instancePath
+            Configure-OnReceiveScriptColumn -Row $row -Connection $Connection -InstancePath $instancePath
+            Configure-OnTimerSendColumn -Row $row -Connection $Connection -InstancePath $instancePath
+            Configure-ManualSendColumn -Row $row -InstancePath $instancePath
+            Configure-ManualScriptColumn -Row $row -InstancePath $instancePath
 
         } catch {
             $row.Cells["Scenario"].Value = ""
         } finally {
             $script:suppressScenarioEvent = $false
-            $script:suppressOnReceivedEvent = $false
-            $script:suppressPeriodicSendEvent = $false
+            $script:suppressOnReceiveScriptEvent = $false
+            $script:suppressOnTimerSendEvent = $false
         }
 
         Set-RowColor -Row $row -Status $status
@@ -1532,18 +1572,18 @@ function Configure-ScenarioColumn {
 
     $currentProfile = ""
     $currentPath = $null
-    if ($Connection.Variables.ContainsKey('AutoResponseProfile')) {
-        $currentProfile = $Connection.Variables['AutoResponseProfile']
+    if ($Connection.Variables.ContainsKey('OnReceiveReplyProfile')) {
+        $currentProfile = $Connection.Variables['OnReceiveReplyProfile']
     }
-    if ($Connection.Variables.ContainsKey('AutoResponseProfilePath')) {
-        $currentPath = $Connection.Variables['AutoResponseProfilePath']
+    if ($Connection.Variables.ContainsKey('OnReceiveReplyProfilePath')) {
+        $currentPath = $Connection.Variables['OnReceiveReplyProfilePath']
     }
 
     # Add profiles
     $profiles = @()
     if ($InstancePath) {
         try {
-            $profiles = Get-InstanceAutoResponseProfiles -InstancePath $InstancePath
+            $profiles = Get-InstanceOnReceiveReplyProfiles -InstancePath $InstancePath
         } catch {
             $profiles = @()
         }
@@ -1626,7 +1666,7 @@ function Configure-ScenarioColumn {
     $Row.Cells["Scenario"] = $scenarioCell
 }
 
-function Configure-QuickDataColumn {
+function Configure-ManualSendColumn {
     param(
         $Row,
         [string]$InstancePath
@@ -1636,7 +1676,7 @@ function Configure-QuickDataColumn {
     $dataBankPath = $null
     if ($InstancePath) {
         try {
-            $catalog = Get-QuickDataCatalog -InstancePath $InstancePath
+            $catalog = Get-ManualSendCatalog -InstancePath $InstancePath
             if ($catalog) {
                 $dataBankEntries = if ($catalog.Entries) { $catalog.Entries } else { @() }
                 $dataBankPath = $catalog.Path
@@ -1646,10 +1686,10 @@ function Configure-QuickDataColumn {
         }
     }
 
-    $quickDataCell = New-Object System.Windows.Forms.DataGridViewComboBoxCell
-    $quickDataCell.DisplayMember = "Display"
-    $quickDataCell.ValueMember = "Key"
-    $quickDataCell.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
+    $manualSendCell = New-Object System.Windows.Forms.DataGridViewComboBoxCell
+    $manualSendCell.DisplayMember = "Display"
+    $manualSendCell.ValueMember = "Key"
+    $manualSendCell.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
 
     $dataSource = New-Object System.Collections.ArrayList
     $dataPlaceholder = [PSCustomObject]@{
@@ -1677,26 +1717,26 @@ function Configure-QuickDataColumn {
     }
 
     foreach ($item in $dataSource) {
-        [void]$quickDataCell.Items.Add($item)
+        [void]$manualSendCell.Items.Add($item)
     }
-    $quickDataCell.Value = ""
-    $quickDataCell.Tag = @{
+    $manualSendCell.Value = ""
+    $manualSendCell.Tag = @{
         DataBankCount = $dataBankEntries.Count
         DataBankPath  = if ($dataBankPath -and (Test-Path -LiteralPath $dataBankPath)) { $dataBankPath } else { $null }
     }
-    $Row.Cells["QuickData"] = $quickDataCell
+    $Row.Cells["ManualSend"] = $manualSendCell
 }
 
-function Configure-QuickActionColumn {
+function Configure-ManualScriptColumn {
     param(
         $Row,
         [string]$InstancePath
     )
 
-    $quickActionCell = New-Object System.Windows.Forms.DataGridViewComboBoxCell
-    $quickActionCell.DisplayMember = "Display"
-    $quickActionCell.ValueMember = "Key"
-    $quickActionCell.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
+    $manualScriptCell = New-Object System.Windows.Forms.DataGridViewComboBoxCell
+    $manualScriptCell.DisplayMember = "Display"
+    $manualScriptCell.ValueMember = "Key"
+    $manualScriptCell.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
 
     $actionSource = New-Object System.Collections.ArrayList
     $actionMapping = @{
@@ -1731,7 +1771,7 @@ function Configure-QuickActionColumn {
     }
 
     foreach ($item in $actionSource) {
-        [void]$quickActionCell.Items.Add($item)
+        [void]$manualScriptCell.Items.Add($item)
     }
-    $Row.Cells["QuickAction"] = $quickActionCell
+    $Row.Cells["ManualScript"] = $manualScriptCell
 }

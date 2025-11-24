@@ -1,0 +1,2 @@
+RuleName,MessageFile,IntervalMs
+ハートビート,test_message3.csv,3000

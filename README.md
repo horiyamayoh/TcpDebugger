@@ -23,7 +23,7 @@ TCP/UDP通信のテスト・デバッグを行うための試験装置です。�
 ### 主要コンポーネント
 - `ConnectionService`: 接続の作成、管理、状態監視を統括
 - `MessageService`: テンプレート展開、変数処理、シナリオ実行を統合
-- `ReceivedEventPipeline`: 受信データの処理パイプライン（AutoResponse、OnReceived、Unifiedルール対応）
+- `ReceivedEventPipeline`: 受信データの処理パイプライン（OnReceiveReply、OnReceiveScript、Unifiedルール対応）
 - `RuleProcessor`: ルールマッチングとアクション実行
 - 通信アダプター（TcpClient/Server、UDP）: プロトコル固有の実装を分離
 
@@ -78,9 +78,9 @@ TcpDebugger/
 │   │   ├── ConnectionManager.ps1        # 接続制御・ライフサイクル管理
 │   │   ├── MessageService.ps1           # メッセージ処理（テンプレート、変数展開）
 │   │   ├── ReceivedEventPipeline.ps1    # 受信イベント処理パイプライン
-│   │   ├── ReceivedRuleEngine.ps1       # ルールエンジン（AutoResponse/OnReceived）
+│   │   ├── ReceivedRuleEngine.ps1       # ルールエンジン（OnReceiveReply/OnReceiveScript）
 │   │   ├── RuleProcessor.ps1            # ルール実行
-│   │   ├── OnReceivedLibrary.ps1        # OnReceivedプロファイル管理
+│   │   ├── OnReceiveScriptLibrary.ps1   # OnReceiveScriptプロファイル管理
 │   │   ├── VariableScope.ps1            # 変数スコープ管理
 │   │   ├── ProfileModels.ps1            # プロファイルモデル定義
 │   │   ├── ProfileService.ps1           # プロファイル管理サービス
@@ -111,9 +111,9 @@ TcpDebugger/
 │   └── Example/                     # サンプルインスタンス
 │       ├── instance.psd1            # インスタンス設定
 │       ├── scenarios/               # シナリオファイル
-│       │   ├── auto/                    # Auto Response用ルール
-│       │   ├── onreceived/              # OnReceived用ルール＆スクリプト
-│       │   └── periodic/                # Periodic Send用設定
+│       │   ├── on_receive_reply/        # On Receive: Reply用ルール
+│       │   ├── on_receive_script/       # On Receive: Script用ルール
+│       │   └── on_timer_send/           # On Timer: Send用設定
 │       └── templates/               # 電文テンプレート
 │           ├── databank.csv
 │           └── messages.csv
@@ -226,23 +226,23 @@ Start-Scenario -ConnectionId $connectionId -ScenarioPath $scenarioPath
 
 ### 6. 自動応答プロファイルの切り替え
 
-- 各インスタンスフォルダの `scenarios/auto/` 配下に、受信トリガーと応答内容を定義したCSVファイルを配置します。
-- 一覧画面の **Auto Response** 列からプロファイルを選択すると、選択中の接続に即座に適用されます。
+- 各インスタンスフォルダの `scenarios/on_receive_reply/` 配下に、受信トリガーと応答内容を定義したCSVファイルを配置します。
+- 一覧画面の **On Receive: Reply** 列からプロファイルを選択すると、選択中の接続に即座に適用されます。
 - プロファイルを「(None)」に戻すと自動応答を無効化できます。
 
-#### Auto Response列でのシナリオ実行
+#### On Receive: Reply列でのシナリオ実行
 
-- Auto Responseのドロップダウンには、実行用シナリオも `? ファイル名` 形式で表示されます。
+- On Receive: Replyのドロップダウンには、実行用シナリオも `? ファイル名` 形式で表示されます。
 - シナリオ行を選択すると即座に `Start-Scenario` が呼び出され、セルの選択状態は直前のプロファイルに戻ります（設定が変わることはありません）。
 - UI側で DataGridView のエラーが出ないようにバリデーションを強化しているため、安全にシナリオをトリガーできます。失敗した場合は従来通りメッセージボックスで通知されます。
 
 #### 複数機能の同時利用
 
-- **Auto Response**、**On Received**、**Periodic Send** の各列は完全に独立しています。任意の組み合わせでプロファイルを選択しても、ほかの列の設定が上書きされることはありません。
-- Auto Responseで自動応答を設定しつつ、On Receivedでスクリプトをトリガーし、さらに Periodic Send で定周期電文を流すことができます。
+- **On Receive: Reply**、**On Receive: Script**、**On Timer: Send** の各列は完全に独立しています。任意の組み合わせでプロファイルを選択しても、ほかの列の設定が上書きされることはありません。
+- On Receive: Replyで自動応答を設定しつつ、On Receive: Scriptでスクリプトをトリガーし、さらに On Timer: Send で定周期電文を流すことができます。
 - これらの設定は接続ごとに保持され、GUIを更新しても維持されます。適用に失敗した場合のみ警告ダイアログが表示され、元の設定へ自動的にロールバックされます。
 
-**例: Instances/Example/scenarios/auto/normal.csv**
+**例: Instances/Example/scenarios/on_receive_reply/normal.csv**
 
 ```csv
 TriggerPattern,ResponseTemplate,Encoding,Delay,MatchType
@@ -250,7 +250,7 @@ PING,PONG,UTF-8,0,Exact
 REQUEST,OK ${TIMESTAMP},UTF-8,100,Contains
 ```
 
-**例: Instances/Example/scenarios/auto/error.csv**
+**例: Instances/Example/scenarios/on_receive_reply/error.csv**
 
 ```csv
 TriggerPattern,ResponseTemplate,Encoding,Delay,MatchType
@@ -260,10 +260,10 @@ REQUEST,ERROR 500,UTF-8,0,Contains
 
 ### 7. プロファイル列とグローバルロック
 
-- DataGridView に **Profile** 列が追加され、`Config/column_profiles/*.csv` で定義した列プロファイル（Auto Response / On Received / Periodic をまとめたプリセット）を一括で適用できます。
-- プロファイルを選択すると同一行の Auto Response / On Received / Periodic 設定が即座に更新され、接続変数としても記録されます。
+- DataGridView に **Profile** 列が追加され、`Config/column_profiles/*.csv` で定義した列プロファイル（On Receive: Reply / On Receive: Script / On Timer: Send をまとめたプリセット）を一括で適用できます。
+- プロファイルを選択すると同一行の On Receive: Reply / On Receive: Script / On Timer: Send 設定が即座に更新され、接続変数としても記録されます。
 - 画面左上にある **Profile** コンボ（Connect/Disconnect ボタンの横）でグローバルプロファイルを選ぶと、すべての行に同じプロファイルが適用され、対象列は読み取り専用になります。`(None)` を選び直すとロックが解除され、行ごとの編集に戻れます。
-- 列プロファイルの追加入力テンプレートは `Config/column_profiles/default.csv` を参照してください。Auto/OnReceived/Periodic の列に対象シナリオ名を記述するだけで、新しいプリセットをGUIから選択できます。
+- 列プロファイルの追加入力テンプレートは `Config/column_profiles/default.csv` を参照してください。On Receive: Reply / On Receive: Script / On Timer: Send の列に対象シナリオ名を記述するだけで、新しいプリセットをGUIから選択できます。
 
 ## シナリオアクション
 

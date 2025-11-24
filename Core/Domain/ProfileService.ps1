@@ -34,27 +34,28 @@ class ProfileService {
             if (-not $profile) { 
                 return 
             }
-            if (-not [string]::IsNullOrWhiteSpace($profile.AutoResponseScenario)) {
-                $scenarioPath = $this.ResolveScenarioPath($instancePath, $profile.AutoResponseScenario)
+            
+            if (-not [string]::IsNullOrWhiteSpace($profile.OnReceiveReply)) {
+                $scenarioPath = $this.ResolveScenarioPath($instancePath, $profile.OnReceiveReply)
                 if ($scenarioPath -and (Test-Path $scenarioPath)) {
                     # 拡張子なしの名前を取得（完全パスから）
                     $profileNameWithoutExt = [System.IO.Path]::GetFileNameWithoutExtension($scenarioPath)
-                    Set-ConnectionAutoResponseProfile -ConnectionId $connectionId -ProfileName $profileNameWithoutExt -ProfilePath $scenarioPath 
+                    Set-ConnectionOnReceiveReplyProfile -ConnectionId $connectionId -ProfileName $profileNameWithoutExt -ProfilePath $scenarioPath 
                 }
             }
-            if (-not [string]::IsNullOrWhiteSpace($profile.OnReceivedScenario)) {
-                $scenarioPath = $this.ResolveScenarioPath($instancePath, $profile.OnReceivedScenario)
+            if (-not [string]::IsNullOrWhiteSpace($profile.OnReceiveScript)) {
+                $scenarioPath = $this.ResolveScenarioPath($instancePath, $profile.OnReceiveScript)
                 if ($scenarioPath -and (Test-Path $scenarioPath)) {
                     # 拡張子なしの名前を取得（完全パスから）
                     $profileNameWithoutExt = [System.IO.Path]::GetFileNameWithoutExtension($scenarioPath)
-                    Set-ConnectionOnReceivedProfile -ConnectionId $connectionId -ProfileName $profileNameWithoutExt -ProfilePath $scenarioPath 
+                    Set-ConnectionOnReceiveScriptProfile -ConnectionId $connectionId -ProfileName $profileNameWithoutExt -ProfilePath $scenarioPath 
                 }
             }
-            if (-not [string]::IsNullOrWhiteSpace($profile.PeriodicScenario)) {
-                $scenarioPath = $this.ResolveScenarioPath($instancePath, $profile.PeriodicScenario)
+            if (-not [string]::IsNullOrWhiteSpace($profile.OnTimerSend)) {
+                $scenarioPath = $this.ResolveScenarioPath($instancePath, $profile.OnTimerSend)
                 if ($scenarioPath -and (Test-Path $scenarioPath)) {
-                    # PeriodicSendは内部で自動的に拡張子なし名前を取得するのでそのまま渡す
-                    Set-ConnectionPeriodicSendProfile -ConnectionId $connectionId -ProfilePath $scenarioPath -InstancePath $instancePath 
+                    # OnTimerSendは内部で自動的に拡張子なし名前を取得するのでそのまま渡す
+                    Set-ConnectionOnTimerSendProfile -ConnectionId $connectionId -ProfilePath $scenarioPath -InstancePath $instancePath 
                 }
             }
             
@@ -148,9 +149,9 @@ class ProfileService {
     [string] ResolveScenarioPath([string]$instancePath, [string]$scenarioName) {
         if ([string]::IsNullOrWhiteSpace($scenarioName)) { return $null }
         $paths = @(
-            (Join-Path (Join-Path $instancePath "scenarios") "auto"),
-            (Join-Path (Join-Path $instancePath "scenarios") "onreceived"),
-            (Join-Path (Join-Path $instancePath "scenarios") "periodic"),
+            (Join-Path (Join-Path $instancePath "scenarios") "on_receive_reply"),
+            (Join-Path (Join-Path $instancePath "scenarios") "on_receive_script"),
+            (Join-Path (Join-Path $instancePath "scenarios") "on_timer_send"),
             (Join-Path $instancePath "scenarios"),
             (Join-Path $instancePath "templates")
         )

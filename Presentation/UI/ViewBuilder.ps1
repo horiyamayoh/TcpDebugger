@@ -118,49 +118,49 @@ function Add-ConnectionGridColumns {
     $colProfile.FillWeight = 130
     [void]$DataGridView.Columns.Add($colProfile)
 
-    # Auto Response column (ComboBox)
-    $colAutoResponse = New-Object System.Windows.Forms.DataGridViewComboBoxColumn
-    $colAutoResponse.HeaderText = "Auto Response"
-    $colAutoResponse.Name = "Scenario"
-    $colAutoResponse.DisplayMember = "Display"
-    $colAutoResponse.ValueMember = "Key"
-    $colAutoResponse.ValueType = [string]
-    $colAutoResponse.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
-    $colAutoResponse.FillWeight = 140
-    [void]$DataGridView.Columns.Add($colAutoResponse)
+    # On Receive: Reply column (ComboBox)
+    $colOnReceiveReply = New-Object System.Windows.Forms.DataGridViewComboBoxColumn
+    $colOnReceiveReply.HeaderText = "On Receive: Reply"
+    $colOnReceiveReply.Name = "Scenario"
+    $colOnReceiveReply.DisplayMember = "Display"
+    $colOnReceiveReply.ValueMember = "Key"
+    $colOnReceiveReply.ValueType = [string]
+    $colOnReceiveReply.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
+    $colOnReceiveReply.FillWeight = 140
+    [void]$DataGridView.Columns.Add($colOnReceiveReply)
 
-    # OnReceived column (ComboBox)
-    $colOnReceived = New-Object System.Windows.Forms.DataGridViewComboBoxColumn
-    $colOnReceived.HeaderText = "On Received"
-    $colOnReceived.Name = "OnReceived"
-    $colOnReceived.DisplayMember = "Display"
-    $colOnReceived.ValueMember = "Key"
-    $colOnReceived.ValueType = [string]
-    $colOnReceived.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
-    $colOnReceived.FillWeight = 140
-    [void]$DataGridView.Columns.Add($colOnReceived)
+    # On Receive: Script column (ComboBox)
+    $colOnReceiveScript = New-Object System.Windows.Forms.DataGridViewComboBoxColumn
+    $colOnReceiveScript.HeaderText = "On Receive: Script"
+    $colOnReceiveScript.Name = "OnReceiveScript"
+    $colOnReceiveScript.DisplayMember = "Display"
+    $colOnReceiveScript.ValueMember = "Key"
+    $colOnReceiveScript.ValueType = [string]
+    $colOnReceiveScript.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
+    $colOnReceiveScript.FillWeight = 140
+    [void]$DataGridView.Columns.Add($colOnReceiveScript)
 
-    # Periodic Send column (ComboBox)
-    $colPeriodicSend = New-Object System.Windows.Forms.DataGridViewComboBoxColumn
-    $colPeriodicSend.HeaderText = "Periodic Send"
-    $colPeriodicSend.Name = "PeriodicSend"
-    $colPeriodicSend.DisplayMember = "Display"
-    $colPeriodicSend.ValueMember = "Key"
-    $colPeriodicSend.ValueType = [string]
-    $colPeriodicSend.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
-    $colPeriodicSend.FillWeight = 140
-    [void]$DataGridView.Columns.Add($colPeriodicSend)
+    # On Timer: Send column (ComboBox)
+    $colOnTimerSend = New-Object System.Windows.Forms.DataGridViewComboBoxColumn
+    $colOnTimerSend.HeaderText = "On Timer: Send"
+    $colOnTimerSend.Name = "OnTimerSend"
+    $colOnTimerSend.DisplayMember = "Display"
+    $colOnTimerSend.ValueMember = "Key"
+    $colOnTimerSend.ValueType = [string]
+    $colOnTimerSend.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
+    $colOnTimerSend.FillWeight = 140
+    [void]$DataGridView.Columns.Add($colOnTimerSend)
 
-    # Quick Data column (ComboBox)
-    $colQuickData = New-Object System.Windows.Forms.DataGridViewComboBoxColumn
-    $colQuickData.HeaderText = "Quick Data"
-    $colQuickData.Name = "QuickData"
-    $colQuickData.DisplayMember = "Display"
-    $colQuickData.ValueMember = "Key"
-    $colQuickData.ValueType = [string]
-    $colQuickData.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
-    $colQuickData.FillWeight = 170
-    [void]$DataGridView.Columns.Add($colQuickData)
+    # Manual: Send column (ComboBox)
+    $colManualSend = New-Object System.Windows.Forms.DataGridViewComboBoxColumn
+    $colManualSend.HeaderText = "Manual: Send"
+    $colManualSend.Name = "ManualSend"
+    $colManualSend.DisplayMember = "Display"
+    $colManualSend.ValueMember = "Key"
+    $colManualSend.ValueType = [string]
+    $colManualSend.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
+    $colManualSend.FillWeight = 170
+    [void]$DataGridView.Columns.Add($colManualSend)
 
     # Quick Send button column
     $colQuickSend = New-Object System.Windows.Forms.DataGridViewButtonColumn
@@ -171,16 +171,16 @@ function Add-ConnectionGridColumns {
     $colQuickSend.FillWeight = 70
     [void]$DataGridView.Columns.Add($colQuickSend)
 
-    # Quick Action column (ComboBox)
-    $colQuickAction = New-Object System.Windows.Forms.DataGridViewComboBoxColumn
-    $colQuickAction.HeaderText = "Quick Action"
-    $colQuickAction.Name = "QuickAction"
-    $colQuickAction.DisplayMember = "Display"
-    $colQuickAction.ValueMember = "Key"
-    $colQuickAction.ValueType = [string]
-    $colQuickAction.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
-    $colQuickAction.FillWeight = 170
-    [void]$DataGridView.Columns.Add($colQuickAction)
+    # Manual: Script column (ComboBox)
+    $colManualScript = New-Object System.Windows.Forms.DataGridViewComboBoxColumn
+    $colManualScript.HeaderText = "Manual: Script"
+    $colManualScript.Name = "ManualScript"
+    $colManualScript.DisplayMember = "Display"
+    $colManualScript.ValueMember = "Key"
+    $colManualScript.ValueType = [string]
+    $colManualScript.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
+    $colManualScript.FillWeight = 170
+    [void]$DataGridView.Columns.Add($colManualScript)
 
     # Action Send button column
     $colActionSend = New-Object System.Windows.Forms.DataGridViewButtonColumn
@@ -361,7 +361,7 @@ function Configure-ProfileColumn {
 function Configure-ScenarioColumn {
     <#
     .SYNOPSIS
-    Configures the Scenario (Auto Response) column cell for a connection row.
+    Configures the Scenario (On Receive: Reply) column cell for a connection row.
     #>
     param(
         $Row,
@@ -385,18 +385,18 @@ function Configure-ScenarioColumn {
 
     $currentProfile = ""
     $currentPath = $null
-    if ($Connection.Variables.ContainsKey('AutoResponseProfile')) {
-        $currentProfile = $Connection.Variables['AutoResponseProfile']
+    if ($Connection.Variables.ContainsKey('OnReceiveReplyProfile')) {
+        $currentProfile = $Connection.Variables['OnReceiveReplyProfile']
     }
-    if ($Connection.Variables.ContainsKey('AutoResponseProfilePath')) {
-        $currentPath = $Connection.Variables['AutoResponseProfilePath']
+    if ($Connection.Variables.ContainsKey('OnReceiveReplyProfilePath')) {
+        $currentPath = $Connection.Variables['OnReceiveReplyProfilePath']
     }
 
     # Add profiles
     $profiles = @()
     if ($InstancePath) {
         try {
-            $profiles = Get-InstanceAutoResponseProfiles -InstancePath $InstancePath
+            $profiles = Get-InstanceOnReceiveReplyProfiles -InstancePath $InstancePath
         } catch {
             $profiles = @()
         }
@@ -476,10 +476,10 @@ function Configure-ScenarioColumn {
     $Row.Cells["Scenario"] = $scenarioCell
 }
 
-function Configure-OnReceivedColumn {
+function Configure-OnReceiveScriptColumn {
     <#
     .SYNOPSIS
-    Configures the OnReceived column cell for a connection row.
+    Configures the On Receive: Script column cell for a connection row.
     #>
     param(
         $Row,
@@ -487,41 +487,41 @@ function Configure-OnReceivedColumn {
         [string]$InstancePath
     )
 
-    $onReceivedItems = New-Object System.Collections.ArrayList
-    $onReceivedMapping = @{}
+    $onReceiveScriptItems = New-Object System.Collections.ArrayList
+    $onReceiveScriptMapping = @{}
 
-    $onReceivedNone = [PSCustomObject]@{
+    $onReceiveScriptNone = [PSCustomObject]@{
         Display = "(None)"
         Key     = ""
         Type    = "Profile"
         Name    = $null
         Path    = $null
     }
-    [void]$onReceivedItems.Add($onReceivedNone)
-    $onReceivedMapping[$onReceivedNone.Key] = $onReceivedNone
+    [void]$onReceiveScriptItems.Add($onReceiveScriptNone)
+    $onReceiveScriptMapping[$onReceiveScriptNone.Key] = $onReceiveScriptNone
 
-    $currentOnReceivedProfile = ""
-    $currentOnReceivedPath = $null
-    if ($Connection.Variables.ContainsKey('OnReceivedProfile')) {
-        $currentOnReceivedProfile = $Connection.Variables['OnReceivedProfile']
+    $currentOnReceiveScriptProfile = ""
+    $currentOnReceiveScriptPath = $null
+    if ($Connection.Variables.ContainsKey('OnReceiveScriptProfile')) {
+        $currentOnReceiveScriptProfile = $Connection.Variables['OnReceiveScriptProfile']
     }
-    if ($Connection.Variables.ContainsKey('OnReceivedProfilePath')) {
-        $currentOnReceivedPath = $Connection.Variables['OnReceivedProfilePath']
+    if ($Connection.Variables.ContainsKey('OnReceiveScriptProfilePath')) {
+        $currentOnReceiveScriptPath = $Connection.Variables['OnReceiveScriptProfilePath']
     }
 
-    $onReceivedProfiles = @()
+    $onReceiveScriptProfiles = @()
     if ($InstancePath) {
         try {
-            $onReceivedProfiles = Get-InstanceOnReceivedProfiles -InstancePath $InstancePath
+            $onReceiveScriptProfiles = Get-InstanceOnReceiveScriptProfiles -InstancePath $InstancePath
         } catch {
-            $onReceivedProfiles = @()
+            $onReceiveScriptProfiles = @()
         }
     }
 
-    foreach ($prof in $onReceivedProfiles) {
+    foreach ($prof in $onReceiveScriptProfiles) {
         if ([string]::IsNullOrWhiteSpace($prof.Name)) { continue }
 
-        $key = "onreceived::$($prof.Name)"
+        $key = "onreceivescript::$($prof.Name)"
         $entry = [PSCustomObject]@{
             Display = $prof.DisplayName
             Key     = $key
@@ -529,45 +529,45 @@ function Configure-OnReceivedColumn {
             Name    = $prof.Name
             Path    = $prof.FilePath
         }
-        [void]$onReceivedItems.Add($entry)
-        $onReceivedMapping[$key] = $entry
+        [void]$onReceiveScriptItems.Add($entry)
+        $onReceiveScriptMapping[$key] = $entry
     }
 
-    $currentOnReceivedKey = ""
-    if ($currentOnReceivedProfile) {
-        $currentOnReceivedKey = "onreceived::$currentOnReceivedProfile"
-        if (-not $onReceivedMapping.ContainsKey($currentOnReceivedKey)) {
-            $displayName = if ($currentOnReceivedPath) { "$currentOnReceivedProfile (missing)" } else { $currentOnReceivedProfile }
+    $currentOnReceiveScriptKey = ""
+    if ($currentOnReceiveScriptProfile) {
+        $currentOnReceiveScriptKey = "onreceivescript::$currentOnReceiveScriptProfile"
+        if (-not $onReceiveScriptMapping.ContainsKey($currentOnReceiveScriptKey)) {
+            $displayName = if ($currentOnReceiveScriptPath) { "$currentOnReceiveScriptProfile (missing)" } else { $currentOnReceiveScriptProfile }
             $entry = [PSCustomObject]@{
                 Display = $displayName
-                Key     = $currentOnReceivedKey
+                Key     = $currentOnReceiveScriptKey
                 Type    = "Profile"
-                Name    = $currentOnReceivedProfile
-                Path    = $currentOnReceivedPath
+                Name    = $currentOnReceiveScriptProfile
+                Path    = $currentOnReceiveScriptPath
             }
-            [void]$onReceivedItems.Add($entry)
-            $onReceivedMapping[$currentOnReceivedKey] = $entry
+            [void]$onReceiveScriptItems.Add($entry)
+            $onReceiveScriptMapping[$currentOnReceiveScriptKey] = $entry
         }
     }
 
-    $onReceivedCell = New-Object System.Windows.Forms.DataGridViewComboBoxCell
-    $onReceivedCell.DisplayMember = "Display"
-    $onReceivedCell.ValueMember = "Key"
-    foreach ($item in $onReceivedItems) {
-        [void]$onReceivedCell.Items.Add($item)
+    $onReceiveScriptCell = New-Object System.Windows.Forms.DataGridViewComboBoxCell
+    $onReceiveScriptCell.DisplayMember = "Display"
+    $onReceiveScriptCell.ValueMember = "Key"
+    foreach ($item in $onReceiveScriptItems) {
+        [void]$onReceiveScriptCell.Items.Add($item)
     }
-    $onReceivedCell.Value = $currentOnReceivedKey
-    $onReceivedCell.Tag = @{
-        Mapping              = $onReceivedMapping
-        OnReceivedProfileKey = $currentOnReceivedKey
+    $onReceiveScriptCell.Value = $currentOnReceiveScriptKey
+    $onReceiveScriptCell.Tag = @{
+        Mapping                    = $onReceiveScriptMapping
+        OnReceiveScriptProfileKey  = $currentOnReceiveScriptKey
     }
-    $Row.Cells["OnReceived"] = $onReceivedCell
+    $Row.Cells["OnReceiveScript"] = $onReceiveScriptCell
 }
 
-function Configure-PeriodicSendColumn {
+function Configure-OnTimerSendColumn {
     <#
     .SYNOPSIS
-    Configures the Periodic Send column cell for a connection row.
+    Configures the On Timer: Send column cell for a connection row.
     #>
     param(
         $Row,
@@ -575,39 +575,39 @@ function Configure-PeriodicSendColumn {
         [string]$InstancePath
     )
 
-    $currentPeriodicSendProfile = ""
-    $currentPeriodicSendPath = $null
-    if ($Connection.Variables.ContainsKey('PeriodicSendProfile')) {
-        $currentPeriodicSendProfile = $Connection.Variables['PeriodicSendProfile']
+    $currentOnTimerSendProfile = ""
+    $currentOnTimerSendPath = $null
+    if ($Connection.Variables.ContainsKey('OnTimerSendProfile')) {
+        $currentOnTimerSendProfile = $Connection.Variables['OnTimerSendProfile']
     }
-    if ($Connection.Variables.ContainsKey('PeriodicSendProfilePath')) {
-        $currentPeriodicSendPath = $Connection.Variables['PeriodicSendProfilePath']
+    if ($Connection.Variables.ContainsKey('OnTimerSendProfilePath')) {
+        $currentOnTimerSendPath = $Connection.Variables['OnTimerSendProfilePath']
     }
 
-    $periodicSendProfiles = @()
+    $onTimerSendProfiles = @()
     if ($InstancePath) {
         try {
-            $periodicSendProfiles = Get-InstancePeriodicSendProfiles -InstancePath $InstancePath
+            $onTimerSendProfiles = Get-InstanceOnTimerSendProfiles -InstancePath $InstancePath
         } catch {
-            $periodicSendProfiles = @()
+            $onTimerSendProfiles = @()
         }
     }
 
-    $periodicSendItems = New-Object System.Collections.ArrayList
-    $periodicSendMapping = @{}
+    $onTimerSendItems = New-Object System.Collections.ArrayList
+    $onTimerSendMapping = @{}
     
-    $periodicSendPlaceholder = [PSCustomObject]@{
+    $onTimerSendPlaceholder = [PSCustomObject]@{
         Display = "(None)"
         Key     = ""
         Type    = "None"
         Name    = $null
         Path    = $null
     }
-    [void]$periodicSendItems.Add($periodicSendPlaceholder)
-    $periodicSendMapping[$periodicSendPlaceholder.Key] = $periodicSendPlaceholder
+    [void]$onTimerSendItems.Add($onTimerSendPlaceholder)
+    $onTimerSendMapping[$onTimerSendPlaceholder.Key] = $onTimerSendPlaceholder
 
-    foreach ($prof in $periodicSendProfiles) {
-        $key = "periodicsend::$($prof.ProfileName)"
+    foreach ($prof in $onTimerSendProfiles) {
+        $key = "ontimersend::$($prof.ProfileName)"
         $entry = [PSCustomObject]@{
             Display = $prof.ProfileName
             Key     = $key
@@ -615,45 +615,45 @@ function Configure-PeriodicSendColumn {
             Name    = $prof.ProfileName
             Path    = $prof.FilePath
         }
-        [void]$periodicSendItems.Add($entry)
-        $periodicSendMapping[$key] = $entry
+        [void]$onTimerSendItems.Add($entry)
+        $onTimerSendMapping[$key] = $entry
     }
 
-    $currentPeriodicSendKey = ""
-    if ($currentPeriodicSendProfile) {
-        $currentPeriodicSendKey = "periodicsend::$currentPeriodicSendProfile"
-        if (-not $periodicSendMapping.ContainsKey($currentPeriodicSendKey)) {
-            $displayName = if ($currentPeriodicSendPath) { "$currentPeriodicSendProfile (missing)" } else { $currentPeriodicSendProfile }
+    $currentOnTimerSendKey = ""
+    if ($currentOnTimerSendProfile) {
+        $currentOnTimerSendKey = "ontimersend::$currentOnTimerSendProfile"
+        if (-not $onTimerSendMapping.ContainsKey($currentOnTimerSendKey)) {
+            $displayName = if ($currentOnTimerSendPath) { "$currentOnTimerSendProfile (missing)" } else { $currentOnTimerSendProfile }
             $entry = [PSCustomObject]@{
                 Display = $displayName
-                Key     = $currentPeriodicSendKey
+                Key     = $currentOnTimerSendKey
                 Type    = "Profile"
-                Name    = $currentPeriodicSendProfile
-                Path    = $currentPeriodicSendPath
+                Name    = $currentOnTimerSendProfile
+                Path    = $currentOnTimerSendPath
             }
-            [void]$periodicSendItems.Add($entry)
-            $periodicSendMapping[$currentPeriodicSendKey] = $entry
+            [void]$onTimerSendItems.Add($entry)
+            $onTimerSendMapping[$currentOnTimerSendKey] = $entry
         }
     }
 
-    $periodicSendCell = New-Object System.Windows.Forms.DataGridViewComboBoxCell
-    $periodicSendCell.DisplayMember = "Display"
-    $periodicSendCell.ValueMember = "Key"
-    foreach ($item in $periodicSendItems) {
-        [void]$periodicSendCell.Items.Add($item)
+    $onTimerSendCell = New-Object System.Windows.Forms.DataGridViewComboBoxCell
+    $onTimerSendCell.DisplayMember = "Display"
+    $onTimerSendCell.ValueMember = "Key"
+    foreach ($item in $onTimerSendItems) {
+        [void]$onTimerSendCell.Items.Add($item)
     }
-    $periodicSendCell.Value = $currentPeriodicSendKey
-    $periodicSendCell.Tag = @{
-        Mapping               = $periodicSendMapping
-        PeriodicSendProfileKey = $currentPeriodicSendKey
+    $onTimerSendCell.Value = $currentOnTimerSendKey
+    $onTimerSendCell.Tag = @{
+        Mapping               = $onTimerSendMapping
+        OnTimerSendProfileKey = $currentOnTimerSendKey
     }
-    $Row.Cells["PeriodicSend"] = $periodicSendCell
+    $Row.Cells["OnTimerSend"] = $onTimerSendCell
 }
 
-function Configure-QuickDataColumn {
+function Configure-ManualSendColumn {
     <#
     .SYNOPSIS
-    Configures the Quick Data column cell for a connection row.
+    Configures the Manual: Send column cell for a connection row.
     #>
     param(
         $Row,
@@ -664,7 +664,7 @@ function Configure-QuickDataColumn {
     $dataBankPath = $null
     if ($InstancePath) {
         try {
-            $catalog = Get-QuickDataCatalog -InstancePath $InstancePath
+            $catalog = Get-ManualSendCatalog -InstancePath $InstancePath
             if ($catalog) {
                 $dataBankEntries = if ($catalog.Entries) { $catalog.Entries } else { @() }
                 $dataBankPath = $catalog.Path
@@ -674,10 +674,10 @@ function Configure-QuickDataColumn {
         }
     }
 
-    $quickDataCell = New-Object System.Windows.Forms.DataGridViewComboBoxCell
-    $quickDataCell.DisplayMember = "Display"
-    $quickDataCell.ValueMember = "Key"
-    $quickDataCell.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
+    $manualSendCell = New-Object System.Windows.Forms.DataGridViewComboBoxCell
+    $manualSendCell.DisplayMember = "Display"
+    $manualSendCell.ValueMember = "Key"
+    $manualSendCell.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
 
     $dataSource = New-Object System.Collections.ArrayList
     $dataPlaceholder = [PSCustomObject]@{
@@ -705,30 +705,30 @@ function Configure-QuickDataColumn {
     }
 
     foreach ($item in $dataSource) {
-        [void]$quickDataCell.Items.Add($item)
+        [void]$manualSendCell.Items.Add($item)
     }
-    $quickDataCell.Value = ""
-    $quickDataCell.Tag = @{
+    $manualSendCell.Value = ""
+    $manualSendCell.Tag = @{
         DataBankCount = $dataBankEntries.Count
         DataBankPath  = if ($dataBankPath -and (Test-Path -LiteralPath $dataBankPath)) { $dataBankPath } else { $null }
     }
-    $Row.Cells["QuickData"] = $quickDataCell
+    $Row.Cells["ManualSend"] = $manualSendCell
 }
 
-function Configure-QuickActionColumn {
+function Configure-ManualScriptColumn {
     <#
     .SYNOPSIS
-    Configures the Quick Action column cell for a connection row.
+    Configures the Manual: Script column cell for a connection row.
     #>
     param(
         $Row,
         [string]$InstancePath
     )
 
-    $quickActionCell = New-Object System.Windows.Forms.DataGridViewComboBoxCell
-    $quickActionCell.DisplayMember = "Display"
-    $quickActionCell.ValueMember = "Key"
-    $quickActionCell.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
+    $manualScriptCell = New-Object System.Windows.Forms.DataGridViewComboBoxCell
+    $manualScriptCell.DisplayMember = "Display"
+    $manualScriptCell.ValueMember = "Key"
+    $manualScriptCell.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
 
     $actionSource = New-Object System.Collections.ArrayList
     $actionMapping = @{}
@@ -762,13 +762,13 @@ function Configure-QuickActionColumn {
     }
 
     foreach ($item in $actionSource) {
-        [void]$quickActionCell.Items.Add($item)
+        [void]$manualScriptCell.Items.Add($item)
     }
-    $quickActionCell.Value = ""
-    $quickActionCell.Tag = @{
+    $manualScriptCell.Value = ""
+    $manualScriptCell.Tag = @{
         Mapping = $actionMapping
     }
-    $Row.Cells["QuickAction"] = $quickActionCell
+    $Row.Cells["ManualScript"] = $manualScriptCell
 }
 
 function Set-RowColor {
@@ -906,10 +906,10 @@ function Get-MessageSummary {
 #     'New-LogTextBox',
 #     'New-RefreshTimer',
 #     'Configure-ScenarioColumn',
-#     'Configure-OnReceivedColumn',
-#     'Configure-PeriodicSendColumn',
-#     'Configure-QuickDataColumn',
-#     'Configure-QuickActionColumn',
+#     'Configure-OnReceiveScriptColumn',
+#     'Configure-OnTimerSendColumn',
+#     'Configure-ManualSendColumn',
+#     'Configure-ManualScriptColumn',
 #     'Set-RowColor',
 #     'Update-LogDisplay',
 #     'Get-MessageSummary'

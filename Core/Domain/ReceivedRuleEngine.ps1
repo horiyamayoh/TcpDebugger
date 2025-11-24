@@ -1,5 +1,5 @@
 ﻿# ReceivedRuleEngine.ps1
-# 受信時のルール処理エンジン（AutoResponse/OnReceived共通）
+# 受信時のルール処理エンジン（OnReceiveReply/OnReceiveScript共通）
 
 # デバッグ出力ヘルパー
 function Write-DebugLog {
@@ -23,14 +23,14 @@ function Get-RuleRepository {
 function Read-ReceivedRules {
     <#
     .SYNOPSIS
-    受信ルールを読み込み（AutoResponse/OnReceived共通）
+    受信ルールを読み込み（OnReceiveReply/OnReceiveScript共通）
     #>
     param(
         [Parameter(Mandatory=$true)]
         [string]$FilePath,
 
         [Parameter(Mandatory=$false)]
-        [string]$RuleType = "Auto"  # "Auto", "AutoResponse", "OnReceived"
+        [string]$RuleType = "Auto"  # "Auto", "OnReceiveReply", "OnReceiveScript"
     )
 
     if (-not (Test-Path $FilePath)) {
@@ -51,17 +51,17 @@ function Read-ReceivedRules {
     $firstRule = $rules[0]
     $properties = $firstRule.PSObject.Properties.Name
 
-    # ResponseMessageFileカラムがあればAutoResponse
+    # ResponseMessageFileカラムがあればOnReceiveReply
     if ($properties -contains 'ResponseMessageFile') {
-        $detectedType = 'AutoResponse'
+        $detectedType = 'OnReceiveReply'
     }
-    # ScriptFileカラムがあればOnReceived
+    # ScriptFileカラムがあればOnReceiveScript
     elseif ($properties -contains 'ScriptFile') {
-        $detectedType = 'OnReceived'
+        $detectedType = 'OnReceiveScript'
     }
-    # TriggerPatternがあれば旧形式AutoResponse
+    # TriggerPatternがあれば旧形式OnReceiveReply
     elseif ($properties -contains 'TriggerPattern') {
-        $detectedType = 'AutoResponse_Legacy'
+        $detectedType = 'OnReceiveReply_Legacy'
     }
     else {
         Write-Warning "[ReceivedRule] Unknown rule format"
@@ -72,7 +72,7 @@ function Read-ReceivedRules {
     foreach ($rule in $rules) {
         $rule | Add-Member -NotePropertyName '__RuleType' -NotePropertyValue $detectedType -Force
         
-        # ExecutionTiming の判定（OnReceivedルールのみ有効）
+        # ExecutionTiming の判定（OnReceiveScriptルールのみ有効）
         $executionTiming = 'After'  # デフォルト
         if ($properties -contains 'ExecutionTiming' -and -not [string]::IsNullOrWhiteSpace($rule.ExecutionTiming)) {
             $timing = $rule.ExecutionTiming.Trim()
@@ -83,14 +83,14 @@ function Read-ReceivedRules {
         $rule | Add-Member -NotePropertyName '__ExecutionTiming' -NotePropertyValue $executionTiming -Force
         
         # アクションタイプを設定（Unified形式は廃止）
-        if ($detectedType -eq 'AutoResponse' -or $detectedType -eq 'AutoResponse_Legacy') {
-            $rule | Add-Member -NotePropertyName '__ActionType' -NotePropertyValue 'AutoResponse' -Force
-        } elseif ($detectedType -eq 'OnReceived') {
-            $rule | Add-Member -NotePropertyName '__ActionType' -NotePropertyValue 'OnReceived' -Force
+        if ($detectedType -eq 'OnReceiveReply' -or $detectedType -eq 'OnReceiveReply_Legacy') {
+            $rule | Add-Member -NotePropertyName '__ActionType' -NotePropertyValue 'OnReceiveReply' -Force
+        } elseif ($detectedType -eq 'OnReceiveScript') {
+            $rule | Add-Member -NotePropertyName '__ActionType' -NotePropertyValue 'OnReceiveScript' -Force
         }
         
         # バイナリマッチング形式かテキストマッチング形式かを判定
-        if ($detectedType -eq 'AutoResponse_Legacy') {
+        if ($detectedType -eq 'OnReceiveReply_Legacy') {
             $rule | Add-Member -NotePropertyName '__MatchType' -NotePropertyValue 'Text' -Force
         } else {
             $rule | Add-Member -NotePropertyName '__MatchType' -NotePropertyValue 'Binary' -Force
@@ -154,7 +154,7 @@ function Test-ReceivedRuleMatch {
         return Test-BinaryRuleMatch -ReceivedData $ReceivedData -Rule $Rule
     }
 
-    # テキストマッチング（旧形式AutoResponse）
+    # テキストマッチング（旧形式OnReceiveReply）
     return Test-TextRuleMatch -ReceivedData $ReceivedData -Rule $Rule -DefaultEncoding $DefaultEncoding
 }
 
@@ -249,7 +249,7 @@ function Test-BinaryRuleMatch {
 function Test-TextRuleMatch {
     <#
     .SYNOPSIS
-    テキストパターンマッチング（旧形式AutoResponse用）
+    テキストパターンマッチング（旧形式OnReceiveReply用）
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -307,10 +307,10 @@ function Test-TextRuleMatch {
     }
 }
 
-function Test-OnReceivedMatch {
+function Test-OnReceiveScriptMatch {
     <#
     .SYNOPSIS
-    受信データがOnReceivedルールにマッチするかチェック
+    受信データがOnReceiveScriptルールにマッチするかチェック
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -324,7 +324,7 @@ function Test-OnReceivedMatch {
     return Test-ReceivedRuleMatch -ReceivedData $ReceivedData -Rule $Rule -DefaultEncoding "UTF-8"
 }
 
-function Invoke-AutoResponse {
+function Invoke-OnReceiveReply {
     <#
     .SYNOPSIS
     受信データに対して自動応答を実行
@@ -365,7 +365,7 @@ function Invoke-AutoResponse {
 
         # マッチした場合の処理
         $ruleName = if ($rule.RuleName) { $rule.RuleName } else { "Unknown" }
-        Write-DebugLog "[AutoResponse] Rule matched ($matchedCount): $ruleName" "Cyan"
+        Write-DebugLog "[OnReceiveReply] Rule matched ($matchedCount): $ruleName" "Cyan"
 
         # 遅延処理
         if ($rule.Delay -and [int]$rule.Delay -gt 0) {
@@ -376,29 +376,29 @@ function Invoke-AutoResponse {
         $actionType = if ($rule.PSObject.Properties.Name -contains '__ActionType') {
             $rule.__ActionType
         } else {
-            'AutoResponse'
+            'OnReceiveReply'
         }
 
         # アクションタイプに応じて処理（Unified形式は廃止）
-        if ($actionType -eq 'AutoResponse') {
-            # AutoResponse処理
-            if ($rule.__RuleType -eq 'AutoResponse_Legacy') {
-                Invoke-TextAutoResponse -ConnectionId $ConnectionId -Rule $rule -Connection $conn -DefaultEncoding $defaultEncoding
+        if ($actionType -eq 'OnReceiveReply') {
+            # OnReceiveReply処理
+            if ($rule.__RuleType -eq 'OnReceiveReply_Legacy') {
+                Invoke-TextOnReceiveReply -ConnectionId $ConnectionId -Rule $rule -Connection $conn -DefaultEncoding $defaultEncoding
             } else {
-                Invoke-BinaryAutoResponse -ConnectionId $ConnectionId -Rule $rule -Connection $conn
+                Invoke-BinaryOnReceiveReply -ConnectionId $ConnectionId -Rule $rule -Connection $conn
             }
         }
-        # OnReceivedは別の関数で処理されるのでここでは何もしない
+        # OnReceiveScriptは別の関数で処理されるのでここでは何もしない
 
         # 複数ルール対応: breakせずに継続
     }
 
     if ($matchedCount -gt 0) {
-        Write-DebugLog "[AutoResponse] Total $matchedCount rule(s) processed" "Green"
+        Write-DebugLog "[OnReceiveReply] Total $matchedCount rule(s) processed" "Green"
     }
 }
 
-function Invoke-BinaryAutoResponse {
+function Invoke-BinaryOnReceiveReply {
     <#
     .SYNOPSIS
     バイナリマッチングルールに基づく自動応答（電文ファイル参照）
@@ -415,7 +415,7 @@ function Invoke-BinaryAutoResponse {
     )
 
     if ([string]::IsNullOrWhiteSpace($Rule.ResponseMessageFile)) {
-        Write-Warning "[AutoResponse] ResponseMessageFile is not specified in the rule"
+        Write-Warning "[OnReceiveReply] ResponseMessageFile is not specified in the rule"
         return
     }
 
@@ -431,29 +431,29 @@ function Invoke-BinaryAutoResponse {
     }
 
     if (-not (Test-Path -LiteralPath $messageFilePath)) {
-        Write-Warning "[AutoResponse] Response message file not found: $messageFilePath"
+        Write-Warning "[OnReceiveReply] Response message file not found: $messageFilePath"
         return
     }
 
     # 電文ファイルを読み込む
     try {
-        Write-DebugLog "[AutoResponse] Loading template: $messageFilePath" "Yellow"
+        Write-DebugLog "[OnReceiveReply] Loading template: $messageFilePath" "Yellow"
         $templates = Get-MessageTemplateCache -FilePath $messageFilePath -ThrowOnMissing
-        Write-DebugLog "[AutoResponse] Template loaded successfully" "Yellow"
+        Write-DebugLog "[OnReceiveReply] Template loaded successfully" "Yellow"
     } catch {
-        Write-Warning "[AutoResponse] Failed to load response message file: $_"
-        Write-Warning "[AutoResponse] Stack trace: $($_.ScriptStackTrace)"
+        Write-Warning "[OnReceiveReply] Failed to load response message file: $_"
+        Write-Warning "[OnReceiveReply] Stack trace: $($_.ScriptStackTrace)"
         return
     }
 
     if (-not $templates -or $templates.Count -eq 0) {
-        Write-Warning "[AutoResponse] No templates found in $messageFilePath"
+        Write-Warning "[OnReceiveReply] No templates found in $messageFilePath"
         return
     }
 
     # DEFAULTテンプレートを取得（新形式の電文定義は常にDEFAULT名で格納される）
     if (-not $templates.ContainsKey('DEFAULT')) {
-        Write-Warning "[AutoResponse] DEFAULT template not found in $messageFilePath"
+        Write-Warning "[OnReceiveReply] DEFAULT template not found in $messageFilePath"
         return
     }
 
@@ -470,7 +470,7 @@ function Invoke-BinaryAutoResponse {
             $responseBytes = ConvertTo-ByteArray -Data $template.Format -Encoding 'HEX'
         }
     } catch {
-        Write-Warning "[AutoResponse] Failed to convert hex stream to bytes: $_"
+        Write-Warning "[OnReceiveReply] Failed to convert hex stream to bytes: $_"
         return
     }
 
@@ -481,13 +481,13 @@ function Invoke-BinaryAutoResponse {
         if ($hexPreview.Length -gt 40) {
             $hexPreview = $hexPreview.Substring(0, 40) + "..."
         }
-        Write-DebugLog "[AutoResponse] Sent message from $($Rule.ResponseMessageFile) (${hexPreview})" "Blue"
+        Write-DebugLog "[OnReceiveReply] Sent message from $($Rule.ResponseMessageFile) (${hexPreview})" "Blue"
     } catch {
-        Write-Warning "[AutoResponse] Failed to send auto-response: $_"
+        Write-Warning "[OnReceiveReply] Failed to send receive reply: $_"
     }
 }
 
-function Invoke-TextAutoResponse {
+function Invoke-TextOnReceiveReply {
     <#
     .SYNOPSIS
     テキストマッチングルールに基づく自動応答（旧形式）
@@ -514,22 +514,22 @@ function Invoke-TextAutoResponse {
     try {
         $responseBytes = ConvertTo-ByteArray -Data $response -Encoding $responseEncoding
     } catch {
-        Write-Warning "[AutoResponse] Failed to encode auto-response message: $_"
+        Write-Warning "[OnReceiveReply] Failed to encode receive reply message: $_"
         return
     }
 
     try {
         Send-Data -ConnectionId $ConnectionId -Data $responseBytes
-        Write-Host "[AutoResponse] Auto-responded: $response" -ForegroundColor Blue
+        Write-Host "[OnReceiveReply] Receive reply sent: $response" -ForegroundColor Blue
     } catch {
-        Write-Warning "[AutoResponse] Failed to send auto-response: $_"
+        Write-Warning "[OnReceiveReply] Failed to send receive reply: $_"
     }
 }
 
-function Invoke-OnReceivedScript {
+function Invoke-OnReceiveScript {
     <#
     .SYNOPSIS
-    OnReceivedスクリプトを実行
+    OnReceiveScriptスクリプトを実行
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -546,23 +546,40 @@ function Invoke-OnReceivedScript {
     )
 
     if ([string]::IsNullOrWhiteSpace($Rule.ScriptFile)) {
-        Write-Warning "[OnReceived] ScriptFile is not specified"
+        Write-Warning "[OnReceiveScript] ScriptFile is not specified"
         return
     }
 
     # スクリプトファイルのパスを解決
     $scriptPath = $Rule.ScriptFile
 
-    # 相対パスの場合、インスタンスのscenarios/onreceivedフォルダからの相対パス
+    # 相対パスの場合、インスタンスのscenariosフォルダ配下を検索
     if (-not [System.IO.Path]::IsPathRooted($scriptPath)) {
         if ($Connection.Variables.ContainsKey('InstancePath')) {
             $instancePath = $Connection.Variables['InstancePath']
-            $scriptPath = Join-Path $instancePath "scenarios\onreceived\$scriptPath"
+            $searchPaths = @(
+                (Join-Path (Join-Path $instancePath "scenarios") "on_receive_script"),
+                (Join-Path $instancePath "scenarios"),
+                (Join-Path $instancePath "templates")
+            )
+            $resolved = $false
+            foreach ($dir in $searchPaths) {
+                $fullPath = Join-Path $dir $scriptPath
+                if (Test-Path -LiteralPath $fullPath) {
+                    $scriptPath = $fullPath
+                    $resolved = $true
+                    break
+                }
+            }
+            if (-not $resolved) {
+                # 従来の形式も試す（後方互換性）
+                $scriptPath = Join-Path $instancePath "scenarios\$scriptPath"
+            }
         }
     }
 
     if (-not (Test-Path -LiteralPath $scriptPath)) {
-        Write-Warning "[OnReceived] Script file not found: $scriptPath"
+        Write-Warning "[OnReceiveScript] Script file not found: $scriptPath"
         return
     }
 
@@ -576,7 +593,7 @@ function Invoke-OnReceivedScript {
     }
 
     try {
-        Write-Host "[OnReceived] Executing script: $($Rule.ScriptFile)" -ForegroundColor Blue
+        Write-Host "[OnReceiveScript] Executing script: $($Rule.ScriptFile)" -ForegroundColor Blue
 
         # スクリプトを実行
         $scriptBlock = [scriptblock]::Create((Get-Content -LiteralPath $scriptPath -Raw -Encoding UTF8))
@@ -584,9 +601,9 @@ function Invoke-OnReceivedScript {
         # スクリプトに変数を渡して実行
         & $scriptBlock -Context $scriptContext
 
-        Write-Host "[OnReceived] Script executed successfully" -ForegroundColor Green
+        Write-Host "[OnReceiveScript] Script executed successfully" -ForegroundColor Green
     } catch {
-        Write-Warning "[OnReceived] Script execution failed: $_"
+        Write-Warning "[OnReceiveScript] Script execution failed: $_"
         Write-Warning $_.ScriptStackTrace
     }
 }

@@ -1,27 +1,27 @@
 ﻿class InstanceProfile {
     [string]$ProfileName
-    [string]$AutoResponseScenario
-    [string]$OnReceivedScenario
-    [string]$PeriodicScenario
+    [string]$OnReceiveReply
+    [string]$OnReceiveScript
+    [string]$OnTimerSend
     InstanceProfile([string]$profileName) {
         $this.ProfileName = $profileName
-        $this.AutoResponseScenario = ''
-        $this.OnReceivedScenario = ''
-        $this.PeriodicScenario = ''
+        $this.OnReceiveReply = ''
+        $this.OnReceiveScript = ''
+        $this.OnTimerSend = ''
     }
     static [InstanceProfile] FromCsvRow([PSCustomObject]$row) {
         $profile = [InstanceProfile]::new($row.ProfileName)
-        $profile.AutoResponseScenario = if ($row.AutoResponseScenario) { $row.AutoResponseScenario } else { '' }
-        $profile.OnReceivedScenario = if ($row.OnReceivedScenario) { $row.OnReceivedScenario } else { '' }
-        $profile.PeriodicScenario = if ($row.PeriodicScenario) { $row.PeriodicScenario } else { '' }
+        $profile.OnReceiveReply = if ($row.OnReceiveReply) { $row.OnReceiveReply } else { '' }
+        $profile.OnReceiveScript = if ($row.OnReceiveScript) { $row.OnReceiveScript } else { '' }
+        $profile.OnTimerSend = if ($row.OnTimerSend) { $row.OnTimerSend } else { '' }
         return $profile
     }
     [PSCustomObject] ToCsvRow() {
         return [PSCustomObject]@{
             ProfileName = $this.ProfileName
-            AutoResponseScenario = $this.AutoResponseScenario
-            OnReceivedScenario = $this.OnReceivedScenario
-            PeriodicScenario = $this.PeriodicScenario
+            OnReceiveReply = $this.OnReceiveReply
+            OnReceiveScript = $this.OnReceiveScript
+            OnTimerSend = $this.OnTimerSend
         }
     }
 }

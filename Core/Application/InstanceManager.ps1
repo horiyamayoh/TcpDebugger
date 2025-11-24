@@ -237,10 +237,10 @@ function Get-AllTags {
 #     'Get-AllTags'
 # )
 
-function Get-InstanceAutoResponseProfiles {
+function Get-InstanceOnReceiveReplyProfiles {
     <#
     .SYNOPSIS
-    CX^Xz?vt@C?擾
+    インスタンスの On Receive: Reply プロファイル一覧を取得
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -251,7 +251,7 @@ function Get-InstanceAutoResponseProfiles {
         return @()
     }
 
-    $profilesPath = Join-Path $InstancePath "scenarios\auto"
+    $profilesPath = Join-Path $InstancePath "scenarios\on_receive_reply"
 
     if (-not (Test-Path $profilesPath)) {
         return @()
@@ -270,10 +270,10 @@ function Get-InstanceAutoResponseProfiles {
     return $items | Sort-Object DisplayName
 }
 
-function Get-InstanceOnReceivedProfiles {
+function Get-InstanceOnReceiveScriptProfiles {
     <#
     .SYNOPSIS
-    インスタンスのOnReceivedプロファイル一覧を取得
+    インスタンスの On Receive: Script プロファイル一覧を取得
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -284,7 +284,7 @@ function Get-InstanceOnReceivedProfiles {
         return @()
     }
 
-    $profilesPath = Join-Path $InstancePath "scenarios\onreceived"
+    $profilesPath = Join-Path $InstancePath "scenarios\on_receive_script"
 
     if (-not (Test-Path $profilesPath)) {
         return @()
@@ -303,10 +303,10 @@ function Get-InstanceOnReceivedProfiles {
     return $items | Sort-Object DisplayName
 }
 
-function Get-InstancePeriodicSendProfiles {
+function Get-InstanceOnTimerSendProfiles {
     <#
     .SYNOPSIS
-    インスタンスの定周期送信プロファイル一覧を取得
+    インスタンスの On Timer: Send プロファイル一覧を取得
     #>
     param(
         [Parameter(Mandatory=$true)]
@@ -317,7 +317,7 @@ function Get-InstancePeriodicSendProfiles {
         return @()
     }
 
-    $profilesPath = Join-Path $InstancePath "scenarios\periodic"
+    $profilesPath = Join-Path $InstancePath "scenarios\on_timer_send"
 
     if (-not (Test-Path $profilesPath)) {
         return @()
@@ -351,10 +351,10 @@ function Get-InstancePeriodicSendProfiles {
 
 
 
-function Get-QuickDataCatalog {
+function Get-ManualSendCatalog {
     <#
     .SYNOPSIS
-    インスタンスのQuick Dataカタログを取得（UI用）
+    インスタンスの Manual: Send カタログを取得（UI用）
     
     .DESCRIPTION
     templates/databank.csvを読み込み、UIのドロップダウンで使用できる形式で返す

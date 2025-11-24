@@ -26,10 +26,10 @@
         }
 
         try {
-            $autoProfilePath = $this.GetProfilePath($connection, 'AutoResponseProfilePath')
-            $onReceivedProfilePath = $this.GetProfilePath($connection, 'OnReceivedProfilePath')
+            $autoProfilePath = $this.GetProfilePath($connection, 'OnReceiveReplyProfilePath')
+            $onReceiveScriptProfilePath = $this.GetProfilePath($connection, 'OnReceiveScriptProfilePath')
 
-            if (-not $autoProfilePath -and -not $onReceivedProfilePath) {
+            if (-not $autoProfilePath -and -not $onReceiveScriptProfilePath) {
                 return
             }
 
@@ -38,36 +38,36 @@
                 $autoRules = $this._ruleRepository.GetRules($autoProfilePath)
             }
 
-            # OnReceivedルールをBefore/Afterに分ける
-            $onReceivedRulesBefore = @()
-            $onReceivedRulesAfter = @()
+            # OnReceiveScriptルールをBefore/Afterに分ける
+            $onReceiveScriptRulesBefore = @()
+            $onReceiveScriptRulesAfter = @()
             
-            if ($onReceivedProfilePath) {
-                $onReceivedRules = $this._ruleRepository.GetRules($onReceivedProfilePath)
-                if ($onReceivedRules -and $onReceivedRules.Count -gt 0) {
-                    foreach ($rule in $onReceivedRules) {
+            if ($onReceiveScriptProfilePath) {
+                $onReceiveScriptRules = $this._ruleRepository.GetRules($onReceiveScriptProfilePath)
+                if ($onReceiveScriptRules -and $onReceiveScriptRules.Count -gt 0) {
+                    foreach ($rule in $onReceiveScriptRules) {
                         if ($rule.__ExecutionTiming -eq 'Before') {
-                            $onReceivedRulesBefore += $rule
+                            $onReceiveScriptRulesBefore += $rule
                         } else {
-                            $onReceivedRulesAfter += $rule
+                            $onReceiveScriptRulesAfter += $rule
                         }
                     }
                 }
             }
 
-            # 1. Before OnReceived を実行
-            if ($onReceivedRulesBefore.Count -gt 0) {
-                $this.ProcessOnReceived($connection, $data, $onReceivedRulesBefore)
+            # 1. Before OnReceiveScript を実行
+            if ($onReceiveScriptRulesBefore.Count -gt 0) {
+                $this.ProcessOnReceiveScript($connection, $data, $onReceiveScriptRulesBefore)
             }
 
-            # 2. AutoResponse を実行
+            # 2. OnReceiveReply を実行
             if ($autoRules -and $autoRules.Count -gt 0) {
-                $this.ProcessAutoResponse($connection, $data, $autoRules)
+                $this.ProcessOnReceiveReply($connection, $data, $autoRules)
             }
 
-            # 3. After OnReceived を実行
-            if ($onReceivedRulesAfter.Count -gt 0) {
-                $this.ProcessOnReceived($connection, $data, $onReceivedRulesAfter)
+            # 3. After OnReceiveScript を実行
+            if ($onReceiveScriptRulesAfter.Count -gt 0) {
+                $this.ProcessOnReceiveScript($connection, $data, $onReceiveScriptRulesAfter)
             }
         }
         catch {
@@ -95,23 +95,23 @@
         return $null
     }
 
-    hidden [void] ProcessAutoResponse(
+    hidden [void] ProcessOnReceiveReply(
         [ManagedConnection]$connection,
         [byte[]]$data,
         [object[]]$rules
     ) {
         try {
-            Invoke-AutoResponse -ConnectionId $connection.Id -ReceivedData $data -Rules $rules
+            Invoke-OnReceiveReply -ConnectionId $connection.Id -ReceivedData $data -Rules $rules
         }
         catch {
-            $this._logger.LogError("AutoResponse execution failed", $_.Exception, @{
+            $this._logger.LogError("OnReceiveReply execution failed", $_.Exception, @{
                 ConnectionId = $connection.Id
-                Profile = 'AutoResponse'
+                Profile = 'OnReceiveReply'
             })
         }
     }
 
-    hidden [void] ProcessOnReceived(
+    hidden [void] ProcessOnReceiveScript(
         [ManagedConnection]$connection,
         [byte[]]$data,
         [object[]]$rules
@@ -120,12 +120,12 @@
 
         foreach ($rule in $rules) {
             try {
-                if (-not (Test-OnReceivedMatch -ReceivedData $data -Rule $rule)) {
+                if (-not (Test-OnReceiveScriptMatch -ReceivedData $data -Rule $rule)) {
                     continue
                 }
             }
             catch {
-                $this._logger.LogWarning("OnReceived rule match failed", @{
+                $this._logger.LogWarning("OnReceiveScript rule match failed", @{
                     ConnectionId = $connection.Id
                     RuleName = $rule.RuleName
                     Error = $_.Exception.Message
@@ -140,10 +140,10 @@
             }
 
             try {
-                Invoke-OnReceivedScript -ConnectionId $connection.Id -ReceivedData $data -Rule $rule -Connection $connection
+                Invoke-OnReceiveScript -ConnectionId $connection.Id -ReceivedData $data -Rule $rule -Connection $connection
             }
             catch {
-                $this._logger.LogWarning("OnReceived script execution failed", @{
+                $this._logger.LogWarning("OnReceiveScript script execution failed", @{
                     ConnectionId = $connection.Id
                     RuleName = $rule.RuleName
                     Error = $_.Exception.Message
@@ -152,7 +152,7 @@
         }
 
         if ($matchedCount -gt 0) {
-            $this._logger.LogInfo("Processed OnReceived rules", @{
+            $this._logger.LogInfo("Processed OnReceiveScript rules", @{
                 ConnectionId = $connection.Id
                 MatchedRules = $matchedCount
             })
