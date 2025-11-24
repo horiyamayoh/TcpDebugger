@@ -116,13 +116,14 @@ class TcpServerAdapter {
                 $listener = New-Object System.Net.Sockets.TcpListener($ipAddress, $LocalPort)
                 $listener.Start()
                 
-                $msg = New-StatusUpdateMessage -ConnectionId $ConnectionId -Status 'CONNECTED'
+                # TCP サーバーは Listen 状態であり、まだクライアント接続はない
+                $msg = New-StatusUpdateMessage -ConnectionId $ConnectionId -Status 'LISTENING'
                 $MessageQueue.Enqueue($msg)
                 
                 $msg = New-ActivityMessage -ConnectionId $ConnectionId
                 $MessageQueue.Enqueue($msg)
                 
-                $msg = New-LogMessage -ConnectionId $ConnectionId -Level 'Info' -Message 'TCP Server listening successfully' -Context @{
+                $msg = New-LogMessage -ConnectionId $ConnectionId -Level 'Info' -Message 'TCP Server listening for connections' -Context @{
                     LocalEndpoint = "${LocalIP}:${LocalPort}"
                 }
                 $MessageQueue.Enqueue($msg)
@@ -145,6 +146,10 @@ class TcpServerAdapter {
                             $stream = $client.GetStream()
 
                             $remoteEndpoint = $client.Client.RemoteEndPoint.ToString()
+                            
+                            # クライアント接続完了 → Status を CONNECTED に更新
+                            $msg = New-StatusUpdateMessage -ConnectionId $ConnectionId -Status 'CONNECTED'
+                            $MessageQueue.Enqueue($msg)
                             
                             $msg = New-LogMessage -ConnectionId $ConnectionId -Level 'Info' -Message 'TCP Server accepted client connection' -Context @{
                                 RemoteEndpoint = $remoteEndpoint
@@ -198,8 +203,30 @@ class TcpServerAdapter {
                                     
                                     $msg = New-ActivityMessage -ConnectionId $ConnectionId
                                     $MessageQueue.Enqueue($msg)
+                                } else {
+                                    # クライアント切断を検出
+                                    $msg = New-LogMessage -ConnectionId $ConnectionId -Level 'Info' -Message 'Client disconnected' -Context @{}
+                                    $MessageQueue.Enqueue($msg)
+                                    
+                                    if ($stream) { $stream.Close(); $stream.Dispose(); $stream = $null }
+                                    if ($client) { $client.Close(); $client.Dispose(); $client = $null }
+                                    
+                                    # Status を LISTENING に戻す
+                                    $msg = New-StatusUpdateMessage -ConnectionId $ConnectionId -Status 'LISTENING'
+                                    $MessageQueue.Enqueue($msg)
                                 }
                             }
+                        } elseif ($client -and -not $client.Connected) {
+                            # クライアントが切断された場合
+                            $msg = New-LogMessage -ConnectionId $ConnectionId -Level 'Info' -Message 'Client connection lost' -Context @{}
+                            $MessageQueue.Enqueue($msg)
+                            
+                            if ($stream) { $stream.Close(); $stream.Dispose(); $stream = $null }
+                            if ($client) { $client.Close(); $client.Dispose(); $client = $null }
+                            
+                            # Status を LISTENING に戻す
+                            $msg = New-StatusUpdateMessage -ConnectionId $ConnectionId -Status 'LISTENING'
+                            $MessageQueue.Enqueue($msg)
                         }
 
                         # CPU負荷軽減

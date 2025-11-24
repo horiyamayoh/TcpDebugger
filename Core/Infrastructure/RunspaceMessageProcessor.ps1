@@ -190,13 +190,65 @@ class RunspaceMessageProcessor {
     #>
     hidden [void] ProcessStatusUpdate([object]$conn, [object]$message) {
         if ($conn) {
+            $oldStatus = $conn.Status
             $status = $message.Data['Status']
             $conn.UpdateStatus($status)
             
             $this._logger.LogInfo("Status updated", @{
                 ConnectionId = $message.ConnectionId
-                Status = $status
+                OldStatus = $oldStatus
+                NewStatus = $status
             })
+            
+            # TCP サーバーが LISTENING → CONNECTED に遷移した場合、On Timer Send を開始
+            if ($oldStatus -eq "LISTENING" -and $status -eq "CONNECTED") {
+                $periodicProfilePath = $null
+                if ($conn.Variables -and $conn.Variables.ContainsKey('OnTimerSendProfilePath')) {
+                    $periodicProfilePath = $conn.Variables['OnTimerSendProfilePath']
+                }
+                
+                if ($periodicProfilePath -and (Test-Path -LiteralPath $periodicProfilePath)) {
+                    try {
+                        # 既存のOnTimerSendタイマーが起動していないか確認
+                        $hasActiveTimers = $conn.PeriodicTimers -and $conn.PeriodicTimers.Count -gt 0
+                        
+                        if (-not $hasActiveTimers) {
+                            $instancePath = if ($conn.Variables -and $conn.Variables.ContainsKey('InstancePath')) {
+                                $conn.Variables['InstancePath']
+                            } else {
+                                $null
+                            }
+                            
+                            if ($instancePath) {
+                                Start-OnTimerSend -ConnectionId $message.ConnectionId -RuleFilePath $periodicProfilePath -InstancePath $instancePath
+                                $this._logger.LogInfo("Started On Timer: Send on TCP Server client connection", @{
+                                    ConnectionId = $message.ConnectionId
+                                })
+                            }
+                        }
+                    } catch {
+                        $this._logger.LogWarning("Failed to start On Timer: Send on status update", @{
+                            ConnectionId = $message.ConnectionId
+                            ErrorMessage = $_.Exception.Message
+                        })
+                    }
+                }
+            }
+            
+            # CONNECTED → LISTENING に遷移した場合（クライアント切断）、On Timer Send を停止
+            if ($oldStatus -eq "CONNECTED" -and $status -eq "LISTENING") {
+                try {
+                    Stop-OnTimerSend -ConnectionId $message.ConnectionId
+                    $this._logger.LogInfo("Stopped On Timer: Send on client disconnection", @{
+                        ConnectionId = $message.ConnectionId
+                    })
+                } catch {
+                    $this._logger.LogWarning("Failed to stop On Timer: Send on status update", @{
+                        ConnectionId = $message.ConnectionId
+                        ErrorMessage = $_.Exception.Message
+                    })
+                }
+            }
         }
         else {
             $this._logger.LogWarning("Connection not found for status update", @{

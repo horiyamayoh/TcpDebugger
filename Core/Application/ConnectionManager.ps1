@@ -135,6 +135,7 @@ function Start-Connection {
         
         # �V�����A�_�v�^�[�A�[�L�e�N�`�����g�p
         # �d�v: �A�_�v�^�[�C���X�^���X��GC�΍����Ƀ��l�N�V�����ɕۑ�
+        $isTcpServer = $false
         switch ($conn.Protocol) {
             "TCP" {
                 if ($conn.Mode -eq "Client") {
@@ -146,6 +147,7 @@ function Start-Connection {
                     $conn.Variables['_Adapter'] = $adapter
                     $adapter.Start($ConnectionId)
                 } elseif ($conn.Mode -eq "Server") {
+                    $isTcpServer = $true
                     $adapter = $Global:ServiceContainer.Resolve('TcpServerAdapter')
                     if (-not $conn.Variables) {
                         $conn.Variables = @{}
@@ -167,37 +169,56 @@ function Start-Connection {
             }
         }
         
-        $conn.UpdateStatus("CONNECTED")
-        $conn.MarkActivity()
-        
-        $periodicProfilePath = $null
-        if ($conn.Variables.ContainsKey('OnTimerSendProfilePath')) {
-            $periodicProfilePath = $conn.Variables['OnTimerSendProfilePath']
-        }
-        
-        if ($periodicProfilePath -and (Test-Path -LiteralPath $periodicProfilePath)) {
-            try {
-            # 既存のOnTimerSendタイマーが起動していないか確認
-            $hasActiveTimers = $conn.PeriodicTimers -and $conn.PeriodicTimers.Count -gt 0
+        # TCP サーバーの場合は LISTENING 状態で開始（クライアント接続待ち）
+        # それ以外は CONNECTED 状態
+        if ($isTcpServer) {
+            $conn.UpdateStatus("LISTENING")
+            Write-DebugLog "[ConnectionManager] TCP Server started (waiting for client): $($conn.DisplayName)" "Green"
+            # TCP サーバーの場合、On Timer Send はクライアント接続後に開始されるべき
+            # （RunspaceMessageProcessor が CONNECTED メッセージを受け取った時に開始）
+        } else {
+            $conn.UpdateStatus("CONNECTED")
+            $conn.MarkActivity()
             
-            if (-not $hasActiveTimers) {
-                $instancePath = if ($conn.Variables -and $conn.Variables.ContainsKey('InstancePath')) {
-                    $conn.Variables['InstancePath']
-                } else {
-                    $null
-                }
-                
-                if ($instancePath) {
-                    Start-OnTimerSend -ConnectionId $ConnectionId -RuleFilePath $periodicProfilePath -InstancePath $instancePath
-                    Write-DebugLog "[ConnectionManager] Started On Timer: Send on connection" "Green"
-                }
-            } else {
-                Write-DebugLog "[ConnectionManager] On Timer: Send already active, skipping startup" "Yellow"
+            Write-DebugLog "[ConnectionManager] Connection established: $($conn.DisplayName)" "Green"
+            
+            # TCP/UDPソケットの完全な確立を待つため、少し待機してからOnTimerSendを開始
+            # これにより、接続確立前に送信キューにデータが溜まるのを防ぐ
+            $periodicProfilePath = $null
+            if ($conn.Variables.ContainsKey('OnTimerSendProfilePath')) {
+                $periodicProfilePath = $conn.Variables['OnTimerSendProfilePath']
             }
-        } catch {
-            Write-Warning "[ConnectionManager] Failed to start On Timer: Send: $_"
+            
+            if ($periodicProfilePath -and (Test-Path -LiteralPath $periodicProfilePath)) {
+                try {
+                    # 既存のOnTimerSendタイマーが起動していないか確認
+                    $hasActiveTimers = $conn.PeriodicTimers -and $conn.PeriodicTimers.Count -gt 0
+                    
+                    if (-not $hasActiveTimers) {
+                        $instancePath = if ($conn.Variables -and $conn.Variables.ContainsKey('InstancePath')) {
+                            $conn.Variables['InstancePath']
+                        } else {
+                            $null
+                        }
+                        
+                        if ($instancePath) {
+                            # ソケット確立を待つため500ms遅延
+                            Start-Sleep -Milliseconds 500
+                            
+                            # 接続が依然として有効か確認
+                            if ($conn.Status -eq "CONNECTED") {
+                                Start-OnTimerSend -ConnectionId $ConnectionId -RuleFilePath $periodicProfilePath -InstancePath $instancePath
+                                Write-DebugLog "[ConnectionManager] Started On Timer: Send on connection" "Green"
+                            }
+                        }
+                    } else {
+                        Write-DebugLog "[ConnectionManager] On Timer: Send already active, skipping startup" "Yellow"
+                    }
+                } catch {
+                    Write-Warning "[ConnectionManager] Failed to start On Timer: Send: $_"
+                }
+            }
         }
-    }        Write-DebugLog "[ConnectionManager] Connection established: $($conn.DisplayName)" "Green"
         
     } catch {
         $conn.SetError($_.Exception.Message, $_.Exception)
