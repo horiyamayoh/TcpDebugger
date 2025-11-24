@@ -139,6 +139,26 @@ class TcpClientAdapter {
                 
                 # 送受信ループ
                 while ($tcpClient.Connected -and -not $CancellationToken.IsCancellationRequested) {
+                    # 接続状態を確認（Poll を使用してより確実に検出）
+                    $isDisconnected = $false
+                    try {
+                        if ($tcpClient.Client.Poll(0, [System.Net.Sockets.SelectMode]::SelectRead)) {
+                            if ($tcpClient.Client.Available -eq 0) {
+                                # データがなく SelectRead が true = 切断
+                                $isDisconnected = $true
+                            }
+                        }
+                    } catch {
+                        $isDisconnected = $true
+                    }
+                    
+                    if ($isDisconnected) {
+                        # サーバーからの切断を検出
+                        $msg = New-LogMessage -ConnectionId $ConnectionId -Level 'Info' -Message 'Server disconnected (detected by Poll)' -Context @{}
+                        $MessageQueue.Enqueue($msg)
+                        break
+                    }
+                    
                     # 送信処理
                     if ($SendQueueSync -and $SendQueueSync.Count -gt 0) {
                         [System.Threading.Monitor]::Enter($SendQueueSync.SyncRoot)
@@ -197,6 +217,11 @@ class TcpClientAdapter {
                             # アクティビティマーカー
                             $msg = New-ActivityMessage -ConnectionId $ConnectionId
                             $MessageQueue.Enqueue($msg)
+                        } elseif ($bytesRead -eq 0) {
+                            # 受信データが0バイト = 切断
+                            $msg = New-LogMessage -ConnectionId $ConnectionId -Level 'Info' -Message 'Server disconnected (0 bytes read)' -Context @{}
+                            $MessageQueue.Enqueue($msg)
+                            break
                         }
                     }
                     
