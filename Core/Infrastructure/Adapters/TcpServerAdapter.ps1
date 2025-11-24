@@ -159,6 +159,36 @@ class TcpServerAdapter {
 
                         # クライアントが接続中の場合、送受信処理
                         if ($client -and $client.Connected) {
+                            # 接続状態を確認（Poll を使用してより確実に検出）
+                            $isDisconnected = $false
+                            try {
+                                if ($client.Client.Poll(0, [System.Net.Sockets.SelectMode]::SelectRead)) {
+                                    if ($client.Client.Available -eq 0) {
+                                        # データがなく SelectRead が true = 切断
+                                        $isDisconnected = $true
+                                    }
+                                }
+                            } catch {
+                                $isDisconnected = $true
+                            }
+                            
+                            if ($isDisconnected) {
+                                # クライアント切断を検出
+                                $msg = New-LogMessage -ConnectionId $ConnectionId -Level 'Info' -Message 'Client disconnected (detected by Poll)' -Context @{}
+                                $MessageQueue.Enqueue($msg)
+                                
+                                if ($stream) { $stream.Close(); $stream.Dispose(); $stream = $null }
+                                if ($client) { $client.Close(); $client.Dispose(); $client = $null }
+                                
+                                # Status を LISTENING に戻す
+                                $msg = New-StatusUpdateMessage -ConnectionId $ConnectionId -Status 'LISTENING'
+                                $MessageQueue.Enqueue($msg)
+                                
+                                # 次のループへ
+                                Start-Sleep -Milliseconds 10
+                                continue
+                            }
+                            
                             # 送信処理
                             if ($SendQueueSync -and $SendQueueSync.Count -gt 0) {
                                 [System.Threading.Monitor]::Enter($SendQueueSync.SyncRoot)

@@ -17,6 +17,7 @@ class RunspaceMessageProcessor {
     hidden [Logger]$_logger
     hidden [int]$_totalProcessed
     hidden [hashtable]$_processingStats
+    hidden [bool]$_statusChanged
     
     <#
     .SYNOPSIS
@@ -58,6 +59,7 @@ class RunspaceMessageProcessor {
         $this._pipeline = $pipeline
         $this._logger = $logger
         $this._totalProcessed = 0
+        $this._statusChanged = $false
         $this._processingStats = @{
             StatusUpdate = 0
             DataReceived = 0
@@ -193,6 +195,9 @@ class RunspaceMessageProcessor {
             $oldStatus = $conn.Status
             $status = $message.Data['Status']
             $conn.UpdateStatus($status)
+            
+            # 状態変更フラグを立てる
+            $this._statusChanged = $true
             
             $this._logger.LogInfo("Status updated", @{
                 ConnectionId = $message.ConnectionId
@@ -402,5 +407,18 @@ class RunspaceMessageProcessor {
     [void] LogStatistics() {
         $stats = $this.GetStatistics()
         $this._logger.LogInfo("Message processor statistics", $stats)
+    }
+    
+    <#
+    .SYNOPSIS
+    状態変更フラグをチェックしてリセット
+    
+    .RETURNS
+    前回のチェック以降に状態変更があったかどうか
+    #>
+    [bool] CheckAndResetStatusChanged() {
+        $changed = $this._statusChanged
+        $this._statusChanged = $false
+        return $changed
     }
 }

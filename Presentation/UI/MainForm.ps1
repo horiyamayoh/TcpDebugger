@@ -201,6 +201,13 @@ function Show-MainForm {
             $processor = Get-UiMessageProcessor
             if ($processor) {
                 $processed = $processor.ProcessMessages(50)
+                
+                # 状態変更があった場合は即座に UI を更新
+                if ($processor.CheckAndResetStatusChanged()) {
+                    if (-not $gridState.EditingInProgress -and -not $dgvInstances.IsCurrentCellInEditMode) {
+                        Update-InstanceList -DataGridView $dgvInstances
+                    }
+                }
             }
         }
         catch {
