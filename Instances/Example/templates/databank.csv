@@ -1,6 +1,0 @@
-DataID,Category,Description,Type,Content
-HELLO,Basic,挨拶メッセージ,TEXT,Hello from TcpDebugger!
-PING,Basic,疎通確認,TEXT,PING
-STATUS,Status,ステータス要求,TEXT,GET_STATUS
-TIMESTAMP,Status,タイムスタンプ送信,TEMPLATE,TIME=${TIMESTAMP}
-RANDOM,Test,ランダム値,TEMPLATE,RANDOM=${RANDOM:1-100}

@@ -1,8 +1,0 @@
-RuleName,MatchOffset,MatchLength,MatchValue,ResponseMessageFile,ScriptFile,Delay
-ログイン要求-応答,0,2,00 01,login_response.csv,,0
-ログイン要求-ログ記録,0,2,00 01,,log_login.ps1,10
-データ要求-応答送信,0,2,00 10,data_response.csv,,0
-データ要求-データ保存,0,2,00 10,,save_data.ps1,50
-データ要求-統計更新,0,2,00 10,,update_stats.ps1,100
-エコー要求-両方実行,0,2,00 20,echo_response.csv,log_echo.ps1,0
-ステータス要求-応答のみ,0,2,00 30,status_response.csv,,0

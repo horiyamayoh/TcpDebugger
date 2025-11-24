@@ -1,7 +1,0 @@
-ProfileName,ScenarioName
-Default,unified_rules.csv
-AutoOnly,auto_only.csv
-Binary,binary_rules.csv
-MultiAction,unified_multi_action.csv
-Normal,normal.csv
-Error,error.csv

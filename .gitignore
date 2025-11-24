@@ -1,0 +1,14 @@
+# Build artifacts and user-specific clutter
+*.log
+*.tmp
+*.bak
+*.orig
+
+# PowerShell backup files
+*.ps1.bak
+
+# Generated logs directory
+Logs/
+
+# VS Code settings
+.vscode/

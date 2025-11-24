@@ -1,3 +1,0 @@
-TriggerPattern,ResponseTemplate,Encoding,Delay,MatchType
-PING,PONG,UTF-8,0,Exact
-REQUEST,OK ${TIMESTAMP},UTF-8,100,Contains

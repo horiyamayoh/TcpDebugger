@@ -1,7 +1,0 @@
-Step,Action,Parameter1,Parameter2,Parameter3,Description
-1,SEND,Hello from server!,UTF-8,,初回挨拶を送信
-2,WAIT_RECV,TIMEOUT=5000,,,クライアントからの応答待機
-3,SAVE_RECV,VAR_NAME=clientMsg,,,受信データを変数に保存
-4,SEND,Received: ${clientMsg},UTF-8,,受信内容をエコーバック
-5,SLEEP,1000,,,1秒待機
-6,SEND,${TIMESTAMP},UTF-8,,現在時刻を送信

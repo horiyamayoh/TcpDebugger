@@ -66,38 +66,45 @@ TcpDebugger/
 ├── TcpDebugger.ps1              # メインスクリプト（起動ファイル）
 ├── README.md                    # 本ファイル
 ├── DESIGN.md                    # 設計書
-├── ARCHITECTURE_REFACTORING.md  # アーキテクチャ改善設計書
-├── REFACTORING_PROGRESS.md      # リファクタリング進捗レポート
+├── ARCHITECTURE_REFACTORING.md  # アーキテクチャリファレンス
 ├── Core/                        # コア層（ビジネスロジック）
 │   ├── Common/                      # 共通ユーティリティ
-│   │   ├── Logger.ps1
-│   │   ├── ErrorHandler.ps1
-│   │   └── ThreadSafeCollections.ps1
+│   │   ├── Logger.ps1                   # ログ出力
+│   │   ├── ErrorHandler.ps1             # エラーハンドリング
+│   │   └── ThreadSafeCollections.ps1    # スレッドセーフコレクション
 │   ├── Domain/                      # ドメインロジック
-│   │   ├── ConnectionModels.ps1
-│   │   ├── ConnectionService.ps1
-│   │   ├── ConnectionManager.ps1
-│   │   ├── MessageService.ps1
-│   │   ├── ReceivedEventPipeline.ps1
-│   │   ├── RuleProcessor.ps1
-│   │   ├── VariableScope.ps1
-│   │   ├── ReceivedRuleEngine.ps1
-│   │   └── OnReceivedLibrary.ps1
+│   │   ├── ConnectionModels.ps1         # 接続モデル定義
+│   │   ├── ConnectionService.ps1        # 接続管理サービス
+│   │   ├── ConnectionManager.ps1        # 接続制御・ライフサイクル管理
+│   │   ├── MessageService.ps1           # メッセージ処理（テンプレート、変数展開）
+│   │   ├── ReceivedEventPipeline.ps1    # 受信イベント処理パイプライン
+│   │   ├── ReceivedRuleEngine.ps1       # ルールエンジン（AutoResponse/OnReceived）
+│   │   ├── RuleProcessor.ps1            # ルール実行
+│   │   ├── OnReceivedLibrary.ps1        # OnReceivedプロファイル管理
+│   │   ├── VariableScope.ps1            # 変数スコープ管理
+│   │   ├── ProfileModels.ps1            # プロファイルモデル定義
+│   │   ├── ProfileService.ps1           # プロファイル管理サービス
+│   │   └── RunspaceMessages.ps1         # Runspace間メッセージ定義
 │   ├── Application/                 # アプリケーションサービス
-│   │   ├── InstanceManager.ps1
-│   │   └── NetworkAnalyzer.ps1
+│   │   ├── InstanceManager.ps1          # インスタンス管理
+│   │   └── NetworkAnalyzer.ps1          # ネットワーク診断
 │   └── Infrastructure/              # インフラストラクチャ層
-│       ├── ServiceContainer.ps1
+│       ├── ServiceContainer.ps1         # DIコンテナ
+│       ├── RunspaceMessageQueue.ps1     # Runspaceメッセージキュー
+│       ├── RunspaceMessageProcessor.ps1 # メッセージプロセッサ
 │       ├── Adapters/                    # 通信アダプター
-│       │   ├── TcpClientAdapter.ps1
-│       │   ├── TcpServerAdapter.ps1
-│       │   └── UdpAdapter.ps1
+│       │   ├── TcpClientAdapter.ps1     # TCPクライアント通信
+│       │   ├── TcpServerAdapter.ps1     # TCPサーバー通信
+│       │   └── UdpAdapter.ps1           # UDP通信
 │       └── Repositories/                # データアクセス
-│           ├── RuleRepository.ps1
-│           └── InstanceRepository.ps1
+│           ├── RuleRepository.ps1       # ルールリポジトリ
+│           ├── InstanceRepository.ps1   # インスタンス設定リポジトリ
+│           └── ProfileRepository.ps1    # プロファイルリポジトリ
 ├── Presentation/                # プレゼンテーション層
 │   └── UI/
-│       └── MainForm.ps1             # メインフォーム（WinForms UI）
+│       ├── MainForm.ps1                 # メインフォーム（WinForms UI）
+│       ├── ViewBuilder.ps1              # UI構築ヘルパー
+│       └── MainFormViewModel.ps1        # ViewModelロジック
 ├── Config/                      # 設定ファイル
 │   └── defaults.psd1
 ├── Instances/                   # 通信インスタンスフォルダ群
@@ -116,23 +123,21 @@ TcpDebugger/
 └── Logs/                        # ログファイル出力先
 ```
 
-## 開発の歴史と現状
+## アーキテクチャと設計
 
-### リファクタリング完了（2025-11-17時点）
-本プロジェクトは包括的なリファクタリングを経て、以下の改善が実施されました：
+### コア設計原則
+本アプリケーションはクリーンアーキテクチャの原則に基づいて設計されており、以下の特徴を持ちます：
 
-- **レガシーコードの完全削除**: 旧来の通信モジュール（TcpClient.ps1、TcpServer.ps1、UdpCommunication.ps1）や非推奨モジュール（AutoResponse.ps1、OnReceivedHandler.ps1、MessageHandler.ps1、ScenarioEngine.ps1、QuickSender.ps1、PeriodicSender.ps1）を削除
-- **アーキテクチャの明確化**: クリーンアーキテクチャに基づいた層分離を実現し、すべてのコンポーネントを適切な層に配置
-- **依存性注入の導入**: ServiceContainerによるDIパターンでテスタビリティと保守性を向上
-- **受信イベントパイプラインの統合**: ReceivedEventPipelineで一元化された受信処理
-- **メッセージ処理の統一**: MessageServiceによるテンプレート展開、変数処理、シナリオ実行の統合
+1. **レイヤー分離**: Core（ビジネスロジック）、Infrastructure（外部接続）、Presentation（UI）の明確な分離
+2. **依存性注入**: ServiceContainerによるDIパターンで、テスタビリティと保守性を確保
+3. **イベント駆動**: ReceivedEventPipelineによる一元化された受信処理パイプライン
+4. **リポジトリパターン**: データアクセス層を抽象化し、キャッシュ管理を統一
 
-詳細は `REFACTORING_PROGRESS.md` および `ARCHITECTURE_REFACTORING.md` を参照してください。
+### アーキテクチャの詳細
+詳細な設計思想、リファクタリングの経緯、コンポーネント間の関係については、以下のドキュメントを参照してください：
 
-## 既知の今後の課題
-- UI層のリファクタリング（フェーズ4）: MainForm.ps1の責務分離とViewModelパターンの導入
-- テストカバレッジの拡充: 現在40%程度のユニットテスト網羅率を向上
-- CI/CDパイプラインの構築
+- **DESIGN.md**: 機能要件、設計方針、データフロー
+- **ARCHITECTURE_REFACTORING.md**: アーキテクチャリファレンス、設計パターン、ベストプラクティス
 
 ## 使用方法
 
@@ -418,8 +423,16 @@ Invoke-ComprehensiveDiagnostics -ConnectionId "example-server"
 
 本ソフトウェアは教育・試験目的で提供されています。
 
-## バージョン
+## バージョン履歴
 
+- **v1.1.0** (2025-11-24): アーキテクチャリファクタリング完了
+  - クリーンアーキテクチャへの完全移行
+  - 依存性注入（ServiceContainer）の導入
+  - 受信イベントパイプラインの統合（ReceivedEventPipeline）
+  - メッセージ処理の統一（MessageService）
+  - レガシーコードの削除とコードベースの整理
+  - プロファイル管理機能の強化（ProfileService/ProfileRepository）
+  
 - **v1.0.0** (2025-11-15): 初版リリース
   - 基本的なTCP/UDP通信機能
   - シナリオ実行エンジン

@@ -1,7 +1,0 @@
-ProfileName,AutoResponseScenario,OnReceivedScenario,PeriodicScenario
-Default,unified_rules.csv,rules.csv,heartbeat.csv
-Development,auto_only.csv,rules2.csv,heartbeat2.csv
-Testing,unified_multi_action.csv,echo_back.ps1,heartbeat.csv
-Production,unified_rules.csv,log_login.ps1,heartbeat.csv
-Debug,binary_rules.csv,log_echo.ps1,
-Minimal,auto_only.csv,,

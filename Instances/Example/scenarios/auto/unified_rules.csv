@@ -1,5 +1,3 @@
 RuleName,MatchOffset,MatchLength,MatchValue,ResponseMessageFile,ScriptFile,Delay,Enabled
-応答01,0,2,01 02,response_01.csv,,0,true
-応答02,0,2,01 03,response_02.csv,,100,true
-ID転記,0,2,01 02,,copy_message_id.ps1,0,true
-シーケンス処理,0,2,01 03,,process_sequence.ps1,0,true
+ログイン応答,0,2,00 01,login_response.csv,,0,true
+エコー応答,0,2,00 20,echo_response.csv,,0,true
