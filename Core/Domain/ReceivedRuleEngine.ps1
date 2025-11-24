@@ -340,11 +340,12 @@ function Invoke-AutoResponse {
         [array]$Rules
     )
 
-    if (-not $Global:Connections.ContainsKey($ConnectionId)) {
+    $service = Get-ConnectionService
+    $conn = $service.GetConnection($ConnectionId)
+    
+    if (-not $conn) {
         return
     }
-
-    $conn = $Global:Connections[$ConnectionId]
 
     $defaultEncoding = "UTF-8"
     if ($conn.Variables.ContainsKey('DefaultEncoding') -and $conn.Variables['DefaultEncoding']) {

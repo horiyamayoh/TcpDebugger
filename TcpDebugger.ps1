@@ -40,11 +40,12 @@ Write-Host "[Init] Loading core components..." -ForegroundColor Cyan
 $coreModules = @(
     "Core\Common\Logger.ps1",
     "Core\Common\ErrorHandler.ps1",
+    "Core\Common\Exceptions.ps1",
     "Core\Common\ThreadSafeCollections.ps1",
     "Core\Domain\VariableScope.ps1",
     "Core\Domain\ConnectionModels.ps1",
     "Core\Domain\ConnectionService.ps1",
-    "Core\Domain\ConnectionManager.ps1",
+    "Core\Application\ConnectionManager.ps1",
     "Core\Domain\ReceivedRuleEngine.ps1",
     "Core\Domain\OnReceivedLibrary.ps1",
     "Core\Domain\ProfileModels.ps1",
@@ -220,6 +221,11 @@ $script:ServiceContainer.RegisterTransient('UdpAdapter', {
     [UdpAdapter]::new($connectionService, $pipeline, $logger, $messageQueue)
 })
 
+# ServiceContainerのグローバル参照（必要最小限）
+$Global:ServiceContainer = $script:ServiceContainer
+
+# 各サービスはServiceContainer経由でアクセスすることを推奨
+# 以下は後方互換性のための一時的なグローバル変数
 $Global:ConnectionService = $script:ServiceContainer.Resolve('ConnectionService')
 $Global:RuleRepository = $script:ServiceContainer.Resolve('RuleRepository')
 $Global:InstanceRepository = $script:ServiceContainer.Resolve('InstanceRepository')

@@ -5,6 +5,17 @@ Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 
 function Get-UiConnectionService {
+    # ServiceContainer経由でサービスを取得（推奨）
+    if ($Global:ServiceContainer) {
+        try {
+            return $Global:ServiceContainer.Resolve('ConnectionService')
+        }
+        catch {
+            # ServiceContainerが初期化されていない場合はフォールバック
+        }
+    }
+    
+    # 後方互換性のためのフォールバック
     if ($Global:ConnectionService) {
         return $Global:ConnectionService
     }
@@ -12,6 +23,60 @@ function Get-UiConnectionService {
         return Get-ConnectionService
     }
     throw "ConnectionService is not available."
+}
+
+function Get-UiProfileService {
+    # ServiceContainer経由でサービスを取得（推奨）
+    if ($Global:ServiceContainer) {
+        try {
+            return $Global:ServiceContainer.Resolve('ProfileService')
+        }
+        catch {
+            # ServiceContainerが初期化されていない場合はフォールバック
+        }
+    }
+    
+    # 後方互換性のためのフォールバック
+    if ($Global:ProfileService) {
+        return $Global:ProfileService
+    }
+    return $null
+}
+
+function Get-UiMessageProcessor {
+    # ServiceContainer経由でサービスを取得（推奨）
+    if ($Global:ServiceContainer) {
+        try {
+            return $Global:ServiceContainer.Resolve('MessageProcessor')
+        }
+        catch {
+            # ServiceContainerが初期化されていない場合はフォールバック
+        }
+    }
+    
+    # 後方互換性のためのフォールバック
+    if ($Global:MessageProcessor) {
+        return $Global:MessageProcessor
+    }
+    return $null
+}
+
+function Get-UiLogger {
+    # ServiceContainer経由でサービスを取得（推奨）
+    if ($Global:ServiceContainer) {
+        try {
+            return $Global:ServiceContainer.Resolve('Logger')
+        }
+        catch {
+            # ServiceContainerが初期化されていない場合はフォールバック
+        }
+    }
+    
+    # 後方互換性のためのフォールバック
+    if ($Global:Logger) {
+        return $Global:Logger
+    }
+    return $null
 }
 
 function Get-UiConnection {
@@ -78,8 +143,9 @@ function Show-MainForm {
         $script:cmbGlobalProfile.Items.Clear()
         $script:cmbGlobalProfile.Items.Add("(None)") | Out-Null
 
-        if ($Global:ProfileService) {
-            $profiles = $Global:ProfileService.GetAvailableApplicationProfiles() | Sort-Object
+        $profileService = Get-UiProfileService
+        if ($profileService) {
+            $profiles = $profileService.GetAvailableApplicationProfiles() | Sort-Object
             foreach ($profileName in $profiles) {
                 if (-not [string]::IsNullOrWhiteSpace($profileName)) {
                     $script:cmbGlobalProfile.Items.Add($profileName) | Out-Null
@@ -132,8 +198,9 @@ function Show-MainForm {
     $messageTimer.Interval = 100
     $messageTimer.Add_Tick({
         try {
-            if ($Global:MessageProcessor) {
-                $processed = $Global:MessageProcessor.ProcessMessages(50)
+            $processor = Get-UiMessageProcessor
+            if ($processor) {
+                $processed = $processor.ProcessMessages(50)
             }
         }
         catch {
@@ -164,9 +231,10 @@ function Show-MainForm {
         $timer.Stop()
         
         # Loggerバッファをフラッシュ
-        if ($Global:Logger) {
+        $logger = Get-UiLogger
+        if ($logger) {
             try {
-                $Global:Logger.Flush()
+                $logger.Flush()
             }
             catch {
                 # ignore errors
@@ -726,7 +794,8 @@ function Apply-ProfileToConnectionRow {
         return
     }
 
-    if (-not $Global:ProfileService) {
+    $profileService = Get-UiProfileService
+    if (-not $profileService) {
         return
     }
 
@@ -759,7 +828,7 @@ function Apply-ProfileToConnectionRow {
         }
         else {
             # ProfileNameが指定されている場合は、プロファイルを適用
-            $Global:ProfileService.ApplyInstanceProfile($connId, $instanceName, $ProfileName, $instancePath)
+            $profileService.ApplyInstanceProfile($connId, $instanceName, $ProfileName, $instancePath)
         }
 
         $script:suppressProfileEvent = $true
@@ -806,13 +875,14 @@ function Apply-ApplicationProfile {
         [string]$ProfileName
     )
 
-    if (-not $Global:ProfileService -or [string]::IsNullOrWhiteSpace($ProfileName)) {
+    $profileService = Get-UiProfileService
+    if (-not $profileService -or [string]::IsNullOrWhiteSpace($ProfileName)) {
         return
     }
 
     try {
         # アプリケーションプロファイルを適用（全インスタンスに一斉適用）
-        $Global:ProfileService.ApplyApplicationProfile($ProfileName)
+        $profileService.ApplyApplicationProfile($ProfileName)
         
         # UIを更新
         $script:suppressProfileEvent = $true

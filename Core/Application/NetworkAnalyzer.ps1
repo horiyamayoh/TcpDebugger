@@ -20,10 +20,6 @@ function Get-NetworkAnalyzerConnection {
         return $service.GetConnection($ConnectionId)
     }
 
-    if ($Global:Connections -and $Global:Connections.ContainsKey($ConnectionId)) {
-        return $Global:Connections[$ConnectionId]
-    }
-
     return $null
 }
 function Test-NetworkConnectivity {
