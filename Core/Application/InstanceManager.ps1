@@ -36,8 +36,16 @@ function Initialize-InstanceConnections {
     
     Write-Host "[InstanceManager] Initializing connections from instances..." -ForegroundColor Cyan
     
+    $usedIds = @{}
+    
     foreach ($instance in $Instances) {
         try {
+            # ID重複チェック
+            if ($usedIds.ContainsKey($instance.Id)) {
+                Write-Warning "  [!] Duplicate instance ID detected: '$($instance.Id)' in folder '$($instance.FolderName)' (already used by '$($usedIds[$instance.Id])'). Skipping..."
+                continue
+            }
+            
             # 接続設定を構築
             $connConfig = @{
                 Id = $instance.Id
@@ -61,6 +69,8 @@ function Initialize-InstanceConnections {
             $conn.Variables['InstancePath'] = $instance.FolderPath
             $conn.Variables['DefaultEncoding'] = $instance.DefaultEncoding
             $conn.Variables['AutoScenario'] = $instance.AutoScenario
+            
+            $usedIds[$instance.Id] = $instance.FolderName
             
             Write-Host "  [+] Initialized connection: $($conn.DisplayName)" -ForegroundColor Green
             
