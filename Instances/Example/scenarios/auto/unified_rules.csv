@@ -1,3 +1,0 @@
-RuleName,MatchOffset,MatchLength,MatchValue,ResponseMessageFile,ScriptFile,Delay,Enabled
-ログイン応答,0,2,00 01,login_response.csv,,0,true
-エコー応答,0,2,00 20,echo_response.csv,,0,true

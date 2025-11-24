@@ -1,2 +1,2 @@
 RuleName,MatchOffset,MatchLength,MatchValue,ScriptFile,Delay,ExecutionTiming
-ログイン処理,0,2,00 01,log_login.ps1,0,After
+テストシナリオ2,0,2,0002,on_received_script_test2.ps1,0,After

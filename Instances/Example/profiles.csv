@@ -1,2 +1,3 @@
 ProfileName,AutoResponseScenario,OnReceivedScenario,PeriodicScenario
-Default,unified_rules.csv,rules.csv,heartbeat.csv
+test1,auto_response_test1.csv,on_received_test1.csv,periodic_send_test1.csv
+test2,auto_response_test2.csv,on_received_test2.csv,periodic_send_test2.csv
