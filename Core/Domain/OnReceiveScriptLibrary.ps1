@@ -191,7 +191,7 @@ function Send-MessageFile {
     if ($data.Length -gt 16) {
         $hexPreview += "..."
     }
-    Write-Host "[OnReceiveScript] Sent message from $FilePath ($($data.Length) bytes: $hexPreview)" -ForegroundColor Magenta
+    Write-Console "[OnReceive:Script] Sent message from $FilePath ($($data.Length) bytes: $hexPreview)" -ForegroundColor Magenta
 }
 
 function Send-MessageData {
@@ -216,7 +216,7 @@ function Send-MessageData {
     if ($Data.Length -gt 16) {
         $hexPreview += "..."
     }
-    Write-Host "[OnReceiveScript] Sent message ($($Data.Length) bytes: $hexPreview)" -ForegroundColor Magenta
+    Write-Console "[OnReceive:Script] Sent message ($($Data.Length) bytes: $hexPreview)" -ForegroundColor Magenta
 }
 
 function ConvertTo-HexString {
@@ -328,6 +328,6 @@ function Write-OnReceiveScriptLog {
         [string]$Message
     )
 
-    Write-Host "[OnReceiveScript] $Message" -ForegroundColor Cyan
+    Write-Console "[OnReceive:Script] $Message" -ForegroundColor Cyan
 }
 

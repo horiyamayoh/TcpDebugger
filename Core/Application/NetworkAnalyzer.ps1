@@ -35,14 +35,14 @@ function Test-NetworkConnectivity {
         [int]$Timeout = 1000
     )
     
-    Write-Host "[NetworkAnalyzer] Testing connectivity to $TargetIP..." -ForegroundColor Cyan
+    Write-Console "[NetworkAnalyzer] Testing connectivity to $TargetIP..." -ForegroundColor Cyan
     
     try {
         $ping = New-Object System.Net.NetworkInformation.Ping
         $result = $ping.Send($TargetIP, $Timeout)
         
         if ($result.Status -eq 'Success') {
-            Write-Host "  [?] Ping successful: $($result.RoundtripTime)ms" -ForegroundColor Green
+            Write-Console "  [?] Ping successful: $($result.RoundtripTime)ms" -ForegroundColor Green
             return [PSCustomObject]@{
                 Success = $true
                 ResponseTime = $result.RoundtripTime
@@ -83,7 +83,7 @@ function Test-PortConnectivity {
         [int]$Timeout = 5000
     )
     
-    Write-Host "[NetworkAnalyzer] Testing port connectivity to ${TargetIP}:${Port}..." -ForegroundColor Cyan
+    Write-Console "[NetworkAnalyzer] Testing port connectivity to ${TargetIP}:${Port}..." -ForegroundColor Cyan
     
     try {
         $tcpClient = New-Object System.Net.Sockets.TcpClient
@@ -95,7 +95,7 @@ function Test-PortConnectivity {
                 $tcpClient.EndConnect($asyncResult)
                 $tcpClient.Close()
                 
-                Write-Host "  [?] Port is open" -ForegroundColor Green
+                Write-Console "  [?] Port is open" -ForegroundColor Green
                 return [PSCustomObject]@{
                     Success = $true
                     Message = "Port is open"
@@ -136,14 +136,14 @@ function Get-RouteInformation {
         [string]$TargetIP
     )
     
-    Write-Host "[NetworkAnalyzer] Getting route information for $TargetIP..." -ForegroundColor Cyan
+    Write-Console "[NetworkAnalyzer] Getting route information for $TargetIP..." -ForegroundColor Cyan
     
     try {
         # PowerShell 5.1互換のルート取得方法
         $routeOutput = route print | Select-String $TargetIP
         
         if ($routeOutput) {
-            Write-Host "  [?] Route found" -ForegroundColor Green
+            Write-Console "  [?] Route found" -ForegroundColor Green
             return [PSCustomObject]@{
                 Success = $true
                 Message = "Route exists"
@@ -183,8 +183,8 @@ function Invoke-ComprehensiveDiagnostics {
         throw "Connection not found: $ConnectionId"
     }
     
-    Write-Host "`n[NetworkAnalyzer] Running comprehensive diagnostics for $($conn.DisplayName)..." -ForegroundColor Cyan
-    Write-Host "================================================" -ForegroundColor Cyan
+    Write-Console "`n[NetworkAnalyzer] Running comprehensive diagnostics for $($conn.DisplayName)..." -ForegroundColor Cyan
+    Write-Console "================================================" -ForegroundColor Cyan
     
     $results = @{}
     
@@ -193,8 +193,8 @@ function Invoke-ComprehensiveDiagnostics {
         $targetIP = $conn.RemoteIP
         $targetPort = $conn.RemotePort
     } else {
-        Write-Host "  [i] Server/Receiver mode - listening on $($conn.LocalIP):$($conn.LocalPort)" -ForegroundColor Gray
-        Write-Host "================================================`n" -ForegroundColor Cyan
+    Write-Console "  [i] Server/Receiver mode - listening on $($conn.LocalIP):$($conn.LocalPort)" -ForegroundColor Gray
+    Write-Console "================================================`n" -ForegroundColor Cyan
         
         return [PSCustomObject]@{
             Mode = "Server"
@@ -204,18 +204,18 @@ function Invoke-ComprehensiveDiagnostics {
     }
     
     # 1. Ping疎通確認
-    Write-Host "`n1. Ping Connectivity Test" -ForegroundColor Yellow
+    Write-Console "`n1. Ping Connectivity Test" -ForegroundColor Yellow
     $results['Ping'] = Test-NetworkConnectivity -TargetIP $targetIP
     
     # 2. ポート疎通確認
-    Write-Host "`n2. Port Connectivity Test" -ForegroundColor Yellow
+    Write-Console "`n2. Port Connectivity Test" -ForegroundColor Yellow
     $results['Port'] = Test-PortConnectivity -TargetIP $targetIP -Port $targetPort
     
     # 3. ルーティング確認
-    Write-Host "`n3. Route Information" -ForegroundColor Yellow
+    Write-Console "`n3. Route Information" -ForegroundColor Yellow
     $results['Route'] = Get-RouteInformation -TargetIP $targetIP
     
-    Write-Host "`n================================================" -ForegroundColor Cyan
+    Write-Console "`n================================================" -ForegroundColor Cyan
     
     # 推奨アクションの生成
     $recommendations = @()
@@ -233,11 +233,11 @@ function Invoke-ComprehensiveDiagnostics {
         $recommendations += "ネットワーク疎通は正常です。接続エラーが発生する場合は、プロトコル設定やタイムアウト値を確認してください。"
     }
     
-    Write-Host "`n[Recommendations]" -ForegroundColor Yellow
+    Write-Console "`n[Recommendations]" -ForegroundColor Yellow
     foreach ($rec in $recommendations) {
-        Write-Host "  ? $rec" -ForegroundColor Cyan
+        Write-Console "  ? $rec" -ForegroundColor Cyan
     }
-    Write-Host ""
+    Write-Console ""
     
     return [PSCustomObject]@{
         Target = "${targetIP}:${targetPort}"
@@ -254,5 +254,4 @@ function Invoke-ComprehensiveDiagnostics {
 #     'Get-RouteInformation',
 #     'Invoke-ComprehensiveDiagnostics'
 # )
-
 

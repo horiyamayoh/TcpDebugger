@@ -20,6 +20,40 @@ $script:RootPath = $PSScriptRoot
 $script:CurrentMainForm = $null
 $script:ConsoleCancelHandler = $null
 
+# デフォルト設定を早期に読み込み（コンソール出力制御のため）
+$defaultsPath = Join-Path (Join-Path $script:RootPath "Config") "defaults.psd1"
+$defaults = if (Test-Path $defaultsPath) {
+    Import-PowerShellDataFile -LiteralPath $defaultsPath
+} else {
+    @{ EnableConsoleOutput = $true }
+}
+
+# コンソール出力を制御するグローバル変数
+$script:EnableConsoleOutput = if ($null -ne $defaults.EnableConsoleOutput) {
+    $defaults.EnableConsoleOutput
+} else {
+    $true
+}
+
+# グローバルスコープにエクスポート
+$Global:EnableConsoleOutput = $script:EnableConsoleOutput
+
+# コンソール出力ヘルパーを読み込み（フォールバックあり）
+$consoleHelperPath = Join-Path (Join-Path $script:RootPath "Core") "Common\ConsoleOutput.ps1"
+if (Test-Path -LiteralPath $consoleHelperPath) {
+    . $consoleHelperPath
+} else {
+    function Write-Console {
+        param(
+            [string]$Message,
+            [string]$ForegroundColor = 'White'
+        )
+        if ($Global:EnableConsoleOutput) {
+            Write-Host $Message -ForegroundColor $ForegroundColor
+        }
+    }
+}
+
 # WinForms例外モードを設定（既にコントロールが作成されている場合は無視）
 Add-Type -AssemblyName System.Windows.Forms
 try {
@@ -30,12 +64,12 @@ catch {
 }
 
 # モジュールのインポート
-Write-Host "========================================" -ForegroundColor Cyan
-Write-Host "  TCP Test Controller v1.0" -ForegroundColor Cyan
-Write-Host "========================================" -ForegroundColor Cyan
-Write-Host ""
+Write-Console "========================================" -ForegroundColor Cyan
+Write-Console "  TCP Test Controller v1.0" -ForegroundColor Cyan
+Write-Console "========================================" -ForegroundColor Cyan
+Write-Console ""
 
-Write-Host "[Init] Loading core components..." -ForegroundColor Cyan
+Write-Console "[Init] Loading core components..." -ForegroundColor Cyan
 
 $coreModules = @(
     "Core\Common\Logger.ps1",
@@ -71,38 +105,24 @@ foreach ($coreModule in $coreModules) {
     $corePath = Join-Path $script:RootPath $coreModule
     if (Test-Path -LiteralPath $corePath) {
         . $corePath
-        Write-Host "  [+] $coreModule" -ForegroundColor Green
+        Write-Console "  [+] $coreModule" -ForegroundColor Green
     } else {
         Write-Warning "  [!] Core module not found: $coreModule"
     }
 }
 
+# Logsディレクトリ作成（エラーハンドラー用に必要）
 $logDirectory = Join-Path $script:RootPath "Logs"
 if (-not (Test-Path -LiteralPath $logDirectory)) {
     New-Item -ItemType Directory -Path $logDirectory | Out-Null
 }
 
-# 設定ファイル読み込み
-$configPath = Join-Path $script:RootPath "Config\defaults.psd1"
-$config = if (Test-Path -LiteralPath $configPath) {
-    Import-PowerShellDataFile -Path $configPath
-} else {
-    @{ 
-        EnableFileLogging = $true
-        LogBufferSize = 50
-        LogFlushIntervalSeconds = 5
-        EnableDebugOutput = $true
-    }
-}
-
-# グローバル設定をスクリプトスコープに保存
-$script:EnableDebugOutput = if ($null -ne $config.EnableDebugOutput) { $config.EnableDebugOutput } else { $true }
-
-$logPath = Join-Path $logDirectory "TcpDebugger.log"
+# ファイルログは無効化（ターミナルログのみ使用）
+$logPath = Join-Path $script:RootPath "Logs\TcpDebugger.log"
 $script:Logger = New-FileLogger -Path $logPath -Name "TcpDebugger" `
-    -BufferSize $config.LogBufferSize `
-    -FlushIntervalSeconds $config.LogFlushIntervalSeconds `
-    -Enabled $config.EnableFileLogging
+    -BufferSize 10 `
+    -FlushIntervalSeconds 5 `
+    -Enabled $false
 $script:ErrorHandler = [ErrorHandler]::new($script:Logger)
 $Global:Connections = if ($Global:Connections) { $Global:Connections } else { [System.Collections.Hashtable]::Synchronized(@{}) }
 
@@ -113,8 +133,8 @@ $Global:Connections = if ($Global:Connections) { $Global:Connections } else { [S
     $script:Logger.LogError("Unhandled exception in AppDomain", $exception, @{
         IsTerminating = $eventArgs.IsTerminating
     })
-    Write-Host "[FATAL] Unhandled exception: $($exception.Message)" -ForegroundColor Red
-    Write-Host $exception.StackTrace -ForegroundColor Red
+    Write-Console "[FATAL] Unhandled exception: $($exception.Message)" -ForegroundColor Red
+    Write-Console $exception.StackTrace -ForegroundColor Red
 })
 
 # WinFormsスレッド例外ハンドラー
@@ -122,8 +142,8 @@ $Global:Connections = if ($Global:Connections) { $Global:Connections } else { [S
     param($sender, $eventArgs)
     $exception = $eventArgs.Exception
     $script:Logger.LogError("Unhandled thread exception", $exception, @{})
-    Write-Host "[ERROR] Thread exception: $($exception.Message)" -ForegroundColor Red
-    Write-Host $exception.StackTrace -ForegroundColor Red
+    Write-Console "[ERROR] Thread exception: $($exception.Message)" -ForegroundColor Red
+    Write-Console $exception.StackTrace -ForegroundColor Red
     [System.Windows.Forms.MessageBox]::Show(
         "An unexpected error occurred:`n`n$($exception.Message)`n`nSee log file for details.",
         "Error",
@@ -190,7 +210,7 @@ $script:ServiceContainer.RegisterSingleton('MessageProcessor', {
     $connectionService = $c.Resolve('ConnectionService')
     $pipeline = $c.Resolve('ReceivedEventPipeline')
     $logger = $c.Resolve('Logger')
-    [RunspaceMessageProcessor]::new($queue, $connectionService, $pipeline, $logger)
+    [RunspaceMessageProcessor]::new($queue, $connectionService, $pipeline, $logger, $script:EnableConsoleOutput)
 })
 
 # 通信アダプターの登録（Transient: 必要時に新規インスタンス生成）
@@ -236,7 +256,7 @@ $Global:MessageService = $script:ServiceContainer.Resolve('MessageService')
 $Global:MessageProcessor = $script:ServiceContainer.Resolve('MessageProcessor')
 $Global:RunspaceMessageQueue = $script:ServiceContainer.Resolve('RunspaceMessageQueue')
 
-Write-Host "[Init] Loading modules..." -ForegroundColor Cyan
+Write-Console "[Init] Loading modules..." -ForegroundColor Cyan
 
 # UIモジュールをインポート
 $uiPath = Join-Path $script:RootPath "Presentation\UI"
@@ -245,7 +265,7 @@ $uiPath = Join-Path $script:RootPath "Presentation\UI"
 $viewBuilderFile = Join-Path $uiPath "ViewBuilder.ps1"
 if (Test-Path $viewBuilderFile) {
     . $viewBuilderFile
-    Write-Host "  [+] ViewBuilder.ps1" -ForegroundColor Green
+    Write-Console "  [+] ViewBuilder.ps1" -ForegroundColor Green
 } else {
     Write-Error "ViewBuilder module not found: $viewBuilderFile"
     exit 1
@@ -255,50 +275,50 @@ if (Test-Path $viewBuilderFile) {
 $uiFile = Join-Path $uiPath "MainForm.ps1"
 if (Test-Path $uiFile) {
     . $uiFile
-    Write-Host "  [+] MainForm.ps1" -ForegroundColor Green
+    Write-Console "  [+] MainForm.ps1" -ForegroundColor Green
 } else {
     Write-Error "UI module not found: $uiFile"
     exit 1
 }
 
-Write-Host ""
+Write-Console ""
 
 # 接続マネージャー初期化
 New-ConnectionManager
 
 # インスタンスフォルダをスキャン
 $instancesPath = Join-Path $script:RootPath "Instances"
-Write-Host "[Init] Scanning instance folders..." -ForegroundColor Cyan
+Write-Console "[Init] Scanning instance folders..." -ForegroundColor Cyan
 
 $instances = Find-InstanceFolders -InstancesPath $instancesPath
 
 if ($instances.Count -eq 0) {
     Write-Warning "No instances found in $instancesPath"
-    Write-Host "Please create instance folders with instance.psd1 configuration files." -ForegroundColor Yellow
+    Write-Console "Please create instance folders with instance.psd1 configuration files." -ForegroundColor Yellow
 } else {
     # インスタンスから接続を初期化
     Initialize-InstanceConnections -Instances $instances
     
     # インスタンスプロファイルを読み込み
-    Write-Host "[Init] Loading instance profiles..." -ForegroundColor Cyan
+    Write-Console "[Init] Loading instance profiles..." -ForegroundColor Cyan
     foreach ($instance in $instances) {
         try {
             $Global:ProfileService.LoadInstanceProfiles($instance.FolderName, $instance.FolderPath)
             $loadedCount = $Global:ProfileService.GetAvailableInstanceProfiles($instance.FolderName).Count
-            Write-Host "  [+] Loaded $loadedCount profiles for: $($instance.FolderName)" -ForegroundColor Green
+            Write-Console "  [+] Loaded $loadedCount profiles for: $($instance.FolderName)" -ForegroundColor Green
         } catch {
             Write-Warning "Failed to load profiles for $($instance.FolderName): $_"
         }
     }
     
     # アプリケーションプロファイルを読み込み
-    Write-Host "[Init] Loading application profiles..." -ForegroundColor Cyan
+    Write-Console "[Init] Loading application profiles..." -ForegroundColor Cyan
     $appProfilePath = Join-Path (Join-Path $script:RootPath "Config") "app_profile.csv"
     if (Test-Path $appProfilePath) {
         try {
             $instanceNames = $instances | ForEach-Object { $_.FolderName }
             $Global:ProfileService.LoadApplicationProfiles($appProfilePath, $instanceNames)
-            Write-Host "  [+] Loaded application profiles" -ForegroundColor Green
+            Write-Console "  [+] Loaded application profiles" -ForegroundColor Green
         } catch {
             Write-Warning "Failed to load application profiles: $_"
         }
@@ -310,9 +330,9 @@ if ($instances.Count -eq 0) {
     Start-AutoStartConnections -Instances $instances
 }
 
-Write-Host ""
-Write-Host "[Init] Initialization completed!" -ForegroundColor Green
-Write-Host ""
+Write-Console ""
+Write-Console "[Init] Initialization completed!" -ForegroundColor Green
+Write-Console ""
 
 # Ctrl+C (ConsoleCancel) handler to ensure the GUI can be closed from the console
 try {
@@ -321,8 +341,8 @@ try {
 
         $eventArgs.Cancel = $true
 
-        Write-Host ""
-        Write-Host "[Ctrl+C] Shutdown requested. Attempting graceful shutdown..." -ForegroundColor Yellow
+        Write-Console ""
+        Write-Console "[Ctrl+C] Shutdown requested. Attempting graceful shutdown..." -ForegroundColor Yellow
 
         $form = $script:CurrentMainForm
         if ($form -and -not $form.IsDisposed) {
@@ -348,12 +368,12 @@ try {
 }
 
 # GUIを表示
-Write-Host "[GUI] Starting GUI..." -ForegroundColor Cyan
+Write-Console "[GUI] Starting GUI..." -ForegroundColor Cyan
 try {
     Show-MainForm
 } catch {
-    Write-Host "[ERROR] GUI failed: $_" -ForegroundColor Red
-    Write-Host $_.ScriptStackTrace -ForegroundColor Red
+    Write-Console "[ERROR] GUI failed: $_" -ForegroundColor Red
+    Write-Console $_.ScriptStackTrace -ForegroundColor Red
     throw
 } finally {
     if ($script:ConsoleCancelHandler) {
@@ -363,8 +383,8 @@ try {
 }
 
 # 終了時のクリーンアップ
-Write-Host ""
-Write-Host "[Cleanup] Shutting down..." -ForegroundColor Yellow
+Write-Console ""
+Write-Console "[Cleanup] Shutting down..." -ForegroundColor Yellow
 
 try {
     $cleanupService = if ($Global:ConnectionService) { $Global:ConnectionService } elseif (Get-Command Get-ConnectionService -ErrorAction SilentlyContinue) { Get-ConnectionService } else { $null }
@@ -390,9 +410,9 @@ try {
 }
 
 
-Write-Host "[Cleanup] Shutdown completed" -ForegroundColor Green
-Write-Host ""
-Write-Host "Thank you for using TCP Test Controller!" -ForegroundColor Cyan
+Write-Console "[Cleanup] Shutdown completed" -ForegroundColor Green
+Write-Console ""
+Write-Console "Thank you for using TCP Test Controller!" -ForegroundColor Cyan
 
 
 

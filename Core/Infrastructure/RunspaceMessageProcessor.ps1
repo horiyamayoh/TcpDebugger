@@ -18,6 +18,7 @@ class RunspaceMessageProcessor {
     hidden [int]$_totalProcessed
     hidden [hashtable]$_processingStats
     hidden [bool]$_statusChanged
+    hidden [bool]$_enableTerminalLog
     
     <#
     .SYNOPSIS
@@ -34,12 +35,16 @@ class RunspaceMessageProcessor {
     
     .PARAMETER logger
     ロガー
+    
+    .PARAMETER enableTerminalLog
+    ターミナルログを有効にするか（デフォルト: $true）
     #>
     RunspaceMessageProcessor(
         [RunspaceMessageQueue]$queue,
         [ConnectionService]$connectionService,
         [ReceivedEventPipeline]$pipeline,
-        [Logger]$logger
+        [Logger]$logger,
+        [bool]$enableTerminalLog = $true
     ) {
         if (-not $queue) {
             throw "RunspaceMessageQueue is required"
@@ -58,6 +63,7 @@ class RunspaceMessageProcessor {
         $this._connectionService = $connectionService
         $this._pipeline = $pipeline
         $this._logger = $logger
+        $this._enableTerminalLog = $enableTerminalLog
         $this._totalProcessed = 0
         $this._statusChanged = $false
         $this._processingStats = @{
@@ -358,6 +364,7 @@ class RunspaceMessageProcessor {
         # ConnectionIdをコンテキストに追加
         $context['ConnectionId'] = $message.ConnectionId
         
+        # ファイルログに記録
         switch ($level) {
             'Info' {
                 $this._logger.LogInfo($logMessage, $context)
@@ -370,6 +377,20 @@ class RunspaceMessageProcessor {
             }
             default {
                 $this._logger.LogInfo($logMessage, $context)
+            }
+        }
+        
+        # ターミナル出力（アプリケーション動作確認用）
+        if ($this._enableTerminalLog) {
+            $conn = $this._connectionService.GetConnection($message.ConnectionId)
+            if ($conn) {
+                $timeStr = (Get-Date).ToString("HH:mm:ss")
+                $levelColor = switch ($level) {
+                    'Error'   { 'Red' }
+                    'Warning' { 'Yellow' }
+                    default   { 'Gray' }
+                }
+                Write-Console "[$timeStr] [$level] $($conn.DisplayName): $logMessage" -ForegroundColor $levelColor
             }
         }
     }

@@ -1,17 +1,6 @@
 ﻿# MessageService.ps1
 # メッセージテンプレート処理とシナリオ実行を統合管理
 
-# デバッグ出力ヘルパー
-function Write-DebugLog {
-    param(
-        [string]$Message,
-        [string]$ForegroundColor = "White"
-    )
-    if ($script:EnableDebugOutput) {
-        Write-Host $Message -ForegroundColor $ForegroundColor
-    }
-}
-
 class MessageService {
     hidden [Logger]$_logger
     hidden [ConnectionService]$_connectionService

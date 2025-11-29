@@ -128,15 +128,9 @@ function Show-MainForm {
     $form.Controls.Add($script:cmbGlobalProfile)
 
     # DataGridView (connection list) using ViewBuilder
-    $dgvInstances = New-ConnectionDataGridView -X 10 -Y 50 -Width 1160 -Height 200
+    # 画面いっぱいに表示
+    $dgvInstances = New-ConnectionDataGridView -X 10 -Y 50 -Width 1160 -Height 650
     $form.Controls.Add($dgvInstances)
-
-    # Log area using ViewBuilder
-    $lblLog = New-LabelControl -Text "Connection Log:" -X 10 -Y 290 -Width 200 -Height 20
-    $form.Controls.Add($lblLog)
-
-    $txtLog = New-LogTextBox -X 10 -Y 315 -Width 1165 -Height 385
-    $form.Controls.Add($txtLog)
     
     # アプリケーションプロファイルコンボボックスの初期化
     function Initialize-ProfileComboBoxes {
@@ -167,12 +161,12 @@ function Show-MainForm {
 
         if ($selectedProfile -eq "(None)") {
             # 全てのプロファイルをクリア
-            Write-Host "[UI] Clearing all profiles (None selected)" -ForegroundColor Cyan
+            Write-Console "[UI] Clearing all profiles (None selected)" -ForegroundColor Cyan
             Clear-AllProfiles -DataGridView $dgvInstances
             return
         }
 
-        Write-Host "[UI] Applying application profile: $selectedProfile" -ForegroundColor Cyan
+        Write-Console "[UI] Applying application profile: $selectedProfile" -ForegroundColor Cyan
         Apply-ApplicationProfile -DataGridView $dgvInstances -ProfileName $selectedProfile
     })
 
@@ -223,10 +217,9 @@ function Show-MainForm {
             if (-not $gridState.EditingInProgress -and -not $dgvInstances.IsCurrentCellInEditMode) {
                 Update-InstanceList -DataGridView $dgvInstances
             }
-            Update-LogDisplay -TextBox $txtLog -GetConnectionsCallback { Get-UiConnections }
         }
         catch {
-            # ?^?C?}?[????G???[??????????A???O??L?^
+            # タイマーからのエラーは無視、ログに記録
             Write-Verbose "[UI Timer] Error during refresh: $_"
         }
     })
@@ -269,7 +262,7 @@ function Show-MainForm {
         Initialize-ProfileComboBoxes
     }
     catch {
-        Write-Host "[Warning] Failed to initialize profile combo boxes: $_" -ForegroundColor Yellow
+        Write-Console "[Warning] Failed to initialize profile combo boxes: $_" -ForegroundColor Yellow
     }
 
     # Initial load (after profiles are available)
@@ -642,12 +635,12 @@ function Apply-OnTimerSendProfile {
         if ($profilePath -and (Test-Path -LiteralPath $profilePath)) {
             # Set-ConnectionOnTimerSendProfileを使用（接続状態をチェックし、CONNECTEDの場合のみタイマーを開始）
             Set-ConnectionOnTimerSendProfile -ConnectionId $ConnectionId -ProfilePath $profilePath -InstancePath $instancePath
-            Write-Host "[OnTimerSend] Applied profile: $profileName" -ForegroundColor Green
+            Write-Console "[OnTimerSend] Applied profile: $profileName" -ForegroundColor Green
         }
         else {
             # プロファイルをクリア
             Set-ConnectionOnTimerSendProfile -ConnectionId $ConnectionId -ProfilePath $null -InstancePath $instancePath
-            Write-Host "[OnTimerSend] Cleared profile" -ForegroundColor Yellow
+            Write-Console "[OnTimerSend] Cleared profile" -ForegroundColor Yellow
         }
 
         # Tagを更新
@@ -950,7 +943,7 @@ function Clear-AllProfiles {
             }
         }
         
-        Write-Host "[Clear-AllProfiles] Cleared profiles for $clearedCount connection(s)" -ForegroundColor Green
+    Write-Console "[Clear-AllProfiles] Cleared profiles for $clearedCount connection(s)" -ForegroundColor Green
         
         # UIを更新
         $script:suppressProfileEvent = $true

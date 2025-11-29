@@ -19,9 +19,9 @@ function Find-InstanceFolders {
     )
 
     $repository = Get-InstanceRepository
-    Write-Host "[InstanceManager] Scanning instances in: $InstancesPath" -ForegroundColor Cyan
+    Write-Console "[InstanceManager] Scanning instances in: $InstancesPath" -ForegroundColor Cyan
     $instances = $repository.GetInstances($InstancesPath)
-    Write-Host "[InstanceManager] Loaded $($instances.Count) instances" -ForegroundColor Green
+    Write-Console "[InstanceManager] Loaded $($instances.Count) instances" -ForegroundColor Green
     return $instances
 }
 function Initialize-InstanceConnections {
@@ -34,7 +34,7 @@ function Initialize-InstanceConnections {
         [array]$Instances
     )
     
-    Write-Host "[InstanceManager] Initializing connections from instances..." -ForegroundColor Cyan
+    Write-Console "[InstanceManager] Initializing connections from instances..." -ForegroundColor Cyan
     
     $usedIds = @{}
     
@@ -72,14 +72,14 @@ function Initialize-InstanceConnections {
             
             $usedIds[$instance.Id] = $instance.FolderName
             
-            Write-Host "  [+] Initialized connection: $($conn.DisplayName)" -ForegroundColor Green
+            Write-Console "  [+] Initialized connection: $($conn.DisplayName)" -ForegroundColor Green
             
         } catch {
             Write-Error "Failed to initialize instance $($instance.DisplayName): $_"
         }
     }
     
-    Write-Host "[InstanceManager] Connection initialization completed" -ForegroundColor Green
+    Write-Console "[InstanceManager] Connection initialization completed" -ForegroundColor Green
 }
 
 function Start-AutoStartConnections {
@@ -92,12 +92,12 @@ function Start-AutoStartConnections {
         [array]$Instances
     )
     
-    Write-Host "[InstanceManager] Starting auto-start connections..." -ForegroundColor Cyan
+    Write-Console "[InstanceManager] Starting auto-start connections..." -ForegroundColor Cyan
     
     foreach ($instance in $Instances) {
         if ($instance.AutoStart -eq $true) {
             try {
-                Write-Host "  [+] Auto-starting: $($instance.DisplayName)" -ForegroundColor Cyan
+                Write-Console "  [+] Auto-starting: $($instance.DisplayName)" -ForegroundColor Cyan
                 Start-Connection -ConnectionId $instance.Id
                 
                 # AutoScenarioがある場合は実行
@@ -115,7 +115,7 @@ function Start-AutoStartConnections {
         }
     }
     
-    Write-Host "[InstanceManager] Auto-start completed" -ForegroundColor Green
+    Write-Console "[InstanceManager] Auto-start completed" -ForegroundColor Green
 }
 
 function Get-InstanceScenarios {

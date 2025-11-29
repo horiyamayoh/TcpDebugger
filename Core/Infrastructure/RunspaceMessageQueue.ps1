@@ -86,7 +86,7 @@ class RunspaceMessageQueue {
     .EXAMPLE
     $msg = $null
     if ($queue.TryDequeue([ref]$msg)) {
-        Write-Host "Got message: $($msg.Type)"
+    Write-Console "Got message: $($msg.Type)"
     }
     #>
     [bool] TryDequeue([ref]$message) {

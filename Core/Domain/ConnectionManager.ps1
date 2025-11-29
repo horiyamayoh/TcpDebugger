@@ -1,17 +1,6 @@
 ﻿# ConnectionManager.ps1
 # �ڑ��Ǘ����W���[�� - �����ڑ��̈ꌳ�Ǘ�
 
-# デバッグ出力ヘルパー
-function Write-DebugLog {
-    param(
-        [string]$Message,
-        [string]$ForegroundColor = "White"
-    )
-    if ($script:EnableDebugOutput) {
-        Write-Host $Message -ForegroundColor $ForegroundColor
-    }
-}
-
 function Get-ConnectionService {
     if ($Global:ConnectionService) {
         return $Global:ConnectionService
@@ -744,7 +733,7 @@ function Set-ConnectionOnReceiveScriptProfile {
         $conn.Variables.Remove('OnReceiveScriptProfile')
         $conn.Variables.Remove('OnReceiveScriptProfilePath')
         $conn.Variables.Remove('OnReceiveScriptRulesCache')
-        Write-Host "[OnReceiveScript] Cleared OnReceiveScript profile for $($conn.DisplayName)" -ForegroundColor Yellow
+        Write-Console "[OnReceive:Script] Cleared OnReceiveScript profile for $($conn.DisplayName)" -ForegroundColor Yellow
         return @()
     }
 
@@ -757,7 +746,7 @@ function Set-ConnectionOnReceiveScriptProfile {
     $conn.Variables['OnReceiveScriptProfilePath'] = $resolved
     $conn.Variables.Remove('OnReceiveScriptRulesCache')
 
-    Write-Host "[OnReceiveScript] Profile '$ProfileName' applied to $($conn.DisplayName)" -ForegroundColor Green
+    Write-Console "[OnReceive:Script] Profile '$ProfileName' applied to $($conn.DisplayName)" -ForegroundColor Green
 
     # RuleRepositoryを通じてルールをキャッシュ
     if ($Global:RuleRepository) {
@@ -800,7 +789,7 @@ function Set-ConnectionOnReceiveReplyProfile {
         $conn.Variables.Remove('OnReceiveReplyProfile')
         $conn.Variables.Remove('OnReceiveReplyProfilePath')
         $conn.Variables.Remove('OnReceiveReplyRulesCache')
-        Write-Host "[OnReceiveReply] Cleared on-receive-reply profile for $($conn.DisplayName)" -ForegroundColor Yellow
+        Write-Console "[OnReceive:Reply] Cleared on-receive-reply profile for $($conn.DisplayName)" -ForegroundColor Yellow
         return @()
     }
 
@@ -813,7 +802,7 @@ function Set-ConnectionOnReceiveReplyProfile {
     $conn.Variables['OnReceiveReplyProfilePath'] = $resolved
     $conn.Variables.Remove('OnReceiveReplyRulesCache')
 
-    Write-Host "[OnReceiveReply] Profile '$ProfileName' applied to $($conn.DisplayName)" -ForegroundColor Green
+    Write-Console "[OnReceive:Reply] Profile '$ProfileName' applied to $($conn.DisplayName)" -ForegroundColor Green
 
     # RuleRepositoryを通じてルールをキャッシュ
     if ($Global:RuleRepository) {

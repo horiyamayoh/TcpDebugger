@@ -242,29 +242,6 @@ function New-LabelControl {
     return $label
 }
 
-function New-LogTextBox {
-    <#
-    .SYNOPSIS
-    Creates a multi-line log text box.
-    #>
-    param(
-        [int]$X,
-        [int]$Y,
-        [int]$Width,
-        [int]$Height
-    )
-
-    $textBox = New-Object System.Windows.Forms.TextBox
-    $textBox.Location = New-Object System.Drawing.Point($X, $Y)
-    $textBox.Size = New-Object System.Drawing.Size($Width, $Height)
-    $textBox.Multiline = $true
-    $textBox.ScrollBars = "Vertical"
-    $textBox.ReadOnly = $true
-    $textBox.Font = New-Object System.Drawing.Font("Consolas", 9)
-
-    return $textBox
-}
-
 function New-RefreshTimer {
     <#
     .SYNOPSIS
@@ -800,64 +777,6 @@ function Set-RowColor {
     }
 }
 
-function Update-LogDisplay {
-    <#
-    .SYNOPSIS
-    Updates the log text box with recent connection messages.
-    #>
-    param(
-        [System.Windows.Forms.TextBox]$TextBox,
-        [scriptblock]$GetConnectionsCallback
-    )
-
-    if (-not $TextBox) { return }
-
-    $logLines = @()
-
-    try {
-        $connections = & $GetConnectionsCallback
-    } catch {
-        $connections = @()
-    }
-
-    foreach ($conn in $connections) {
-        $snapshot = @()
-
-        try {
-            if ($conn.RecvBuffer -and $conn.RecvBuffer.Count -gt 0) {
-                $syncRoot = $conn.RecvBuffer.SyncRoot
-                [System.Threading.Monitor]::Enter($syncRoot)
-                try {
-                    $snapshot = $conn.RecvBuffer.ToArray()
-                } finally {
-                    [System.Threading.Monitor]::Exit($syncRoot)
-                }
-            }
-        } catch {
-            continue
-        }
-
-        if (-not $snapshot -or $snapshot.Length -eq 0) { continue }
-
-        $count = $snapshot.Length
-        $startIndex = [Math]::Max(0, $count - 10)
-        for ($i = $startIndex; $i -lt $count; $i++) {
-            $recv = $snapshot[$i]
-            if (-not $recv) { continue }
-
-            $summary = Get-MessageSummary -Data $recv.Data -MaxLength 40
-            $timeStr = $recv.Timestamp.ToString("HH:mm:ss")
-            $logLines += "[$timeStr] $($conn.DisplayName) ← $summary ($($recv.Length) bytes)"
-        }
-    }
-
-    $logLines = $logLines | Select-Object -Last 100
-
-    $TextBox.Text = $logLines -join "`r`n"
-    $TextBox.SelectionStart = $TextBox.Text.Length
-    $TextBox.ScrollToCaret()
-}
-
 function Get-MessageSummary {
     <#
     .SYNOPSIS
@@ -903,7 +822,6 @@ function Get-MessageSummary {
 #     'New-ConnectionDataGridView',
 #     'New-ToolbarButton',
 #     'New-LabelControl',
-#     'New-LogTextBox',
 #     'New-RefreshTimer',
 #     'Configure-ScenarioColumn',
 #     'Configure-OnReceiveScriptColumn',
@@ -911,6 +829,5 @@ function Get-MessageSummary {
 #     'Configure-ManualSendColumn',
 #     'Configure-ManualScriptColumn',
 #     'Set-RowColor',
-#     'Update-LogDisplay',
 #     'Get-MessageSummary'
 # )

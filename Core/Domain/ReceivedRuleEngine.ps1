@@ -1,17 +1,6 @@
 ﻿# ReceivedRuleEngine.ps1
 # 受信時のルール処理エンジン（OnReceiveReply/OnReceiveScript共通）
 
-# デバッグ出力ヘルパー
-function Write-DebugLog {
-    param(
-        [string]$Message,
-        [string]$ForegroundColor = "White"
-    )
-    if ($script:EnableDebugOutput) {
-        Write-Host $Message -ForegroundColor $ForegroundColor
-    }
-}
-
 # Helper accessor for the shared rule repository
 function Get-RuleRepository {
     if ($Global:RuleRepository) {
@@ -519,8 +508,8 @@ function Invoke-TextOnReceiveReply {
     }
 
     try {
-        Send-Data -ConnectionId $ConnectionId -Data $responseBytes
-        Write-Host "[OnReceiveReply] Receive reply sent: $response" -ForegroundColor Blue
+    Send-Data -ConnectionId $ConnectionId -Data $responseBytes
+    Write-Console "[OnReceive:Reply] Receive reply sent: $response" -ForegroundColor Blue
     } catch {
         Write-Warning "[OnReceiveReply] Failed to send receive reply: $_"
     }
@@ -593,7 +582,7 @@ function Invoke-OnReceiveScript {
     }
 
     try {
-        Write-Host "[OnReceiveScript] Executing script: $($Rule.ScriptFile)" -ForegroundColor Blue
+    Write-Console "[OnReceive:Script] Executing script: $($Rule.ScriptFile)" -ForegroundColor Blue
 
         # スクリプトを実行
         $scriptBlock = [scriptblock]::Create((Get-Content -LiteralPath $scriptPath -Raw -Encoding UTF8))
@@ -601,7 +590,7 @@ function Invoke-OnReceiveScript {
         # スクリプトに変数を渡して実行
         & $scriptBlock -Context $scriptContext
 
-        Write-Host "[OnReceiveScript] Script executed successfully" -ForegroundColor Green
+    Write-Console "[OnReceive:Script] Script executed successfully" -ForegroundColor Green
     } catch {
         Write-Warning "[OnReceiveScript] Script execution failed: $_"
         Write-Warning $_.ScriptStackTrace
