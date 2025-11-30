@@ -1642,6 +1642,11 @@ function Add-ConnectionRow {
         
         # ?X???b?h?Z?[?t??X?e?[?^?X??????
         $status = $Connection.Status
+        # 表示用に短縮
+        $displayStatus = switch ($status) {
+            "DISCONNECTED" { "DISCONNECT" }
+            default { $status }
+        }
         $displayName = $Connection.DisplayName
         $protocol = $Connection.Protocol
         $mode = $Connection.Mode
@@ -1654,7 +1659,7 @@ function Add-ConnectionRow {
             "$protocol $mode",
             $localEndpoint,
             $remoteEndpoint,
-            $status,
+            $displayStatus,
             $null,
             $null,
             $null,

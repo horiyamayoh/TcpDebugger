@@ -330,7 +330,7 @@ function Add-ConnectionGridColumns {
     $colStatus.HeaderText = "Status"
     $colStatus.Name = "Status"
     $colStatus.ReadOnly = $true
-    $colStatus.FillWeight = 110
+    $colStatus.FillWeight = 120
     [void]$DataGridView.Columns.Add($colStatus)
 
     # Connect button column
@@ -339,7 +339,7 @@ function Add-ConnectionGridColumns {
     $colConnect.Name = "BtnConnect"
     $colConnect.Text = "▶"
     $colConnect.UseColumnTextForButtonValue = $true
-    $colConnect.FillWeight = 80
+    $colConnect.FillWeight = 95
     $colConnect.DefaultCellStyle.BackColor = [System.Drawing.Color]::FromArgb(0, 122, 204)
     $colConnect.DefaultCellStyle.ForeColor = [System.Drawing.Color]::White
     $colConnect.DefaultCellStyle.SelectionBackColor = [System.Drawing.Color]::FromArgb(28, 151, 234)
@@ -352,7 +352,7 @@ function Add-ConnectionGridColumns {
     $colDisconnect.Name = "BtnDisconnect"
     $colDisconnect.Text = "⏹"
     $colDisconnect.UseColumnTextForButtonValue = $true
-    $colDisconnect.FillWeight = 90
+    $colDisconnect.FillWeight = 95
     $colDisconnect.DefaultCellStyle.BackColor = [System.Drawing.Color]::FromArgb(192, 57, 43)
     $colDisconnect.DefaultCellStyle.ForeColor = [System.Drawing.Color]::White
     $colDisconnect.DefaultCellStyle.SelectionBackColor = [System.Drawing.Color]::FromArgb(231, 76, 60)
