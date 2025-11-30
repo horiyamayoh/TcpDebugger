@@ -369,16 +369,22 @@ function Register-ButtonEvents {
 
     $BtnConnect.Add_Click({
         # 上部ボタンは常に全インスタンスを一括接続
-        if ($script:StatusLabel) {
-            $script:StatusLabel.Text = "接続中..."
-            $script:StatusLabel.ForeColor = [System.Drawing.Color]::FromArgb(71, 85, 105)  # slate-500
+        $connections = Get-UiConnections
+        
+        # 接続が必要なインスタンスのみをフィルタ（DISCONNECTED または ERROR のみ対象）
+        $connectableConnections = $connections | Where-Object { 
+            $_.Status -eq 'DISCONNECTED' -or $_.Status -eq 'ERROR' 
         }
         
-        $connections = Get-UiConnections
+        # 全て接続済みなら何もしない
+        if (-not $connectableConnections -or $connectableConnections.Count -eq 0) {
+            return
+        }
+        
         $successCount = 0
         $failCount = 0
         
-        foreach ($conn in $connections) {
+        foreach ($conn in $connectableConnections) {
             try {
                 Start-Connection -ConnectionId $conn.Id
                 $successCount++
@@ -390,34 +396,26 @@ function Register-ButtonEvents {
         }
         
         Update-InstanceList -DataGridView $DataGridView
-        
-        if ($script:StatusLabel) {
-            $script:StatusLabel.Text = "接続完了: 成功 $successCount, 失敗 $failCount"
-            $script:StatusLabel.ForeColor = [System.Drawing.Color]::FromArgb(71, 85, 105)  # slate-500
-        }
-        
-        if ($failCount -gt 0) {
-            [System.Windows.Forms.MessageBox]::Show(
-                "接続成功: $successCount`n接続失敗: $failCount",
-                "一括接続結果",
-                [System.Windows.Forms.MessageBoxButtons]::OK,
-                [System.Windows.Forms.MessageBoxIcon]::Warning
-            ) | Out-Null
-        }
     })
 
     $BtnDisconnect.Add_Click({
         # 上部ボタンは常に全インスタンスを一括切断
-        if ($script:StatusLabel) {
-            $script:StatusLabel.Text = "切断中..."
-            $script:StatusLabel.ForeColor = [System.Drawing.Color]::FromArgb(71, 85, 105)  # slate-500
+        $connections = Get-UiConnections
+        
+        # 切断が必要なインスタンスのみをフィルタ（DISCONNECTED と ERROR 以外）
+        $disconnectableConnections = $connections | Where-Object { 
+            $_.Status -ne 'DISCONNECTED' -and $_.Status -ne 'ERROR' 
         }
         
-        $connections = Get-UiConnections
+        # 全て切断済みなら何もしない
+        if (-not $disconnectableConnections -or $disconnectableConnections.Count -eq 0) {
+            return
+        }
+        
         $successCount = 0
         $failCount = 0
         
-        foreach ($conn in $connections) {
+        foreach ($conn in $disconnectableConnections) {
             try {
                 Stop-Connection -ConnectionId $conn.Id
                 $successCount++
@@ -429,20 +427,6 @@ function Register-ButtonEvents {
         }
         
         Update-InstanceList -DataGridView $DataGridView
-        
-        if ($script:StatusLabel) {
-            $script:StatusLabel.Text = "切断完了: 成功 $successCount, 失敗 $failCount"
-            $script:StatusLabel.ForeColor = [System.Drawing.Color]::FromArgb(71, 85, 105)  # slate-500
-        }
-        
-        if ($failCount -gt 0) {
-            [System.Windows.Forms.MessageBox]::Show(
-                "切断成功: $successCount`n切断失敗: $failCount",
-                "一括切断結果",
-                [System.Windows.Forms.MessageBoxButtons]::OK,
-                [System.Windows.Forms.MessageBoxIcon]::Warning
-            ) | Out-Null
-        }
     })
 }
 
@@ -1207,6 +1191,13 @@ function Handle-RowConnectClick {
         return $false
     }
 
+    # 接続状態を確認し、既に接続済みなら何もしない
+    $conn = Get-UiConnection -ConnectionId $ConnectionId
+    if ($conn -and $conn.Status -ne 'DISCONNECTED' -and $conn.Status -ne 'ERROR') {
+        Write-Console "[UI] Connection already active: $ConnectionId (Status: $($conn.Status))" -ForegroundColor Gray
+        return $false
+    }
+
     try {
         Start-Connection -ConnectionId $ConnectionId
         Write-Console "[UI] Connection started: $ConnectionId" -ForegroundColor Green
@@ -1227,6 +1218,13 @@ function Handle-RowDisconnectClick {
     )
 
     if ([string]::IsNullOrWhiteSpace($ConnectionId)) {
+        return $false
+    }
+
+    # 接続状態を確認し、既に切断済みなら何もしない
+    $conn = Get-UiConnection -ConnectionId $ConnectionId
+    if ($conn -and ($conn.Status -eq 'DISCONNECTED' -or $conn.Status -eq 'ERROR')) {
+        Write-Console "[UI] Connection already disconnected: $ConnectionId (Status: $($conn.Status))" -ForegroundColor Gray
         return $false
     }
 
