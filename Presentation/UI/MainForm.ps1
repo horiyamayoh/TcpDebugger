@@ -195,13 +195,14 @@ function Show-MainForm {
     $script:isGlobalProfileLocked = $false
     $script:comboSelectedIndexChangedHandler = $null
     $script:isUpdatingGrid = $false
-    $gridState = @{
+    $script:gridState = @{
         EditingInProgress = $false
         PendingComboDropDown = $null
     }
+    $script:dgvInstances = $dgvInstances
 
     # Register event handlers
-    Register-GridEvents -DataGridView $dgvInstances -GridState $gridState
+    Register-GridEvents -DataGridView $dgvInstances -GridState $script:gridState
     Register-ButtonEvents -DataGridView $dgvInstances -BtnConnect $btnConnect -BtnDisconnect $btnDisconnect
 
     # メッセージ処理タイマー (100ms間隔でRunspaceからのメッセージを処理)
@@ -215,8 +216,8 @@ function Show-MainForm {
                 
                 # 状態変更があった場合は即座に UI を更新
                 if ($processor.CheckAndResetStatusChanged()) {
-                    if (-not $gridState.EditingInProgress -and -not $dgvInstances.IsCurrentCellInEditMode) {
-                        Update-InstanceList -DataGridView $dgvInstances
+                    if (-not $script:gridState.EditingInProgress -and -not $script:dgvInstances.IsCurrentCellInEditMode) {
+                        Update-InstanceList -DataGridView $script:dgvInstances
                         
                         # ステータス表示を更新
                         if ($script:StatusLabel) {

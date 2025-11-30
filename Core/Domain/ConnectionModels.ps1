@@ -215,6 +215,17 @@ class ManagedConnection {
         }
     }
 
+    [void] UpdateRemoteEndpoint([string]$remoteIP, [int]$remotePort) {
+        [System.Threading.Monitor]::Enter($this._propertyLock)
+        try {
+            $this.RemoteIP = $remoteIP
+            $this.RemotePort = $remotePort
+        }
+        finally {
+            [System.Threading.Monitor]::Exit($this._propertyLock)
+        }
+    }
+
     [void] SetSocket([object]$socket) {
         [System.Threading.Monitor]::Enter($this._propertyLock)
         try {

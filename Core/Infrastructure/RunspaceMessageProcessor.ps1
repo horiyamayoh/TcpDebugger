@@ -152,8 +152,9 @@ class RunspaceMessageProcessor {
         # 接続オブジェクトを取得
         $conn = $this._connectionService.GetConnection($message.ConnectionId)
         
-        # メッセージタイプに応じて処理を分岐
-        switch ($message.Type) {
+        # メッセージタイプに応じて処理を分岐（enum を文字列に変換して比較）
+        $messageType = $message.Type.ToString()
+        switch ($messageType) {
             'StatusUpdate' {
                 $this.ProcessStatusUpdate($conn, $message)
                 $this._processingStats['StatusUpdate']++
@@ -201,6 +202,13 @@ class RunspaceMessageProcessor {
             $oldStatus = $conn.Status
             $status = $message.Data['Status']
             $conn.UpdateStatus($status)
+            
+            # リモートエンドポイント情報があれば更新
+            if ($message.Data.ContainsKey('RemoteIP')) {
+                $remoteIP = $message.Data['RemoteIP']
+                $remotePort = if ($message.Data.ContainsKey('RemotePort')) { $message.Data['RemotePort'] } else { 0 }
+                $conn.UpdateRemoteEndpoint($remoteIP, $remotePort)
+            }
             
             # 状態変更フラグを立てる
             $this._statusChanged = $true

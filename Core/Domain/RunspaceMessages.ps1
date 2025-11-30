@@ -58,8 +58,12 @@ class RunspaceMessage {
 .PARAMETER Status
 新しい状態 (CONNECTING, CONNECTED, DISCONNECTED, ERROR)
 
+.PARAMETER AdditionalData
+追加データ（オプション）
+
 .EXAMPLE
 $msg = New-StatusUpdateMessage -ConnectionId "conn-001" -Status "CONNECTED"
+$msg = New-StatusUpdateMessage -ConnectionId "conn-001" -Status "CONNECTED" -AdditionalData @{ RemoteIP = "192.168.1.1"; RemotePort = 12345 }
 #>
 function New-StatusUpdateMessage {
     [OutputType([RunspaceMessage])]
@@ -68,13 +72,23 @@ function New-StatusUpdateMessage {
         [string]$ConnectionId,
         
         [Parameter(Mandatory)]
-        [string]$Status
+        [string]$Status,
+        
+        [Parameter()]
+        [hashtable]$AdditionalData
     )
+    
+    $data = @{ Status = $Status }
+    if ($AdditionalData) {
+        foreach ($key in $AdditionalData.Keys) {
+            $data[$key] = $AdditionalData[$key]
+        }
+    }
     
     return [RunspaceMessage]::new(
         [MessageType]::StatusUpdate,
         $ConnectionId,
-        @{ Status = $Status }
+        $data
     )
 }
 

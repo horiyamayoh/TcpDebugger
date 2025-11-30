@@ -145,14 +145,20 @@ class TcpServerAdapter {
                             $client = $listener.AcceptTcpClient()
                             $stream = $client.GetStream()
 
-                            $remoteEndpoint = $client.Client.RemoteEndPoint.ToString()
+                            $remoteEndpoint = $client.Client.RemoteEndPoint
+                            $remoteIP = $remoteEndpoint.Address.ToString()
+                            $remotePort = $remoteEndpoint.Port
+                            $remoteEndpointStr = $remoteEndpoint.ToString()
                             
-                            # クライアント接続完了 → Status を CONNECTED に更新
-                            $msg = New-StatusUpdateMessage -ConnectionId $ConnectionId -Status 'CONNECTED'
+                            # クライアント接続完了 → Status を CONNECTED に更新（リモートエンドポイント情報付き）
+                            $msg = New-StatusUpdateMessage -ConnectionId $ConnectionId -Status 'CONNECTED' -AdditionalData @{
+                                RemoteIP = $remoteIP
+                                RemotePort = $remotePort
+                            }
                             $MessageQueue.Enqueue($msg)
                             
                             $msg = New-LogMessage -ConnectionId $ConnectionId -Level 'Info' -Message 'TCP Server accepted client connection' -Context @{
-                                RemoteEndpoint = $remoteEndpoint
+                                RemoteEndpoint = $remoteEndpointStr
                             }
                             $MessageQueue.Enqueue($msg)
                         }
@@ -180,8 +186,11 @@ class TcpServerAdapter {
                                 if ($stream) { $stream.Close(); $stream.Dispose(); $stream = $null }
                                 if ($client) { $client.Close(); $client.Dispose(); $client = $null }
                                 
-                                # Status を LISTENING に戻す
-                                $msg = New-StatusUpdateMessage -ConnectionId $ConnectionId -Status 'LISTENING'
+                                # Status を LISTENING に戻す（リモートエンドポイントをクリア）
+                                $msg = New-StatusUpdateMessage -ConnectionId $ConnectionId -Status 'LISTENING' -AdditionalData @{
+                                    RemoteIP = ''
+                                    RemotePort = 0
+                                }
                                 $MessageQueue.Enqueue($msg)
                                 
                                 # 次のループへ
