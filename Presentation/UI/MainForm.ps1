@@ -176,7 +176,6 @@ function Show-MainForm {
     $script:suppressOnTimerSendEvent = $false
     $script:suppressProfileEvent = $false
     $script:isGlobalProfileLocked = $false
-    $script:lastSelectedConnectionId = $null
     $script:comboSelectedIndexChangedHandler = $null
     $gridState = @{
         EditingInProgress = $false
@@ -324,24 +323,12 @@ function Register-GridEvents {
         }
     })
 
-    $DataGridView.Add_CellContentClick({
-        param($sender, $args)
-        Handle-CellContentClick -Sender $sender -Args $args
-    })
+    # CellContentClick removed in favor of CellClick for better button responsiveness
+    # $DataGridView.Add_CellContentClick({ ... })
 
     $DataGridView.Add_CellClick({
-        param($sender, $args)
-        Handle-ComboBoxClick -Sender $sender -Args $args -GridState $GridState
-    })
-
-    # Track selection to preserve it across grid updates
-    $DataGridView.Add_SelectionChanged({
-        if ($DataGridView.SelectedRows.Count -gt 0 -and $DataGridView.Columns.Contains("Id")) {
-            $connId = $DataGridView.SelectedRows[0].Cells["Id"].Value
-            if ($connId) {
-                $script:lastSelectedConnectionId = $connId
-            }
-        }
+        param($sender, $e)
+        Handle-CellClick -Sender $sender -EventArgs $e -GridState $GridState
     })
 
     $DataGridView.Add_EditingControlShowing({
@@ -370,67 +357,62 @@ function Register-ButtonEvents {
     )
 
     $BtnConnect.Add_Click({
-        $connection = Get-SelectedConnection -DataGridView $DataGridView
-        if (-not $connection) {
-            [System.Windows.Forms.MessageBox]::Show("Please select a connection first.", "No Selection") | Out-Null
-            return
+        # 上部ボタンは常に全インスタンスを一括接続
+        $connections = Get-UiConnections
+        $successCount = 0
+        $failCount = 0
+        
+        foreach ($conn in $connections) {
+            try {
+                Start-Connection -ConnectionId $conn.Id
+                $successCount++
+                Write-Console "[UI] Connection started: $($conn.DisplayName)" -ForegroundColor Green
+            } catch {
+                $failCount++
+                Write-Console "[UI] Failed to start connection $($conn.DisplayName): $_" -ForegroundColor Red
+            }
         }
-        try {
-            Start-Connection -ConnectionId $connection.Id
-            # MessageBox??UI???X???b?h???u???b?N?????A??????????
-            # [System.Windows.Forms.MessageBox]::Show("Connection started: $($connection.DisplayName)", "Success") | Out-Null
-        } catch {
-            [System.Windows.Forms.MessageBox]::Show("Failed to start connection: $_", "Error") | Out-Null
-        }
+        
         Update-InstanceList -DataGridView $DataGridView
+        
+        if ($failCount -gt 0) {
+            [System.Windows.Forms.MessageBox]::Show(
+                "Connected: $successCount`nFailed: $failCount",
+                "Connect All",
+                [System.Windows.Forms.MessageBoxButtons]::OK,
+                [System.Windows.Forms.MessageBoxIcon]::Warning
+            ) | Out-Null
+        }
     })
 
     $BtnDisconnect.Add_Click({
-        $connection = Get-SelectedConnection -DataGridView $DataGridView
-        if (-not $connection) {
-            return
+        # 上部ボタンは常に全インスタンスを一括切断
+        $connections = Get-UiConnections
+        $successCount = 0
+        $failCount = 0
+        
+        foreach ($conn in $connections) {
+            try {
+                Stop-Connection -ConnectionId $conn.Id
+                $successCount++
+                Write-Console "[UI] Connection stopped: $($conn.DisplayName)" -ForegroundColor Yellow
+            } catch {
+                $failCount++
+                Write-Console "[UI] Failed to stop connection $($conn.DisplayName): $_" -ForegroundColor Red
+            }
         }
-        try {
-            Stop-Connection -ConnectionId $connection.Id
-        } catch {
-            [System.Windows.Forms.MessageBox]::Show("Failed to stop connection: $_", "Error") | Out-Null
-        }
+        
         Update-InstanceList -DataGridView $DataGridView
+        
+        if ($failCount -gt 0) {
+            [System.Windows.Forms.MessageBox]::Show(
+                "Disconnected: $successCount`nFailed: $failCount",
+                "Disconnect All",
+                [System.Windows.Forms.MessageBoxButtons]::OK,
+                [System.Windows.Forms.MessageBoxIcon]::Warning
+            ) | Out-Null
+        }
     })
-}
-
-function Get-SelectedConnection {
-    param(
-        [System.Windows.Forms.DataGridView]$DataGridView
-    )
-
-    $connId = $null
-    
-    # Try getting selection from SelectedRows first
-    if ($DataGridView.SelectedRows.Count -gt 0 -and $DataGridView.Columns.Contains("Id")) {
-        $connId = $DataGridView.SelectedRows[0].Cells["Id"].Value
-    }
-    
-    # Fallback: Try CurrentRow if no selection
-    if (-not $connId -and $DataGridView.CurrentRow -and $DataGridView.Columns.Contains("Id")) {
-        $connId = $DataGridView.CurrentRow.Cells["Id"].Value
-    }
-    
-    # Fallback: Use last selected connection ID (preserved across grid updates)
-    if (-not $connId -and $script:lastSelectedConnectionId) {
-        $connId = $script:lastSelectedConnectionId
-    }
-    
-    if (-not $connId) {
-        return $null
-    }
-    
-    try {
-        return Get-UiConnection -ConnectionId $connId
-    } catch {
-        [System.Windows.Forms.MessageBox]::Show("Connection not found: $connId", "Error") | Out-Null
-        return $null
-    }
 }
 
 function Handle-ScenarioChanged {
@@ -985,23 +967,35 @@ function Set-ProfileColumnsReadOnly {
 function Handle-CellContentClick {
     param(
         $Sender,
-        $Args
+        $evt
     )
 
-    if ($Args.RowIndex -lt 0 -or $Args.ColumnIndex -lt 0) {
+    if ($evt.RowIndex -lt 0 -or $evt.ColumnIndex -lt 0) {
         return
     }
-    $column = $Sender.Columns[$Args.ColumnIndex]
+    $column = $Sender.Columns[$evt.ColumnIndex]
     if (-not $column) {
         return
     }
 
-    $row = $Sender.Rows[$Args.RowIndex]
-    if (-not $row.Cells.Contains("Id")) {
+    # ボタン列のみを処理
+    if ($column -isnot [System.Windows.Forms.DataGridViewButtonColumn]) {
         return
     }
 
-    $connId = $row.Cells["Id"].Value
+    $row = $Sender.Rows[$evt.RowIndex]
+    
+    # Check if Id column exists
+    if (-not $Sender.Columns.Contains("Id")) {
+        return
+    }
+
+    $cellId = $row.Cells["Id"]
+    if (-not $cellId) {
+        return
+    }
+
+    $connId = $cellId.Value
     if (-not $connId) {
         return
     }
@@ -1019,6 +1013,18 @@ function Handle-CellContentClick {
         }
         "ActionSend" {
             Handle-ActionSendClick -Row $row -ConnectionId $connId -Connection $connection
+        }
+        "BtnConnect" {
+            Write-Console "[UI] Row Connect button clicked for: $connId" -ForegroundColor Cyan
+            Handle-RowConnectClick -ConnectionId $connId
+            # 上部ボタンと同じように、即座にUI更新
+            Update-InstanceList -DataGridView $Sender
+        }
+        "BtnDisconnect" {
+            Write-Console "[UI] Row Disconnect button clicked for: $connId" -ForegroundColor Cyan
+            Handle-RowDisconnectClick -ConnectionId $connId
+            # 上部ボタンと同じように、即座にUI更新
+            Update-InstanceList -DataGridView $Sender
         }
     }
 }
@@ -1157,22 +1163,84 @@ function Handle-ActionSendClick {
     }
 }
 
-function Handle-ComboBoxClick {
+function Handle-RowConnectClick {
+    <#
+    .SYNOPSIS
+    Handles the Connect button click for a specific row.
+    #>
+    param(
+        [string]$ConnectionId
+    )
+
+    if ([string]::IsNullOrWhiteSpace($ConnectionId)) {
+        return $false
+    }
+
+    try {
+        Start-Connection -ConnectionId $ConnectionId
+        Write-Console "[UI] Connection started: $ConnectionId" -ForegroundColor Green
+        return $true
+    } catch {
+        [System.Windows.Forms.MessageBox]::Show("Failed to start connection: $_", "Error") | Out-Null
+        return $false
+    }
+}
+
+function Handle-RowDisconnectClick {
+    <#
+    .SYNOPSIS
+    Handles the Disconnect button click for a specific row.
+    #>
+    param(
+        [string]$ConnectionId
+    )
+
+    if ([string]::IsNullOrWhiteSpace($ConnectionId)) {
+        return $false
+    }
+
+    try {
+        Stop-Connection -ConnectionId $ConnectionId
+        Write-Console "[UI] Connection stopped: $ConnectionId" -ForegroundColor Yellow
+        return $true
+    } catch {
+        [System.Windows.Forms.MessageBox]::Show("Failed to stop connection: $_", "Error") | Out-Null
+        return $false
+    }
+}
+
+function Handle-CellClick {
     param(
         $Sender,
-        $Args,
+        $EventArgs,
         [hashtable]$GridState
     )
 
-    if ($Args.RowIndex -lt 0 -or $Args.ColumnIndex -lt 0) {
+    if ($EventArgs.RowIndex -lt 0 -or $EventArgs.ColumnIndex -lt 0) {
         return
     }
 
-    $row = $Sender.Rows[$Args.RowIndex]
-    $cell = $row.Cells[$Args.ColumnIndex]
+    $row = $Sender.Rows[$EventArgs.RowIndex]
+    $cell = $row.Cells[$EventArgs.ColumnIndex]
     $column = $cell.OwningColumn
 
-    if (-not $column -or ($column -isnot [System.Windows.Forms.DataGridViewComboBoxColumn])) {
+    if (-not $column) {
+        return
+    }
+
+    # Handle Button Clicks (Delegate to Handle-CellContentClick logic)
+    # We use CellClick instead of CellContentClick to ensure clicks on the button padding are also caught.
+    if ($column -is [System.Windows.Forms.DataGridViewButtonColumn]) {
+        try {
+            Handle-CellContentClick -Sender $Sender -evt $EventArgs
+        } catch {
+            Write-Console "[ERROR] Exception in Handle-CellContentClick: $_" -ForegroundColor Red
+        }
+        return
+    }
+
+    # コンボボックス列のみを処理
+    if ($column -isnot [System.Windows.Forms.DataGridViewComboBoxColumn]) {
         return
     }
 
@@ -1393,9 +1461,19 @@ function Save-GridState {
         [System.Windows.Forms.DataGridView]$DataGridView
     )
 
-    $selectedId = $null
-    if ($DataGridView.SelectedRows.Count -gt 0 -and $DataGridView.Columns.Contains("Id")) {
-        $selectedId = $DataGridView.SelectedRows[0].Cells["Id"].Value
+    # 現在のセル位置を保存
+    $currentCellRowIndex = $null
+    $currentCellColumnIndex = $null
+    $currentConnectionId = $null
+    
+    if ($DataGridView.CurrentCell) {
+        $currentCellRowIndex = $DataGridView.CurrentCell.RowIndex
+        $currentCellColumnIndex = $DataGridView.CurrentCell.ColumnIndex
+        
+        # 行のConnection IDを取得
+        if ($currentCellRowIndex -ge 0 -and $DataGridView.Columns.Contains("Id")) {
+            $currentConnectionId = $DataGridView.Rows[$currentCellRowIndex].Cells["Id"].Value
+        }
     }
 
     $firstDisplayedIndex = $null
@@ -1405,6 +1483,20 @@ function Save-GridState {
         }
     } catch {
         $firstDisplayedIndex = $null
+    }
+
+    if (-not $currentConnectionId -and $DataGridView.Columns.Contains("Id") -and $DataGridView.RowCount -gt 0) {
+        $fallbackIndex = 0
+        if ($firstDisplayedIndex -ne $null) {
+            $fallbackIndex = [Math]::Min([Math]::Max(0, $firstDisplayedIndex), $DataGridView.RowCount - 1)
+        }
+
+        try {
+            $currentConnectionId = $DataGridView.Rows[$fallbackIndex].Cells["Id"].Value
+            $currentCellColumnIndex = 0
+        } catch {
+            # ignore fallback errors
+        }
     }
 
     # ComboBoxの選択状態を保存
@@ -1424,7 +1516,8 @@ function Save-GridState {
     }
 
     return @{
-        SelectedId = $selectedId
+        CurrentConnectionId = $currentConnectionId
+        CurrentCellColumnIndex = $currentCellColumnIndex
         FirstDisplayedIndex = $firstDisplayedIndex
         ComboStates = $comboStates
     }
@@ -1437,16 +1530,34 @@ function Restore-GridState {
         [switch]$PreserveComboStates
     )
 
-    # Restore selection
-    if ($State.SelectedId) {
+    $restoredCurrentCell = $false
+
+    # Restore current cell position
+    if ($State.CurrentConnectionId -and $State.CurrentCellColumnIndex -ne $null) {
         foreach ($row in $DataGridView.Rows) {
-            if ($row.Cells["Id"].Value -eq $State.SelectedId) {
-                $row.Selected = $true
-                if ($row.Cells.Count -gt 0) {
-                    $DataGridView.CurrentCell = $row.Cells[0]
+            if ($row.Cells["Id"].Value -eq $State.CurrentConnectionId) {
+                try {
+                    $colIndex = [Math]::Min($State.CurrentCellColumnIndex, $DataGridView.Columns.Count - 1)
+                    $DataGridView.CurrentCell = $row.Cells[$colIndex]
+                    $restoredCurrentCell = $true
+                } catch {
+                    # セルが編集不可の場合などエラーを無視
                 }
                 break
             }
+        }
+    }
+
+    if (-not $restoredCurrentCell -and $DataGridView.RowCount -gt 0 -and $DataGridView.Columns.Count -gt 0) {
+        $fallbackIndex = 0
+        if ($State.FirstDisplayedIndex -ne $null) {
+            $fallbackIndex = [Math]::Min([Math]::Max(0, $State.FirstDisplayedIndex), $DataGridView.RowCount - 1)
+        }
+
+        try {
+            $DataGridView.CurrentCell = $DataGridView.Rows[$fallbackIndex].Cells[0]
+        } catch {
+            # ignore fallback errors
         }
     }
 
@@ -1491,12 +1602,16 @@ function Add-ConnectionRow {
         $protocol = $Connection.Protocol
         $mode = $Connection.Mode
         $connId = $Connection.Id
+        
+        Write-Verbose "[Add-ConnectionRow] Adding row: $displayName, Status: $status"
 
         $rowIndex = $DataGridView.Rows.Add(
             $displayName,
             "$protocol $mode",
             $endpoint,
             $status,
+            $null,
+            $null,
             $null,
             $null,
             $null,

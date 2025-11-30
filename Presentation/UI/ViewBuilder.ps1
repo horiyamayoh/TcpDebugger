@@ -53,11 +53,39 @@ function New-ConnectionDataGridView {
     $dgv.AllowUserToResizeRows = $false
     $dgv.RowHeadersVisible = $false
     $dgv.ReadOnly = $false
-    $dgv.SelectionMode = "FullRowSelect"
+    $dgv.SelectionMode = "CellSelect"
     $dgv.MultiSelect = $false
     $dgv.AutoSizeColumnsMode = "Fill"
     $dgv.AutoGenerateColumns = $false
     $dgv.EditMode = [System.Windows.Forms.DataGridViewEditMode]::EditOnEnter
+
+    # Disable visual selection
+    $dgv.DefaultCellStyle.BackColor = [System.Drawing.SystemColors]::Window
+    $dgv.DefaultCellStyle.ForeColor = [System.Drawing.SystemColors]::WindowText
+    $dgv.DefaultCellStyle.SelectionBackColor = [System.Drawing.SystemColors]::Window
+    $dgv.DefaultCellStyle.SelectionForeColor = [System.Drawing.SystemColors]::WindowText
+
+    # Suppress focus rectangle and selection highlight via CellPainting
+    $dgv.Add_CellPainting({
+        param($sender, $e)
+        if ($e.RowIndex -ge 0 -and $e.ColumnIndex -ge 0) {
+            # Remove Focus and SelectionBackground from paint parts while preserving others
+            $parts = $e.PaintParts
+            if (($parts -band [System.Windows.Forms.DataGridViewPaintParts]::Focus) -ne 0) {
+                $parts = $parts -bxor [System.Windows.Forms.DataGridViewPaintParts]::Focus
+            }
+            if (($parts -band [System.Windows.Forms.DataGridViewPaintParts]::SelectionBackground) -ne 0) {
+                $parts = $parts -bxor [System.Windows.Forms.DataGridViewPaintParts]::SelectionBackground
+            }
+
+            # Force unselected colors just in case
+            $e.CellStyle.SelectionBackColor = $e.CellStyle.BackColor
+            $e.CellStyle.SelectionForeColor = $e.CellStyle.ForeColor
+
+            $e.Paint($e.CellBounds, $parts)
+            $e.Handled = $true
+        }
+    })
 
     # Add columns
     Add-ConnectionGridColumns -DataGridView $dgv
@@ -106,6 +134,24 @@ function Add-ConnectionGridColumns {
     $colStatus.ReadOnly = $true
     $colStatus.FillWeight = 100
     [void]$DataGridView.Columns.Add($colStatus)
+
+    # Connect button column
+    $colConnect = New-Object System.Windows.Forms.DataGridViewButtonColumn
+    $colConnect.HeaderText = "Connect"
+    $colConnect.Name = "BtnConnect"
+    $colConnect.Text = "Connect"
+    $colConnect.UseColumnTextForButtonValue = $true
+    $colConnect.FillWeight = 80
+    [void]$DataGridView.Columns.Add($colConnect)
+
+    # Disconnect button column
+    $colDisconnect = New-Object System.Windows.Forms.DataGridViewButtonColumn
+    $colDisconnect.HeaderText = "Disconnect"
+    $colDisconnect.Name = "BtnDisconnect"
+    $colDisconnect.Text = "Disconnect"
+    $colDisconnect.UseColumnTextForButtonValue = $true
+    $colDisconnect.FillWeight = 80
+    [void]$DataGridView.Columns.Add($colDisconnect)
 
     # Profile column
     $colProfile = New-Object System.Windows.Forms.DataGridViewComboBoxColumn

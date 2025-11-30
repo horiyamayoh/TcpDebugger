@@ -23,5 +23,5 @@
     DefaultEncoding = "UTF-8"
     
     # ターミナル出力設定（性能優先時は $false に設定）
-    EnableConsoleOutput = $false        # 全てのコンソール出力を制御（$false で完全静音モード）
+    EnableConsoleOutput = $true        # 全てのコンソール出力を制御（$false で完全静音モード）
 }
