@@ -103,33 +103,56 @@ function Show-MainForm {
     #>
 
     # Create main form using ViewBuilder
-    $form = New-MainFormWindow -Title "TCP Test Controller v1.0" -Width 1200 -Height 750
+    $form = New-MainFormWindow -Title "Socket Debugger Simple v1.0" -Width 1400 -Height 800
     $script:CurrentMainForm = $form
 
-    # Toolbar buttons using ViewBuilder
-    $btnConnect = New-ToolbarButton -Text "Connect" -X 10 -Y 10
-    $form.Controls.Add($btnConnect)
+    # ツールバーパネルを作成
+    $toolbarPanel = New-Object System.Windows.Forms.Panel
+    $toolbarPanel.Location = New-Object System.Drawing.Point(0, 0)
+    $toolbarPanel.Size = New-Object System.Drawing.Size(1400, 50)
+    $toolbarPanel.BackColor = [System.Drawing.Color]::FromArgb(230, 230, 230)
+    $toolbarPanel.BorderStyle = [System.Windows.Forms.BorderStyle]::FixedSingle
+    $toolbarPanel.Anchor = [System.Windows.Forms.AnchorStyles]::Top -bor 
+                           [System.Windows.Forms.AnchorStyles]::Left -bor 
+                           [System.Windows.Forms.AnchorStyles]::Right
+    $form.Controls.Add($toolbarPanel)
 
-    $btnDisconnect = New-ToolbarButton -Text "Disconnect" -X 120 -Y 10
-    $form.Controls.Add($btnDisconnect)
+    # Toolbar buttons using ViewBuilder
+    $btnConnect = New-ToolbarButton -Text "▶ Connect" -X 10 -Y 10 -Width 120 -ToolTip "すべての接続を開始します"
+    $toolbarPanel.Controls.Add($btnConnect)
+
+    $btnDisconnect = New-ToolbarButton -Text "⏹ Disconnect" -X 140 -Y 10 -Width 120 -ToolTip "すべての接続を切断します"
+    $btnDisconnect.BackColor = [System.Drawing.Color]::FromArgb(192, 57, 43)
+    $btnDisconnect.Add_MouseEnter({
+        $this.BackColor = [System.Drawing.Color]::FromArgb(231, 76, 60)
+    })
+    $btnDisconnect.Add_MouseLeave({
+        $this.BackColor = [System.Drawing.Color]::FromArgb(192, 57, 43)
+    })
+    $toolbarPanel.Controls.Add($btnDisconnect)
 
     # Global profile combo box (アプリケーションプロファイル用)
     $lblGlobalProfile = New-Object System.Windows.Forms.Label
     $lblGlobalProfile.Text = "App Profile:"
-    $lblGlobalProfile.Location = New-Object System.Drawing.Point(230, 13)
+    $lblGlobalProfile.Location = New-Object System.Drawing.Point(280, 15)
     $lblGlobalProfile.Size = New-Object System.Drawing.Size(80, 20)
     $lblGlobalProfile.TextAlign = [System.Drawing.ContentAlignment]::MiddleRight
-    $form.Controls.Add($lblGlobalProfile)
+    $lblGlobalProfile.Font = New-Object System.Drawing.Font("Segoe UI", 9, [System.Drawing.FontStyle]::Bold)
+    $toolbarPanel.Controls.Add($lblGlobalProfile)
 
-    $script:cmbGlobalProfile = New-Object System.Windows.Forms.ComboBox
-    $script:cmbGlobalProfile.Location = New-Object System.Drawing.Point(315, 10)
-    $script:cmbGlobalProfile.Size = New-Object System.Drawing.Size(180, 25)
-    $script:cmbGlobalProfile.DropDownStyle = [System.Windows.Forms.ComboBoxStyle]::DropDownList
-    $form.Controls.Add($script:cmbGlobalProfile)
+    $script:cmbGlobalProfile = New-StyledComboBox -X 365 -Y 12 -Width 200 -ToolTip "アプリケーション全体に適用するプロファイルを選択"
+    $toolbarPanel.Controls.Add($script:cmbGlobalProfile)
+
+    # ステータスラベルを追加
+    $script:StatusLabel = New-StatusLabel -X 580 -Y 15 -Width 600 -InitialText "Ready"
+    $script:StatusLabel.Anchor = [System.Windows.Forms.AnchorStyles]::Top -bor 
+                        [System.Windows.Forms.AnchorStyles]::Left -bor 
+                        [System.Windows.Forms.AnchorStyles]::Right
+    $toolbarPanel.Controls.Add($script:StatusLabel)
 
     # DataGridView (connection list) using ViewBuilder
-    # 画面いっぱいに表示
-    $dgvInstances = New-ConnectionDataGridView -X 10 -Y 50 -Width 1160 -Height 650
+    # 画面いっぱいに表示（ツールバー分を考慮）
+    $dgvInstances = New-ConnectionDataGridView -X 10 -Y 60 -Width 1360 -Height 690
     $form.Controls.Add($dgvInstances)
     
     # アプリケーションプロファイルコンボボックスの初期化
@@ -199,6 +222,14 @@ function Show-MainForm {
                 if ($processor.CheckAndResetStatusChanged()) {
                     if (-not $gridState.EditingInProgress -and -not $dgvInstances.IsCurrentCellInEditMode) {
                         Update-InstanceList -DataGridView $dgvInstances
+                        
+                        # ステータス表示を更新
+                        if ($script:StatusLabel) {
+                            $connections = Get-UiConnections
+                            $connectedCount = ($connections | Where-Object { $_.Status -eq 'CONNECTED' }).Count
+                            $totalCount = $connections.Count
+                            $script:StatusLabel.Text = "接続状態: $connectedCount / $totalCount Connected | 最終更新: $(Get-Date -Format 'HH:mm:ss')"
+                        }
                     }
                 }
             }
@@ -215,6 +246,14 @@ function Show-MainForm {
         try {
             if (-not $gridState.EditingInProgress -and -not $dgvInstances.IsCurrentCellInEditMode) {
                 Update-InstanceList -DataGridView $dgvInstances
+                
+                # ステータス表示を更新
+                if ($script:StatusLabel) {
+                    $connections = Get-UiConnections
+                    $connectedCount = ($connections | Where-Object { $_.Status -eq 'CONNECTED' }).Count
+                    $totalCount = $connections.Count
+                    $script:StatusLabel.Text = "接続状態: $connectedCount / $totalCount Connected | 最終更新: $(Get-Date -Format 'HH:mm:ss')"
+                }
             }
         }
         catch {
@@ -358,6 +397,11 @@ function Register-ButtonEvents {
 
     $BtnConnect.Add_Click({
         # 上部ボタンは常に全インスタンスを一括接続
+        if ($script:StatusLabel) {
+            $script:StatusLabel.Text = "接続中..."
+            $script:StatusLabel.ForeColor = [System.Drawing.Color]::FromArgb(0, 122, 204)
+        }
+        
         $connections = Get-UiConnections
         $successCount = 0
         $failCount = 0
@@ -375,10 +419,19 @@ function Register-ButtonEvents {
         
         Update-InstanceList -DataGridView $DataGridView
         
+        if ($script:StatusLabel) {
+            $script:StatusLabel.Text = "接続完了: 成功 $successCount, 失敗 $failCount"
+            $script:StatusLabel.ForeColor = if ($failCount -gt 0) { 
+                [System.Drawing.Color]::FromArgb(192, 57, 43) 
+            } else { 
+                [System.Drawing.Color]::FromArgb(39, 174, 96) 
+            }
+        }
+        
         if ($failCount -gt 0) {
             [System.Windows.Forms.MessageBox]::Show(
-                "Connected: $successCount`nFailed: $failCount",
-                "Connect All",
+                "接続成功: $successCount`n接続失敗: $failCount",
+                "一括接続結果",
                 [System.Windows.Forms.MessageBoxButtons]::OK,
                 [System.Windows.Forms.MessageBoxIcon]::Warning
             ) | Out-Null
@@ -387,6 +440,11 @@ function Register-ButtonEvents {
 
     $BtnDisconnect.Add_Click({
         # 上部ボタンは常に全インスタンスを一括切断
+        if ($script:StatusLabel) {
+            $script:StatusLabel.Text = "切断中..."
+            $script:StatusLabel.ForeColor = [System.Drawing.Color]::FromArgb(192, 57, 43)
+        }
+        
         $connections = Get-UiConnections
         $successCount = 0
         $failCount = 0
@@ -404,10 +462,19 @@ function Register-ButtonEvents {
         
         Update-InstanceList -DataGridView $DataGridView
         
+        if ($script:StatusLabel) {
+            $script:StatusLabel.Text = "切断完了: 成功 $successCount, 失敗 $failCount"
+            $script:StatusLabel.ForeColor = if ($failCount -gt 0) { 
+                [System.Drawing.Color]::FromArgb(192, 57, 43) 
+            } else { 
+                [System.Drawing.Color]::FromArgb(39, 174, 96) 
+            }
+        }
+        
         if ($failCount -gt 0) {
             [System.Windows.Forms.MessageBox]::Show(
-                "Disconnected: $successCount`nFailed: $failCount",
-                "Disconnect All",
+                "切断成功: $successCount`n切断失敗: $failCount",
+                "一括切断結果",
                 [System.Windows.Forms.MessageBoxButtons]::OK,
                 [System.Windows.Forms.MessageBoxIcon]::Warning
             ) | Out-Null

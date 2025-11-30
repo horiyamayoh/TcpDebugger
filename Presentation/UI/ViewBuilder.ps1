@@ -19,16 +19,35 @@ function New-MainFormWindow {
     The height of the window.
     #>
     param(
-        [string]$Title = "TCP Test Controller v1.0",
-        [int]$Width = 1200,
-        [int]$Height = 700
+        [string]$Title = "Socket Debugger Simple v1.0",
+        [int]$Width = 1400,
+        [int]$Height = 800
     )
 
     $form = New-Object System.Windows.Forms.Form
     $form.Text = $Title
     $form.Size = New-Object System.Drawing.Size($Width, $Height)
+    $form.MinimumSize = New-Object System.Drawing.Size(1200, 600)
     $form.StartPosition = "CenterScreen"
     $form.Font = New-Object System.Drawing.Font("Segoe UI", 9)
+    $form.BackColor = [System.Drawing.Color]::FromArgb(240, 240, 240)
+    
+    # アイコン設定
+    # カスタムアイコンファイルがあれば使用、なければPowerShellアイコンを使用
+    $customIconPath = Join-Path $PSScriptRoot "..\..\Resources\tcp-debugger.ico"
+    if (Test-Path -LiteralPath $customIconPath -ErrorAction SilentlyContinue) {
+        try {
+            $form.Icon = New-Object System.Drawing.Icon($customIconPath)
+        }
+        catch {
+            # カスタムアイコンの読み込みに失敗した場合はPowerShellアイコンを使用
+            $form.Icon = [System.Drawing.Icon]::ExtractAssociatedIcon($PSHOME + "\powershell.exe")
+        }
+    }
+    else {
+        # カスタムアイコンがない場合はPowerShellアイコンを使用
+        $form.Icon = [System.Drawing.Icon]::ExtractAssociatedIcon($PSHOME + "\powershell.exe")
+    }
 
     return $form
 }
@@ -48,6 +67,10 @@ function New-ConnectionDataGridView {
     $dgv = New-Object System.Windows.Forms.DataGridView
     $dgv.Location = New-Object System.Drawing.Point($X, $Y)
     $dgv.Size = New-Object System.Drawing.Size($Width, $Height)
+    $dgv.Anchor = [System.Windows.Forms.AnchorStyles]::Top -bor 
+                  [System.Windows.Forms.AnchorStyles]::Bottom -bor 
+                  [System.Windows.Forms.AnchorStyles]::Left -bor 
+                  [System.Windows.Forms.AnchorStyles]::Right
     $dgv.AllowUserToAddRows = $false
     $dgv.AllowUserToDeleteRows = $false
     $dgv.AllowUserToResizeRows = $false
@@ -58,12 +81,27 @@ function New-ConnectionDataGridView {
     $dgv.AutoSizeColumnsMode = "Fill"
     $dgv.AutoGenerateColumns = $false
     $dgv.EditMode = [System.Windows.Forms.DataGridViewEditMode]::EditOnEnter
+    $dgv.BorderStyle = [System.Windows.Forms.BorderStyle]::Fixed3D
+    $dgv.BackgroundColor = [System.Drawing.Color]::White
+    $dgv.GridColor = [System.Drawing.Color]::FromArgb(200, 200, 200)
+    $dgv.EnableHeadersVisualStyles = $false
+    
+    # ヘッダーのスタイル設定
+    $dgv.ColumnHeadersDefaultCellStyle.BackColor = [System.Drawing.Color]::FromArgb(45, 45, 48)
+    $dgv.ColumnHeadersDefaultCellStyle.ForeColor = [System.Drawing.Color]::White
+    $dgv.ColumnHeadersDefaultCellStyle.Font = New-Object System.Drawing.Font("Segoe UI", 9, [System.Drawing.FontStyle]::Bold)
+    $dgv.ColumnHeadersDefaultCellStyle.Padding = New-Object System.Windows.Forms.Padding(0, 5, 0, 5)
+    $dgv.ColumnHeadersHeight = 32
 
     # Disable visual selection
-    $dgv.DefaultCellStyle.BackColor = [System.Drawing.SystemColors]::Window
-    $dgv.DefaultCellStyle.ForeColor = [System.Drawing.SystemColors]::WindowText
-    $dgv.DefaultCellStyle.SelectionBackColor = [System.Drawing.SystemColors]::Window
-    $dgv.DefaultCellStyle.SelectionForeColor = [System.Drawing.SystemColors]::WindowText
+    $dgv.DefaultCellStyle.BackColor = [System.Drawing.Color]::White
+    $dgv.DefaultCellStyle.ForeColor = [System.Drawing.Color]::FromArgb(30, 30, 30)
+    $dgv.DefaultCellStyle.SelectionBackColor = [System.Drawing.Color]::White
+    $dgv.DefaultCellStyle.SelectionForeColor = [System.Drawing.Color]::FromArgb(30, 30, 30)
+    $dgv.DefaultCellStyle.Padding = New-Object System.Windows.Forms.Padding(3, 2, 3, 2)
+
+    # 行の高さを少し増やして見やすく
+    $dgv.RowTemplate.Height = 28
 
     # Suppress focus rectangle and selection highlight via CellPainting
     $dgv.Add_CellPainting({
@@ -137,20 +175,28 @@ function Add-ConnectionGridColumns {
 
     # Connect button column
     $colConnect = New-Object System.Windows.Forms.DataGridViewButtonColumn
-    $colConnect.HeaderText = "Connect"
+    $colConnect.HeaderText = "▶ Connect"
     $colConnect.Name = "BtnConnect"
-    $colConnect.Text = "Connect"
+    $colConnect.Text = "▶"
     $colConnect.UseColumnTextForButtonValue = $true
-    $colConnect.FillWeight = 80
+    $colConnect.FillWeight = 70
+    $colConnect.DefaultCellStyle.BackColor = [System.Drawing.Color]::FromArgb(0, 122, 204)
+    $colConnect.DefaultCellStyle.ForeColor = [System.Drawing.Color]::White
+    $colConnect.DefaultCellStyle.SelectionBackColor = [System.Drawing.Color]::FromArgb(28, 151, 234)
+    $colConnect.DefaultCellStyle.SelectionForeColor = [System.Drawing.Color]::White
     [void]$DataGridView.Columns.Add($colConnect)
 
     # Disconnect button column
     $colDisconnect = New-Object System.Windows.Forms.DataGridViewButtonColumn
-    $colDisconnect.HeaderText = "Disconnect"
+    $colDisconnect.HeaderText = "⏹ Disconnect"
     $colDisconnect.Name = "BtnDisconnect"
-    $colDisconnect.Text = "Disconnect"
+    $colDisconnect.Text = "⏹"
     $colDisconnect.UseColumnTextForButtonValue = $true
-    $colDisconnect.FillWeight = 80
+    $colDisconnect.FillWeight = 70
+    $colDisconnect.DefaultCellStyle.BackColor = [System.Drawing.Color]::FromArgb(192, 57, 43)
+    $colDisconnect.DefaultCellStyle.ForeColor = [System.Drawing.Color]::White
+    $colDisconnect.DefaultCellStyle.SelectionBackColor = [System.Drawing.Color]::FromArgb(231, 76, 60)
+    $colDisconnect.DefaultCellStyle.SelectionForeColor = [System.Drawing.Color]::White
     [void]$DataGridView.Columns.Add($colDisconnect)
 
     # Profile column
@@ -210,11 +256,15 @@ function Add-ConnectionGridColumns {
 
     # Quick Send button column
     $colQuickSend = New-Object System.Windows.Forms.DataGridViewButtonColumn
-    $colQuickSend.HeaderText = "Send"
+    $colQuickSend.HeaderText = "📤 Send"
     $colQuickSend.Name = "QuickSend"
-    $colQuickSend.Text = "Send"
+    $colQuickSend.Text = "📤"
     $colQuickSend.UseColumnTextForButtonValue = $true
-    $colQuickSend.FillWeight = 70
+    $colQuickSend.FillWeight = 60
+    $colQuickSend.DefaultCellStyle.BackColor = [System.Drawing.Color]::FromArgb(39, 174, 96)
+    $colQuickSend.DefaultCellStyle.ForeColor = [System.Drawing.Color]::White
+    $colQuickSend.DefaultCellStyle.SelectionBackColor = [System.Drawing.Color]::FromArgb(46, 204, 113)
+    $colQuickSend.DefaultCellStyle.SelectionForeColor = [System.Drawing.Color]::White
     [void]$DataGridView.Columns.Add($colQuickSend)
 
     # Manual: Script column (ComboBox)
@@ -230,11 +280,15 @@ function Add-ConnectionGridColumns {
 
     # Action Send button column
     $colActionSend = New-Object System.Windows.Forms.DataGridViewButtonColumn
-    $colActionSend.HeaderText = "Run"
+    $colActionSend.HeaderText = "▶ Run"
     $colActionSend.Name = "ActionSend"
-    $colActionSend.Text = "Run"
+    $colActionSend.Text = "▶"
     $colActionSend.UseColumnTextForButtonValue = $true
-    $colActionSend.FillWeight = 70
+    $colActionSend.FillWeight = 60
+    $colActionSend.DefaultCellStyle.BackColor = [System.Drawing.Color]::FromArgb(142, 68, 173)
+    $colActionSend.DefaultCellStyle.ForeColor = [System.Drawing.Color]::White
+    $colActionSend.DefaultCellStyle.SelectionBackColor = [System.Drawing.Color]::FromArgb(155, 89, 182)
+    $colActionSend.DefaultCellStyle.SelectionForeColor = [System.Drawing.Color]::White
     [void]$DataGridView.Columns.Add($colActionSend)
 
     # Hidden Id column
@@ -256,13 +310,35 @@ function New-ToolbarButton {
         [int]$X,
         [int]$Y = 10,
         [int]$Width = 100,
-        [int]$Height = 30
+        [int]$Height = 32,
+        [string]$ToolTip = ""
     )
 
     $button = New-Object System.Windows.Forms.Button
     $button.Location = New-Object System.Drawing.Point($X, $Y)
     $button.Size = New-Object System.Drawing.Size($Width, $Height)
     $button.Text = $Text
+    $button.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
+    $button.FlatAppearance.BorderSize = 1
+    $button.FlatAppearance.BorderColor = [System.Drawing.Color]::FromArgb(100, 100, 100)
+    $button.BackColor = [System.Drawing.Color]::FromArgb(0, 122, 204)
+    $button.ForeColor = [System.Drawing.Color]::White
+    $button.Font = New-Object System.Drawing.Font("Segoe UI", 9, [System.Drawing.FontStyle]::Bold)
+    $button.Cursor = [System.Windows.Forms.Cursors]::Hand
+    
+    # ホバー効果
+    $button.Add_MouseEnter({
+        $this.BackColor = [System.Drawing.Color]::FromArgb(28, 151, 234)
+    })
+    $button.Add_MouseLeave({
+        $this.BackColor = [System.Drawing.Color]::FromArgb(0, 122, 204)
+    })
+    
+    # ツールチップを追加
+    if ($ToolTip) {
+        $toolTipObj = New-Object System.Windows.Forms.ToolTip
+        $toolTipObj.SetToolTip($button, $ToolTip)
+    }
 
     return $button
 }
@@ -277,13 +353,18 @@ function New-LabelControl {
         [int]$X,
         [int]$Y,
         [int]$Width = 200,
-        [int]$Height = 20
+        [int]$Height = 20,
+        [bool]$Bold = $false
     )
 
     $label = New-Object System.Windows.Forms.Label
     $label.Location = New-Object System.Drawing.Point($X, $Y)
     $label.Size = New-Object System.Drawing.Size($Width, $Height)
     $label.Text = $Text
+    
+    if ($Bold) {
+        $label.Font = New-Object System.Drawing.Font("Segoe UI", 9, [System.Drawing.FontStyle]::Bold)
+    }
 
     return $label
 }
@@ -806,19 +887,28 @@ function Set-RowColor {
 
     switch ($Status) {
         "CONNECTED" {
-            $Row.DefaultCellStyle.BackColor = [System.Drawing.Color]::LightGreen
+            # より洗練された緑色
+            $Row.DefaultCellStyle.BackColor = [System.Drawing.Color]::FromArgb(220, 255, 220)
+            $Row.DefaultCellStyle.ForeColor = [System.Drawing.Color]::FromArgb(0, 100, 0)
         }
         "CONNECTING" {
-            $Row.DefaultCellStyle.BackColor = [System.Drawing.Color]::LightYellow
+            # より洗練された黄色
+            $Row.DefaultCellStyle.BackColor = [System.Drawing.Color]::FromArgb(255, 250, 205)
+            $Row.DefaultCellStyle.ForeColor = [System.Drawing.Color]::FromArgb(139, 115, 0)
         }
         "ERROR" {
-            $Row.DefaultCellStyle.BackColor = [System.Drawing.Color]::LightCoral
+            # より洗練された赤色
+            $Row.DefaultCellStyle.BackColor = [System.Drawing.Color]::FromArgb(255, 220, 220)
+            $Row.DefaultCellStyle.ForeColor = [System.Drawing.Color]::FromArgb(139, 0, 0)
         }
         "DISCONNECTED" {
-            $Row.DefaultCellStyle.BackColor = [System.Drawing.Color]::LightGray
+            # より洗練されたグレー
+            $Row.DefaultCellStyle.BackColor = [System.Drawing.Color]::FromArgb(245, 245, 245)
+            $Row.DefaultCellStyle.ForeColor = [System.Drawing.Color]::FromArgb(80, 80, 80)
         }
         default {
             $Row.DefaultCellStyle.BackColor = [System.Drawing.Color]::White
+            $Row.DefaultCellStyle.ForeColor = [System.Drawing.Color]::FromArgb(30, 30, 30)
         }
     }
 }
@@ -861,6 +951,59 @@ function Get-MessageSummary {
     }
 }
 
+function New-StyledComboBox {
+    <#
+    .SYNOPSIS
+    Creates a styled ComboBox with modern appearance.
+    #>
+    param(
+        [int]$X,
+        [int]$Y,
+        [int]$Width = 200,
+        [int]$Height = 25,
+        [string]$ToolTip = ""
+    )
+
+    $comboBox = New-Object System.Windows.Forms.ComboBox
+    $comboBox.Location = New-Object System.Drawing.Point($X, $Y)
+    $comboBox.Size = New-Object System.Drawing.Size($Width, $Height)
+    $comboBox.DropDownStyle = [System.Windows.Forms.ComboBoxStyle]::DropDownList
+    $comboBox.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
+    $comboBox.BackColor = [System.Drawing.Color]::White
+    $comboBox.ForeColor = [System.Drawing.Color]::FromArgb(30, 30, 30)
+    
+    if ($ToolTip) {
+        $toolTipObj = New-Object System.Windows.Forms.ToolTip
+        $toolTipObj.SetToolTip($comboBox, $ToolTip)
+    }
+
+    return $comboBox
+}
+
+function New-StatusLabel {
+    <#
+    .SYNOPSIS
+    Creates a status label for displaying application status.
+    #>
+    param(
+        [int]$X,
+        [int]$Y,
+        [int]$Width = 400,
+        [int]$Height = 20,
+        [string]$InitialText = "Ready"
+    )
+
+    $label = New-Object System.Windows.Forms.Label
+    $label.Location = New-Object System.Drawing.Point($X, $Y)
+    $label.Size = New-Object System.Drawing.Size($Width, $Height)
+    $label.Text = $InitialText
+    $label.ForeColor = [System.Drawing.Color]::FromArgb(100, 100, 100)
+    $label.Font = New-Object System.Drawing.Font("Segoe UI", 9)
+    $label.AutoSize = $false
+
+    return $label
+}
+
 # Note: Export-ModuleMember is not needed when dot-sourcing.
 # If this file is imported as a module, uncomment the following:
 # Export-ModuleMember -Function @(
@@ -869,6 +1012,8 @@ function Get-MessageSummary {
 #     'New-ToolbarButton',
 #     'New-LabelControl',
 #     'New-RefreshTimer',
+#     'New-StyledComboBox',
+#     'New-StatusLabel',
 #     'Configure-ScenarioColumn',
 #     'Configure-OnReceiveScriptColumn',
 #     'Configure-OnTimerSendColumn',

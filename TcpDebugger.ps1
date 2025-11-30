@@ -65,7 +65,7 @@ catch {
 
 # モジュールのインポート
 Write-Console "========================================" -ForegroundColor Cyan
-Write-Console "  TCP Test Controller v1.0" -ForegroundColor Cyan
+Write-Console "  Socket Debugger Simple v1.0" -ForegroundColor Cyan
 Write-Console "========================================" -ForegroundColor Cyan
 Write-Console ""
 
@@ -412,7 +412,7 @@ try {
 
 Write-Console "[Cleanup] Shutdown completed" -ForegroundColor Green
 Write-Console ""
-Write-Console "Thank you for using TCP Test Controller!" -ForegroundColor Cyan
+Write-Console "Thank you for using Socket Debugger Simple!" -ForegroundColor Cyan
 
 
 
