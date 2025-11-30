@@ -67,6 +67,14 @@ function New-ConnectionDataGridView {
     $dgv = New-Object System.Windows.Forms.DataGridView
     $dgv.Location = New-Object System.Drawing.Point($X, $Y)
     $dgv.Size = New-Object System.Drawing.Size($Width, $Height)
+    
+    # ダブルバッファリングを有効化（ちらつき防止）
+    $dgvType = $dgv.GetType()
+    $propInfo = $dgvType.GetProperty("DoubleBuffered", [System.Reflection.BindingFlags]::Instance -bor [System.Reflection.BindingFlags]::NonPublic)
+    if ($propInfo) {
+        $propInfo.SetValue($dgv, $true, $null)
+    }
+    
     $dgv.Anchor = [System.Windows.Forms.AnchorStyles]::Top -bor 
                   [System.Windows.Forms.AnchorStyles]::Bottom -bor 
                   [System.Windows.Forms.AnchorStyles]::Left -bor 

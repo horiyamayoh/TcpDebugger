@@ -240,33 +240,9 @@ function Show-MainForm {
     })
     $messageTimer.Start()
 
-    # Timer for periodic refresh (3秒間隔で性能最適化)
-    $timer = New-RefreshTimer -IntervalMilliseconds 3000
-    $timer.Add_Tick({
-        try {
-            if (-not $gridState.EditingInProgress -and -not $dgvInstances.IsCurrentCellInEditMode) {
-                Update-InstanceList -DataGridView $dgvInstances
-                
-                # ステータス表示を更新
-                if ($script:StatusLabel) {
-                    $connections = Get-UiConnections
-                    $connectedCount = ($connections | Where-Object { $_.Status -eq 'CONNECTED' }).Count
-                    $totalCount = $connections.Count
-                    $script:StatusLabel.Text = "接続状態: $connectedCount / $totalCount Connected | 最終更新: $(Get-Date -Format 'HH:mm:ss')"
-                }
-            }
-        }
-        catch {
-            # タイマーからのエラーは無視、ログに記録
-            Write-Verbose "[UI Timer] Error during refresh: $_"
-        }
-    })
-    $timer.Start()
-
     # Form closing cleanup
     $form.Add_FormClosing({
         $messageTimer.Stop()
-        $timer.Stop()
         
         # Loggerバッファをフラッシュ
         $logger = Get-UiLogger
