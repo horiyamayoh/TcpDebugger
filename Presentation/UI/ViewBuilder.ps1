@@ -1009,23 +1009,22 @@ function Configure-ManualSendColumn {
     <#
     .SYNOPSIS
     Configures the Manual: Send column cell for a connection row.
+    Lists template CSV files from the templates folder.
     #>
     param(
         $Row,
         [string]$InstancePath
     )
 
-    $dataBankEntries = @()
-    $dataBankPath = $null
+    $templateEntries = @()
     if ($InstancePath) {
         try {
             $catalog = Get-ManualSendCatalog -InstancePath $InstancePath
             if ($catalog) {
-                $dataBankEntries = if ($catalog.Entries) { $catalog.Entries } else { @() }
-                $dataBankPath = $catalog.Path
+                $templateEntries = if ($catalog.Entries) { $catalog.Entries } else { @() }
             }
         } catch {
-            $dataBankEntries = @()
+            $templateEntries = @()
         }
     }
 
@@ -1035,27 +1034,29 @@ function Configure-ManualSendColumn {
     $manualSendCell.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
 
     $dataSource = New-Object System.Collections.ArrayList
+    $templateMapping = @{}
+    
     $dataPlaceholder = [PSCustomObject]@{
-        Display = "(Select)"
-        Key     = ""
+        Display  = "(Select)"
+        Key      = ""
+        FileName = ""
+        FilePath = $null
     }
     [void]$dataSource.Add($dataPlaceholder)
+    $templateMapping[""] = $dataPlaceholder
 
-    if ($dataBankEntries -and $dataBankEntries.Count -gt 0) {
-        foreach ($item in $dataBankEntries) {
-            if (-not $item.DataID) { continue }
-
-            $displayText = if ([string]::IsNullOrWhiteSpace($item.Description)) {
-                $item.DataID
-            } else {
-                "{0} - {1}" -f $item.DataID, $item.Description
-            }
+    if ($templateEntries -and $templateEntries.Count -gt 0) {
+        foreach ($item in $templateEntries) {
+            if (-not $item.FileName) { continue }
 
             $entry = [PSCustomObject]@{
-                Display = $displayText
-                Key     = [string]$item.DataID
+                Display  = $item.Display
+                Key      = $item.FileName
+                FileName = $item.FileName
+                FilePath = $item.FilePath
             }
             [void]$dataSource.Add($entry)
+            $templateMapping[$item.FileName] = $entry
         }
     }
 
@@ -1064,8 +1065,7 @@ function Configure-ManualSendColumn {
     }
     $manualSendCell.Value = ""
     $manualSendCell.Tag = @{
-        DataBankCount = $dataBankEntries.Count
-        DataBankPath  = if ($dataBankPath -and (Test-Path -LiteralPath $dataBankPath)) { $dataBankPath } else { $null }
+        Mapping = $templateMapping
     }
     $Row.Cells["ManualSend"] = $manualSendCell
 }
@@ -1074,11 +1074,24 @@ function Configure-ManualScriptColumn {
     <#
     .SYNOPSIS
     Configures the Manual: Script column cell for a connection row.
+    Lists ps1 scripts from the scenarios/manual_scripts folder.
     #>
     param(
         $Row,
         [string]$InstancePath
     )
+
+    $scriptEntries = @()
+    if ($InstancePath) {
+        try {
+            $catalog = Get-ManualScriptCatalog -InstancePath $InstancePath
+            if ($catalog) {
+                $scriptEntries = if ($catalog.Entries) { $catalog.Entries } else { @() }
+            }
+        } catch {
+            $scriptEntries = @()
+        }
+    }
 
     $manualScriptCell = New-Object System.Windows.Forms.DataGridViewComboBoxCell
     $manualScriptCell.DisplayMember = "Display"
@@ -1087,33 +1100,31 @@ function Configure-ManualScriptColumn {
 
     $actionSource = New-Object System.Collections.ArrayList
     $actionMapping = @{}
+    
     $actionPlaceholder = [PSCustomObject]@{
-        Display = "(Select)"
-        Key     = ""
-        Type    = ""
-        Path    = $null
-        Name    = $null
+        Display  = "(Select)"
+        Key      = ""
+        Type     = ""
+        FileName = ""
+        FilePath = $null
     }
     [void]$actionSource.Add($actionPlaceholder)
-    $actionMapping[$actionPlaceholder.Key] = $actionPlaceholder
+    $actionMapping[""] = $actionPlaceholder
 
-    # Get available scenarios from Scenario column
-    $scenarioCell = $Row.Cells["Scenario"]
-    $availableScenarios = @()
-    if ($scenarioCell.Tag -is [System.Collections.IDictionary] -and $scenarioCell.Tag.ContainsKey("AvailableScenarios")) {
-        $availableScenarios = $scenarioCell.Tag["AvailableScenarios"]
-    }
+    if ($scriptEntries -and $scriptEntries.Count -gt 0) {
+        foreach ($item in $scriptEntries) {
+            if (-not $item.FileName) { continue }
 
-    foreach ($scenarioEntry in $availableScenarios) {
-        $actionEntry = [PSCustomObject]@{
-            Display = $scenarioEntry.Display
-            Key     = $scenarioEntry.Key
-            Type    = $scenarioEntry.Type
-            Path    = $scenarioEntry.Path
-            Name    = $scenarioEntry.Name
+            $entry = [PSCustomObject]@{
+                Display  = $item.Display
+                Key      = $item.FileName
+                Type     = "Script"
+                FileName = $item.FileName
+                FilePath = $item.FilePath
+            }
+            [void]$actionSource.Add($entry)
+            $actionMapping[$item.FileName] = $entry
         }
-        [void]$actionSource.Add($actionEntry)
-        $actionMapping[$actionEntry.Key] = $actionEntry
     }
 
     foreach ($item in $actionSource) {

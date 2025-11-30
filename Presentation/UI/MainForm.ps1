@@ -1047,38 +1047,35 @@ function Handle-CellContentClick {
 function Send-ManualData {
     <#
     .SYNOPSIS
-    Sends a data item from the data bank to a connection.
+    Sends a template file to a connection.
     #>
     param(
         [Parameter(Mandatory=$true)]
         [string]$ConnectionId,
         
         [Parameter(Mandatory=$true)]
-        [string]$DataID,
-        
-        [Parameter(Mandatory=$true)]
-        [string]$DataBankPath
+        [string]$TemplateFilePath
     )
     
-    if (-not (Test-Path -LiteralPath $DataBankPath)) {
-        throw "Data bank file not found: $DataBankPath"
+    if (-not (Test-Path -LiteralPath $TemplateFilePath)) {
+        throw "Template file not found: $TemplateFilePath"
     }
     
-    # Read databank CSV
-    $entries = Import-Csv -Path $DataBankPath -Encoding UTF8
-    $entry = $entries | Where-Object { $_.DataID -eq $DataID } | Select-Object -First 1
+    # Read template file and convert to byte array
+    $templates = Get-MessageTemplateCache -FilePath $TemplateFilePath -ThrowOnMissing
     
-    if (-not $entry) {
-        throw "Data ID not found in data bank: $DataID"
+    if (-not $templates.ContainsKey('DEFAULT')) {
+        throw "DEFAULT template not found in $TemplateFilePath"
     }
     
-    # Convert hex string to byte array
-    $hexString = $entry.Data -replace '\s', ''
-    if ([string]::IsNullOrWhiteSpace($hexString)) {
-        throw "Data is empty for ID: $DataID"
-    }
+    $template = $templates['DEFAULT']
     
-    $byteArray = ConvertTo-ByteArray -HexString $hexString
+    # Use pre-converted bytes if available, otherwise convert from HEX
+    $byteArray = if ($template.Bytes) {
+        $template.Bytes
+    } else {
+        ConvertTo-ByteArray -Data $template.Format -Encoding 'HEX'
+    }
     
     # Send data
     Send-Data -ConnectionId $ConnectionId -Data $byteArray
@@ -1096,36 +1093,34 @@ function Handle-QuickSendClick {
 
     $selectedKey = if ($comboCell.Value) { [string]$comboCell.Value } else { "" }
     if ([string]::IsNullOrWhiteSpace($selectedKey)) {
-        [System.Windows.Forms.MessageBox]::Show("Please select a data item to send.", "Warning") | Out-Null
+        [System.Windows.Forms.MessageBox]::Show("Please select a template to send.", "Warning") | Out-Null
         return
     }
 
     $tagData = $comboCell.Tag
-    $dataBankPath = $null
-    $dataBankCount = 0
-    if ($tagData -is [System.Collections.IDictionary]) {
-        if ($tagData.ContainsKey("DataBankPath")) {
-            $dataBankPath = $tagData["DataBankPath"]
-        }
-        if ($tagData.ContainsKey("DataBankCount")) {
-            $dataBankCount = [int]$tagData["DataBankCount"]
-        }
+    $templateMapping = $null
+    if ($tagData -is [System.Collections.IDictionary] -and $tagData.ContainsKey("Mapping")) {
+        $templateMapping = $tagData["Mapping"]
     }
 
-    if ($dataBankCount -le 0 -and [string]::IsNullOrWhiteSpace($dataBankPath)) {
-        [System.Windows.Forms.MessageBox]::Show("No data bank entries available for this connection.", "Warning") | Out-Null
+    if (-not $templateMapping -or -not $templateMapping.ContainsKey($selectedKey)) {
+        [System.Windows.Forms.MessageBox]::Show("Selected template is not available.", "Warning") | Out-Null
         return
     }
 
-    if ($dataBankPath -and -not (Test-Path -LiteralPath $dataBankPath)) {
-        [System.Windows.Forms.MessageBox]::Show("Data bank file not found: $dataBankPath", "Warning") | Out-Null
+    $templateEntry = $templateMapping[$selectedKey]
+    $templatePath = $templateEntry.FilePath
+
+    if (-not $templatePath -or -not (Test-Path -LiteralPath $templatePath)) {
+        [System.Windows.Forms.MessageBox]::Show("Template file not found: $templatePath", "Warning") | Out-Null
         return
     }
 
     try {
-        Send-ManualData -ConnectionId $ConnectionId -DataID $selectedKey -DataBankPath $dataBankPath
+        Send-ManualData -ConnectionId $ConnectionId -TemplateFilePath $templatePath
         $targetName = if ($Connection) { $Connection.DisplayName } else { $ConnectionId }
-        [System.Windows.Forms.MessageBox]::Show("Sent data item '$selectedKey' to $targetName.", "Success") | Out-Null
+        $templateName = $templateEntry.FileName
+        Write-Console "[Manual:Send] Sent template '$templateName' to $targetName" -ForegroundColor Cyan
     } catch {
         [System.Windows.Forms.MessageBox]::Show("Failed to send data: $_", "Error") | Out-Null
     }
@@ -1143,7 +1138,7 @@ function Handle-ActionSendClick {
 
     $selectedKey = if ($actionCell.Value) { [string]$actionCell.Value } else { "" }
     if ([string]::IsNullOrWhiteSpace($selectedKey)) {
-        [System.Windows.Forms.MessageBox]::Show("Please select an action to run.", "Warning") | Out-Null
+        [System.Windows.Forms.MessageBox]::Show("Please select a script to run.", "Warning") | Out-Null
         return
     }
 
@@ -1154,24 +1149,41 @@ function Handle-ActionSendClick {
     }
 
     if (-not $actionMapping -or -not $actionMapping.ContainsKey($selectedKey)) {
-        [System.Windows.Forms.MessageBox]::Show("Selected action is not available.", "Warning") | Out-Null
+        [System.Windows.Forms.MessageBox]::Show("Selected script is not available.", "Warning") | Out-Null
         return
     }
 
     $actionEntry = $actionMapping[$selectedKey]
-    if ($actionEntry.Type -eq "Scenario") {
-        $scenarioPath = $actionEntry.Path
-        if (-not $scenarioPath -or -not (Test-Path -LiteralPath $scenarioPath)) {
-            [System.Windows.Forms.MessageBox]::Show("Scenario file not found.", "Warning") | Out-Null
+    
+    if ($actionEntry.Type -eq "Script") {
+        $scriptPath = $actionEntry.FilePath
+        if (-not $scriptPath -or -not (Test-Path -LiteralPath $scriptPath)) {
+            [System.Windows.Forms.MessageBox]::Show("Script file not found: $scriptPath", "Warning") | Out-Null
             return
         }
 
+        # インスタンスパスを取得
+        $instancePath = $null
+        if ($Connection -and $Connection.Variables -and $Connection.Variables.ContainsKey('InstancePath')) {
+            $instancePath = $Connection.Variables['InstancePath']
+        }
+
+        # Contextを作成（Manual Scriptは受信データがないので最小限）
+        $context = [PSCustomObject]@{
+            ConnectionId = $ConnectionId
+            InstancePath = $instancePath
+        }
+
         try {
-            Start-Scenario -ConnectionId $ConnectionId -ScenarioPath $scenarioPath
-            $actionName = if ($actionEntry.Name) { $actionEntry.Name } else { $selectedKey }
-            [System.Windows.Forms.MessageBox]::Show("Started scenario '$actionName'.", "Success") | Out-Null
+            Write-Console "[Manual:Script] Executing script: $($actionEntry.FileName)" -ForegroundColor Cyan
+            
+            # スクリプトを実行
+            & $scriptPath -Context $context
+            
+            Write-Console "[Manual:Script] Script completed: $($actionEntry.FileName)" -ForegroundColor Green
         } catch {
-            [System.Windows.Forms.MessageBox]::Show("Failed to start scenario: $_", "Error") | Out-Null
+            [System.Windows.Forms.MessageBox]::Show("Failed to execute script: $_", "Error") | Out-Null
+            Write-Console "[Manual:Script] Script failed: $_" -ForegroundColor Red
         }
     } else {
         [System.Windows.Forms.MessageBox]::Show("Selected action is not supported.", "Warning") | Out-Null
@@ -1867,17 +1879,15 @@ function Configure-ManualSendColumn {
         [string]$InstancePath
     )
 
-    $dataBankEntries = @()
-    $dataBankPath = $null
+    $templateEntries = @()
     if ($InstancePath) {
         try {
             $catalog = Get-ManualSendCatalog -InstancePath $InstancePath
             if ($catalog) {
-                $dataBankEntries = if ($catalog.Entries) { $catalog.Entries } else { @() }
-                $dataBankPath = $catalog.Path
+                $templateEntries = if ($catalog.Entries) { $catalog.Entries } else { @() }
             }
         } catch {
-            $dataBankEntries = @()
+            $templateEntries = @()
         }
     }
 
@@ -1887,27 +1897,29 @@ function Configure-ManualSendColumn {
     $manualSendCell.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
 
     $dataSource = New-Object System.Collections.ArrayList
+    $templateMapping = @{}
+    
     $dataPlaceholder = [PSCustomObject]@{
-        Display = "(Select)"
-        Key     = ""
+        Display  = "(Select)"
+        Key      = ""
+        FileName = ""
+        FilePath = $null
     }
     [void]$dataSource.Add($dataPlaceholder)
+    $templateMapping[""] = $dataPlaceholder
 
-    if ($dataBankEntries -and $dataBankEntries.Count -gt 0) {
-        foreach ($item in $dataBankEntries) {
-            if (-not $item.DataID) { continue }
-
-            $displayText = if ([string]::IsNullOrWhiteSpace($item.Description)) {
-                $item.DataID
-            } else {
-                "{0} - {1}" -f $item.DataID, $item.Description
-            }
+    if ($templateEntries -and $templateEntries.Count -gt 0) {
+        foreach ($item in $templateEntries) {
+            if (-not $item.FileName) { continue }
 
             $entry = [PSCustomObject]@{
-                Display = $displayText
-                Key     = [string]$item.DataID
+                Display  = $item.Display
+                Key      = $item.FileName
+                FileName = $item.FileName
+                FilePath = $item.FilePath
             }
             [void]$dataSource.Add($entry)
+            $templateMapping[$item.FileName] = $entry
         }
     }
 
@@ -1916,8 +1928,7 @@ function Configure-ManualSendColumn {
     }
     $manualSendCell.Value = ""
     $manualSendCell.Tag = @{
-        DataBankCount = $dataBankEntries.Count
-        DataBankPath  = if ($dataBankPath -and (Test-Path -LiteralPath $dataBankPath)) { $dataBankPath } else { $null }
+        Mapping = $templateMapping
     }
     $Row.Cells["ManualSend"] = $manualSendCell
 }
@@ -1928,45 +1939,58 @@ function Configure-ManualScriptColumn {
         [string]$InstancePath
     )
 
+    $scriptEntries = @()
+    if ($InstancePath) {
+        try {
+            $catalog = Get-ManualScriptCatalog -InstancePath $InstancePath
+            if ($catalog) {
+                $scriptEntries = if ($catalog.Entries) { $catalog.Entries } else { @() }
+            }
+        } catch {
+            $scriptEntries = @()
+        }
+    }
+
     $manualScriptCell = New-Object System.Windows.Forms.DataGridViewComboBoxCell
     $manualScriptCell.DisplayMember = "Display"
     $manualScriptCell.ValueMember = "Key"
     $manualScriptCell.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
 
     $actionSource = New-Object System.Collections.ArrayList
-    $actionMapping = @{
-    }
+    $actionMapping = @{}
+    
     $actionPlaceholder = [PSCustomObject]@{
-        Display = "(Select)"
-        Key     = ""
-        Type    = ""
-        Path    = $null
-        Name    = $null
+        Display  = "(Select)"
+        Key      = ""
+        Type     = ""
+        FileName = ""
+        FilePath = $null
     }
     [void]$actionSource.Add($actionPlaceholder)
-    $actionMapping[$actionPlaceholder.Key] = $actionPlaceholder
+    $actionMapping[""] = $actionPlaceholder
 
-    # Get available scenarios from Scenario column
-    $scenarioCell = $Row.Cells["Scenario"]
-    $availableScenarios = @()
-    if ($scenarioCell.Tag -is [System.Collections.IDictionary] -and $scenarioCell.Tag.ContainsKey("AvailableScenarios")) {
-        $availableScenarios = $scenarioCell.Tag["AvailableScenarios"]
-    }
+    if ($scriptEntries -and $scriptEntries.Count -gt 0) {
+        foreach ($item in $scriptEntries) {
+            if (-not $item.FileName) { continue }
 
-    foreach ($scenarioEntry in $availableScenarios) {
-        $actionEntry = [PSCustomObject]@{
-            Display = $scenarioEntry.Display
-            Key     = $scenarioEntry.Key
-            Type    = $scenarioEntry.Type
-            Path    = $scenarioEntry.Path
-            Name    = $scenarioEntry.Name
+            $entry = [PSCustomObject]@{
+                Display  = $item.Display
+                Key      = $item.FileName
+                Type     = "Script"
+                FileName = $item.FileName
+                FilePath = $item.FilePath
+            }
+            [void]$actionSource.Add($entry)
+            $actionMapping[$item.FileName] = $entry
         }
-        [void]$actionSource.Add($actionEntry)
-        $actionMapping[$actionEntry.Key] = $actionEntry
     }
 
     foreach ($item in $actionSource) {
         [void]$manualScriptCell.Items.Add($item)
+    }
+    $manualScriptCell.Value = ""
+    $manualScriptCell.Tag = @{
+        Mapping = $actionMapping
     }
     $Row.Cells["ManualScript"] = $manualScriptCell
 }

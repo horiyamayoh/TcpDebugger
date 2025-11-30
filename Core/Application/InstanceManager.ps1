@@ -367,44 +367,91 @@ function Get-ManualSendCatalog {
     インスタンスの Manual: Send カタログを取得（UI用）
     
     .DESCRIPTION
-    templates/databank.csvを読み込み、UIのドロップダウンで使用できる形式で返す
+    templates/ フォルダ内のCSVファイル（電文テンプレート）を一覧として返す
+    databank.csv は除外する
     
     .PARAMETER InstancePath
     インスタンスのルートパス
     
     .OUTPUTS
-    Path: データバンクファイルのパス
-    Entries: DataIDとDescriptionのリスト
+    TemplatesPath: テンプレートフォルダのパス
+    Entries: ファイル名とパスのリスト
     #>
     param(
         [Parameter(Mandatory=$true)]
         [string]$InstancePath
     )
 
-    $databankPath = Join-Path $InstancePath "templates\databank.csv"
+    $templatesPath = Join-Path $InstancePath "templates"
 
-    if (-not (Test-Path -LiteralPath $databankPath)) {
+    if (-not (Test-Path -LiteralPath $templatesPath)) {
         return [PSCustomObject]@{
-            Path = $null
+            TemplatesPath = $null
             Entries = @()
         }
     }
 
-    # Get-InstanceDataBankを使用してキャッシュ付きで取得
-    $items = Get-InstanceDataBank -InstancePath $InstancePath
-
-    # UI用の形式に変換
+    # templatesフォルダ内のCSVファイルを取得（databank.csvは除外）
     $entries = @()
-    foreach ($item in $items) {
+    $csvFiles = Get-ChildItem -Path $templatesPath -Filter "*.csv" -File | Where-Object { $_.Name -ne "databank.csv" }
+    
+    foreach ($file in $csvFiles) {
         $entries += [PSCustomObject]@{
-            DataID = $item.DataID
-            Description = if ($item.Description) { $item.Description } else { $item.DataID }
-            Display = if ($item.Description) { "$($item.DataID) - $($item.Description)" } else { $item.DataID }
+            FileName = $file.BaseName
+            FilePath = $file.FullName
+            Display  = $file.BaseName
         }
     }
 
     return [PSCustomObject]@{
-        Path = $databankPath
-        Entries = $entries
+        TemplatesPath = $templatesPath
+        Entries = $entries | Sort-Object Display
+    }
+}
+
+function Get-ManualScriptCatalog {
+    <#
+    .SYNOPSIS
+    インスタンスの Manual: Script カタログを取得（UI用）
+    
+    .DESCRIPTION
+    scenarios/manual_scripts/ フォルダ内のps1ファイルを一覧として返す
+    
+    .PARAMETER InstancePath
+    インスタンスのルートパス
+    
+    .OUTPUTS
+    ScriptsPath: スクリプトフォルダのパス
+    Entries: ファイル名とパスのリスト
+    #>
+    param(
+        [Parameter(Mandatory=$true)]
+        [string]$InstancePath
+    )
+
+    $scriptsPath = Join-Path $InstancePath "scenarios\manual_scripts"
+
+    if (-not (Test-Path -LiteralPath $scriptsPath)) {
+        return [PSCustomObject]@{
+            ScriptsPath = $null
+            Entries = @()
+        }
+    }
+
+    # manual_scriptsフォルダ内のps1ファイルを取得
+    $entries = @()
+    $ps1Files = Get-ChildItem -Path $scriptsPath -Filter "*.ps1" -File
+    
+    foreach ($file in $ps1Files) {
+        $entries += [PSCustomObject]@{
+            FileName = $file.BaseName
+            FilePath = $file.FullName
+            Display  = $file.BaseName
+        }
+    }
+
+    return [PSCustomObject]@{
+        ScriptsPath = $scriptsPath
+        Entries = $entries | Sort-Object Display
     }
 }
