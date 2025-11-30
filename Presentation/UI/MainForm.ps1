@@ -103,48 +103,42 @@ function Show-MainForm {
     #>
 
     # Create main form using ViewBuilder
-    $form = New-MainFormWindow -Title "Socket Debugger Simple v1.0" -Width 1400 -Height 800
+    $form = New-MainFormWindow -Title "Socket Debugger Simple v1.0" -Width 1620 -Height 800
     $script:CurrentMainForm = $form
 
-    # ツールバーパネルを作成
+    # ツールバーパネルを作成（統一カラーパレット使用）
     $toolbarPanel = New-Object System.Windows.Forms.Panel
     $toolbarPanel.Location = New-Object System.Drawing.Point(0, 0)
-    $toolbarPanel.Size = New-Object System.Drawing.Size(1400, 50)
-    $toolbarPanel.BackColor = [System.Drawing.Color]::FromArgb(230, 230, 230)
-    $toolbarPanel.BorderStyle = [System.Windows.Forms.BorderStyle]::FixedSingle
+    $toolbarPanel.Size = New-Object System.Drawing.Size(1620, 50)
+    $toolbarPanel.BackColor = [System.Drawing.Color]::FromArgb(241, 245, 249)  # slate-100
+    $toolbarPanel.BorderStyle = [System.Windows.Forms.BorderStyle]::None
     $toolbarPanel.Anchor = [System.Windows.Forms.AnchorStyles]::Top -bor 
                            [System.Windows.Forms.AnchorStyles]::Left -bor 
                            [System.Windows.Forms.AnchorStyles]::Right
     $form.Controls.Add($toolbarPanel)
 
     # Toolbar buttons using ViewBuilder
-    $btnConnect = New-ToolbarButton -Text "▶ Connect" -X 10 -Y 10 -Width 120 -ToolTip "すべての接続を開始します"
+    $btnConnect = New-ToolbarButton -Text "▶ Connect" -X 12 -Y 10 -Width 115 -ToolTip "すべての接続を開始します"
     $toolbarPanel.Controls.Add($btnConnect)
 
-    $btnDisconnect = New-ToolbarButton -Text "⏹ Disconnect" -X 140 -Y 10 -Width 120 -ToolTip "すべての接続を切断します"
-    $btnDisconnect.BackColor = [System.Drawing.Color]::FromArgb(192, 57, 43)
-    $btnDisconnect.Add_MouseEnter({
-        $this.BackColor = [System.Drawing.Color]::FromArgb(231, 76, 60)
-    })
-    $btnDisconnect.Add_MouseLeave({
-        $this.BackColor = [System.Drawing.Color]::FromArgb(192, 57, 43)
-    })
+    $btnDisconnect = New-ToolbarButton -Text "⏹ Disconnect" -X 135 -Y 10 -Width 115 -ToolTip "すべての接続を切断します"
     $toolbarPanel.Controls.Add($btnDisconnect)
 
     # Global profile combo box (アプリケーションプロファイル用)
     $lblGlobalProfile = New-Object System.Windows.Forms.Label
     $lblGlobalProfile.Text = "App Profile:"
-    $lblGlobalProfile.Location = New-Object System.Drawing.Point(280, 15)
+    $lblGlobalProfile.Location = New-Object System.Drawing.Point(268, 15)
     $lblGlobalProfile.Size = New-Object System.Drawing.Size(80, 20)
     $lblGlobalProfile.TextAlign = [System.Drawing.ContentAlignment]::MiddleRight
-    $lblGlobalProfile.Font = New-Object System.Drawing.Font("Segoe UI", 9, [System.Drawing.FontStyle]::Bold)
+    $lblGlobalProfile.Font = New-Object System.Drawing.Font("Segoe UI", 9)
+    $lblGlobalProfile.ForeColor = [System.Drawing.Color]::FromArgb(71, 85, 105)  # slate-500
     $toolbarPanel.Controls.Add($lblGlobalProfile)
 
-    $script:cmbGlobalProfile = New-StyledComboBox -X 365 -Y 12 -Width 200 -ToolTip "アプリケーション全体に適用するプロファイルを選択"
+    $script:cmbGlobalProfile = New-StyledComboBox -X 355 -Y 11 -Width 200 -ToolTip "アプリケーション全体に適用するプロファイルを選択"
     $toolbarPanel.Controls.Add($script:cmbGlobalProfile)
 
     # ステータスラベルを追加
-    $script:StatusLabel = New-StatusLabel -X 580 -Y 15 -Width 600 -InitialText "Ready"
+    $script:StatusLabel = New-StatusLabel -X 570 -Y 15 -Width 600 -InitialText "Ready"
     $script:StatusLabel.Anchor = [System.Windows.Forms.AnchorStyles]::Top -bor 
                         [System.Windows.Forms.AnchorStyles]::Left -bor 
                         [System.Windows.Forms.AnchorStyles]::Right
@@ -152,7 +146,7 @@ function Show-MainForm {
 
     # DataGridView (connection list) using ViewBuilder
     # 画面いっぱいに表示（ツールバー分を考慮）
-    $dgvInstances = New-ConnectionDataGridView -X 10 -Y 60 -Width 1360 -Height 690
+    $dgvInstances = New-ConnectionDataGridView -X 10 -Y 60 -Width 1580 -Height 690
     $form.Controls.Add($dgvInstances)
     
     # アプリケーションプロファイルコンボボックスの初期化
@@ -375,7 +369,7 @@ function Register-ButtonEvents {
         # 上部ボタンは常に全インスタンスを一括接続
         if ($script:StatusLabel) {
             $script:StatusLabel.Text = "接続中..."
-            $script:StatusLabel.ForeColor = [System.Drawing.Color]::FromArgb(0, 122, 204)
+            $script:StatusLabel.ForeColor = [System.Drawing.Color]::FromArgb(71, 85, 105)  # slate-500
         }
         
         $connections = Get-UiConnections
@@ -397,11 +391,7 @@ function Register-ButtonEvents {
         
         if ($script:StatusLabel) {
             $script:StatusLabel.Text = "接続完了: 成功 $successCount, 失敗 $failCount"
-            $script:StatusLabel.ForeColor = if ($failCount -gt 0) { 
-                [System.Drawing.Color]::FromArgb(192, 57, 43) 
-            } else { 
-                [System.Drawing.Color]::FromArgb(39, 174, 96) 
-            }
+            $script:StatusLabel.ForeColor = [System.Drawing.Color]::FromArgb(71, 85, 105)  # slate-500
         }
         
         if ($failCount -gt 0) {
@@ -418,7 +408,7 @@ function Register-ButtonEvents {
         # 上部ボタンは常に全インスタンスを一括切断
         if ($script:StatusLabel) {
             $script:StatusLabel.Text = "切断中..."
-            $script:StatusLabel.ForeColor = [System.Drawing.Color]::FromArgb(192, 57, 43)
+            $script:StatusLabel.ForeColor = [System.Drawing.Color]::FromArgb(71, 85, 105)  # slate-500
         }
         
         $connections = Get-UiConnections
@@ -440,11 +430,7 @@ function Register-ButtonEvents {
         
         if ($script:StatusLabel) {
             $script:StatusLabel.Text = "切断完了: 成功 $successCount, 失敗 $failCount"
-            $script:StatusLabel.ForeColor = if ($failCount -gt 0) { 
-                [System.Drawing.Color]::FromArgb(192, 57, 43) 
-            } else { 
-                [System.Drawing.Color]::FromArgb(39, 174, 96) 
-            }
+            $script:StatusLabel.ForeColor = [System.Drawing.Color]::FromArgb(71, 85, 105)  # slate-500
         }
         
         if ($failCount -gt 0) {

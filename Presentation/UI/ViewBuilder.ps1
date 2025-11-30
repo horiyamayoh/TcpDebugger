@@ -4,6 +4,51 @@
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
 
+# ========================================
+# 統一カラーパレット
+# ========================================
+$script:UIColors = @{
+    # 背景色
+    FormBackground    = [System.Drawing.Color]::FromArgb(248, 250, 252)  # slate-50
+    PanelBackground   = [System.Drawing.Color]::FromArgb(241, 245, 249)  # slate-100
+    CardBackground    = [System.Drawing.Color]::White
+    
+    # テキスト色
+    TextPrimary       = [System.Drawing.Color]::FromArgb(15, 23, 42)     # slate-900
+    TextSecondary     = [System.Drawing.Color]::FromArgb(71, 85, 105)    # slate-500
+    TextMuted         = [System.Drawing.Color]::FromArgb(148, 163, 184)  # slate-400
+    
+    # ボタン色（グレー系）
+    ButtonNormal      = [System.Drawing.Color]::FromArgb(71, 85, 105)    # slate-500
+    ButtonHover       = [System.Drawing.Color]::FromArgb(51, 65, 85)     # slate-600
+    ButtonPressed     = [System.Drawing.Color]::FromArgb(30, 41, 59)     # slate-800
+    ButtonText        = [System.Drawing.Color]::White
+    
+    # ヘッダー色
+    HeaderBackground  = [System.Drawing.Color]::FromArgb(30, 41, 59)     # slate-800
+    HeaderText        = [System.Drawing.Color]::White
+    
+    # グリッド色
+    GridLine          = [System.Drawing.Color]::FromArgb(226, 232, 240)  # slate-200
+    GridAltRow        = [System.Drawing.Color]::FromArgb(248, 250, 252)  # slate-50
+    
+    # ステータス色
+    StatusConnected   = [System.Drawing.Color]::FromArgb(220, 252, 231)  # green-100
+    StatusConnectedText = [System.Drawing.Color]::FromArgb(22, 101, 52)  # green-800
+    StatusDisconnected = [System.Drawing.Color]::FromArgb(241, 245, 249) # slate-100
+    StatusDisconnectedText = [System.Drawing.Color]::FromArgb(71, 85, 105) # slate-500
+    StatusConnecting  = [System.Drawing.Color]::FromArgb(254, 249, 195)  # yellow-100
+    StatusConnectingText = [System.Drawing.Color]::FromArgb(133, 77, 14) # yellow-800
+    StatusError       = [System.Drawing.Color]::FromArgb(254, 226, 226)  # red-100
+    StatusErrorText   = [System.Drawing.Color]::FromArgb(153, 27, 27)    # red-800
+    
+    # アクセント色
+    AccentPrimary     = [System.Drawing.Color]::FromArgb(59, 130, 246)   # blue-500
+    AccentSuccess     = [System.Drawing.Color]::FromArgb(34, 197, 94)    # green-500
+    AccentDanger      = [System.Drawing.Color]::FromArgb(239, 68, 68)    # red-500
+    AccentPurple      = [System.Drawing.Color]::FromArgb(139, 92, 246)   # violet-500
+}
+
 function New-MainFormWindow {
     <#
     .SYNOPSIS
@@ -20,17 +65,17 @@ function New-MainFormWindow {
     #>
     param(
         [string]$Title = "Socket Debugger Simple v1.0",
-        [int]$Width = 1400,
+        [int]$Width = 1620,
         [int]$Height = 800
     )
 
     $form = New-Object System.Windows.Forms.Form
     $form.Text = $Title
     $form.Size = New-Object System.Drawing.Size($Width, $Height)
-    $form.MinimumSize = New-Object System.Drawing.Size(1200, 600)
+    $form.MinimumSize = New-Object System.Drawing.Size(1450, 600)
     $form.StartPosition = "CenterScreen"
     $form.Font = New-Object System.Drawing.Font("Segoe UI", 9)
-    $form.BackColor = [System.Drawing.Color]::FromArgb(240, 240, 240)
+    $form.BackColor = $script:UIColors.FormBackground
     
     # アイコン設定
     # カスタムアイコンファイルがあれば使用、なければPowerShellアイコンを使用
@@ -89,9 +134,9 @@ function New-ConnectionDataGridView {
     $dgv.AutoSizeColumnsMode = "Fill"
     $dgv.AutoGenerateColumns = $false
     $dgv.EditMode = [System.Windows.Forms.DataGridViewEditMode]::EditOnEnter
-    $dgv.BorderStyle = [System.Windows.Forms.BorderStyle]::Fixed3D
-    $dgv.BackgroundColor = [System.Drawing.Color]::White
-    $dgv.GridColor = [System.Drawing.Color]::FromArgb(200, 200, 200)
+    $dgv.BorderStyle = [System.Windows.Forms.BorderStyle]::None
+    $dgv.BackgroundColor = $script:UIColors.CardBackground
+    $dgv.GridColor = $script:UIColors.GridLine
     $dgv.EnableHeadersVisualStyles = $false
     
     # グループヘッダー構成
@@ -102,27 +147,27 @@ function New-ConnectionDataGridView {
     # 1行目に表示する単独列（グループなし）
     $singleColumns = @('Name', 'Protocol', 'Status', 'BtnConnect', 'BtnDisconnect', 'Profile')
     
-    # グループ化された列
+    # グループ化された列（統一カラー使用）
     $headerGroups = @(
         [PSCustomObject]@{
             Title   = 'Endpoint'
             Columns = @('LocalEndpoint', 'RemoteEndpoint')
-            Color   = [System.Drawing.Color]::FromArgb(45, 45, 48)
+            Color   = $script:UIColors.HeaderBackground
         }
         [PSCustomObject]@{
             Title   = 'On Receive'
             Columns = @('Scenario', 'OnReceiveScript')
-            Color   = [System.Drawing.Color]::FromArgb(45, 45, 48)
+            Color   = $script:UIColors.HeaderBackground
         }
         [PSCustomObject]@{
             Title   = 'On Timer'
             Columns = @('OnTimerSend')
-            Color   = [System.Drawing.Color]::FromArgb(45, 45, 48)
+            Color   = $script:UIColors.HeaderBackground
         }
         [PSCustomObject]@{
             Title   = 'Manual'
             Columns = @('ManualSend', 'QuickSend', 'ManualScript', 'ActionSend')
-            Color   = [System.Drawing.Color]::FromArgb(45, 45, 48)
+            Color   = $script:UIColors.HeaderBackground
         }
     )
     $dgv.Tag = @{ 
@@ -132,8 +177,8 @@ function New-ConnectionDataGridView {
     }
 
     # ヘッダーのスタイル設定（2行構成）
-    $dgv.ColumnHeadersDefaultCellStyle.BackColor = [System.Drawing.Color]::FromArgb(45, 45, 48)
-    $dgv.ColumnHeadersDefaultCellStyle.ForeColor = [System.Drawing.Color]::White
+    $dgv.ColumnHeadersDefaultCellStyle.BackColor = $script:UIColors.HeaderBackground
+    $dgv.ColumnHeadersDefaultCellStyle.ForeColor = $script:UIColors.HeaderText
     $dgv.ColumnHeadersDefaultCellStyle.Font = New-Object System.Drawing.Font("Segoe UI", 9, [System.Drawing.FontStyle]::Bold)
     $dgv.ColumnHeadersDefaultCellStyle.Alignment = [System.Windows.Forms.DataGridViewContentAlignment]::BottomCenter
     $dgv.ColumnHeadersDefaultCellStyle.Padding = New-Object System.Windows.Forms.Padding(0, $groupHeaderPaddingTop, 0, 3)
@@ -141,15 +186,16 @@ function New-ConnectionDataGridView {
     $dgv.ColumnHeadersHeight = $groupHeaderHeight + $subHeaderHeight
     $dgv.ColumnHeadersHeightSizeMode = [System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode]::DisableResizing
 
-    # Disable visual selection
-    $dgv.DefaultCellStyle.BackColor = [System.Drawing.Color]::White
-    $dgv.DefaultCellStyle.ForeColor = [System.Drawing.Color]::FromArgb(30, 30, 30)
-    $dgv.DefaultCellStyle.SelectionBackColor = [System.Drawing.Color]::White
-    $dgv.DefaultCellStyle.SelectionForeColor = [System.Drawing.Color]::FromArgb(30, 30, 30)
-    $dgv.DefaultCellStyle.Padding = New-Object System.Windows.Forms.Padding(3, 2, 3, 2)
+    # セルのスタイル設定（統一カラーパレット使用）
+    $dgv.DefaultCellStyle.BackColor = $script:UIColors.CardBackground
+    $dgv.DefaultCellStyle.ForeColor = $script:UIColors.TextPrimary
+    $dgv.DefaultCellStyle.SelectionBackColor = $script:UIColors.CardBackground
+    $dgv.DefaultCellStyle.SelectionForeColor = $script:UIColors.TextPrimary
+    $dgv.DefaultCellStyle.Padding = New-Object System.Windows.Forms.Padding(4, 3, 4, 3)
+    $dgv.DefaultCellStyle.Font = New-Object System.Drawing.Font("Segoe UI", 9)
 
     # 行の高さを少し増やして見やすく
-    $dgv.RowTemplate.Height = 28
+    $dgv.RowTemplate.Height = 32
 
     # グループヘッダーをPaintイベントで描画（オーバーレイ）
     $dgv.Add_Paint({
@@ -163,9 +209,11 @@ function New-ConnectionDataGridView {
             $headerGroups = $sender.Tag.HeaderGroups
             $singleColumns = $sender.Tag.SingleColumns
             $titleFont = New-Object System.Drawing.Font("Segoe UI", 9, [System.Drawing.FontStyle]::Bold)
+            # 統一カラーパレットを使用（slate-800: RGB(30, 41, 59)）
+            $headerBackColor = [System.Drawing.Color]::FromArgb(30, 41, 59)
             $textBrush = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::White)
-            $backBrush = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(45, 45, 48))
-            $gridPen = New-Object System.Drawing.Pen($sender.GridColor, 1)
+            $backBrush = New-Object System.Drawing.SolidBrush($headerBackColor)
+            $gridPen = New-Object System.Drawing.Pen([System.Drawing.Color]::FromArgb(51, 65, 85), 1)  # slate-700
             
             # テキスト描画用フォーマット（折り返しなし、省略記号表示）
             $textFormat = New-Object System.Drawing.StringFormat
@@ -226,11 +274,35 @@ function New-ConnectionDataGridView {
                         [float]($groupHeight - 1)
                     )
                     
-                    # 背景を塗る
+                    # 背景を塗る（1行目）
                     $graphics.FillRectangle($backBrush, $groupRect)
                     
                     # グループタイトルを描画（折り返しなし）
                     $graphics.DrawString($group.Title, $titleFont, $textBrush, $groupRect, $textFormat)
+                    
+                    # 2行目（サブヘッダー）も塗りつぶす
+                    foreach ($colName in $group.Columns) {
+                        $col = $sender.Columns[$colName]
+                        if (-not $col) { continue }
+                        
+                        $colRect = $sender.GetCellDisplayRectangle($col.Index, -1, $true)
+                        if ($colRect.Width -le 0) { continue }
+                        
+                        # 2行目の領域
+                        $subHeaderRect = New-Object System.Drawing.RectangleF(
+                            [float]($colRect.Left + 1),
+                            [float]($colRect.Top + $groupHeight),
+                            [float]($colRect.Width - 1),
+                            [float]($colRect.Height - $groupHeight - 1)
+                        )
+                        $graphics.FillRectangle($backBrush, $subHeaderRect)
+                        
+                        # サブヘッダーのテキストを描画
+                        $graphics.DrawString($col.HeaderText, $titleFont, $textBrush, $subHeaderRect, $textFormat)
+                        
+                        # 列間の縦罫線
+                        $graphics.DrawLine($gridPen, [int]$colRect.Right - 1, [int]($colRect.Top + $groupHeight), [int]$colRect.Right - 1, [int]$colRect.Bottom)
+                    }
                     
                     # 下辺（1行目と2行目の境界線）
                     $lineY = [int]($firstRect.Top + $groupHeight)
@@ -330,7 +402,7 @@ function Add-ConnectionGridColumns {
     $colStatus.HeaderText = "Status"
     $colStatus.Name = "Status"
     $colStatus.ReadOnly = $true
-    $colStatus.FillWeight = 120
+    $colStatus.FillWeight = 140
     [void]$DataGridView.Columns.Add($colStatus)
 
     # Connect button column
@@ -378,7 +450,7 @@ function Add-ConnectionGridColumns {
     $colOnReceiveReply.ValueMember = "Key"
     $colOnReceiveReply.ValueType = [string]
     $colOnReceiveReply.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
-    $colOnReceiveReply.FillWeight = 140
+    $colOnReceiveReply.FillWeight = 200
     [void]$DataGridView.Columns.Add($colOnReceiveReply)
 
     # On Receive: Script column (ComboBox)
@@ -389,7 +461,7 @@ function Add-ConnectionGridColumns {
     $colOnReceiveScript.ValueMember = "Key"
     $colOnReceiveScript.ValueType = [string]
     $colOnReceiveScript.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
-    $colOnReceiveScript.FillWeight = 140
+    $colOnReceiveScript.FillWeight = 200
     [void]$DataGridView.Columns.Add($colOnReceiveScript)
 
     # On Timer: Send column (ComboBox)
@@ -400,7 +472,7 @@ function Add-ConnectionGridColumns {
     $colOnTimerSend.ValueMember = "Key"
     $colOnTimerSend.ValueType = [string]
     $colOnTimerSend.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
-    $colOnTimerSend.FillWeight = 140
+    $colOnTimerSend.FillWeight = 200
     [void]$DataGridView.Columns.Add($colOnTimerSend)
 
     # Manual: Send column (ComboBox)
@@ -411,7 +483,7 @@ function Add-ConnectionGridColumns {
     $colManualSend.ValueMember = "Key"
     $colManualSend.ValueType = [string]
     $colManualSend.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
-    $colManualSend.FillWeight = 170
+    $colManualSend.FillWeight = 200
     [void]$DataGridView.Columns.Add($colManualSend)
 
     # Quick Send button column
@@ -435,7 +507,7 @@ function Add-ConnectionGridColumns {
     $colManualScript.ValueMember = "Key"
     $colManualScript.ValueType = [string]
     $colManualScript.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
-    $colManualScript.FillWeight = 170
+    $colManualScript.FillWeight = 200
     [void]$DataGridView.Columns.Add($colManualScript)
 
     # Action Send button column
@@ -463,14 +535,14 @@ function Add-ConnectionGridColumns {
 function New-ToolbarButton {
     <#
     .SYNOPSIS
-    Creates a toolbar button.
+    Creates a toolbar button with modern styling.
     #>
     param(
         [string]$Text,
         [int]$X,
         [int]$Y = 10,
         [int]$Width = 100,
-        [int]$Height = 32,
+        [int]$Height = 30,
         [string]$ToolTip = ""
     )
 
@@ -479,19 +551,30 @@ function New-ToolbarButton {
     $button.Size = New-Object System.Drawing.Size($Width, $Height)
     $button.Text = $Text
     $button.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
-    $button.FlatAppearance.BorderSize = 1
-    $button.FlatAppearance.BorderColor = [System.Drawing.Color]::FromArgb(100, 100, 100)
-    $button.BackColor = [System.Drawing.Color]::FromArgb(0, 122, 204)
-    $button.ForeColor = [System.Drawing.Color]::White
-    $button.Font = New-Object System.Drawing.Font("Segoe UI", 9, [System.Drawing.FontStyle]::Bold)
+    $button.FlatAppearance.BorderSize = 0
+    $button.BackColor = $script:UIColors.ButtonNormal
+    $button.ForeColor = $script:UIColors.ButtonText
+    $button.Font = New-Object System.Drawing.Font("Segoe UI", 9, [System.Drawing.FontStyle]::Regular)
     $button.Cursor = [System.Windows.Forms.Cursors]::Hand
     
     # ホバー効果
     $button.Add_MouseEnter({
-        $this.BackColor = [System.Drawing.Color]::FromArgb(28, 151, 234)
+        $this.BackColor = $script:UIColors.ButtonHover
     })
     $button.Add_MouseLeave({
-        $this.BackColor = [System.Drawing.Color]::FromArgb(0, 122, 204)
+        $this.BackColor = $script:UIColors.ButtonNormal
+    })
+    
+    # 押し込み効果
+    $button.Add_MouseDown({
+        $this.BackColor = $script:UIColors.ButtonPressed
+    })
+    $button.Add_MouseUp({
+        if ($this.ClientRectangle.Contains($this.PointToClient([System.Windows.Forms.Cursor]::Position))) {
+            $this.BackColor = $script:UIColors.ButtonHover
+        } else {
+            $this.BackColor = $script:UIColors.ButtonNormal
+        }
     })
     
     # ツールチップを追加
@@ -1039,6 +1122,7 @@ function Set-RowColor {
     <#
     .SYNOPSIS
     Sets the background color of a row based on connection status.
+    Uses unified color palette for consistency.
     #>
     param(
         $Row,
@@ -1047,28 +1131,24 @@ function Set-RowColor {
 
     switch ($Status) {
         "CONNECTED" {
-            # より洗練された緑色
-            $Row.DefaultCellStyle.BackColor = [System.Drawing.Color]::FromArgb(220, 255, 220)
-            $Row.DefaultCellStyle.ForeColor = [System.Drawing.Color]::FromArgb(0, 100, 0)
+            $Row.DefaultCellStyle.BackColor = $script:UIColors.StatusConnected
+            $Row.DefaultCellStyle.ForeColor = $script:UIColors.StatusConnectedText
         }
         "CONNECTING" {
-            # より洗練された黄色
-            $Row.DefaultCellStyle.BackColor = [System.Drawing.Color]::FromArgb(255, 250, 205)
-            $Row.DefaultCellStyle.ForeColor = [System.Drawing.Color]::FromArgb(139, 115, 0)
+            $Row.DefaultCellStyle.BackColor = $script:UIColors.StatusConnecting
+            $Row.DefaultCellStyle.ForeColor = $script:UIColors.StatusConnectingText
         }
         "ERROR" {
-            # より洗練された赤色
-            $Row.DefaultCellStyle.BackColor = [System.Drawing.Color]::FromArgb(255, 220, 220)
-            $Row.DefaultCellStyle.ForeColor = [System.Drawing.Color]::FromArgb(139, 0, 0)
+            $Row.DefaultCellStyle.BackColor = $script:UIColors.StatusError
+            $Row.DefaultCellStyle.ForeColor = $script:UIColors.StatusErrorText
         }
         "DISCONNECTED" {
-            # より洗練されたグレー
-            $Row.DefaultCellStyle.BackColor = [System.Drawing.Color]::FromArgb(245, 245, 245)
-            $Row.DefaultCellStyle.ForeColor = [System.Drawing.Color]::FromArgb(80, 80, 80)
+            $Row.DefaultCellStyle.BackColor = $script:UIColors.StatusDisconnected
+            $Row.DefaultCellStyle.ForeColor = $script:UIColors.StatusDisconnectedText
         }
         default {
-            $Row.DefaultCellStyle.BackColor = [System.Drawing.Color]::White
-            $Row.DefaultCellStyle.ForeColor = [System.Drawing.Color]::FromArgb(30, 30, 30)
+            $Row.DefaultCellStyle.BackColor = $script:UIColors.CardBackground
+            $Row.DefaultCellStyle.ForeColor = $script:UIColors.TextPrimary
         }
     }
 }
@@ -1120,7 +1200,7 @@ function New-StyledComboBox {
         [int]$X,
         [int]$Y,
         [int]$Width = 200,
-        [int]$Height = 25,
+        [int]$Height = 26,
         [string]$ToolTip = ""
     )
 
@@ -1128,9 +1208,10 @@ function New-StyledComboBox {
     $comboBox.Location = New-Object System.Drawing.Point($X, $Y)
     $comboBox.Size = New-Object System.Drawing.Size($Width, $Height)
     $comboBox.DropDownStyle = [System.Windows.Forms.ComboBoxStyle]::DropDownList
-    $comboBox.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
-    $comboBox.BackColor = [System.Drawing.Color]::White
-    $comboBox.ForeColor = [System.Drawing.Color]::FromArgb(30, 30, 30)
+    $comboBox.FlatStyle = [System.Windows.Forms.FlatStyle]::Standard
+    $comboBox.BackColor = $script:UIColors.CardBackground
+    $comboBox.ForeColor = $script:UIColors.TextPrimary
+    $comboBox.Font = New-Object System.Drawing.Font("Segoe UI", 9)
     
     if ($ToolTip) {
         $toolTipObj = New-Object System.Windows.Forms.ToolTip
@@ -1157,13 +1238,12 @@ function New-StatusLabel {
     $label.Location = New-Object System.Drawing.Point($X, $Y)
     $label.Size = New-Object System.Drawing.Size($Width, $Height)
     $label.Text = $InitialText
-    $label.ForeColor = [System.Drawing.Color]::FromArgb(100, 100, 100)
+    $label.ForeColor = $script:UIColors.TextSecondary
     $label.Font = New-Object System.Drawing.Font("Segoe UI", 9)
     $label.AutoSize = $false
 
     return $label
 }
-
 # Note: Export-ModuleMember is not needed when dot-sourcing.
 # If this file is imported as a module, uncomment the following:
 # Export-ModuleMember -Function @(
