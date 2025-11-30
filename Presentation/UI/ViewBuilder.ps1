@@ -86,12 +86,52 @@ function New-ConnectionDataGridView {
     $dgv.GridColor = [System.Drawing.Color]::FromArgb(200, 200, 200)
     $dgv.EnableHeadersVisualStyles = $false
     
-    # ヘッダーのスタイル設定
+    # グループヘッダー構成
+    [int]$groupHeaderHeight = 22
+    [int]$subHeaderHeight = 26
+    [int]$groupHeaderPaddingTop = [Math]::Max($groupHeaderHeight - 5, 0)
+    
+    # 1行目に表示する単独列（グループなし）
+    $singleColumns = @('Name', 'Protocol', 'Status', 'BtnConnect', 'BtnDisconnect', 'Profile')
+    
+    # グループ化された列
+    $headerGroups = @(
+        [PSCustomObject]@{
+            Title   = 'Endpoint'
+            Columns = @('LocalEndpoint', 'RemoteEndpoint')
+            Color   = [System.Drawing.Color]::FromArgb(45, 45, 48)
+        }
+        [PSCustomObject]@{
+            Title   = 'On Receive'
+            Columns = @('Scenario', 'OnReceiveScript')
+            Color   = [System.Drawing.Color]::FromArgb(45, 45, 48)
+        }
+        [PSCustomObject]@{
+            Title   = 'On Timer'
+            Columns = @('OnTimerSend')
+            Color   = [System.Drawing.Color]::FromArgb(45, 45, 48)
+        }
+        [PSCustomObject]@{
+            Title   = 'Manual'
+            Columns = @('ManualSend', 'QuickSend', 'ManualScript', 'ActionSend')
+            Color   = [System.Drawing.Color]::FromArgb(45, 45, 48)
+        }
+    )
+    $dgv.Tag = @{ 
+        HeaderGroups = $headerGroups
+        SingleColumns = $singleColumns
+        GroupHeaderHeight = $groupHeaderHeight 
+    }
+
+    # ヘッダーのスタイル設定（2行構成）
     $dgv.ColumnHeadersDefaultCellStyle.BackColor = [System.Drawing.Color]::FromArgb(45, 45, 48)
     $dgv.ColumnHeadersDefaultCellStyle.ForeColor = [System.Drawing.Color]::White
     $dgv.ColumnHeadersDefaultCellStyle.Font = New-Object System.Drawing.Font("Segoe UI", 9, [System.Drawing.FontStyle]::Bold)
-    $dgv.ColumnHeadersDefaultCellStyle.Padding = New-Object System.Windows.Forms.Padding(0, 5, 0, 5)
-    $dgv.ColumnHeadersHeight = 32
+    $dgv.ColumnHeadersDefaultCellStyle.Alignment = [System.Windows.Forms.DataGridViewContentAlignment]::BottomCenter
+    $dgv.ColumnHeadersDefaultCellStyle.Padding = New-Object System.Windows.Forms.Padding(0, $groupHeaderPaddingTop, 0, 3)
+    $dgv.ColumnHeadersDefaultCellStyle.WrapMode = [System.Windows.Forms.DataGridViewTriState]::False
+    $dgv.ColumnHeadersHeight = $groupHeaderHeight + $subHeaderHeight
+    $dgv.ColumnHeadersHeightSizeMode = [System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode]::DisableResizing
 
     # Disable visual selection
     $dgv.DefaultCellStyle.BackColor = [System.Drawing.Color]::White
@@ -103,25 +143,129 @@ function New-ConnectionDataGridView {
     # 行の高さを少し増やして見やすく
     $dgv.RowTemplate.Height = 28
 
-    # Suppress focus rectangle and selection highlight via CellPainting
+    # グループヘッダーをPaintイベントで描画（オーバーレイ）
+    $dgv.Add_Paint({
+        param($sender, $e)
+        
+        try {
+            if (-not $sender.Tag) { return }
+            
+            $graphics = $e.Graphics
+            $groupHeight = $sender.Tag.GroupHeaderHeight
+            $headerGroups = $sender.Tag.HeaderGroups
+            $singleColumns = $sender.Tag.SingleColumns
+            $titleFont = New-Object System.Drawing.Font("Segoe UI", 9, [System.Drawing.FontStyle]::Bold)
+            $textBrush = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::White)
+            $backBrush = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(45, 45, 48))
+            $gridPen = New-Object System.Drawing.Pen($sender.GridColor, 1)
+            
+            # 単独列（1行目にタイトル、2行目は空欄）
+            if ($singleColumns) {
+                foreach ($colName in $singleColumns) {
+                    $col = $sender.Columns[$colName]
+                    if (-not $col) { continue }
+                    
+                    $cellRect = $sender.GetCellDisplayRectangle($col.Index, -1, $true)
+                    if ($cellRect.Width -le 0) { continue }
+                    
+                    # ヘッダー全体を塗りつぶし（1行目 + 2行目）
+                    $fullRect = New-Object System.Drawing.RectangleF(
+                        [float]($cellRect.Left + 1),
+                        [float]($cellRect.Top + 1),
+                        [float]($cellRect.Width - 1),
+                        [float]($cellRect.Height - 1)
+                    )
+                    $graphics.FillRectangle($backBrush, $fullRect)
+                    
+                    # タイトルを中央に描画（2行分の高さで中央揃え）
+                    $groupFormat = New-Object System.Drawing.StringFormat
+                    $groupFormat.Alignment = [System.Drawing.StringAlignment]::Center
+                    $groupFormat.LineAlignment = [System.Drawing.StringAlignment]::Center
+                    $graphics.DrawString($col.HeaderText, $titleFont, $textBrush, $fullRect, $groupFormat)
+                    $groupFormat.Dispose()
+                    
+                    # 右辺の縦罫線
+                    $graphics.DrawLine($gridPen, [int]$cellRect.Right - 1, [int]$cellRect.Top, [int]$cellRect.Right - 1, [int]$cellRect.Bottom)
+                }
+            }
+            
+            # グループ化された列
+            if ($headerGroups) {
+                foreach ($group in $headerGroups) {
+                    if (-not $group.Columns -or $group.Columns.Count -eq 0) { continue }
+                    
+                    $firstColName = $group.Columns[0]
+                    $lastColName = $group.Columns[$group.Columns.Count - 1]
+                    
+                    $firstCol = $sender.Columns[$firstColName]
+                    $lastCol = $sender.Columns[$lastColName]
+                    
+                    if (-not $firstCol -or -not $lastCol) { continue }
+                    
+                    $firstRect = $sender.GetCellDisplayRectangle($firstCol.Index, -1, $true)
+                    $lastRect = $sender.GetCellDisplayRectangle($lastCol.Index, -1, $true)
+                    
+                    if ($firstRect.Width -le 0 -or $lastRect.Width -le 0) { continue }
+                    
+                    # グループヘッダー領域（1行目）
+                    $groupRect = New-Object System.Drawing.RectangleF(
+                        [float]($firstRect.Left + 1),
+                        [float]($firstRect.Top + 1),
+                        [float]($lastRect.Right - $firstRect.Left - 1),
+                        [float]($groupHeight - 1)
+                    )
+                    
+                    # 背景を塗る
+                    $graphics.FillRectangle($backBrush, $groupRect)
+                    
+                    # グループタイトルを描画
+                    $groupFormat = New-Object System.Drawing.StringFormat
+                    $groupFormat.Alignment = [System.Drawing.StringAlignment]::Center
+                    $groupFormat.LineAlignment = [System.Drawing.StringAlignment]::Center
+                    $graphics.DrawString($group.Title, $titleFont, $textBrush, $groupRect, $groupFormat)
+                    $groupFormat.Dispose()
+                    
+                    # 下辺（1行目と2行目の境界線）
+                    $lineY = [int]($firstRect.Top + $groupHeight)
+                    $graphics.DrawLine($gridPen, [int]$firstRect.Left, $lineY, [int]$lastRect.Right, $lineY)
+                    
+                    # 右辺の縦罫線
+                    $graphics.DrawLine($gridPen, [int]$lastRect.Right - 1, [int]$firstRect.Top, [int]$lastRect.Right - 1, [int]$firstRect.Bottom)
+                }
+            }
+            
+            $gridPen.Dispose()
+            $titleFont.Dispose()
+            $textBrush.Dispose()
+            $backBrush.Dispose()
+        }
+        catch {
+            # 描画エラーは無視
+        }
+    })
+
+    # セル描画（データセルの選択色抑制）
     $dgv.Add_CellPainting({
         param($sender, $e)
-        if ($e.RowIndex -ge 0 -and $e.ColumnIndex -ge 0) {
-            # Remove Focus and SelectionBackground from paint parts while preserving others
-            $parts = $e.PaintParts
-            if (($parts -band [System.Windows.Forms.DataGridViewPaintParts]::Focus) -ne 0) {
-                $parts = $parts -bxor [System.Windows.Forms.DataGridViewPaintParts]::Focus
-            }
-            if (($parts -band [System.Windows.Forms.DataGridViewPaintParts]::SelectionBackground) -ne 0) {
-                $parts = $parts -bxor [System.Windows.Forms.DataGridViewPaintParts]::SelectionBackground
-            }
 
-            # Force unselected colors just in case
-            $e.CellStyle.SelectionBackColor = $e.CellStyle.BackColor
-            $e.CellStyle.SelectionForeColor = $e.CellStyle.ForeColor
+        try {
+            if ($e.RowIndex -ge 0 -and $e.ColumnIndex -ge 0) {
+                $parts = $e.PaintParts
+                if (($parts -band [System.Windows.Forms.DataGridViewPaintParts]::Focus) -ne 0) {
+                    $parts = $parts -bxor [System.Windows.Forms.DataGridViewPaintParts]::Focus
+                }
+                if (($parts -band [System.Windows.Forms.DataGridViewPaintParts]::SelectionBackground) -ne 0) {
+                    $parts = $parts -bxor [System.Windows.Forms.DataGridViewPaintParts]::SelectionBackground
+                }
 
-            $e.Paint($e.CellBounds, $parts)
-            $e.Handled = $true
+                $e.CellStyle.SelectionBackColor = $e.CellStyle.BackColor
+                $e.CellStyle.SelectionForeColor = $e.CellStyle.ForeColor
+                $e.Paint($e.CellBounds, $parts)
+                $e.Handled = $true
+            }
+        }
+        catch {
+            # 描画エラーは無視
         }
     })
 
@@ -157,13 +301,21 @@ function Add-ConnectionGridColumns {
     $colProtocol.FillWeight = 110
     [void]$DataGridView.Columns.Add($colProtocol)
 
-    # Endpoint column
-    $colEndpoint = New-Object System.Windows.Forms.DataGridViewTextBoxColumn
-    $colEndpoint.HeaderText = "Endpoint"
-    $colEndpoint.Name = "Endpoint"
-    $colEndpoint.ReadOnly = $true
-    $colEndpoint.FillWeight = 160
-    [void]$DataGridView.Columns.Add($colEndpoint)
+    # Local Endpoint column
+    $colLocalEndpoint = New-Object System.Windows.Forms.DataGridViewTextBoxColumn
+    $colLocalEndpoint.HeaderText = "Local"
+    $colLocalEndpoint.Name = "LocalEndpoint"
+    $colLocalEndpoint.ReadOnly = $true
+    $colLocalEndpoint.FillWeight = 120
+    [void]$DataGridView.Columns.Add($colLocalEndpoint)
+
+    # Remote Endpoint column
+    $colRemoteEndpoint = New-Object System.Windows.Forms.DataGridViewTextBoxColumn
+    $colRemoteEndpoint.HeaderText = "Remote"
+    $colRemoteEndpoint.Name = "RemoteEndpoint"
+    $colRemoteEndpoint.ReadOnly = $true
+    $colRemoteEndpoint.FillWeight = 120
+    [void]$DataGridView.Columns.Add($colRemoteEndpoint)
 
     # Status column
     $colStatus = New-Object System.Windows.Forms.DataGridViewTextBoxColumn
@@ -212,7 +364,7 @@ function Add-ConnectionGridColumns {
 
     # On Receive: Reply column (ComboBox)
     $colOnReceiveReply = New-Object System.Windows.Forms.DataGridViewComboBoxColumn
-    $colOnReceiveReply.HeaderText = "On Receive: Reply"
+    $colOnReceiveReply.HeaderText = "Reply"
     $colOnReceiveReply.Name = "Scenario"
     $colOnReceiveReply.DisplayMember = "Display"
     $colOnReceiveReply.ValueMember = "Key"
@@ -223,7 +375,7 @@ function Add-ConnectionGridColumns {
 
     # On Receive: Script column (ComboBox)
     $colOnReceiveScript = New-Object System.Windows.Forms.DataGridViewComboBoxColumn
-    $colOnReceiveScript.HeaderText = "On Receive: Script"
+    $colOnReceiveScript.HeaderText = "Script"
     $colOnReceiveScript.Name = "OnReceiveScript"
     $colOnReceiveScript.DisplayMember = "Display"
     $colOnReceiveScript.ValueMember = "Key"
@@ -234,7 +386,7 @@ function Add-ConnectionGridColumns {
 
     # On Timer: Send column (ComboBox)
     $colOnTimerSend = New-Object System.Windows.Forms.DataGridViewComboBoxColumn
-    $colOnTimerSend.HeaderText = "On Timer: Send"
+    $colOnTimerSend.HeaderText = "Send"
     $colOnTimerSend.Name = "OnTimerSend"
     $colOnTimerSend.DisplayMember = "Display"
     $colOnTimerSend.ValueMember = "Key"
@@ -245,7 +397,7 @@ function Add-ConnectionGridColumns {
 
     # Manual: Send column (ComboBox)
     $colManualSend = New-Object System.Windows.Forms.DataGridViewComboBoxColumn
-    $colManualSend.HeaderText = "Manual: Send"
+    $colManualSend.HeaderText = "Send"
     $colManualSend.Name = "ManualSend"
     $colManualSend.DisplayMember = "Display"
     $colManualSend.ValueMember = "Key"
@@ -269,7 +421,7 @@ function Add-ConnectionGridColumns {
 
     # Manual: Script column (ComboBox)
     $colManualScript = New-Object System.Windows.Forms.DataGridViewComboBoxColumn
-    $colManualScript.HeaderText = "Manual: Script"
+    $colManualScript.HeaderText = "Script"
     $colManualScript.Name = "ManualScript"
     $colManualScript.DisplayMember = "Display"
     $colManualScript.ValueMember = "Key"

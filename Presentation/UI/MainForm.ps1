@@ -1661,7 +1661,8 @@ function Add-ConnectionRow {
     )
 
     try {
-        $endpoint = Get-ConnectionEndpoint -Connection $Connection
+        $localEndpoint = Get-ConnectionLocalEndpoint -Connection $Connection
+        $remoteEndpoint = Get-ConnectionRemoteEndpoint -Connection $Connection
         
         # ?X???b?h?Z?[?t??X?e?[?^?X??????
         $status = $Connection.Status
@@ -1675,7 +1676,8 @@ function Add-ConnectionRow {
         $rowIndex = $DataGridView.Rows.Add(
             $displayName,
             "$protocol $mode",
-            $endpoint,
+            $localEndpoint,
+            $remoteEndpoint,
             $status,
             $null,
             $null,
@@ -1720,14 +1722,22 @@ function Add-ConnectionRow {
     }
 }
 
-function Get-ConnectionEndpoint {
+function Get-ConnectionLocalEndpoint {
     param($Connection)
-
-    if ($Connection.Mode -eq "Client" -or $Connection.Mode -eq "Sender") {
-        return "$($Connection.RemoteIP):$($Connection.RemotePort)"
-    } else {
+    
+    if ($Connection.LocalIP -and $Connection.LocalPort) {
         return "$($Connection.LocalIP):$($Connection.LocalPort)"
     }
+    return "-"
+}
+
+function Get-ConnectionRemoteEndpoint {
+    param($Connection)
+    
+    if ($Connection.RemoteIP -and $Connection.RemotePort) {
+        return "$($Connection.RemoteIP):$($Connection.RemotePort)"
+    }
+    return "-"
 }
 
 function Configure-ScenarioColumn {
