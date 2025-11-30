@@ -95,9 +95,9 @@ function New-ConnectionDataGridView {
     $dgv.EnableHeadersVisualStyles = $false
     
     # グループヘッダー構成
-    [int]$groupHeaderHeight = 22
-    [int]$subHeaderHeight = 26
-    [int]$groupHeaderPaddingTop = [Math]::Max($groupHeaderHeight - 5, 0)
+    [int]$groupHeaderHeight = 24
+    [int]$subHeaderHeight = 24
+    [int]$groupHeaderPaddingTop = [Math]::Max($groupHeaderHeight - 3, 0)
     
     # 1行目に表示する単独列（グループなし）
     $singleColumns = @('Name', 'Protocol', 'Status', 'BtnConnect', 'BtnDisconnect', 'Profile')
@@ -167,6 +167,13 @@ function New-ConnectionDataGridView {
             $backBrush = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(45, 45, 48))
             $gridPen = New-Object System.Drawing.Pen($sender.GridColor, 1)
             
+            # テキスト描画用フォーマット（折り返しなし、省略記号表示）
+            $textFormat = New-Object System.Drawing.StringFormat
+            $textFormat.Alignment = [System.Drawing.StringAlignment]::Center
+            $textFormat.LineAlignment = [System.Drawing.StringAlignment]::Center
+            $textFormat.Trimming = [System.Drawing.StringTrimming]::EllipsisCharacter
+            $textFormat.FormatFlags = [System.Drawing.StringFormatFlags]::NoWrap
+            
             # 単独列（1行目にタイトル、2行目は空欄）
             if ($singleColumns) {
                 foreach ($colName in $singleColumns) {
@@ -186,11 +193,7 @@ function New-ConnectionDataGridView {
                     $graphics.FillRectangle($backBrush, $fullRect)
                     
                     # タイトルを中央に描画（2行分の高さで中央揃え）
-                    $groupFormat = New-Object System.Drawing.StringFormat
-                    $groupFormat.Alignment = [System.Drawing.StringAlignment]::Center
-                    $groupFormat.LineAlignment = [System.Drawing.StringAlignment]::Center
-                    $graphics.DrawString($col.HeaderText, $titleFont, $textBrush, $fullRect, $groupFormat)
-                    $groupFormat.Dispose()
+                    $graphics.DrawString($col.HeaderText, $titleFont, $textBrush, $fullRect, $textFormat)
                     
                     # 右辺の縦罫線
                     $graphics.DrawLine($gridPen, [int]$cellRect.Right - 1, [int]$cellRect.Top, [int]$cellRect.Right - 1, [int]$cellRect.Bottom)
@@ -226,12 +229,8 @@ function New-ConnectionDataGridView {
                     # 背景を塗る
                     $graphics.FillRectangle($backBrush, $groupRect)
                     
-                    # グループタイトルを描画
-                    $groupFormat = New-Object System.Drawing.StringFormat
-                    $groupFormat.Alignment = [System.Drawing.StringAlignment]::Center
-                    $groupFormat.LineAlignment = [System.Drawing.StringAlignment]::Center
-                    $graphics.DrawString($group.Title, $titleFont, $textBrush, $groupRect, $groupFormat)
-                    $groupFormat.Dispose()
+                    # グループタイトルを描画（折り返しなし）
+                    $graphics.DrawString($group.Title, $titleFont, $textBrush, $groupRect, $textFormat)
                     
                     # 下辺（1行目と2行目の境界線）
                     $lineY = [int]($firstRect.Top + $groupHeight)
@@ -242,6 +241,7 @@ function New-ConnectionDataGridView {
                 }
             }
             
+            $textFormat.Dispose()
             $gridPen.Dispose()
             $titleFont.Dispose()
             $textBrush.Dispose()
@@ -330,16 +330,16 @@ function Add-ConnectionGridColumns {
     $colStatus.HeaderText = "Status"
     $colStatus.Name = "Status"
     $colStatus.ReadOnly = $true
-    $colStatus.FillWeight = 100
+    $colStatus.FillWeight = 110
     [void]$DataGridView.Columns.Add($colStatus)
 
     # Connect button column
     $colConnect = New-Object System.Windows.Forms.DataGridViewButtonColumn
-    $colConnect.HeaderText = "▶ Connect"
+    $colConnect.HeaderText = "Connect"
     $colConnect.Name = "BtnConnect"
     $colConnect.Text = "▶"
     $colConnect.UseColumnTextForButtonValue = $true
-    $colConnect.FillWeight = 70
+    $colConnect.FillWeight = 80
     $colConnect.DefaultCellStyle.BackColor = [System.Drawing.Color]::FromArgb(0, 122, 204)
     $colConnect.DefaultCellStyle.ForeColor = [System.Drawing.Color]::White
     $colConnect.DefaultCellStyle.SelectionBackColor = [System.Drawing.Color]::FromArgb(28, 151, 234)
@@ -348,11 +348,11 @@ function Add-ConnectionGridColumns {
 
     # Disconnect button column
     $colDisconnect = New-Object System.Windows.Forms.DataGridViewButtonColumn
-    $colDisconnect.HeaderText = "⏹ Disconnect"
+    $colDisconnect.HeaderText = "Disconnect"
     $colDisconnect.Name = "BtnDisconnect"
     $colDisconnect.Text = "⏹"
     $colDisconnect.UseColumnTextForButtonValue = $true
-    $colDisconnect.FillWeight = 70
+    $colDisconnect.FillWeight = 90
     $colDisconnect.DefaultCellStyle.BackColor = [System.Drawing.Color]::FromArgb(192, 57, 43)
     $colDisconnect.DefaultCellStyle.ForeColor = [System.Drawing.Color]::White
     $colDisconnect.DefaultCellStyle.SelectionBackColor = [System.Drawing.Color]::FromArgb(231, 76, 60)
@@ -416,7 +416,7 @@ function Add-ConnectionGridColumns {
 
     # Quick Send button column
     $colQuickSend = New-Object System.Windows.Forms.DataGridViewButtonColumn
-    $colQuickSend.HeaderText = "📤 Send"
+    $colQuickSend.HeaderText = "Send"
     $colQuickSend.Name = "QuickSend"
     $colQuickSend.Text = "📤"
     $colQuickSend.UseColumnTextForButtonValue = $true
@@ -440,11 +440,11 @@ function Add-ConnectionGridColumns {
 
     # Action Send button column
     $colActionSend = New-Object System.Windows.Forms.DataGridViewButtonColumn
-    $colActionSend.HeaderText = "▶ Run"
+    $colActionSend.HeaderText = "Run"
     $colActionSend.Name = "ActionSend"
     $colActionSend.Text = "▶"
     $colActionSend.UseColumnTextForButtonValue = $true
-    $colActionSend.FillWeight = 60
+    $colActionSend.FillWeight = 55
     $colActionSend.DefaultCellStyle.BackColor = [System.Drawing.Color]::FromArgb(142, 68, 173)
     $colActionSend.DefaultCellStyle.ForeColor = [System.Drawing.Color]::White
     $colActionSend.DefaultCellStyle.SelectionBackColor = [System.Drawing.Color]::FromArgb(155, 89, 182)
