@@ -141,6 +141,13 @@ $Global:Connections = if ($Global:Connections) { $Global:Connections } else { [S
 [System.Windows.Forms.Application]::add_ThreadException({
     param($sender, $eventArgs)
     $exception = $eventArgs.Exception
+    
+    # DataGridView 関連エラーは無視（グリッド更新中のタイミング問題）
+    if ($exception.StackTrace -match 'DataGridView|BeginEdit|InitializeEditingControl|OnCellClick') {
+        Write-Verbose "[UI] DataGridView timing error suppressed"
+        return
+    }
+    
     $script:Logger.LogError("Unhandled thread exception", $exception, @{})
     Write-Console "[ERROR] Thread exception: $($exception.Message)" -ForegroundColor Red
     Write-Console $exception.StackTrace -ForegroundColor Red

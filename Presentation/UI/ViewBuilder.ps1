@@ -65,14 +65,14 @@ function New-MainFormWindow {
     #>
     param(
         [string]$Title = "Socket Debugger Simple v1.0",
-        [int]$Width = 1620,
+        [int]$Width = 1700,
         [int]$Height = 800
     )
 
     $form = New-Object System.Windows.Forms.Form
     $form.Text = $Title
     $form.Size = New-Object System.Drawing.Size($Width, $Height)
-    $form.MinimumSize = New-Object System.Drawing.Size(1450, 600)
+    $form.MinimumSize = New-Object System.Drawing.Size(1500, 600)
     $form.StartPosition = "CenterScreen"
     $form.Font = New-Object System.Drawing.Font("Segoe UI", 9)
     $form.BackColor = $script:UIColors.FormBackground
@@ -330,6 +330,14 @@ function New-ConnectionDataGridView {
 
         try {
             if ($e.RowIndex -ge 0 -and $e.ColumnIndex -ge 0) {
+                # 編集中のセルは通常の描画を行う
+                if ($sender.IsCurrentCellInEditMode -and 
+                    $sender.CurrentCell -and
+                    $sender.CurrentCell.RowIndex -eq $e.RowIndex -and 
+                    $sender.CurrentCell.ColumnIndex -eq $e.ColumnIndex) {
+                    return
+                }
+
                 $parts = $e.PaintParts
                 if (($parts -band [System.Windows.Forms.DataGridViewPaintParts]::Focus) -ne 0) {
                     $parts = $parts -bxor [System.Windows.Forms.DataGridViewPaintParts]::Focus
@@ -439,7 +447,7 @@ function Add-ConnectionGridColumns {
     $colProfile.ValueMember = "Key"
     $colProfile.ValueType = [string]
     $colProfile.FlatStyle = [System.Windows.Forms.FlatStyle]::Flat
-    $colProfile.FillWeight = 130
+    $colProfile.FillWeight = 200
     [void]$DataGridView.Columns.Add($colProfile)
 
     # On Receive: Reply column (ComboBox)
@@ -1133,22 +1141,33 @@ function Set-RowColor {
         "CONNECTED" {
             $Row.DefaultCellStyle.BackColor = $script:UIColors.StatusConnected
             $Row.DefaultCellStyle.ForeColor = $script:UIColors.StatusConnectedText
+            $Row.DefaultCellStyle.SelectionBackColor = $script:UIColors.StatusConnected
+            $Row.DefaultCellStyle.SelectionForeColor = $script:UIColors.StatusConnectedText
         }
         "CONNECTING" {
-            $Row.DefaultCellStyle.BackColor = $script:UIColors.StatusConnecting
-            $Row.DefaultCellStyle.ForeColor = $script:UIColors.StatusConnectingText
+            # CONNECTINGはDISCONNECTEDと同じ色で表示
+            $Row.DefaultCellStyle.BackColor = $script:UIColors.StatusDisconnected
+            $Row.DefaultCellStyle.ForeColor = $script:UIColors.StatusDisconnectedText
+            $Row.DefaultCellStyle.SelectionBackColor = $script:UIColors.StatusDisconnected
+            $Row.DefaultCellStyle.SelectionForeColor = $script:UIColors.StatusDisconnectedText
         }
         "ERROR" {
             $Row.DefaultCellStyle.BackColor = $script:UIColors.StatusError
             $Row.DefaultCellStyle.ForeColor = $script:UIColors.StatusErrorText
+            $Row.DefaultCellStyle.SelectionBackColor = $script:UIColors.StatusError
+            $Row.DefaultCellStyle.SelectionForeColor = $script:UIColors.StatusErrorText
         }
         "DISCONNECTED" {
             $Row.DefaultCellStyle.BackColor = $script:UIColors.StatusDisconnected
             $Row.DefaultCellStyle.ForeColor = $script:UIColors.StatusDisconnectedText
+            $Row.DefaultCellStyle.SelectionBackColor = $script:UIColors.StatusDisconnected
+            $Row.DefaultCellStyle.SelectionForeColor = $script:UIColors.StatusDisconnectedText
         }
         default {
             $Row.DefaultCellStyle.BackColor = $script:UIColors.CardBackground
             $Row.DefaultCellStyle.ForeColor = $script:UIColors.TextPrimary
+            $Row.DefaultCellStyle.SelectionBackColor = $script:UIColors.CardBackground
+            $Row.DefaultCellStyle.SelectionForeColor = $script:UIColors.TextPrimary
         }
     }
 }

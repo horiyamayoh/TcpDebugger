@@ -103,13 +103,13 @@ function Show-MainForm {
     #>
 
     # Create main form using ViewBuilder
-    $form = New-MainFormWindow -Title "Socket Debugger Simple v1.0" -Width 1620 -Height 800
+    $form = New-MainFormWindow -Title "Socket Debugger Simple v1.0" -Width 1700 -Height 800
     $script:CurrentMainForm = $form
 
     # ツールバーパネルを作成（統一カラーパレット使用）
     $toolbarPanel = New-Object System.Windows.Forms.Panel
     $toolbarPanel.Location = New-Object System.Drawing.Point(0, 0)
-    $toolbarPanel.Size = New-Object System.Drawing.Size(1620, 50)
+    $toolbarPanel.Size = New-Object System.Drawing.Size(1700, 50)
     $toolbarPanel.BackColor = [System.Drawing.Color]::FromArgb(241, 245, 249)  # slate-100
     $toolbarPanel.BorderStyle = [System.Windows.Forms.BorderStyle]::None
     $toolbarPanel.Anchor = [System.Windows.Forms.AnchorStyles]::Top -bor 
@@ -146,7 +146,7 @@ function Show-MainForm {
 
     # DataGridView (connection list) using ViewBuilder
     # 画面いっぱいに表示（ツールバー分を考慮）
-    $dgvInstances = New-ConnectionDataGridView -X 10 -Y 60 -Width 1580 -Height 690
+    $dgvInstances = New-ConnectionDataGridView -X 10 -Y 60 -Width 1660 -Height 690
     $form.Controls.Add($dgvInstances)
     
     # アプリケーションプロファイルコンボボックスの初期化
@@ -194,6 +194,7 @@ function Show-MainForm {
     $script:suppressProfileEvent = $false
     $script:isGlobalProfileLocked = $false
     $script:comboSelectedIndexChangedHandler = $null
+    $script:isUpdatingGrid = $false
     $gridState = @{
         EditingInProgress = $false
         PendingComboDropDown = $null
@@ -1245,6 +1246,11 @@ function Handle-CellClick {
         [hashtable]$GridState
     )
 
+    # グリッド更新中はクリックを無視
+    if ($script:isUpdatingGrid) {
+        return
+    }
+
     if ($EventArgs.RowIndex -lt 0 -or $EventArgs.ColumnIndex -lt 0) {
         return
     }
@@ -1278,8 +1284,14 @@ function Handle-CellClick {
         $Sender.CurrentCell = $cell
     }
 
-    if (-not $Sender.IsCurrentCellInEditMode) {
-        [void]$Sender.BeginEdit($true)
+    if (-not $Sender.IsCurrentCellInEditMode -and $cell -and $cell.OwningRow) {
+        try {
+            [void]$Sender.BeginEdit($true)
+        } catch {
+            # グリッド更新中のタイミングエラーを無視
+            Write-Verbose "[UI] BeginEdit failed - timing issue"
+            return
+        }
     }
 
     $combo = $Sender.EditingControl
@@ -1452,36 +1464,60 @@ function Update-InstanceList {
         return
     }
 
+    # 更新中は新しい更新をスキップ（フリーズ防止）
+    if ($script:isUpdatingGrid) {
+        return
+    }
+
     try {
+        $script:isUpdatingGrid = $true
+        
+        # 編集モードを終了してから更新を行う（描画バグ防止）
+        if ($DataGridView.IsCurrentCellInEditMode) {
+            try {
+                $DataGridView.EndEdit()
+            } catch {
+                # 編集終了に失敗しても続行
+            }
+        }
+        
+        # 現在のセル選択をクリア
+        try {
+            $DataGridView.CurrentCell = $null
+        } catch {
+            # 失敗しても続行
+        }
+        
         $state = Save-GridState -DataGridView $DataGridView
         
-        # Suspend layout to prevent flickering
+        # Suspend layout to prevent flickering during update
         $DataGridView.SuspendLayout()
         
         try {
             $DataGridView.Rows.Clear()
 
             $connections = Get-UiConnections
-            if (-not $connections -or $connections.Count -eq 0) {
-                return
-            }
-
-            foreach ($conn in $connections | Sort-Object DisplayName) {
-                try {
-                    Add-ConnectionRow -DataGridView $DataGridView -Connection $conn
+            if ($connections -and $connections.Count -gt 0) {
+                foreach ($conn in $connections | Sort-Object DisplayName) {
+                    try {
+                        Add-ConnectionRow -DataGridView $DataGridView -Connection $conn
+                    }
+                    catch {
+                        Write-Verbose "[UI] Failed to add row for connection: $_"
+                    }
                 }
-                catch {
-                    Write-Verbose "[UI] Failed to add row for connection: $_"
-                }
-            }
 
-            Restore-GridState -DataGridView $DataGridView -State $state -PreserveComboStates:$PreserveComboStates
+                Restore-GridState -DataGridView $DataGridView -State $state -PreserveComboStates:$PreserveComboStates
+            }
         } finally {
             $DataGridView.ResumeLayout()
         }
     }
     catch {
         Write-Verbose "[UI] Update-InstanceList failed: $_"
+    }
+    finally {
+        $script:isUpdatingGrid = $false
     }
 }
 
@@ -1628,9 +1664,10 @@ function Add-ConnectionRow {
         
         # ?X???b?h?Z?[?t??X?e?[?^?X??????
         $status = $Connection.Status
-        # 表示用に短縮
+        # 表示用に短縮（CONNECTINGは表示しない）
         $displayStatus = switch ($status) {
             "DISCONNECTED" { "DISCONNECT" }
+            "CONNECTING" { "DISCONNECT" }
             default { $status }
         }
         $displayName = $Connection.DisplayName
