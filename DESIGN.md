@@ -123,13 +123,14 @@ TcpDebugger/
 ├── README.md                    # 使用方法
 ├── Core/                        # コア層（ビジネスロジック）
 │   ├── Common/                      # 共通ユーティリティ
-│   │   ├── Logger.ps1                   # ログ出力
+│   │   ├── ConsoleOutput.ps1            # コンソール出力
 │   │   ├── ErrorHandler.ps1             # エラーハンドリング
+│   │   ├── Exceptions.ps1               # カスタム例外クラス
+│   │   ├── Logger.ps1                   # ログ出力
 │   │   └── ThreadSafeCollections.ps1    # スレッドセーフコレクション
 │   ├── Domain/                      # ドメインロジック
 │   │   ├── ConnectionModels.ps1         # 接続モデル定義
 │   │   ├── ConnectionService.ps1        # 接続管理サービス
-│   │   ├── ConnectionManager.ps1        # 接続制御・ライフサイクル管理
 │   │   ├── MessageService.ps1           # メッセージ処理（テンプレート、変数展開）
 │   │   ├── ReceivedEventPipeline.ps1    # 受信イベント処理パイプライン
 │   │   ├── ReceivedRuleEngine.ps1       # ルールエンジン（OnReceiveReply/OnReceiveScript）
@@ -140,6 +141,7 @@ TcpDebugger/
 │   │   ├── ProfileService.ps1           # プロファイル管理サービス
 │   │   └── RunspaceMessages.ps1         # Runspace間メッセージ定義
 │   ├── Application/                 # アプリケーションサービス
+│   │   ├── ConnectionManager.ps1        # 接続制御・ライフサイクル管理
 │   │   ├── InstanceManager.ps1          # インスタンス管理
 │   │   └── NetworkAnalyzer.ps1          # ネットワーク診断
 │   └── Infrastructure/              # インフラストラクチャ層
@@ -157,8 +159,7 @@ TcpDebugger/
 ├── Presentation/                # プレゼンテーション層
 │   └── UI/
 │       ├── MainForm.ps1                 # メインフォーム（WinForms UI）
-│       ├── ViewBuilder.ps1              # UI構築ヘルパー
-│       └── MainFormViewModel.ps1        # ViewModelロジック
+│       └── ViewBuilder.ps1              # UI構築ヘルパー
 ├── Config/                      # 共通設定・デフォルトテンプレート
 │   └── defaults.psd1                # 既定値スナップショット
 ├── Instances/                   # 通信インスタンスフォルダ群（増減で動的認識）
@@ -230,7 +231,6 @@ TcpDebugger/
 ┌─────────────────────────────────────────────┐
 │ Presentation Layer                          │
 │  - WinForms UI (MainForm, ViewBuilder)      │
-│  - ViewModel (MainFormViewModel)            │
 └─────────────────────────────────────────────┘
           │ (Data binding / Service calls)
 ┌─────────────────────────────────────────────┐

@@ -190,6 +190,7 @@ if (-not (Test-Path $configPath)) {
 - ロギング、エラーハンドリングなどの横断的関心事
 
 **主要コンポーネント**:
+- `ConsoleOutput.ps1`: コンソール出力機能
 - `Logger.ps1`: ロギング機能
 - `ErrorHandler.ps1`: エラーハンドリング
 - `Exceptions.ps1`: カスタム例外クラス
@@ -358,7 +359,7 @@ $logger.LogError("Connection failed", $exception, @{
 
 3. **グローバル変数の削減**
    - ServiceContainerを中心としたDIパターンに統一
-   - 後方互換性のため一部のグローバル変数は残存
+   - UIヘルパー関数経由のアクセスパターンを導入
 
 4. **カスタム例外クラスの導入**
    - `Exceptions.ps1`を作成
@@ -372,19 +373,32 @@ $logger.LogError("Connection failed", $exception, @{
    - `ConnectionService.Tests.ps1`を作成
    - テストカバレッジの向上
 
+7. **命名規則の統一**
+   - Auto Response → On Receive: Reply
+   - On Received → On Receive: Script
+   - Periodic Send → On Timer: Send
+   - Quick Data → Manual: Send
+   - Quick Action → Manual: Script
+   
+8. **GUIの改善**
+   - モダンなカラースキーム適用
+   - レスポンシブ対応（Anchor設定）
+   - ツールチップ追加
+   - ステータス表示機能追加
+
 ## 今後の改善計画
 
-### Phase 2: アーキテクチャ整理 (推奨: 2-4週間)
+### Phase 2: アーキテクチャ整理
 
-- [ ] レイヤー境界の厳格化
-- [ ] UIからDomain Layerへの直接アクセスを排除
-- [ ] Repositoryパターンの完全実装
+- [x] レイヤー境界の厳格化（一部完了）
+- [x] UIからDomain Layerへの直接アクセスを排除（ヘルパー関数経由に移行）
+- [x] Repositoryパターンの完全実装（InstanceRepository, ProfileRepository, RuleRepository）
 
-### Phase 3: 品質向上 (推奨: 4-8週間)
+### Phase 3: 品質向上
 
 - [ ] テストカバレッジ80%以上を目標
 - [ ] パフォーマンスプロファイリングと最適化
-- [ ] ドキュメント整備
+- [x] ドキュメント整備（ARCHITECTURE.md, GUI_IMPROVEMENTS.md, ReceivedRuleFormat.md等）
 - [ ] CI/CDパイプラインの構築
 
 ## まとめ

@@ -63,11 +63,13 @@ TcpDebugger/
 ├── TcpDebugger.ps1              # メインスクリプト（起動ファイル）
 ├── README.md                    # 本ファイル
 ├── DESIGN.md                    # 設計書
-├── ARCHITECTURE_REFACTORING.md  # アーキテクチャリファレンス
+├── NAMING_CONVENTION.md         # 命名規則ガイド
 ├── Core/                        # コア層（ビジネスロジック）
 │   ├── Common/                      # 共通ユーティリティ
-│   │   ├── Logger.ps1                   # ログ出力
+│   │   ├── ConsoleOutput.ps1            # コンソール出力
 │   │   ├── ErrorHandler.ps1             # エラーハンドリング
+│   │   ├── Exceptions.ps1               # カスタム例外クラス
+│   │   ├── Logger.ps1                   # ログ出力
 │   │   └── ThreadSafeCollections.ps1    # スレッドセーフコレクション
 │   ├── Domain/                      # ドメインロジック
 │   │   ├── ConnectionModels.ps1         # 接続モデル定義
@@ -100,21 +102,24 @@ TcpDebugger/
 ├── Presentation/                # プレゼンテーション層
 │   └── UI/
 │       ├── MainForm.ps1                 # メインフォーム（WinForms UI）
-│       ├── ViewBuilder.ps1              # UI構築ヘルパー
-│       └── MainFormViewModel.ps1        # ViewModelロジック
+│       └── ViewBuilder.ps1              # UI構築ヘルパー
 ├── Config/                      # 設定ファイル
 │   └── defaults.psd1
 ├── Instances/                   # 通信インスタンスフォルダ群
 │   └── Example/                     # サンプルインスタンス
 │       ├── instance.psd1            # インスタンス設定
+│       ├── profiles.csv             # プロファイル設定
 │       ├── scenarios/               # シナリオファイル
+│       │   ├── manual_scripts/          # Manual: Script用スクリプト
 │       │   ├── on_receive_reply/        # On Receive: Reply用ルール
 │       │   ├── on_receive_script/       # On Receive: Script用ルール
 │       │   └── on_timer_send/           # On Timer: Send用設定
 │       └── templates/               # 電文テンプレート
-│           ├── databank.csv
-│           └── messages.csv
 ├── Docs/                        # ドキュメント
+│   ├── ARCHITECTURE.md              # アーキテクチャガイド
+│   ├── GUI_IMPROVEMENTS.md          # GUI改善ガイド
+│   ├── ReceivedRuleFormat.md        # 受信ルール仕様
+│   └── ...                          # その他ドキュメント
 ├── Tests/                       # テストコード
 │   └── Unit/
 └── Logs/                        # ログファイル出力先
