@@ -30,7 +30,14 @@ class ProfileService {
         try {
             if (-not $this.InstanceProfiles.ContainsKey($instanceName)) { $this.LoadInstanceProfiles($instanceName, $instancePath) }
             $profiles = $this.InstanceProfiles[$instanceName]
-            $profile = $profiles | Where-Object { $_.ProfileName -eq $profileName } | Select-Object -First 1
+            # foreachで早期終了（Where-Object + Select-Object -First 1 より高速）
+            $profile = $null
+            foreach ($p in $profiles) {
+                if ($p.ProfileName -eq $profileName) {
+                    $profile = $p
+                    break
+                }
+            }
             if (-not $profile) { 
                 return 
             }
@@ -76,7 +83,14 @@ class ProfileService {
     }
     [void] ApplyApplicationProfile([string]$appProfileName) {
         try {
-            $appProfile = $this.ApplicationProfiles | Where-Object { $_.ProfileName -eq $appProfileName } | Select-Object -First 1
+            # foreachで早期終了（Where-Object + Select-Object -First 1 より高速）
+            $appProfile = $null
+            foreach ($p in $this.ApplicationProfiles) {
+                if ($p.ProfileName -eq $appProfileName) {
+                    $appProfile = $p
+                    break
+                }
+            }
             if (-not $appProfile) { 
                 $this.Logger.Warning("Application profile not found: $appProfileName", @{ ProfileName = $appProfileName })
                 return 

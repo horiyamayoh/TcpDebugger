@@ -103,7 +103,14 @@ class ConnectionService {
             return @()
         }
 
-        return $this._connections.Values | Where-Object { $_.Group -eq $group }
+        # foreachで結果リストを構築（Where-Objectパイプラインより高速）
+        $result = [System.Collections.Generic.List[ManagedConnection]]::new()
+        foreach ($conn in $this._connections.Values) {
+            if ($conn.Group -eq $group) {
+                $result.Add($conn)
+            }
+        }
+        return $result.ToArray()
     }
 
     [ManagedConnection[]] GetConnectionsByTag([string]$tag) {
@@ -111,7 +118,14 @@ class ConnectionService {
             return @()
         }
 
-        return $this._connections.Values | Where-Object { $_.Tags -contains $tag }
+        # foreachで結果リストを構築（Where-Objectパイプラインより高速）
+        $result = [System.Collections.Generic.List[ManagedConnection]]::new()
+        foreach ($conn in $this._connections.Values) {
+            if ($conn.Tags -contains $tag) {
+                $result.Add($conn)
+            }
+        }
+        return $result.ToArray()
     }
 
     [void] ClearConnections() {

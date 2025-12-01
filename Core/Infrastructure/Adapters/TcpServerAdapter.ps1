@@ -231,7 +231,9 @@ class TcpServerAdapter {
                                 $bytesRead = $stream.Read($buffer, 0, $buffer.Length)
 
                                 if ($bytesRead -gt 0) {
-                                    $receivedData = $buffer[0..($bytesRead - 1)]
+                                    # Array.Copy を使用（スライス演算子より高速）
+                                    $receivedData = [byte[]]::new($bytesRead)
+                                    [Array]::Copy($buffer, 0, $receivedData, 0, $bytesRead)
 
                                     $metadata = @{
                                         RemoteEndPoint = $client.Client.RemoteEndPoint.ToString()

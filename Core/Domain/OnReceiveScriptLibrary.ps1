@@ -222,7 +222,7 @@ function Send-MessageData {
 function ConvertTo-HexString {
     <#
     .SYNOPSIS
-    バイト配列を16進数文字列に変換
+    バイト配列を16進数文字列に変換（最適化版）
     
     .EXAMPLE
     $hex = ConvertTo-HexString -Data $bytes
@@ -236,13 +236,28 @@ function ConvertTo-HexString {
         [string]$Separator = ""
     )
 
-    return ($Data | ForEach-Object { $_.ToString("X2") }) -join $Separator
+    if (-not $Data -or $Data.Length -eq 0) {
+        return ""
+    }
+
+    # StringBuilder使用で高速化（ForEach-Object + -join はパイプライン処理で遅い）
+    $hasSeparator = -not [string]::IsNullOrEmpty($Separator)
+    $sb = [System.Text.StringBuilder]::new($Data.Length * (2 + $Separator.Length))
+    
+    for ($i = 0; $i -lt $Data.Length; $i++) {
+        if ($hasSeparator -and $i -gt 0) {
+            [void]$sb.Append($Separator)
+        }
+        [void]$sb.Append($Data[$i].ToString("X2"))
+    }
+    
+    return $sb.ToString()
 }
 
 function ConvertFrom-HexString {
     <#
     .SYNOPSIS
-    16進数文字列をバイト配列に変換
+    16進数文字列をバイト配列に変換（最適化版）
     
     .EXAMPLE
     $bytes = ConvertFrom-HexString -HexString "0102030A"
@@ -258,13 +273,17 @@ function ConvertFrom-HexString {
         throw "Hex string must have an even number of characters"
     }
 
-    $bytes = @()
+    # 事前にサイズ確定した配列を作成（+= は O(n^2) なので使わない）
+    $byteCount = $cleanHex.Length / 2
+    $bytes = [byte[]]::new($byteCount)
+    $byteIndex = 0
+    
     for ($i = 0; $i -lt $cleanHex.Length; $i += 2) {
         $hexByte = $cleanHex.Substring($i, 2)
-        $bytes += [Convert]::ToByte($hexByte, 16)
+        $bytes[$byteIndex++] = [Convert]::ToByte($hexByte, 16)
     }
 
-    return [byte[]]$bytes
+    return $bytes
 }
 
 function Get-ConnectionVariable {
